@@ -7,12 +7,11 @@ interface Props {
   user: any;
   onLogout: () => void;
   onBack: () => void;
-  roomId?: string;
 }
 
 const ROLES = ["Software Engineer","AI Engineer","Data Scientist","Frontend Developer","Backend Developer","Full Stack Developer","DevOps Engineer","Product Manager"];
 
-export default function InterviewRoom({ user, onLogout, onBack, roomId }: Props) {
+export default function InterviewRoom({ user, onLogout, onBack }: Props) {
   const [started, setStarted] = useState(false);
   const [cheatLog, setCheatLog] = useState<{time: string, event: string}[]>([]);
   const [cheatCount, setCheatCount] = useState(0);
@@ -48,16 +47,6 @@ export default function InterviewRoom({ user, onLogout, onBack, roomId }: Props)
   const emotionRef = useRef<any>(null);
   const emotionCanvasRef = useRef<HTMLCanvasElement>(null);
   const userName = user?.user?.name || user?.name || "Candidate";
-  const activeRoomId = roomId || "";
-  const [roomInfo, setRoomInfo] = useState<any>(null);
-
-  useEffect(() => {
-    if (!activeRoomId) return;
-    fetch(import.meta.env.VITE_API_URL + "/interviews/room/" + activeRoomId)
-      .then(r => r.json())
-      .then(data => { if (data.interview) setRoomInfo(data.interview); })
-      .catch(() => {});
-  }, [activeRoomId]);
 
   const logViolation = useCallback((event: string, level: "yellow"|"red" = "yellow") => {
     const time = new Date().toLocaleTimeString();
@@ -271,24 +260,6 @@ export default function InterviewRoom({ user, onLogout, onBack, roomId }: Props)
 
   return (
     <div style={{ minHeight: "100vh", background: "#F8FAFC", color: "#1E293B", padding: "20px", fontFamily: "sans-serif" }}>
-      {activeRoomId && (
-        <div style={{ background: "linear-gradient(135deg,#00B87C22,#00D4FF22)", border: "1.5px solid #00B87C", borderRadius: "12px", padding: "14px 20px", marginBottom: "16px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <span style={{ color: "#00B87C", fontSize: "13px", fontWeight: "700" }}>🔑 Room ID:</span>
-              <span style={{ color: "#00D4FF", fontSize: "18px", fontWeight: "800", letterSpacing: "2px" }}>{activeRoomId}</span>
-            </div>
-            <span style={{ padding: "4px 12px", background: "#00B87C22", border: "1px solid #00B87C", borderRadius: "20px", color: "#00B87C", fontSize: "12px", fontWeight: "700" }}>🎯 SCHEDULED INTERVIEW</span>
-          </div>
-          {roomInfo && (
-            <div style={{ marginTop: "10px", display: "flex", gap: "20px", flexWrap: "wrap" }}>
-              {roomInfo.company_name && <div style={{ fontSize: "13px", color: "#94A3B8" }}>🏢 Company: <span style={{ color: "#fff", fontWeight: "700" }}>{roomInfo.company_name}</span></div>}
-              {roomInfo.job_title && <div style={{ fontSize: "13px", color: "#94A3B8" }}>💼 Role: <span style={{ color: "#fff", fontWeight: "700" }}>{roomInfo.job_title}</span></div>}
-              {roomInfo.scheduled_at && <div style={{ fontSize: "13px", color: "#94A3B8" }}>📅 Scheduled: <span style={{ color: "#F59E0B", fontWeight: "700" }}>{new Date(roomInfo.scheduled_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</span></div>}
-            </div>
-          )}
-        </div>
-      )}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
         <h1 style={{ margin: 0, color: "#00B87C", fontSize: "22px" }}>Genu<span style={{ color: "#00D4FF" }}>AI</span> <span style={{ color: "#64748B", fontSize: "16px" }}>{mode === "coach" ? "AI Mock Interview Coach" : "Secure Interview Room"}</span></h1>
         <div style={{ display: "flex", gap: "10px" }}>
@@ -396,14 +367,8 @@ export default function InterviewRoom({ user, onLogout, onBack, roomId }: Props)
         <div style={{ maxWidth: "620px", margin: "40px auto" }}>
           <div style={{ textAlign: "center", marginBottom: "24px" }}>
             <div style={{ fontSize: "56px", marginBottom: "12px" }}>🔒</div>
-            <h2 style={{ color: "#1E293B", margin: "0 0 8px" }}>Maximum Security Interview</h2>
+            <h2 style={{ color: "#00B87C", margin: "0 0 8px" }}>Maximum Security Interview</h2>
             <p style={{ color: "#64748B", margin: 0 }}>All activity is monitored and recorded.</p>
-            {roomId && (
-              <div style={{ marginTop: "16px", display: "inline-flex", alignItems: "center", gap: "10px", background: "#EEF2FF", border: "1.5px solid #667EEA", borderRadius: "12px", padding: "10px 20px" }}>
-                <span style={{ color: "#64748B", fontSize: "13px" }}>Room ID:</span>
-                <span style={{ color: "#667EEA", fontWeight: "800", fontSize: "18px", letterSpacing: "2px" }}>{roomId}</span>
-              </div>
-            )}
           </div>
           <div style={{ background: "#FFFFFF", border: "1px solid #FF4444", borderRadius: "12px", padding: "20px", marginBottom: "20px" }}>
             <div style={{ color: "#FF4444", fontWeight: "bold", marginBottom: "12px", fontSize: "15px" }}>Security Measures Active:</div>
@@ -420,7 +385,6 @@ export default function InterviewRoom({ user, onLogout, onBack, roomId }: Props)
         <div>
           <div style={{ display: "flex", gap: "10px", marginBottom: "16px", flexWrap: "wrap", alignItems: "center" }}>
             <div style={{ background: "#FF4444", borderRadius: "20px", padding: "5px 14px", fontSize: "12px", fontWeight: "bold" }}>🔴 LIVE</div>
-            {roomId && <div style={{ background: "#EEF2FF", border: "1px solid #667EEA", borderRadius: "20px", padding: "5px 14px", fontSize: "12px", color: "#667EEA", fontWeight: "700" }}>🔑 {roomId}</div>}
             <div style={{ background: "#F1F5F9", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "5px 14px", fontSize: "12px", color: "#00D4FF" }}>⏱ {fmt(timer)}</div>
             <div style={{ background: "#F1F5F9", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "5px 14px", fontSize: "12px", color: cheatCount > 2 ? "#FF4444" : cheatCount > 0 ? "#F59E0B" : "#00B87C" }}>⚠️ Violations: {cheatCount}/5</div>
             <div style={{ background: "#F1F5F9", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "5px 14px", fontSize: "12px", color: faceStatus === "ok" ? "#00B87C" : "#FF4444" }}>👤 Face: {faceStatus === "ok" ? "Detected" : "NOT FOUND"}</div>

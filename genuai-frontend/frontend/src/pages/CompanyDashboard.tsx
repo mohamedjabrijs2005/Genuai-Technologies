@@ -4,12 +4,11 @@ import axios from "axios";
 interface Props {
   user: any;
   onLogout: () => void;
-  onInterview?: (roomId: string) => void;
 }
 
 const API = import.meta.env.VITE_API_URL;
 
-export default function CompanyDashboard({ user, onLogout, onInterview }: Props) {
+export default function CompanyDashboard({ user, onLogout }: Props) {
   const [tab, setTab] = useState("overview");
   const [candidates, setCandidates] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
@@ -22,12 +21,7 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
   const [showJobForm, setShowJobForm] = useState(false);
   const [showInterviewForm, setShowInterviewForm] = useState(false);
   const [jobForm, setJobForm] = useState({ title: "", description: "", skills: "", location: "", salary_min: "", salary_max: "" });
-  const [interviewForm, setInterviewForm] = useState({ candidate_id: "", job_title: "", scheduled_at: "", notes: "" });
-  const [scheduledRoomId, setScheduledRoomId] = useState("");
-  const [intDate, setIntDate] = useState("");
-  const [intHour, setIntHour] = useState("10");
-  const [intMin, setIntMin] = useState("00");
-  const [intAmPm, setIntAmPm] = useState("AM");
+  const [interviewForm, setInterviewForm] = useState({ candidate_id: "", job_title: "", scheduled_at: "", meeting_link: "", notes: "" });
   const [emailStatus, setEmailStatus] = useState<string>("");
   const [compareList, setCompareList] = useState<any[]>([]);
   const [showCompare, setShowCompare] = useState(false);
@@ -84,11 +78,11 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
   const scheduleInterview = async () => {
     if (!interviewForm.candidate_id || !interviewForm.scheduled_at) { alert("Candidate and date required!"); return; }
     try {
-      const res = await axios.post(API + "/interviews/schedule", { ...interviewForm, company_id: companyId }, { headers: { Authorization: "Bearer " + token } });
-      setScheduledRoomId(res.data.room_id);
+      await axios.post(API + "/interviews/schedule", { ...interviewForm, company_id: companyId, job_title: interviewForm.job_title }, { headers: { Authorization: "Bearer " + token } });
       await loadData();
-      setInterviewForm({ candidate_id: "", job_title: "", scheduled_at: "", notes: "" });
+      setInterviewForm({ candidate_id: "", job_title: "", scheduled_at: "", meeting_link: "", notes: "" });
       setShowInterviewForm(false);
+      alert("Interview scheduled and email sent!");
     } catch (e: any) { alert("Schedule failed: " + e.message); }
   };
 
@@ -375,20 +369,8 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                 <h3 style={{ color: "#A78BFA", margin: 0 }}>Scheduled Interviews ({interviews.length})</h3>
+                <button onClick={() => setShowInterviewForm(!showInterviewForm)} style={{ ...btn, background: "#A78BFA", color: "#000" }}>+ Schedule Interview</button>
               </div>
-              {scheduledRoomId && (
-                <div style={{ background: "#F0FDF4", border: "1.5px solid #00B87C", borderRadius: "12px", padding: "16px 20px", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <div style={{ color: "#16A34A", fontWeight: "700", fontSize: "14px", marginBottom: "4px" }}>✅ Interview Scheduled! Room ID Generated</div>
-                    <div style={{ color: "#64748B", fontSize: "13px" }}>Room ID: <strong style={{ color: "#667EEA", fontSize: "16px" }}>{scheduledRoomId}</strong></div>
-                    <div style={{ color: "#64748B", fontSize: "12px", marginTop: "4px" }}>Email sent to candidate with interview room link</div>
-                  </div>
-                  <button onClick={() => setScheduledRoomId("")} style={{ ...btn, background: "#F1F5F9", color: "#64748B", fontSize: "12px" }}>✕</button>
-                </div>
-              )}
-              <button onClick={() => setShowInterviewForm(!showInterviewForm)} style={{ ...btn, background: "#A78BFA", color: "#000" }}>
-                {showInterviewForm ? "✕ Cancel" : "+ Schedule Interview"}
-              </button>
               {showInterviewForm && (
                 <div style={{ background: "#FFFFFF", border: "1px solid #A78BFA", borderRadius: "12px", padding: "20px", marginBottom: "20px" }}>
                   <h4 style={{ color: "#A78BFA", marginTop: 0 }}>Schedule New Interview</h4>
@@ -397,46 +379,8 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
                     {candidates.map(c => <option key={c.id} value={c.user_id || c.id}>{c.name} — {c.email} ({c.overall_score}%)</option>)}
                   </select>
                   <input placeholder="Job Title" value={interviewForm.job_title} onChange={e => setInterviewForm(p => ({ ...p, job_title: e.target.value }))} style={inp} />
-                  <div style={{ marginBottom: "12px" }}>
-                    <label style={{ color: "#64748B", fontSize: "12px", display: "block", marginBottom: "6px" }}>Interview Date & Time *</label>
-                    <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "8px" }}>
-                      <input type="date" value={intDate} onChange={e => {
-                        setIntDate(e.target.value);
-                        const h = intAmPm === "PM" ? (parseInt(intHour) === 12 ? 12 : parseInt(intHour) + 12) : (parseInt(intHour) === 12 ? 0 : parseInt(intHour));
-                        const dt = e.target.value + "T" + String(h).padStart(2,"0") + ":" + intMin + ":00";
-                        setInterviewForm(p => ({ ...p, scheduled_at: dt }));
-                      }} style={{ ...inp, marginBottom: 0 }} />
-                      <select value={intHour} onChange={e => {
-                        setIntHour(e.target.value);
-                        const h = intAmPm === "PM" ? (parseInt(e.target.value) === 12 ? 12 : parseInt(e.target.value) + 12) : (parseInt(e.target.value) === 12 ? 0 : parseInt(e.target.value));
-                        const dt = intDate + "T" + String(h).padStart(2,"0") + ":" + intMin + ":00";
-                        setInterviewForm(p => ({ ...p, scheduled_at: dt }));
-                      }} style={{ ...inp, marginBottom: 0 }}>
-                        {["1","2","3","4","5","6","7","8","9","10","11","12"].map(h => <option key={h} value={h}>{h}</option>)}
-                      </select>
-                      <select value={intMin} onChange={e => {
-                        setIntMin(e.target.value);
-                        const h = intAmPm === "PM" ? (parseInt(intHour) === 12 ? 12 : parseInt(intHour) + 12) : (parseInt(intHour) === 12 ? 0 : parseInt(intHour));
-                        const dt = intDate + "T" + String(h).padStart(2,"0") + ":" + e.target.value + ":00";
-                        setInterviewForm(p => ({ ...p, scheduled_at: dt }));
-                      }} style={{ ...inp, marginBottom: 0 }}>
-                        {["00","05","10","15","20","25","30","35","40","45","50","55"].map(m => <option key={m} value={m}>{m}</option>)}
-                      </select>
-                      <select value={intAmPm} onChange={e => {
-                        setIntAmPm(e.target.value);
-                        const h = e.target.value === "PM" ? (parseInt(intHour) === 12 ? 12 : parseInt(intHour) + 12) : (parseInt(intHour) === 12 ? 0 : parseInt(intHour));
-                        const dt = intDate + "T" + String(h).padStart(2,"0") + ":" + intMin + ":00";
-                        setInterviewForm(p => ({ ...p, scheduled_at: dt }));
-                      }} style={{ ...inp, marginBottom: 0 }}>
-                        <option value="AM">AM</option>
-                        <option value="PM">PM</option>
-                      </select>
-                    </div>
-                    {intDate && <div style={{ color: "#A78BFA", fontSize: "12px", marginTop: "6px" }}>
-                      Scheduled: {new Date(intDate + "T" + String(intAmPm === "PM" ? (parseInt(intHour) === 12 ? 12 : parseInt(intHour) + 12) : (parseInt(intHour) === 12 ? 0 : parseInt(intHour))).padStart(2,"0") + ":" + intMin + ":00").toLocaleString("en-IN", { timeZone: "Asia/Kolkata", dateStyle: "full", timeStyle: "short" })} IST
-                    </div>}
-                  </div>
-
+                  <input type="datetime-local" value={interviewForm.scheduled_at} onChange={e => setInterviewForm(p => ({ ...p, scheduled_at: e.target.value }))} style={inp} />
+                  <input placeholder="Meeting Link (Google Meet / Zoom)" value={interviewForm.meeting_link} onChange={e => setInterviewForm(p => ({ ...p, meeting_link: e.target.value }))} style={inp} />
                   <textarea placeholder="Notes (optional)" value={interviewForm.notes} onChange={e => setInterviewForm(p => ({ ...p, notes: e.target.value }))} rows={3} style={inp} />
                   <div style={{ display: "flex", gap: "10px" }}>
                     <button onClick={scheduleInterview} style={{ ...btn, background: "#A78BFA", color: "#000", flex: 1, padding: "12px" }}>Schedule & Send Email</button>
@@ -457,23 +401,11 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
                         <h4 style={{ color: "#A78BFA", margin: "0 0 6px" }}>{iv.candidate_name}</h4>
                         <div style={{ color: "#64748B", fontSize: "12px", marginBottom: "4px" }}>{iv.candidate_email}</div>
                         <div style={{ color: "#64748B", fontSize: "13px" }}>📋 {iv.job_title || "General Interview"}</div>
-                        {iv.room_id && <div style={{ marginTop: "6px", display: "flex", alignItems: "center", gap: "8px" }}><span style={{ color: "#64748B", fontSize: "12px" }}>🔑 Room ID:</span><span style={{ color: "#667EEA", fontWeight: "700", fontSize: "13px" }}>{iv.room_id}</span><button onClick={() => onInterview && onInterview(iv.room_id)} style={{ background: "linear-gradient(135deg,#00B87C,#00D4AA)", color: "#fff", padding: "6px 14px", borderRadius: "8px", fontSize: "12px", border: "none", cursor: "pointer", fontWeight: "700" }}>🚀 Join Interview Room</button></div>}
+                        {iv.meeting_link && <div style={{ marginTop: "6px" }}><a href={iv.meeting_link} target="_blank" rel="noreferrer" style={{ color: "#00D4FF", fontSize: "12px" }}>🔗 Join Meeting</a></div>}
                         {iv.notes && <div style={{ color: "#64748B", fontSize: "12px", marginTop: "4px" }}>📝 {iv.notes}</div>}
                       </div>
                       <div style={{ textAlign: "right" }}>
-                        <div style={{ color: "#F59E0B", fontWeight: "bold" }}>📅 {new Date(iv.scheduled_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</div>
-                        {iv.room_id && (
-                          <div style={{ marginTop: "6px", display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                            <span style={{ background: "#1a4a3a", color: "#00B87C", padding: "3px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold" }}>Room: {iv.room_id}</span>
-                            <span style={{ background: iv.room_status === "active" ? "#1a4a3a" : iv.room_status === "completed" ? "#1a1a3a" : "#2a1a1a", color: iv.room_status === "active" ? "#00B87C" : iv.room_status === "completed" ? "#00D4FF" : "#F59E0B", padding: "3px 10px", borderRadius: "20px", fontSize: "11px" }}>{iv.room_status || "waiting"}</span>
-                            <button onClick={() => {
-                              axios.put(API + "/interviews/status/" + iv.id, { status: "active" }, { headers: { Authorization: "Bearer " + token } });
-                              alert("Interview room activated! Candidate can now join Room: " + iv.room_id);
-                            }} style={{ padding: "4px 12px", background: "#A78BFA", color: "#000", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", fontSize: "12px" }}>
-                              Start Room
-                            </button>
-                          </div>
-                        )}
+                        <div style={{ color: "#F59E0B", fontWeight: "bold" }}>📅 {new Date(iv.scheduled_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</div>
                         <span style={{ padding: "3px 10px", borderRadius: "10px", background: "#A78BFA22", color: "#A78BFA", fontSize: "12px", fontWeight: "bold" }}>{iv.status}</span>
                       </div>
                     </div>

@@ -5,13 +5,10 @@ import authRoutes from './routes/auth';
 import assessmentRoutes from './routes/assessment';
 import uploadRoutes from './routes/upload';
 import emailRoutes from './routes/email';
-import skillRoutes from './routes/skill';
 import adminRoutes from './routes/admin';
 import jobRoutes from './routes/jobs';
 import interviewRoutes from './routes/interviews';
 import coachRoutes from './routes/coach';
-import klevelRoutes from './routes/klevel';
-import historyRoutes from './routes/history';
 
 dotenv.config();
 
@@ -32,12 +29,9 @@ app.use('/assessment', assessmentRoutes);
 app.use('/upload', uploadRoutes);
 app.use('/email', emailRoutes);
 app.use('/admin', adminRoutes);
-app.use('/skill', skillRoutes);
 app.use('/jobs', jobRoutes);
 app.use('/interviews', interviewRoutes);
 app.use('/coach', coachRoutes);
-app.use('/klevel', klevelRoutes);
-app.use('/history', historyRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
