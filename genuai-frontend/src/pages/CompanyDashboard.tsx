@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import { io } from "socket.io-client";
 interface Props {
   user: any;
   onLogout: () => void;
@@ -37,7 +37,19 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
   const companyName = user?.user?.name || user?.name || "Company";
   const token = user?.token || "";
 
-  useEffect(() => { loadData(); }, []);
+    useEffect(() => { 
+    loadData(); 
+
+    const API_WS = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL || "";
+    const socket = io(API_WS, { transports: ["websocket"] });
+    
+    socket.on("notify-hr", (data: any) => {
+       alert(`🚨 HR ALERT 🚨\n\nCandidate ${data.name} just joined Room: ${data.roomId}\n\nSecurity: ${data.camerasExpected === 2 ? "MEDIUM/HIGH RISK" : "LOW RISK"}\nCameras Required: ${data.camerasExpected}\n\nYou can click 'Start Room / Join' in your Interviews tab!`);
+    });
+
+    return () => { socket.disconnect(); };
+  }, []);
+
 
   const loadData = async () => {
     setLoading(true);
@@ -375,6 +387,9 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                 <h3 style={{ color: "#A78BFA", margin: 0 }}>Scheduled Interviews ({interviews.length})</h3>
+                <button onClick={() => setShowInterviewForm(!showInterviewForm)} style={{ padding: "10px 20px", background: showInterviewForm ? "#F1F5F9" : "linear-gradient(135deg,#A78BFA,#7C3AED)", color: showInterviewForm ? "#64748B" : "#fff", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "700", fontSize: "13px" }}>
+                  {showInterviewForm ? "✕ Cancel" : "+ Schedule Interview"}
+                </button>
               </div>
               {scheduledRoomId && (
                 <div style={{ background: "#F0FDF4", border: "1.5px solid #00B87C", borderRadius: "12px", padding: "16px 20px", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -386,9 +401,7 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
                   <button onClick={() => setScheduledRoomId("")} style={{ ...btn, background: "#F1F5F9", color: "#64748B", fontSize: "12px" }}>✕</button>
                 </div>
               )}
-              <button onClick={() => setShowInterviewForm(!showInterviewForm)} style={{ ...btn, background: "#A78BFA", color: "#000" }}>
-                {showInterviewForm ? "✕ Cancel" : "+ Schedule Interview"}
-              </button>
+
               {showInterviewForm && (
                 <div style={{ background: "#FFFFFF", border: "1px solid #A78BFA", borderRadius: "12px", padding: "20px", marginBottom: "20px" }}>
                   <h4 style={{ color: "#A78BFA", marginTop: 0 }}>Schedule New Interview</h4>

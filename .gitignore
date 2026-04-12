@@ -1,7 +1,28 @@
-.git-credentials
-.ssh/
-awscliv2.zip
-aws/
-*.zip
-*.pem
+# npm cache
+.npm/
+.config/
+
+# pm2 logs and pid
+.pm2/
+
+# bash history
+.bash_history
+.wget-hsts
+
+# build artifacts
+dist/
 node_modules/
+
+# env files
+.env
+*.pem
+*.tsbuildinfo
+
+# aws/temp files
+*.zip
+raw_cf_wrapper.json
+updated_cf_config.json
+lambda_function.py
+
+# logs
+*.log

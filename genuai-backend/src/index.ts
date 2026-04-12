@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import http from 'http';
 import authRoutes from './routes/auth';
 import assessmentRoutes from './routes/assessment';
 import uploadRoutes from './routes/upload';
@@ -12,21 +13,17 @@ import interviewRoutes from './routes/interviews';
 import coachRoutes from './routes/coach';
 import klevelRoutes from './routes/klevel';
 import historyRoutes from './routes/history';
+import { initSocket } from './socket';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors({ origin: '*', methods: ['GET','POST','PUT','DELETE','OPTIONS'], allowedHeaders: ['Content-Type','Authorization'] }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
 app.use('/auth', authRoutes);
 app.use('/assessment', assessmentRoutes);
 app.use('/upload', uploadRoutes);
@@ -39,13 +36,13 @@ app.use('/coach', coachRoutes);
 app.use('/klevel', klevelRoutes);
 app.use('/history', historyRoutes);
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'GenuAI API is running', time: new Date() });
-});
+app.get('/health', (_req, res) => res.json({ status: 'ok', time: new Date() }));
 
-app.listen(PORT, () => {
-  console.log(`GenuAI server running on port ${PORT}`);
+const server = http.createServer(app);
+initSocket(server);
+
+server.listen(PORT, () => {
+  console.log("GenuAI server running on port " + PORT + " (API + Socket.io)");
 });
 
 export default app;
