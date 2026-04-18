@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "node dist/index.js",
     "build": "tsc",
     "dev": "ts-node src/index.ts"
   },
@@ -12,18 +12,19 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1007.0",
-    "@aws-sdk/client-ses": "^3.1007.0",
     "@types/qrcode": "^1.5.6",
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^1.41.3",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.1.1",
+    "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^8.0.2",
     "pg": "^8.20.0",
     "qrcode": "^1.5.4",
+    "resend": "^6.12.0",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {

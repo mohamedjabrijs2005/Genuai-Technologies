@@ -1,9 +1,11 @@
 import express from 'express';
 import pool from '../db';
-import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import { Resend } from 'resend';
 
 const router = express.Router();
-const ses = new SESClient({ region: 'ap-south-1' });
+const resend = new Resend(process.env.RESEND_API_KEY);
+const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://genuai-technologies.vercel.app';
 
 function generateRoomId(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -34,7 +36,7 @@ function buildEmailHtml(candidateName: string, job_title: string, companyName: s
 <tr><td style="padding:14px 18px;border:1px solid #dbeafe;font-weight:700;color:#1e40af;font-size:13px;">Company</td><td style="padding:14px 18px;border:1px solid #dbeafe;color:#1e293b;font-size:14px;">${companyName}</td></tr>
 <tr><td style="padding:14px 18px;border:1px solid #dbeafe;font-weight:700;color:#1e40af;font-size:13px;">Room ID</td><td style="padding:14px 18px;border:1px solid #dbeafe;color:#1a56db;font-size:16px;font-weight:800;letter-spacing:2px;">${room_id}</td></tr>
 </table>
-<div style="text-align:center;margin-bottom:28px;"><a href="' + roomLink + '" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#1a56db,#3b82f6);color:#fff;text-decoration:none;border-radius:12px;font-weight:800;font-size:15px;">&#128187; Join Interview Room</a></div>
+<div style="text-align:center;margin-bottom:28px;"><a href="${roomLink}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#1a56db,#3b82f6);color:#fff;text-decoration:none;border-radius:12px;font-weight:800;font-size:15px;">&#128187; Join Interview Room</a></div>
 <div style="background:#f8faff;border:1.5px solid #dbeafe;border-radius:12px;padding:20px 24px;margin-bottom:24px;">
 <p style="color:#1e40af;font-weight:700;font-size:14px;margin:0 0 10px;">Important Instructions:</p>
 <ul style="color:#475569;font-size:13px;margin:0;padding-left:18px;line-height:2;">
@@ -81,23 +83,16 @@ router.post('/schedule', async (req, res) => {
     const minutes = rawDate.getMinutes().toString().padStart(2,'0');
     const ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12 || 12;
-    const interviewDate = day + '/' + month + '/' + year + ' at ' + hours + ':' + minutes + ' ' + ampm + ' IST';
-    const roomLink = 'https://d1ssw1t0a4j2nf.cloudfront.net?room=' + room_id;
-    const mobileUrl = 'https://d1ssw1t0a4j2nf.cloudfront.net?mobile=1&room=' + room_id;
-    const logoUrl = 'https://d1ssw1t0a4j2nf.cloudfront.net/logo.png';
+    const interviewDate = `${day}/${month}/${year} at ${hours}:${minutes} ${ampm} IST`;
+    const roomLink = `${FRONTEND_URL}?room=${room_id}`;
+
     if (candidateEmail) {
-      await ses.send(new SendEmailCommand({
-        Source: 'sit24ci006@sairamtap.edu.in',
-        Destination: { ToAddresses: [candidateEmail] },
-        Message: {
-          Subject: { Data: 'GenuAI Interview Scheduled - ' + job_title + ' at ' + companyName },
-          Body: {
-            Html: {
-              Data: buildEmailHtml(candidateName, job_title, companyName, interviewDate, room_id, roomLink, notes || '')
-            }
-          }
-        }
-      }));
+      await resend.emails.send({
+        from: FROM_EMAIL,
+        to: candidateEmail,
+        subject: `GenuAI Interview Scheduled - ${job_title} at ${companyName}`,
+        html: buildEmailHtml(candidateName, job_title, companyName, interviewDate, room_id, roomLink, notes || ''),
+      });
     }
     res.json({ success: true, interview: result.rows[0], room_id });
   } catch (err: any) {
@@ -110,8 +105,7 @@ router.get('/company/:company_id', async (req, res) => {
     const result = await pool.query(
       `SELECT i.*, u.name as candidate_name, u.email as candidate_email
        FROM interviews i JOIN users u ON i.candidate_id = u.id
-       WHERE i.company_id = $1
-       ORDER BY i.scheduled_at DESC`,
+       WHERE i.company_id = $1 ORDER BY i.scheduled_at DESC`,
       [req.params.company_id]
     );
     res.json({ interviews: result.rows });
@@ -125,8 +119,7 @@ router.get('/candidate/:candidate_id', async (req, res) => {
     const result = await pool.query(
       `SELECT i.*, u.name as company_name
        FROM interviews i JOIN users u ON i.company_id = u.id
-       WHERE i.candidate_id = $1
-       ORDER BY i.scheduled_at DESC`,
+       WHERE i.candidate_id = $1 ORDER BY i.scheduled_at DESC`,
       [req.params.candidate_id]
     );
     res.json({ interviews: result.rows });

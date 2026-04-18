@@ -1,36 +1,44 @@
 import express from 'express';
 import multer from 'multer';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { v2 as cloudinary } from 'cloudinary';
+import { Readable } from 'stream';
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-const s3 = new S3Client({
-  region: process.env.AWS_REGION
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Upload resume to S3
+const uploadToCloudinary = (buffer: Buffer, filename: string, mimetype: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'genuai-resumes',
+        public_id: `${Date.now()}-${filename.replace(/\.[^/.]+$/, '')}`,
+        resource_type: 'auto',
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result!.secure_url);
+      }
+    );
+    const readable = new Readable();
+    readable.push(buffer);
+    readable.push(null);
+    readable.pipe(uploadStream);
+  });
+};
+
 router.post('/resume', upload.single('resume'), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-
-    const fileName = `resumes/${Date.now()}-${req.file.originalname}`;
-
-    await s3.send(new PutObjectCommand({
-      Bucket: process.env.S3_BUCKET!,
-      Key: fileName,
-      Body: req.file.buffer,
-      ContentType: req.file.mimetype,
-    }));
-
-    const fileUrl = `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
-
-    res.json({ url: fileUrl, fileName });
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    const fileUrl = await uploadToCloudinary(req.file.buffer, req.file.originalname, req.file.mimetype);
+    res.json({ url: fileUrl, fileName: req.file.originalname });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
