@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const API_WS  = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL || "";
-const LOGO    = "https://d1ssw1t0a4j2nf.cloudfront.net/logo.png";
+const LOGO    = "/logo.png";
 
 export default function MobileCam({ roomId }: { roomId: string }) {
   const [status,     setStatus]     = useState<"starting"|"live"|"error">("starting");

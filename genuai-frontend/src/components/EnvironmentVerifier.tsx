@@ -168,7 +168,7 @@ export default function EnvironmentVerifier({ roomId, onVerificationComplete }: 
 
         <div style={{ textAlign:"center", marginBottom:"28px" }}>
           <div style={{ display:"inline-flex", alignItems:"center", gap:"10px", marginBottom:"14px" }}>
-            <img src="https://d1ssw1t0a4j2nf.cloudfront.net/logo.png" alt="GenuAI"
+            <img src="/logo.png" alt="GenuAI"
               style={{ width:"52px", height:"52px", borderRadius:"14px", boxShadow:"0 4px 16px rgba(102,126,234,0.3)" }}/>
             <span style={{ fontSize:"30px", fontWeight:"900", color:"#1E293B" }}>
               Genu<span style={{ color:"#00B87C" }}>AI</span>
@@ -235,7 +235,7 @@ export default function EnvironmentVerifier({ roomId, onVerificationComplete }: 
       <div style={{ maxWidth:"480px", width:"100%" }}>
         <div style={{ ...card, textAlign:"center", padding:"36px 30px" }}>
 
-          <img src="https://d1ssw1t0a4j2nf.cloudfront.net/logo.png" alt="GenuAI"
+          <img src="/logo.png" alt="GenuAI"
             style={{ width:"52px", height:"52px", borderRadius:"14px", marginBottom:"16px", boxShadow:"0 4px 12px rgba(102,126,234,0.25)" }}/>
           <h2 style={{ color:"#1E293B", margin:"0 0 8px", fontSize:"20px", fontWeight:"800" }}>Additional Verification Required</h2>
           <p style={{ color:"#64748B", fontSize:"14px", margin:"0 0 26px", lineHeight:"1.6" }}>
@@ -253,7 +253,7 @@ export default function EnvironmentVerifier({ roomId, onVerificationComplete }: 
               </div>
             )}
             <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", background:"#fff", borderRadius:"10px", padding:"5px", boxShadow:"0 2px 8px rgba(0,0,0,0.15)" }}>
-              <img src="https://d1ssw1t0a4j2nf.cloudfront.net/logo.png" alt="G"
+              <img src="/logo.png" alt="G"
                 style={{ width:"36px", height:"36px", borderRadius:"8px", display:"block" }}/>
             </div>
           </div>

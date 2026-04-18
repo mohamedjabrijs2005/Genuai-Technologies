@@ -220,7 +220,7 @@ export default function InterviewRoom({ user, onLogout, onBack, roomId }: Props)
       <style>{`@keyframes spin{to{transform:rotate(360deg);}}@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}`}</style>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"28px"}}>
         <div style={{display:"flex",alignItems:"center",gap:"12px"}}>
-          <img src="https://d1ssw1t0a4j2nf.cloudfront.net/logo.png" alt="GenuAI" style={{width:"40px",height:"40px",borderRadius:"10px"}}/>
+          <img src="/logo.png" alt="GenuAI" style={{width:"40px",height:"40px",borderRadius:"10px"}}/>
           <div>
             <h1 style={{margin:0,color:"#1E293B",fontSize:"20px",fontWeight:"800"}}>Genu<span style={{color:"#00B87C"}}>AI</span> <span style={{color:"#667EEA"}}>Secure Interview Room</span></h1>
             {activeRoomId&&<div style={{fontSize:"12px",color:"#94A3B8"}}>Room: <strong style={{color:"#667EEA"}}>{activeRoomId}</strong></div>}
@@ -236,7 +236,7 @@ export default function InterviewRoom({ user, onLogout, onBack, roomId }: Props)
         <div style={{maxWidth:"600px",margin:"0 auto"}}>
           <div style={{textAlign:"center",marginBottom:"28px"}}>
             <div style={{display:"inline-flex",alignItems:"center",gap:"10px",marginBottom:"14px"}}>
-              <img src="https://d1ssw1t0a4j2nf.cloudfront.net/logo.png" alt="GenuAI" style={{width:"52px",height:"52px",borderRadius:"14px",boxShadow:"0 4px 16px rgba(102,126,234,0.3)"}}/>
+              <img src="/logo.png" alt="GenuAI" style={{width:"52px",height:"52px",borderRadius:"14px",boxShadow:"0 4px 16px rgba(102,126,234,0.3)"}}/>
               <span style={{fontSize:"30px",fontWeight:"900",color:"#1E293B"}}>Genu<span style={{color:"#00B87C"}}>AI</span></span>
             </div>
             <h2 style={{margin:"0 0 6px",fontSize:"26px",fontWeight:"800",color:"#1E293B"}}>Environment Verification</h2>
@@ -289,7 +289,7 @@ export default function InterviewRoom({ user, onLogout, onBack, roomId }: Props)
       {phase==="waiting"&&(
         <div style={{maxWidth:"500px",margin:"0 auto"}}>
           <div style={{background:"#fff",border:"1.5px solid #E2E8F0",borderRadius:"20px",padding:"36px 30px",textAlign:"center",boxShadow:"0 4px 24px rgba(0,0,0,0.09)"}}>
-            <img src="https://d1ssw1t0a4j2nf.cloudfront.net/logo.png" alt="GenuAI" style={{width:"52px",height:"52px",borderRadius:"14px",marginBottom:"16px"}}/>
+            <img src="/logo.png" alt="GenuAI" style={{width:"52px",height:"52px",borderRadius:"14px",marginBottom:"16px"}}/>
             <h2 style={{color:"#1E293B",margin:"0 0 8px",fontSize:"20px",fontWeight:"800"}}>Additional Verification Required</h2>
             <p style={{color:"#64748B",fontSize:"14px",margin:"0 0 26px",lineHeight:"1.6"}}>Scan this QR code with your smartphone and position it to show a <strong>side view</strong> of your workspace.</p>
             <div style={{position:"relative",display:"inline-block",marginBottom:"24px"}}>
@@ -299,7 +299,7 @@ export default function InterviewRoom({ user, onLogout, onBack, roomId }: Props)
                 style={{width:"210px",height:"210px",borderRadius:"14px",border:"2px solid #E2E8F0",display:"block"}}
               />
               <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",background:"#fff",borderRadius:"10px",padding:"5px",boxShadow:"0 2px 8px rgba(0,0,0,0.15)"}}>
-                <img src="https://d1ssw1t0a4j2nf.cloudfront.net/logo.png" alt="G" style={{width:"36px",height:"36px",borderRadius:"8px",display:"block"}}/>
+                <img src="/logo.png" alt="G" style={{width:"36px",height:"36px",borderRadius:"8px",display:"block"}}/>
               </div>
             </div>
             <div style={{background:"#FFF7ED",border:"1px solid #FED7AA",borderRadius:"14px",padding:"18px",marginBottom:"20px"}}>
@@ -351,7 +351,7 @@ export default function InterviewRoom({ user, onLogout, onBack, roomId }: Props)
                   <div style={{position:"absolute",bottom:"10px",right:"10px",background:emotionColor+"dd",borderRadius:"6px",padding:"3px 10px",fontSize:"11px",fontWeight:"700",color:"#000"}}>{emotion}</div>
                 </div>
                 <div style={{background:"#F8FAFC",border:"1.5px solid #E2E8F0",borderRadius:"14px",display:"flex",alignItems:"center",justifyContent:"center",height:"280px",flexDirection:"column",gap:"12px"}}>
-                  <img src="https://d1ssw1t0a4j2nf.cloudfront.net/logo.png" alt="GenuAI" style={{width:"52px",height:"52px",borderRadius:"14px"}}/>
+                  <img src="/logo.png" alt="GenuAI" style={{width:"52px",height:"52px",borderRadius:"14px"}}/>
                   <div style={{color:"#667EEA",fontSize:"14px",fontWeight:"700"}}>GenuAI Interviewer</div>
                   <div style={{color:"#94A3B8",fontSize:"12px"}}>AI Powered</div>
                   {activeRoomId&&<div style={{background:"#EEF2FF",borderRadius:"8px",padding:"6px 14px",fontSize:"12px",color:"#667EEA",fontWeight:"600"}}>Room: {activeRoomId}</div>}

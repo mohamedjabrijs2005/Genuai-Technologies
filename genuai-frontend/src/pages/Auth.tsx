@@ -69,7 +69,7 @@ export default function Auth({ onLogin }: Props) {
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "24px" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: "10px", background: "rgba(255,255,255,0.15)", backdropFilter: "blur(10px)", borderRadius: "16px", padding: "12px 20px", marginBottom: "12px" }}>
-            <img src="https://d1ssw1t0a4j2nf.cloudfront.net/logo.png" alt="GenuAI Logo" style={{ width: "44px", height: "44px", borderRadius: "10px", objectFit: "cover" }} />
+            <img src="/logo.png" alt="GenuAI Logo" style={{ width: "44px", height: "44px", borderRadius: "10px", objectFit: "cover" }} />
             <div>
               <div style={{ color: "#fff", fontWeight: "800", fontSize: "20px", letterSpacing: "-0.5px" }}>GenuAI <span style={{ fontWeight: "400", opacity: 0.8 }}>Technologies</span></div>
             </div>

@@ -535,7 +535,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
     <div style={{ minHeight: "100vh", background: "#F8FAFC", color: "#1E293B", padding: "20px", fontFamily: "sans-serif" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", background: "#fff", borderRadius: "16px", padding: "12px 20px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #E2E8F0" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <img src="https://d1ssw1t0a4j2nf.cloudfront.net/logo.png" alt="GenuAI" style={{ width: "44px", height: "44px", borderRadius: "50%", objectFit: "cover", boxShadow: "0 3px 12px rgba(0,184,124,0.4)" }} />
+          <img src="/logo.png" alt="GenuAI" style={{ width: "44px", height: "44px", borderRadius: "50%", objectFit: "cover", boxShadow: "0 3px 12px rgba(0,184,124,0.4)" }} />
           <div>
             <div style={{ fontWeight: "800", fontSize: "17px", color: "#1E293B", lineHeight: "1.1" }}>Genu<span style={{ color: "#00D4FF" }}>AI</span></div>
             <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "600", letterSpacing: "0.08em" }}>TECHNOLOGIES</div>
