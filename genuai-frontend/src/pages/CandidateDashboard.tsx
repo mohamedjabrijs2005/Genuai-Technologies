@@ -9,12 +9,13 @@ interface Props {
   user: any;
   onLogout: () => void;
   onInterview?: () => void;
+  onMock?: () => void;
   onResume?: () => void;
 }
 
 const ROLES = ["Software Engineer","AI Engineer","Data Scientist","Frontend Developer","Backend Developer","Full Stack Developer","DevOps Engineer","Product Manager"];
 
-export default function CandidateDashboard({ user, onLogout, onInterview, onResume }: Props) {
+export default function CandidateDashboard({ user, onLogout, onInterview, onResume, onMock }: Props) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [resumeText, setResumeText] = useState("");
@@ -25,6 +26,7 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
   const [atsScore, setAtsScore] = useState(0);
   const [github, setGithub] = useState("");
   const [linkedin, setLinkedin] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const [streakCount, setStreakCount] = useState(0);
   const [streakBonus, setStreakBonus] = useState(0);
   const [cheatCount, setCheatCount] = useState(0);
@@ -531,22 +533,26 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
 
   return (<>
     <div style={{ minHeight: "100vh", background: "#F8FAFC", color: "#1E293B", padding: "20px", fontFamily: "sans-serif" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-        <h1 style={{ margin: 0, color: "#00B87C" }}>Genu<span style={{ color: "#00D4FF" }}>AI</span></h1>
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <span style={{ color: "#94A3B8" }}>Welcome, {userName}</span>
-          {onResume && <button onClick={onResume} style={{ padding: "8px 16px", background: "#A78BFA", color: "#000", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>Resume Generator</button>}
-          <button onClick={fetchHistory} disabled={historyLoading} style={{ padding: "8px 16px", background: "linear-gradient(135deg,#F59E0B,#F97316)", color: "#fff", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>
-            {historyLoading ? "Loading..." : "📊 My History"}
-          </button>
-          <button onClick={fetchJobs} disabled={jobsLoading} style={{ padding: "8px 16px", background: "linear-gradient(135deg,#00B87C,#00D4AA)", color: "#fff", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>
-            {jobsLoading ? "Loading..." : "💼 Job Board"}
-          </button>
-          <button onClick={() => { setShowPractice(true); setPracticeStarted(false); setPracticeFeedback(null); setPracticeSelected(""); }} style={{ padding: "8px 16px", background: "linear-gradient(135deg,#A78BFA,#7C3AED)", color: "#fff", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>
-            🎯 Practice
-          </button>
-          {onInterview && <button onClick={onInterview} style={{ padding: "8px 16px", background: "#00D4FF", color: "#000", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>Interview Room</button>}
-          <button onClick={onLogout} style={{ padding: "8px 16px", background: "transparent", border: "1px solid #FF4444", color: "#FF4444", borderRadius: "10px", cursor: "pointer" }}>Logout</button>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", background: "#fff", borderRadius: "16px", padding: "12px 20px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #E2E8F0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <img src="https://d1ssw1t0a4j2nf.cloudfront.net/logo.png" alt="GenuAI" style={{ width: "44px", height: "44px", borderRadius: "50%", objectFit: "cover", boxShadow: "0 3px 12px rgba(0,184,124,0.4)" }} />
+          <div>
+            <div style={{ fontWeight: "800", fontSize: "17px", color: "#1E293B", lineHeight: "1.1" }}>Genu<span style={{ color: "#00D4FF" }}>AI</span></div>
+            <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "600", letterSpacing: "0.08em" }}>TECHNOLOGIES</div>
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+          {onResume && <button onClick={onResume} style={{ padding: "7px 11px", background: "#EEF2FF", color: "#667EEA", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>📄 Resume</button>}
+          <button onClick={fetchHistory} disabled={historyLoading} style={{ padding: "7px 11px", background: "#FFF7ED", color: "#F97316", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>📊 History</button>
+          <button onClick={fetchJobs} disabled={jobsLoading} style={{ padding: "7px 11px", background: "#F0FDF4", color: "#00B87C", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>💼 Jobs</button>
+          <button onClick={() => { setShowPractice(true); setPracticeStarted(false); setPracticeFeedback(null); setPracticeSelected(""); }} style={{ padding: "7px 11px", background: "#F5F3FF", color: "#7C3AED", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>🎯 Practice</button>
+          {onMock && <button onClick={onMock} style={{ padding: "7px 11px", background: "#F5F3FF", color: "#7C3AED", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>🎓 Mock</button>}
+          {onInterview && <button onClick={onInterview} style={{ padding: "7px 11px", background: "#E0F9FF", color: "#0891B2", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>🎥 Room</button>}
+          <div style={{ width: "1px", height: "24px", background: "#E2E8F0", margin: "0 2px" }} />
+          <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: profilePhoto ? "transparent" : "linear-gradient(135deg,#667eea,#764ba2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800", color: "#fff", fontSize: "14px", overflow: "hidden", border: "2px solid #E2E8F0", flexShrink: 0 }}>
+            {profilePhoto ? <img src={profilePhoto} alt="avatar" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : userName.charAt(0).toUpperCase()}
+          </div>
+          <button onClick={onLogout} style={{ padding: "7px 11px", background: "transparent", border: "1px solid #FF4444", color: "#FF4444", borderRadius: "8px", cursor: "pointer", fontSize: "12px", fontWeight: "600" }}>Logout</button>
         </div>
       </div>
 
@@ -658,26 +664,27 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
 
       {/* ── STEP 1: Profile and Resume ── */}
       {step === 1 && (
-        <div style={{ maxWidth: "680px", margin: "0 auto" }}>
-          <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "32px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}>
-            <div style={{ textAlign: "center", marginBottom: "28px" }}>
-              <div style={{ fontSize: "48px", marginBottom: "8px" }}>📋</div>
-              <h2 style={{ color: "#1E293B", margin: "0 0 8px" }}>Profile and Resume</h2>
-              <p style={{ color: "#64748B", fontSize: "14px", margin: 0 }}>Fill in your details to begin your assessment.</p>
+        <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
+
+          {/* LEFT 60% — Resume Form */}
+          <div style={{ flex: "0 0 59%", background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "28px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
+            <div style={{ marginBottom: "20px" }}>
+              <h2 style={{ color: "#1E293B", margin: "0 0 4px", fontSize: "19px" }}>📋 Profile &amp; Resume</h2>
+              <p style={{ color: "#64748B", fontSize: "13px", margin: 0 }}>Fill in your details to begin your assessment.</p>
             </div>
 
-            <label style={{ color: "#94A3B8", fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "6px" }}>Target Role</label>
-            <select value={role} onChange={e => setRole(e.target.value)} style={{ ...inp, marginBottom: "16px" }}>
+            <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>Target Role</label>
+            <select value={role} onChange={e => setRole(e.target.value)} style={{ ...inp, marginBottom: "14px" }}>
               {ROLES.map(r => <option key={r}>{r}</option>)}
             </select>
 
-            <label style={{ color: "#94A3B8", fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "6px" }}>GitHub Profile URL</label>
-            <input value={github} onChange={e => setGithub(e.target.value)} placeholder="https://github.com/yourusername" style={inp} />
+            <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>GitHub Profile URL</label>
+            <input value={github} onChange={e => setGithub(e.target.value)} placeholder="https://github.com/yourusername" style={{ ...inp, marginBottom: "14px" }} />
 
-            <label style={{ color: "#94A3B8", fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "6px" }}>LinkedIn Profile URL</label>
-            <input value={linkedin} onChange={e => setLinkedin(e.target.value)} placeholder="https://linkedin.com/in/yourprofile" style={inp} />
+            <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>LinkedIn Profile URL</label>
+            <input value={linkedin} onChange={e => setLinkedin(e.target.value)} placeholder="https://linkedin.com/in/yourprofile" style={{ ...inp, marginBottom: "14px" }} />
 
-            <label style={{ color: "#94A3B8", fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "6px" }}>Upload Resume (PDF)</label>
+            <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>Upload Resume (PDF)</label>
             <input type="file" accept=".pdf" onChange={async e => {
               const f = e.target.files?.[0];
               if (!f) return;
@@ -687,17 +694,103 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                 const res = await axios.post(API + "/upload-resume", fd);
                 setResumeText(res.data.text || "");
               } catch { setResumeText("Resume uploaded"); }
-            }} style={{ ...inp, padding: "10px" }} />
-            {resumeText && <div style={{ padding: "8px 12px", background: "#DCFCE7", borderRadius: "6px", color: "#00B87C", fontSize: "13px", marginBottom: "12px" }}>✅ PDF loaded successfully!</div>}
+            }} style={{ ...inp, padding: "10px", marginBottom: "14px" }} />
+            {resumeText && <div style={{ padding: "8px 12px", background: "#DCFCE7", borderRadius: "6px", color: "#00B87C", fontSize: "12px", marginBottom: "12px" }}>✅ PDF loaded — ready for analysis</div>}
 
-            <label style={{ color: "#94A3B8", fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "6px" }}>Your Skills (comma separated)</label>
-            <input value={skills} onChange={e => setSkills(e.target.value)} placeholder="Python, React, SQL, Machine Learning..." style={inp} />
+            <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>Your Skills (comma separated)</label>
+            <input value={skills} onChange={e => setSkills(e.target.value)} placeholder="Python, React, SQL, Machine Learning..." style={{ ...inp, marginBottom: "14px" }} />
 
-            {atsScore > 0 && <div style={{ padding: "10px", background: "#DCFCE7", borderRadius: "10px", color: "#00B87C", marginBottom: "12px", fontWeight: "700" }}>ATS Score: {atsScore}%</div>}
+            {atsScore > 0 && <div style={{ padding: "10px 14px", background: "#DCFCE7", borderRadius: "10px", color: "#00B87C", marginBottom: "12px", fontWeight: "700", fontSize: "14px" }}>🎯 ATS Score: {atsScore}%</div>}
 
             <button onClick={handleStep1} disabled={loading || !resumeText} style={{ ...btn, opacity: loading || !resumeText ? 0.6 : 1 }}>
               {loading ? "Analyzing Resume..." : "Analyze and Continue →"}
             </button>
+          </div>
+
+          {/* RIGHT 40% — Candidate Profile */}
+          <div style={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px" }}>
+
+            {/* Profile Photo + Personal Info */}
+            <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "22px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
+              <div style={{ fontSize: "13px", fontWeight: "700", color: "#1E293B", marginBottom: "16px" }}>🪪 Candidate Profile</div>
+
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "16px" }}>
+                <div
+                  onClick={() => (document.getElementById("profile-photo-input") as HTMLInputElement)?.click()}
+                  style={{ width: "96px", height: "122px", borderRadius: "12px", overflow: "hidden", border: profilePhoto ? "2px solid #00B87C" : "2px dashed #CBD5E1", background: "#F8FAFC", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "6px", marginBottom: "10px", transition: "border-color 0.2s" }}>
+                  {profilePhoto ? (
+                    <img src={profilePhoto} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <>
+                      <div style={{ fontSize: "26px" }}>📷</div>
+                      <div style={{ fontSize: "10px", color: "#94A3B8", textAlign: "center", lineHeight: "1.4", padding: "0 6px" }}>Passport size photo</div>
+                    </>
+                  )}
+                </div>
+                <input id="profile-photo-input" type="file" accept="image/*" style={{ display: "none" }} onChange={e => {
+                  const f = e.target.files?.[0];
+                  if (!f) return;
+                  setProfilePhoto(URL.createObjectURL(f));
+                }} />
+                <button
+                  onClick={() => (document.getElementById("profile-photo-input") as HTMLInputElement)?.click()}
+                  style={{ padding: "6px 16px", background: profilePhoto ? "#F0FDF4" : "linear-gradient(135deg,#667eea,#764ba2)", color: profilePhoto ? "#16A34A" : "#fff", border: profilePhoto ? "1.5px solid #BBF7D0" : "none", borderRadius: "8px", fontSize: "12px", fontWeight: "700", cursor: "pointer" }}>
+                  {profilePhoto ? "✅ Uploaded" : "Upload Photo"}
+                </button>
+              </div>
+
+              <div style={{ borderTop: "1px solid #F1F5F9", paddingTop: "14px", display: "flex", flexDirection: "column", gap: "11px" }}>
+                <div>
+                  <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "3px" }}>Full Name</div>
+                  <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "15px" }}>{userName}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "3px" }}>Email</div>
+                  <div style={{ color: "#475569", fontSize: "12px", wordBreak: "break-all" }}>{userEmail || "—"}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "5px" }}>Target Role</div>
+                  <span style={{ padding: "4px 12px", background: "#EEF2FF", borderRadius: "20px", color: "#667EEA", fontSize: "12px", fontWeight: "700" }}>{role}</span>
+                </div>
+                {github && <div>
+                  <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "3px" }}>GitHub</div>
+                  <div style={{ color: "#475569", fontSize: "11px", wordBreak: "break-all" }}>{github}</div>
+                </div>}
+                {linkedin && <div>
+                  <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "3px" }}>LinkedIn</div>
+                  <div style={{ color: "#475569", fontSize: "11px", wordBreak: "break-all" }}>{linkedin}</div>
+                </div>}
+              </div>
+            </div>
+
+            {/* Resume Analysis Card */}
+            <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "20px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
+              <div style={{ fontSize: "13px", fontWeight: "700", color: "#1E293B", marginBottom: "14px" }}>📊 Resume Analysis</div>
+              {atsScore > 0 ? (
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                    <span style={{ fontSize: "12px", color: "#64748B", fontWeight: "600" }}>ATS Match Score</span>
+                    <span style={{ fontSize: "16px", fontWeight: "800", color: atsScore >= 70 ? "#00B87C" : atsScore >= 50 ? "#F59E0B" : "#EF4444" }}>{atsScore}%</span>
+                  </div>
+                  <div style={{ height: "8px", background: "#F1F5F9", borderRadius: "4px", marginBottom: "10px" }}>
+                    <div style={{ height: "100%", width: atsScore + "%", background: atsScore >= 70 ? "linear-gradient(90deg,#00B87C,#00D4AA)" : atsScore >= 50 ? "linear-gradient(90deg,#F59E0B,#FBBF24)" : "linear-gradient(90deg,#EF4444,#F87171)", borderRadius: "4px", transition: "width 0.6s ease" }} />
+                  </div>
+                  <div style={{ fontSize: "11px", color: "#64748B" }}>{atsScore >= 70 ? "✅ Strong match for the role" : atsScore >= 50 ? "⚠️ Moderate — consider improving resume" : "❌ Low match — update your resume"}</div>
+                </div>
+              ) : (
+                <div style={{ textAlign: "center", padding: "16px 0" }}>
+                  <div style={{ fontSize: "28px", marginBottom: "8px" }}>📄</div>
+                  <div style={{ fontSize: "12px", color: "#94A3B8" }}>Upload your resume to see ATS score</div>
+                </div>
+              )}
+              {resumeText && (
+                <div style={{ marginTop: "12px", padding: "10px 12px", background: "#F8FAFC", borderRadius: "10px", border: "1px solid #E2E8F0" }}>
+                  <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", marginBottom: "4px", textTransform: "uppercase" }}>Resume Preview</div>
+                  <div style={{ fontSize: "11px", color: "#475569", lineHeight: "1.6", maxHeight: "72px", overflow: "hidden" }}>{resumeText.substring(0, 220)}...</div>
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       )}

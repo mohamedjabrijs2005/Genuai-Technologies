@@ -3,3 +3,6 @@ dist/
 .env
 *.pem
 *.tsbuildinfo
+.env.production
+.env.local
+.env

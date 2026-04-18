@@ -6,6 +6,7 @@ import CompanyDashboard from "./pages/CompanyDashboard";
 import MobileCam from "./pages/MobileCam";
 import InterviewRoom from "./pages/InterviewRoom";
 import ResumeGenerator from "./pages/ResumeGenerator";
+import MockInterview from "./pages/MockInterview";
 import EnvironmentVerifier from "./components/EnvironmentVerifier";
 
 export default function App() {
@@ -79,5 +80,6 @@ export default function App() {
   if (role === "admin")   return <AdminDashboard user={user} onLogout={handleLogout} />;
   if (role === "company") return <CompanyDashboard user={user} onLogout={handleLogout} onInterview={goToInterview} />;
   if (page === "resume")  return <ResumeGenerator user={user} onBack={() => setPage("dashboard")} />;
-  return <CandidateDashboard user={user} onLogout={handleLogout} onInterview={() => goToInterview()} onResume={() => setPage("resume")} />;
+  if (page === "mock")    return <MockInterview user={user} onBack={() => setPage("dashboard")} />;
+  return <CandidateDashboard user={user} onLogout={handleLogout} onInterview={() => goToInterview()} onResume={() => setPage("resume")} onMock={() => setPage("mock")} />;
 }
