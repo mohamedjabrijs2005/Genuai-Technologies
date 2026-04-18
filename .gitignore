@@ -56,3 +56,6 @@ genuai-complete
 .psql_history
 .sudo_as_admin_successful
 genuai-complete
+.env
+node_modules/
+dist/
