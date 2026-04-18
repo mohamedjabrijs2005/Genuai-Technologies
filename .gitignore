@@ -36,3 +36,13 @@ lambda_function.py
 .psql_history
 .sudo_as_admin_successful
 genuai-complete
+.aws/
+.cache/
+.bash_logout
+.bashrc
+.gitconfig
+.lesshst
+.profile
+.psql_history
+.sudo_as_admin_successful
+genuai-complete
