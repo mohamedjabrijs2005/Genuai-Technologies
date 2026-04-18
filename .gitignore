@@ -26,3 +26,13 @@ lambda_function.py
 
 # logs
 *.log
+.aws/
+.cache/
+.bash_logout
+.bashrc
+.gitconfig
+.lesshst
+.profile
+.psql_history
+.sudo_as_admin_successful
+genuai-complete
