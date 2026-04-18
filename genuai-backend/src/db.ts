@@ -1,6 +1,5 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 const pool = new Pool({
@@ -16,7 +15,7 @@ pool.connect((err) => {
   if (err) {
     console.error('Database connection error:', err);
   } else {
-    console.log('Connected to RDS PostgreSQL successfully!');
+    console.log('Connected to Supabase PostgreSQL successfully!');
   }
 });
 
