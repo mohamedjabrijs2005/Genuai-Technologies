@@ -1,5 +1,5 @@
 const { Pool } = require('pg');
-const pool = new Pool({ connectionString: 'postgresql://genuai_admin:GenuAI2026!db@genuai-db.c1048gqcewlj.ap-south-1.rds.amazonaws.com/genuai_db', ssl: { rejectUnauthorized: false } });
+const pool = new Pool({ connectionString: 'postgresql://postgres.yevyzrckpivqfiqamfez:GenuAI2026db@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres', ssl: { rejectUnauthorized: false } });
 
 const questions = [
   // SOFTWARE ENGINEER

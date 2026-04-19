@@ -7,7 +7,7 @@ import Module4_Hackathon from './Module4_Hackathon';
 interface Props {
   user: any;
   onLogout: () => void;
-  onInterview: () => void;
+  onInterview: (roomId?: string) => void;   // was () => void
 }
 
 type Stage = 'overview' | 'module1' | 'module2' | 'module3' | 'module4' | 'module5' | 'module6';
@@ -45,7 +45,11 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
   if (stage === 'module2') return <AMCATTest user={user?.user||user} role={role} onComplete={data => completeModule(2, data)} onTerminate={() => setStage('overview')}/>;
   if (stage === 'module3') return <Module3_SVARTest user={user} role={role} onComplete={data => completeModule(3, data)} onTerminate={() => setStage('overview')}/>;
   if (stage === 'module4') return <Module4_Hackathon user={user} role={role} onComplete={data => completeModule(4, data)}/>;
-  if (stage === 'module5') { onInterview(); return null; }
+  if (stage === 'module5') {
+  const roomId = 'room-' + (user?.user?.id || user?.id || 'candidate') + '-' + Date.now();
+  onInterview(roomId);
+  return null;
+}
 
   if (stage === 'module6') return (
     <div style={{ minHeight:'100vh', background:'#0A0A0F', padding:'32px' }}>

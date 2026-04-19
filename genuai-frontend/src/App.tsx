@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import Auth from "./pages/Auth";
-import CandidateDashboard from "./pages/CandidateDashboard";
 import CandidatePipeline from "./pages/CandidatePipeline";
 import AdminDashboard from "./pages/AdminDashboard";
 import CompanyDashboard from "./pages/CompanyDashboard";
 import MobileCam from "./pages/MobileCam";
 import InterviewRoom from "./pages/InterviewRoom";
-import ResumeGenerator from "./pages/ResumeGenerator";
-import MockInterview from "./pages/MockInterview";
 import EnvironmentVerifier from "./components/EnvironmentVerifier";
 import AMCATTest from "./pages/AMCATTest";
 
@@ -24,12 +21,12 @@ export default function App() {
 
   useEffect(() => {
     if (isMobile) return;
-    const params  = new URLSearchParams(window.location.search);
-    const room    = params.get("room");
+    const params = new URLSearchParams(window.location.search);
+    const room   = params.get("room");
     if (room) { sessionStorage.setItem("pending_room", room); window.history.replaceState({}, "", "/"); }
     const saved = localStorage.getItem("genuai_user");
     if (saved) {
-      const ud      = JSON.parse(saved);
+      const ud = JSON.parse(saved);
       setUser(ud);
       const pending = sessionStorage.getItem("pending_room");
       if (pending) {
@@ -60,8 +57,10 @@ export default function App() {
 
   const goToInterview = (rid?: string) => {
     const r = user?.user?.role || user?.role;
-    if (r === "company" || r === "admin") { setRoomId(rid || ""); setPage("interview"); }
-    else { setEnvRoomId(rid || ""); setPage("env-verify"); }
+    // generate a room id if none provided (candidate self-booking from pipeline)
+    const resolvedRoomId = rid || ("room-" + (user?.user?.id || user?.id || "candidate") + "-" + Date.now());
+    if (r === "company" || r === "admin") { setRoomId(resolvedRoomId); setPage("interview"); }
+    else { setEnvRoomId(resolvedRoomId); setPage("env-verify"); }
   };
 
   const goToAMCAT = (role: string, assessmentId?: number) => {
@@ -101,7 +100,5 @@ export default function App() {
   );
   if (role === "admin")   return <AdminDashboard user={user} onLogout={handleLogout} />;
   if (role === "company") return <CompanyDashboard user={user} onLogout={handleLogout} onInterview={goToInterview} />;
-  if (page === "resume")  return <ResumeGenerator user={user} onBack={() => setPage("dashboard")} />;
-  if (page === "mock")    return <MockInterview user={user} onBack={() => setPage("dashboard")} />;
-  return <CandidatePipeline user={user} onLogout={handleLogout} onInterview={() => goToInterview()}/>;
+  return <CandidatePipeline user={user} onLogout={handleLogout} onInterview={goToInterview} />;
 }
