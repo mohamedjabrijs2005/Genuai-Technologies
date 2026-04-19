@@ -11,11 +11,12 @@ interface Props {
   onInterview?: () => void;
   onMock?: () => void;
   onResume?: () => void;
+  onAMCAT?: (role: string, assessmentId?: number) => void;
 }
 
 const ROLES = ["Software Engineer","AI Engineer","Data Scientist","Frontend Developer","Backend Developer","Full Stack Developer","DevOps Engineer","Product Manager"];
 
-export default function CandidateDashboard({ user, onLogout, onInterview, onResume, onMock }: Props) {
+export default function CandidateDashboard({ user, onLogout, onInterview, onResume, onMock, onAMCAT }: Props) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [resumeText, setResumeText] = useState("");

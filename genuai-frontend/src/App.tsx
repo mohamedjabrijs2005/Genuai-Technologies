@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Auth from "./pages/Auth";
 import CandidateDashboard from "./pages/CandidateDashboard";
+import CandidatePipeline from "./pages/CandidatePipeline";
 import AdminDashboard from "./pages/AdminDashboard";
 import CompanyDashboard from "./pages/CompanyDashboard";
 import MobileCam from "./pages/MobileCam";
@@ -8,6 +9,7 @@ import InterviewRoom from "./pages/InterviewRoom";
 import ResumeGenerator from "./pages/ResumeGenerator";
 import MockInterview from "./pages/MockInterview";
 import EnvironmentVerifier from "./components/EnvironmentVerifier";
+import AMCATTest from "./pages/AMCATTest";
 
 export default function App() {
   const [isMobile]   = useState(() => new URLSearchParams(window.location.search).get("mobile") === "1");
@@ -17,6 +19,8 @@ export default function App() {
   const [roomId,     setRoomId]    = useState("");
   const [envRoomId,  setEnvRoomId] = useState("");
   const [autoStart,  setAutoStart] = useState(false);
+  const [amcatRole,  setAmcatRole] = useState("Software Engineer");
+  const [amcatAssessmentId, setAmcatAssessmentId] = useState<number|undefined>();
 
   useEffect(() => {
     if (isMobile) return;
@@ -60,6 +64,12 @@ export default function App() {
     else { setEnvRoomId(rid || ""); setPage("env-verify"); }
   };
 
+  const goToAMCAT = (role: string, assessmentId?: number) => {
+    setAmcatRole(role);
+    setAmcatAssessmentId(assessmentId);
+    setPage("amcat");
+  };
+
   if (isMobile && mobileRoom) return <MobileCam roomId={mobileRoom} />;
   if (!user) return <Auth onLogin={handleLogin} />;
 
@@ -77,9 +87,21 @@ export default function App() {
       onBack={() => { setPage("dashboard"); setRoomId(""); setAutoStart(false); }}
       roomId={roomId} autoStart={autoStart} />
   );
+  if (page === "amcat") return (
+    <AMCATTest
+      user={user?.user || user}
+      role={amcatRole}
+      assessmentId={amcatAssessmentId}
+      onComplete={(scores: any) => {
+        sessionStorage.setItem("amcat_scores", JSON.stringify(scores));
+        setPage("dashboard");
+      }}
+      onTerminate={() => setPage("dashboard")}
+    />
+  );
   if (role === "admin")   return <AdminDashboard user={user} onLogout={handleLogout} />;
   if (role === "company") return <CompanyDashboard user={user} onLogout={handleLogout} onInterview={goToInterview} />;
   if (page === "resume")  return <ResumeGenerator user={user} onBack={() => setPage("dashboard")} />;
   if (page === "mock")    return <MockInterview user={user} onBack={() => setPage("dashboard")} />;
-  return <CandidateDashboard user={user} onLogout={handleLogout} onInterview={() => goToInterview()} onResume={() => setPage("resume")} onMock={() => setPage("mock")} />;
+  return <CandidatePipeline user={user} onLogout={handleLogout} onInterview={() => goToInterview()}/>;
 }
