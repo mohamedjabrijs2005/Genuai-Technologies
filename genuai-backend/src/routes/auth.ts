@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as GitHubStrategy } from 'passport-github2';
+import { Strategy as LinkedInStrategy } from 'passport-linkedin-oauth2';
 import pool from '../db';
 import { Resend } from 'resend';
 
@@ -80,6 +81,37 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_ID !== 'your_githu
   }));
 }
 
+// LinkedIn Strategy
+if (process.env.LINKEDIN_CLIENT_ID && process.env.LINKEDIN_CLIENT_ID !== 'your_linkedin_client_id') {
+  passport.use(new LinkedInStrategy({
+    clientID: process.env.LINKEDIN_CLIENT_ID!,
+    clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
+    callbackURL: `${BACKEND_URL}/auth/linkedin/callback`,
+    scope: ['openid', 'profile', 'email'],
+  }, async (_accessToken: string, _refreshToken: string, profile: any, done: any) => {
+    try {
+      const email = profile.emails?.[0]?.value;
+      const name = profile.displayName || 'LinkedIn User';
+      if (!email) return done(new Error('No email from LinkedIn.'), false);
+
+      const existing = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+      let user;
+      if (existing.rows.length > 0) {
+        user = existing.rows[0];
+      } else {
+        const result = await pool.query(
+          'INSERT INTO users (name, email, password_hash, role, phone, college) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id,name,email,role',
+          [name, email, '', 'candidate', '', '']
+        );
+        user = result.rows[0];
+      }
+      return done(null, user);
+    } catch (err) {
+      return done(err, false);
+    }
+  }));
+}
+
 passport.serializeUser((user: any, done) => done(null, user));
 passport.deserializeUser((user: any, done) => done(null, user));
 
@@ -121,6 +153,21 @@ router.get('/github', (req, res, next) => {
 
 router.get('/github/callback',
   (req, res, next) => passport.authenticate('github', { session: false, failureRedirect: `${FRONTEND_URL}/?oauth_error=GitHub+auth+failed` })(req, res, next),
+  issueJwtAndRedirect
+);
+
+// ─────────────────────────────────────────────
+// LinkedIn OAuth Routes
+// ─────────────────────────────────────────────
+router.get('/linkedin', (req, res, next) => {
+  if (!process.env.LINKEDIN_CLIENT_ID || process.env.LINKEDIN_CLIENT_ID === 'your_linkedin_client_id') {
+    return res.redirect(`${FRONTEND_URL}/?oauth_error=LinkedIn+OAuth+not+configured`);
+  }
+  passport.authenticate('linkedin', { session: false })(req, res, next);
+});
+
+router.get('/linkedin/callback',
+  (req, res, next) => passport.authenticate('linkedin', { session: false, failureRedirect: `${FRONTEND_URL}/?oauth_error=LinkedIn+auth+failed` })(req, res, next),
   issueJwtAndRedirect
 );
 
