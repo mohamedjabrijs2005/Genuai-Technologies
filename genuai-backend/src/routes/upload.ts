@@ -34,7 +34,7 @@ const uploadToCloudinary = (buffer: Buffer, filename: string, mimetype: string):
   });
 };
 
-router.post('/resume', upload.single('resume'), async (req, res) => {
+router.post('/resume', upload.single('resume'), async (req: any, res: any) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
     const fileUrl = await uploadToCloudinary(req.file.buffer, req.file.originalname, req.file.mimetype);
