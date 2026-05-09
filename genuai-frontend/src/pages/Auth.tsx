@@ -89,8 +89,8 @@ export default function Auth({ onLogin }: Props) {
     window.location.href = `${API_URL}/auth/${provider}`;
   };
 
-  const inp: any = { width: "100%", padding: "11px 14px", marginBottom: "12px", background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: "10px", color: "#1E293B", fontSize: "14px", boxSizing: "border-box", outline: "none" };
-  const lbl: any = { color: "#64748B", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" };
+  const inp: any = { width: "100%", padding: "14px 18px", marginBottom: "16px", background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: "12px", color: "#1E293B", fontSize: "15px", boxSizing: "border-box", outline: "none", transition: "all 0.2s" };
+  const lbl: any = { color: "#64748B", fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "8px" };
 
   const STATS = [
     { val: "AI", label: "Powered Evaluation" },
@@ -100,7 +100,7 @@ export default function Auth({ onLogin }: Props) {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", fontFamily: "'Inter','Segoe UI',sans-serif" }}>
+    <div style={{ minHeight: "100vh", display: "flex", fontFamily: "'Inter','Segoe UI',sans-serif", overflowY: "auto" }}>
 
       {/* LEFT - Company Overview */}
       <div style={{ flex: "0 0 52%", background: "linear-gradient(160deg,#0F172A 0%,#1E3A8A 45%,#2563EB 75%,#7C3AED 100%)", display: "flex", flexDirection: "column", padding: "48px 52px", position: "relative", overflow: "hidden" }}>
@@ -178,8 +178,8 @@ export default function Auth({ onLogin }: Props) {
       </div>
 
       {/* RIGHT - Login Form */}
-      <div style={{ flex: 1, background: "#F8FAFC", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 32px", overflowY: "auto" }}>
-        <div style={{ width: "100%", maxWidth: "420px" }}>
+      <div style={{ flex: 1, background: "#F8FAFC", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 40px" }}>
+        <div style={{ width: "100%", maxWidth: "500px", padding: "20px 0" }}>
 
           {/* Logo on right panel */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "32px" }}>
@@ -268,7 +268,7 @@ export default function Auth({ onLogin }: Props) {
               )}
 
               <button onClick={handleSubmit} disabled={loading}
-                style={{ width: "100%", padding: "14px", background: loading ? "#94A3B8" : "linear-gradient(135deg,#2563EB,#7C3AED)", color: "#fff", border: "none", borderRadius: "12px", fontWeight: "800", fontSize: "15px", cursor: loading ? "not-allowed" : "pointer", marginTop: "8px", boxShadow: loading ? "none" : "0 8px 24px rgba(37,99,235,0.35)", transition: "all 0.2s", marginBottom: "20px" }}>
+                style={{ width: "100%", padding: "16px", background: loading ? "#94A3B8" : "linear-gradient(135deg,#2563EB,#7C3AED)", color: "#fff", border: "none", borderRadius: "14px", fontWeight: "800", fontSize: "16px", cursor: loading ? "not-allowed" : "pointer", marginTop: "12px", boxShadow: loading ? "none" : "0 8px 24px rgba(37,99,235,0.35)", transition: "all 0.2s", marginBottom: "24px" }}>
                 {loading ? (isLogin ? "Signing in..." : "Sending OTP...") : (isLogin ? "Sign in to GenuAI" : "Create Account")}
               </button>
             </>
@@ -282,7 +282,7 @@ export default function Auth({ onLogin }: Props) {
           </div>
 
           {/* ── OAuth Buttons ─────────────────────────────── */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
 
             {/* Continue with Google */}
             <button
@@ -290,9 +290,9 @@ export default function Auth({ onLogin }: Props) {
               onClick={() => handleOAuth("google")}
               disabled={oauthLoading !== null}
               style={{
-                width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "12px",
-                padding: "12px 16px", background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "12px",
-                color: "#1E293B", fontSize: "14px", fontWeight: "600", cursor: oauthLoading ? "not-allowed" : "pointer",
+                width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "14px",
+                padding: "14px 20px", background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "14px",
+                color: "#1E293B", fontSize: "15px", fontWeight: "600", cursor: oauthLoading ? "not-allowed" : "pointer",
                 boxShadow: "0 1px 6px rgba(0,0,0,0.06)", transition: "all 0.2s",
                 opacity: oauthLoading && oauthLoading !== "google" ? 0.5 : 1,
               }}
@@ -321,9 +321,9 @@ export default function Auth({ onLogin }: Props) {
               onClick={() => handleOAuth("github")}
               disabled={oauthLoading !== null}
               style={{
-                width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "12px",
-                padding: "12px 16px", background: "#1a1a2e", border: "1.5px solid #2d2d44", borderRadius: "12px",
-                color: "#fff", fontSize: "14px", fontWeight: "600", cursor: oauthLoading ? "not-allowed" : "pointer",
+                width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "14px",
+                padding: "14px 20px", background: "#1a1a2e", border: "1.5px solid #2d2d44", borderRadius: "14px",
+                color: "#fff", fontSize: "15px", fontWeight: "600", cursor: oauthLoading ? "not-allowed" : "pointer",
                 boxShadow: "0 1px 6px rgba(0,0,0,0.15)", transition: "all 0.2s",
                 opacity: oauthLoading && oauthLoading !== "github" ? 0.5 : 1,
               }}
@@ -349,9 +349,9 @@ export default function Auth({ onLogin }: Props) {
               onClick={() => handleOAuth("linkedin")}
               disabled={oauthLoading !== null}
               style={{
-                width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "12px",
-                padding: "12px 16px", background: "#0A66C2", border: "1.5px solid #004182", borderRadius: "12px",
-                color: "#fff", fontSize: "14px", fontWeight: "600", cursor: oauthLoading ? "not-allowed" : "pointer",
+                width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "14px",
+                padding: "14px 20px", background: "#0A66C2", border: "1.5px solid #004182", borderRadius: "14px",
+                color: "#fff", fontSize: "15px", fontWeight: "600", cursor: oauthLoading ? "not-allowed" : "pointer",
                 boxShadow: "0 1px 6px rgba(0,0,0,0.15)", transition: "all 0.2s",
                 opacity: oauthLoading && oauthLoading !== "linkedin" ? 0.5 : 1,
               }}
