@@ -20,6 +20,10 @@ const isProd = process.env.NODE_ENV === 'production' || !!process.env.RENDER;
 const FRONTEND_URL = isProd ? (process.env.FRONTEND_URL || FRONTEND_URL_PROD) : 'http://localhost:5173';
 const BACKEND_URL = isProd ? (process.env.BACKEND_URL || BACKEND_URL_PROD) : 'http://localhost:3000';
 
+console.log(`[Auth] Mode: ${isProd ? 'Production' : 'Development'}`);
+console.log(`[Auth] Backend URL: ${BACKEND_URL}`);
+console.log(`[Auth] Frontend URL: ${FRONTEND_URL}`);
+
 // ─────────────────────────────────────────────
 // Passport OAuth Setup
 // ─────────────────────────────────────────────
