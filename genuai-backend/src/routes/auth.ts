@@ -12,8 +12,13 @@ const router = express.Router();
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
 const otpStore: Record<string, { otp: string; expires: number; data: any }> = {};
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
+const FRONTEND_URL_PROD = 'https://genuai-technologies.vercel.app';
+const BACKEND_URL_PROD = 'https://genuai-backend.onrender.com';
+
+const isProd = process.env.NODE_ENV === 'production' || !!process.env.RENDER;
+
+const FRONTEND_URL = isProd ? (process.env.FRONTEND_URL || FRONTEND_URL_PROD) : 'http://localhost:5173';
+const BACKEND_URL = isProd ? (process.env.BACKEND_URL || BACKEND_URL_PROD) : 'http://localhost:3000';
 
 // ─────────────────────────────────────────────
 // Passport OAuth Setup
