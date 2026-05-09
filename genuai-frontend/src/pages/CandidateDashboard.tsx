@@ -14,7 +14,7 @@ interface Props {
   onAMCAT?: (role: string, assessmentId?: number) => void;
 }
 
-const ROLES = ["Software Engineer","AI Engineer","Data Scientist","Frontend Developer","Backend Developer","Full Stack Developer","DevOps Engineer","Product Manager"];
+const ROLES = ["Software Engineer", "AI Engineer", "Data Scientist", "Frontend Developer", "Backend Developer", "Full Stack Developer", "DevOps Engineer", "Product Manager"];
 
 export default function CandidateDashboard({ user, onLogout, onInterview, onResume, onMock, onAMCAT }: Props) {
   const [step, setStep] = useState(1);
@@ -45,8 +45,8 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoPreviewRef = useRef<HTMLVideoElement>(null);
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
-  const [videoMode, setVideoMode] = useState<"idle"|"recording"|"recorded">("idle");
-  const [pitchMode, setPitchMode] = useState<"video"|"audio"|"text">("video");
+  const [videoMode, setVideoMode] = useState<"idle" | "recording" | "recorded">("idle");
+  const [pitchMode, setPitchMode] = useState<"video" | "audio" | "text">("video");
   const [keystrokeData, setKeystrokeData] = useState<number[]>([]);
   const [klevelMode, setKlevelMode] = useState(false);
   const [klevelQuestion, setKlevelQuestion] = useState<any>(null);
@@ -65,7 +65,7 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
   const klevelMotionRef = useRef<any>(null);
   const klevelFaceRef = useRef<any>(null);
   const [klevelCamWarning, setKlevelCamWarning] = useState("");
-  const [klevelFaceStatus, setKlevelFaceStatus] = useState<"ok"|"missing">("ok");
+  const [klevelFaceStatus, setKlevelFaceStatus] = useState<"ok" | "missing">("ok");
   const [klevelMotionAlert, setKlevelMotionAlert] = useState(false);
   const [klevelCamReady, setKlevelCamReady] = useState(false);
   const [violations, setViolations] = useState(0);
@@ -104,10 +104,18 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
   const [practiceLoading, setPracticeLoading] = useState(false);
   const [practiceStats, setPracticeStats] = useState({ attempted: 0, correct: 0 });
   const [practiceStarted, setPracticeStarted] = useState(false);
+  const [availableCompanies, setAvailableCompanies] = useState<any[]>([]);
+  const [selectedCompanies, setSelectedCompanies] = useState<number[]>([]);
 
   const userName = user?.user?.name || user?.name || "Candidate";
   const userEmail = user?.user?.email || user?.email || "";
   const userId = user?.user?.id || user?.id || 1;
+
+  useEffect(() => {
+    axios.get(API + "/admin/companies")
+      .then(res => setAvailableCompanies(res.data))
+      .catch(() => { });
+  }, []);
 
   useEffect(() => {
     if (step !== 2) return;
@@ -158,11 +166,11 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
         stressRef.current = setInterval(() => {
           const data = new Uint8Array(analyser.frequencyBinCount);
           analyser.getByteFrequencyData(data);
-          const avg = data.reduce((a,b) => a+b,0) / data.length;
+          const avg = data.reduce((a, b) => a + b, 0) / data.length;
           const stress = Math.min(100, Math.round(avg * 2.5));
           setStressLevel(stress);
         }, 500);
-      } catch {}
+      } catch { }
       timerRef.current = setInterval(() => setRecTimer(t => t + 1), 1000);
     } catch { setPitch("Microphone unavailable. Please type your pitch below."); }
   };
@@ -175,7 +183,7 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
     if (stressAnalyserRef.current) {
       const data = new Uint8Array(stressAnalyserRef.current.frequencyBinCount);
       stressAnalyserRef.current.getByteFrequencyData(data);
-      const avg = data.reduce((a,b) => a+b,0) / data.length;
+      const avg = data.reduce((a, b) => a + b, 0) / data.length;
       const stress = Math.min(100, Math.round(avg * 2.5));
       setStressLevel(stress);
       setStressStatus(stress > 70 ? "High stress detected — take a deep breath!" : stress > 40 ? "Moderate nervousness — you are doing well!" : "Calm and confident voice detected!");
@@ -189,8 +197,8 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
       setKeystrokeData(prev => {
         const updated = [...prev, gap];
         if (updated.length >= 10) {
-          const avg = updated.reduce((a,b) => a+b, 0) / updated.length;
-          const variance = updated.reduce((a,b) => a + Math.pow(b-avg,2), 0) / updated.length;
+          const avg = updated.reduce((a, b) => a + b, 0) / updated.length;
+          const variance = updated.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / updated.length;
           if (avg < 80) setKeystrokeAlert("Typing speed too fast — possible AI/paste detected!");
           else if (variance < 100) setKeystrokeAlert("Unusually uniform typing — possible automated input!");
           else setKeystrokeAlert("");
@@ -210,7 +218,7 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
       klevelStreamRef.current = stream;
       if (klevelVideoRef.current) {
         klevelVideoRef.current.srcObject = stream;
-        klevelVideoRef.current.play().catch(() => {});
+        klevelVideoRef.current.play().catch(() => { });
       }
       setKlevelCamReady(true);
 
@@ -225,8 +233,8 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
         const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
         let skin = 0;
         for (let i = 0; i < data.length; i += 16) {
-          const r = data[i], g = data[i+1], b = data[i+2];
-          if (r > 60 && g > 30 && r > b && Math.abs(r-g) > 5) skin++;
+          const r = data[i], g = data[i + 1], b = data[i + 2];
+          if (r > 60 && g > 30 && r > b && Math.abs(r - g) > 5) skin++;
         }
         const ratio = skin / (canvas.width * canvas.height / 16);
         if (ratio < 0.005) {
@@ -512,7 +520,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
         improvement_plan: aiRes.data.improvement_plan || ["Practice more coding challenges", "Improve system design knowledge", "Work on communication skills"],
       };
 
-      await submitAssessment({ user_id: userId, resume_text: resumeText, skills, ats_score: atsScore, resume_score: atsScore, interview_score: final.interview_score || 70, test_score: final.test_score, consistency_score: final.consistency_score, overall_score: final.overall_score, authenticity_score: final.authenticity_score, verdict: final.verdict, triangle_status: final.triangle_status, salary_min: final.salary_min, salary_max: final.salary_max, improvement_plan: JSON.stringify(final.improvement_plan || []) });
+      await submitAssessment({ user_id: userId, resume_text: resumeText, skills, ats_score: atsScore, resume_score: atsScore, interview_score: final.interview_score || 70, test_score: final.test_score, consistency_score: final.consistency_score, overall_score: final.overall_score, authenticity_score: final.authenticity_score, verdict: final.verdict, triangle_status: final.triangle_status, salary_min: final.salary_min, salary_max: final.salary_max, improvement_plan: JSON.stringify(final.improvement_plan || []), company_ids: selectedCompanies });
       await sendEmail({ candidateEmail: userEmail, candidateName: userName, overallScore: final.overall_score, verdict: final.verdict, salaryMin: final.salary_min, salaryMax: final.salary_max, atsScore: final.ats_score || atsScore, testScore: final.test_score || 0, interviewScore: final.interview_score || 0, authenticityScore: final.authenticity_score || 0, triangleStatus: final.triangle_status || "", klevelScore: klevelResult?.total_score || 0, klevelTier: klevelResult?.tier || "", role, keyStrengths: final.key_strengths || [], improvementPlan: final.improvement_plan || [] });
       setResult(final);
       setStep(4);
@@ -559,8 +567,8 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
 
       <div style={{ display: "flex", gap: "8px", marginBottom: "28px" }}>
         {["Profile and Resume", "Skill Test", "Voice Pitch", "Results"].map((s, i) => (
-          <div key={i} style={{ flex: 1, padding: "10px", textAlign: "center", borderRadius: "10px", background: step === i+1 ? "linear-gradient(135deg, #667eea, #764ba2)" : step > i+1 ? "#DCFCE7" : "#F1F5F9", color: step === i+1 ? "#fff" : step > i+1 ? "#16A34A" : "#94A3B8", fontSize: "13px", fontWeight: "bold" }}>
-            {i+1}. {s}
+          <div key={i} style={{ flex: 1, padding: "10px", textAlign: "center", borderRadius: "10px", background: step === i + 1 ? "linear-gradient(135deg, #667eea, #764ba2)" : step > i + 1 ? "#DCFCE7" : "#F1F5F9", color: step === i + 1 ? "#fff" : step > i + 1 ? "#16A34A" : "#94A3B8", fontSize: "13px", fontWeight: "bold" }}>
+            {i + 1}. {s}
           </div>
         ))}
       </div>
@@ -584,11 +592,11 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                 <div style={{ marginBottom: "20px" }}>
                   <label style={{ color: "#64748B", fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "8px" }}>Select Role to Practice</label>
                   <select value={practiceRole} onChange={e => setPracticeRole(e.target.value)} style={{ width: "100%", padding: "12px", border: "1.5px solid #E2E8F0", borderRadius: "10px", fontSize: "14px", color: "#1E293B", background: "#F8FAFC" }}>
-                    {["Software Engineer","AI Engineer","Data Scientist","Frontend Developer","Backend Developer","Full Stack Developer","DevOps Engineer","Product Manager"].map(r => <option key={r}>{r}</option>)}
+                    {["Software Engineer", "AI Engineer", "Data Scientist", "Frontend Developer", "Backend Developer", "Full Stack Developer", "DevOps Engineer", "Product Manager"].map(r => <option key={r}>{r}</option>)}
                   </select>
                 </div>
                 <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginBottom: "24px", flexWrap: "wrap" }}>
-                  {[["K1","Easy","#22C55E"],["K2","Medium","#F59E0B"],["K3","Hard","#F97316"],["K4","Advanced","#EF4444"],["K5","Expert","#8B5CF6"]].map(([k,l,c]) => (
+                  {[["K1", "Easy", "#22C55E"], ["K2", "Medium", "#F59E0B"], ["K3", "Hard", "#F97316"], ["K4", "Advanced", "#EF4444"], ["K5", "Expert", "#8B5CF6"]].map(([k, l, c]) => (
                     <div key={k} style={{ padding: "8px 14px", background: c + "15", border: "1.5px solid " + c + "44", borderRadius: "10px", fontSize: "12px", color: c, fontWeight: "700" }}>{k} {l}</div>
                   ))}
                 </div>
@@ -641,7 +649,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                     ) : (
                       <div>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "16px" }}>
-                          {["A","B","C","D"].map(opt => (
+                          {["A", "B", "C", "D"].map(opt => (
                             <button key={opt} onClick={() => setPracticeSelected(opt)}
                               style={{ padding: "13px 16px", borderRadius: "12px", border: "1.5px solid " + (practiceSelected === opt ? "#A78BFA" : "#E2E8F0"), background: practiceSelected === opt ? "#F5F3FF" : "#F8FAFC", color: practiceSelected === opt ? "#7C3AED" : "#1E293B", fontWeight: practiceSelected === opt ? "700" : "400", cursor: "pointer", textAlign: "left", fontSize: "14px" }}>
                               <span style={{ fontWeight: "700", marginRight: "8px" }}>{opt}.</span>
@@ -700,6 +708,23 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
 
             <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>Your Skills (comma separated)</label>
             <input value={skills} onChange={e => setSkills(e.target.value)} placeholder="Python, React, SQL, Machine Learning..." style={{ ...inp, marginBottom: "14px" }} />
+
+            <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>🏢 Select Companies You're Interested In</label>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "14px" }}>
+              {availableCompanies.length === 0 ? (
+                <div style={{ gridColumn: "span 2", fontSize: "12px", color: "#64748B", fontStyle: "italic", padding: "10px", background: "#F8FAFC", borderRadius: "8px" }}>No companies available at the moment.</div>
+              ) : (
+                availableCompanies.map(c => (
+                  <div key={c.id} onClick={() => setSelectedCompanies(prev => prev.includes(c.id) ? prev.filter(id => id !== c.id) : [...prev, c.id])}
+                    style={{ padding: "10px", border: "1.5px solid " + (selectedCompanies.includes(c.id) ? "#667EEA" : "#E2E8F0"), borderRadius: "8px", background: selectedCompanies.includes(c.id) ? "#EEF2FF" : "#F8FAFC", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", transition: "all 0.2s" }}>
+                    <div style={{ width: "16px", height: "16px", borderRadius: "4px", border: "1.5px solid " + (selectedCompanies.includes(c.id) ? "#667EEA" : "#CBD5E1"), background: selectedCompanies.includes(c.id) ? "#667EEA" : "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {selectedCompanies.includes(c.id) && <span style={{ color: "#fff", fontSize: "10px", fontWeight: "bold" }}>✓</span>}
+                    </div>
+                    <span style={{ fontSize: "13px", color: selectedCompanies.includes(c.id) ? "#4338CA" : "#1E293B", fontWeight: selectedCompanies.includes(c.id) ? "700" : "500" }}>{c.name}</span>
+                  </div>
+                ))
+              )}
+            </div>
 
             {atsScore > 0 && <div style={{ padding: "10px 14px", background: "#DCFCE7", borderRadius: "10px", color: "#00B87C", marginBottom: "12px", fontWeight: "700", fontSize: "14px" }}>🎯 ATS Score: {atsScore}%</div>}
 
@@ -860,7 +885,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                   <div style={{ fontSize: "36px", fontWeight: "800", color: "#667EEA" }}>{bestScore.overall_score}%</div>
                   <div style={{ fontSize: "13px", color: "#64748B" }}>{new Date(bestScore.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
                 </div>
-                {([["ATS", bestScore.ats_score, "#00B87C"], ["Test", bestScore.test_score, "#F59E0B"], ["Interview", bestScore.interview_score, "#A78BFA"], ["Authenticity", bestScore.authenticity_score, "#00D4FF"]] as [string,number,string][]).map(([l, v, c]) => (
+                {([["ATS", bestScore.ats_score, "#00B87C"], ["Test", bestScore.test_score, "#F59E0B"], ["Interview", bestScore.interview_score, "#A78BFA"], ["Authenticity", bestScore.authenticity_score, "#00D4FF"]] as [string, number, string][]).map(([l, v, c]) => (
                   <div key={l} style={{ textAlign: "center", minWidth: "70px" }}>
                     <div style={{ fontSize: "11px", color: "#94A3B8", marginBottom: "4px" }}>{l}</div>
                     <div style={{ fontSize: "24px", fontWeight: "800", color: c }}>{v ?? "—"}%</div>
@@ -882,7 +907,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                       <div style={{ fontSize: "12px", color: "#64748B", marginTop: "2px" }}>{new Date(h.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
                     </div>
                     <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                      {([["ATS", h.ats_score, "#00B87C"], ["Test", h.test_score, "#F59E0B"], ["Interview", h.interview_score, "#A78BFA"]] as [string,number,string][]).map(([l, v, c]) => (
+                      {([["ATS", h.ats_score, "#00B87C"], ["Test", h.test_score, "#F59E0B"], ["Interview", h.interview_score, "#A78BFA"]] as [string, number, string][]).map(([l, v, c]) => (
                         <div key={l} style={{ textAlign: "center" }}>
                           <div style={{ fontSize: "10px", color: "#94A3B8" }}>{l}</div>
                           <div style={{ fontSize: "15px", fontWeight: "700", color: c }}>{v ?? "—"}%</div>
@@ -900,19 +925,19 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
       {/* ── K-LEVEL MODAL (single render, no duplicate) ── */}
       {klevelMode && klevelQuestion && !klevelResult && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "#fff", zIndex: 1000, display: "flex", overflow: "hidden" }}>
-          
+
           {/* LEFT SIDE - LIVE CAMERA (takes 35% of screen) */}
           <div style={{ width: "35%", height: "100%", position: "relative", background: "#0f172a", borderRight: "1px solid #E2E8F0" }}>
             <video id="klevel-active-marker" ref={klevelVideoRef} autoPlay muted playsInline style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scaleX(-1)", filter: klevelFaceStatus === "missing" ? "sepia(1) hue-rotate(-50deg) saturate(3)" : "none", transition: "filter 0.3s" }} />
             <canvas ref={klevelCanvasRef} style={{ display: "none" }} width={320} height={240} />
-            
+
             {/* Red flash for violations */}
             <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(220, 38, 38, 0.3)", opacity: klevelFaceStatus === "missing" || klevelMotionAlert ? 1 : 0, transition: "opacity 0.2s", zIndex: 1, pointerEvents: "none" }} />
-            
+
             <div style={{ position: "absolute", bottom: "24px", left: "24px", right: "24px", background: klevelFaceStatus === "missing" ? "#FEF2F2" : klevelMotionAlert ? "#FFF7ED" : "rgba(15,23,42,0.8)", border: "1.5px solid " + (klevelFaceStatus === "missing" ? "#FECACA" : klevelMotionAlert ? "#FED7AA" : "rgba(255,255,255,0.2)"), borderRadius: "14px", padding: "16px", display: "flex", flexDirection: "column", gap: "6px", backdropFilter: "blur(10px)", zIndex: 2 }}>
-              {klevelFaceStatus === "missing" ? <div style={{ color: "#DC2626", fontWeight: "800", fontSize: "15px", textAlign: "center" }}>⚠️ Face Not Detected</div> : 
-               klevelMotionAlert ? <div style={{ color: "#EA580C", fontWeight: "800", fontSize: "15px", textAlign: "center" }}>⚠️ Suspicious Movement</div> : 
-               <div style={{ color: "#38bdf8", fontSize: "15px", fontWeight: "800", textAlign: "center" }}>🔒 Proctoring Camera Active</div>}
+              {klevelFaceStatus === "missing" ? <div style={{ color: "#DC2626", fontWeight: "800", fontSize: "15px", textAlign: "center" }}>⚠️ Face Not Detected</div> :
+                klevelMotionAlert ? <div style={{ color: "#EA580C", fontWeight: "800", fontSize: "15px", textAlign: "center" }}>⚠️ Suspicious Movement</div> :
+                  <div style={{ color: "#38bdf8", fontSize: "15px", fontWeight: "800", textAlign: "center" }}>🔒 Proctoring Camera Active</div>}
               <div style={{ color: klevelFaceStatus === "missing" ? "#DC2626" : "#cbd5e1", fontSize: "13px", textAlign: "center", fontWeight: "600" }}>Violations: {violations}/3 · 3 strikes = Auto-Terminate</div>
             </div>
           </div>
@@ -925,8 +950,8 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                 <div>
                   <div style={{ fontSize: "14px", color: "#64748B", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: "800" }}>Adaptive K-Level Skill Test</div>
                   <div style={{ display: "flex", gap: "8px" }}>
-                    {[1,2,3,4,5].map(l => (
-                      <div key={l} style={{ width: "48px", height: "8px", borderRadius: "4px", background: l < klevelLevel ? "#00B87C" : l === klevelLevel ? "#667EEA" : "#F1F5F9", transition: "background 0.3s" }}/>
+                    {[1, 2, 3, 4, 5].map(l => (
+                      <div key={l} style={{ width: "48px", height: "8px", borderRadius: "4px", background: l < klevelLevel ? "#00B87C" : l === klevelLevel ? "#667EEA" : "#F1F5F9", transition: "background 0.3s" }} />
                     ))}
                   </div>
                 </div>
@@ -960,7 +985,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "30px" }}>
-                  {(["A","B","C","D"] as const).map(opt => (
+                  {(["A", "B", "C", "D"] as const).map(opt => (
                     <button key={opt} onClick={() => setKlevelSelected(opt)}
                       style={{ padding: "20px 24px", borderRadius: "16px", border: "2px solid " + (klevelSelected === opt ? "#667EEA" : "#E2E8F0"), background: klevelSelected === opt ? "#EEF2FF" : "#fff", color: klevelSelected === opt ? "#4338CA" : "#1E293B", fontWeight: klevelSelected === opt ? "800" : "600", cursor: "pointer", textAlign: "left", fontSize: "16px", transition: "all 0.2s" }}>
                       <span style={{ display: "inline-block", width: "28px", height: "28px", background: klevelSelected === opt ? "#667EEA" : "#F1F5F9", color: klevelSelected === opt ? "#fff" : "#64748B", borderRadius: "50%", textAlign: "center", lineHeight: "28px", marginRight: "14px", fontSize: "13px", fontWeight: "800" }}>{opt}</span>
@@ -993,10 +1018,10 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
             )}
             <div style={{ color: "#64748B", fontSize: "14px", marginTop: "12px", marginBottom: "20px" }}>{klevelResult.message}</div>
             <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginBottom: "24px" }}>
-              {[1,2,3,4,5].map(l => (
+              {[1, 2, 3, 4, 5].map(l => (
                 <div key={l} style={{ textAlign: "center" }}>
                   <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: l < klevelLevel ? "#00B87C" : l === klevelLevel ? "#667EEA" : "#E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: "700", fontSize: "13px", margin: "0 auto 4px" }}>K{l}</div>
-                  <div style={{ fontSize: "10px", color: "#94A3B8" }}>{["","Easy","Mid","Hard","Adv","Expert"][l]}</div>
+                  <div style={{ fontSize: "10px", color: "#94A3B8" }}>{["", "Easy", "Mid", "Hard", "Adv", "Expert"][l]}</div>
                 </div>
               ))}
             </div>
@@ -1025,7 +1050,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
             <h2 style={{ color: "#1E293B", margin: "0 0 8px" }}>Adaptive K-Level Skill Test</h2>
             <p style={{ color: "#64748B", fontSize: "14px", margin: "0 0 24px" }}>Questions get progressively harder. Answer correctly to advance levels.</p>
             <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "28px", flexWrap: "wrap" }}>
-              {([["K1","Easy","#22C55E","1"],["K2","Medium","#F59E0B","2"],["K3","Hard","#F97316","3"],["K4","Advanced","#EF4444","4"],["K5","Expert","#8B5CF6","5"]] as string[][]).map(([k,label,color,marks]) => (
+              {([["K1", "Easy", "#22C55E", "1"], ["K2", "Medium", "#F59E0B", "2"], ["K3", "Hard", "#F97316", "3"], ["K4", "Advanced", "#EF4444", "4"], ["K5", "Expert", "#8B5CF6", "5"]] as string[][]).map(([k, label, color, marks]) => (
                 <div key={k} style={{ background: color + "15", border: "1.5px solid " + color + "44", borderRadius: "12px", padding: "10px 16px", minWidth: "80px" }}>
                   <div style={{ fontWeight: "800", color: color, fontSize: "16px" }}>{k}</div>
                   <div style={{ color: "#64748B", fontSize: "11px" }}>{label}</div>
@@ -1066,7 +1091,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
               </div>
             )}
             <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
-              {(["video","audio","text"] as const).map(m => (
+              {(["video", "audio", "text"] as const).map(m => (
                 <button key={m} onClick={() => setPitchMode(m)}
                   style={{ flex: 1, padding: "10px", borderRadius: "10px", border: "1.5px solid " + (pitchMode === m ? "#667EEA" : "#E2E8F0"), background: pitchMode === m ? "#EEF2FF" : "#F8FAFC", color: pitchMode === m ? "#667EEA" : "#64748B", fontWeight: pitchMode === m ? "700" : "400", cursor: "pointer", fontSize: "13px" }}>
                   {m === "video" ? "📹 Video" : m === "audio" ? "🎙️ Audio" : "✍️ Text"}
@@ -1165,6 +1190,17 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                 ⚠️ {result.cheat_count} cheat event{result.cheat_count > 1 ? "s" : ""} detected — score adjusted
               </div>
             )}
+            {selectedCompanies.length > 0 && (
+              <div style={{ marginTop: "16px", padding: "16px", background: "#F0FDF4", border: "1.5px solid #BBF7D0", borderRadius: "16px", textAlign: "left" }}>
+                <div style={{ fontWeight: "700", color: "#16A34A", fontSize: "14px", marginBottom: "8px" }}>✅ Report Automatically Shared</div>
+                <div style={{ fontSize: "13px", color: "#15803D" }}>Your assessment results have been directly sent to:</div>
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "10px" }}>
+                  {availableCompanies.filter(c => selectedCompanies.includes(c.id)).map(c => (
+                    <span key={c.id} style={{ padding: "6px 12px", background: "#fff", border: "1px solid #22C55E", borderRadius: "8px", color: "#16A34A", fontSize: "12px", fontWeight: "700", boxShadow: "0 2px 4px rgba(34,197,94,0.1)" }}>🏢 {c.name}</span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ── Score Breakdown Grid ── */}
@@ -1177,7 +1213,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                 ["🎤 Interview / Pitch", result.interview_score, "#A78BFA"],
                 ["✅ Authenticity", result.authenticity_score, "#00D4FF"],
                 ["🔁 Consistency", result.consistency_score, "#F59E0B"],
-              ] as [string,number,string][]).map(([label, val, color]) => (
+              ] as [string, number, string][]).map(([label, val, color]) => (
                 <div key={label} style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: "12px", padding: "14px" }}>
                   <div style={{ fontSize: "12px", color: "#94A3B8", marginBottom: "6px" }}>{label}</div>
                   <div style={{ fontSize: "26px", fontWeight: "800", color }}>{val ?? "—"}%</div>
@@ -1239,7 +1275,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                 ["Resume", result.ats_score, "#00B87C"],
                 ["Test", result.test_score, "#667EEA"],
                 ["Interview", result.interview_score, "#A78BFA"],
-              ] as [string,number,string][]).map(([l, v, c]) => (
+              ] as [string, number, string][]).map(([l, v, c]) => (
                 <div key={l} style={{ textAlign: "center", background: "#F8FAFC", borderRadius: "12px", padding: "14px", border: "1.5px solid #E2E8F0" }}>
                   <div style={{ fontSize: "11px", color: "#94A3B8", marginBottom: "4px" }}>{l}</div>
                   <div style={{ fontSize: "26px", fontWeight: "800", color: c }}>{v ?? "—"}%</div>

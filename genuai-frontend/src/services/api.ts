@@ -21,6 +21,8 @@ API.interceptors.request.use((config) => {
 // Auth
 export const register = (data: any) => API.post("/auth/register", data);
 export const login = (data: any) => API.post("/auth/login", data);
+export const sendOtp = (data: any) => API.post("/auth/send-otp", data);
+export const verifyOtp = (data: any) => API.post("/auth/verify-otp", data);
 
 // Assessment
 export const submitAssessment = (data: any) => API.post('/assessment/submit', data);

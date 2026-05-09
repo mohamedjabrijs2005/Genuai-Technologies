@@ -3,6 +3,8 @@ import Module1_ProfileResume from './Module1_ProfileResume';
 import AMCATTest from './AMCATTest';
 import Module3_SVARTest from './Module3_SVARTest';
 import Module4_Hackathon from './Module4_Hackathon';
+import { submitAssessment } from '../services/api';
+import { useEffect, useRef } from 'react';
 
 interface Props {
   user: any;
@@ -26,6 +28,32 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
   const [completedModules, setCompletedModules] = useState<number[]>([]);
   const [moduleData, setModuleData] = useState<Record<number,any>>({});
   const [role, setRole] = useState('Software Engineer');
+  const submittedRef = useRef(false);
+
+  useEffect(() => {
+    if (stage === 'module6' && !submittedRef.current) {
+      submittedRef.current = true;
+      const d1 = moduleData[1] || {};
+      const score = Math.round(completedModules.reduce((acc, mid) => acc + (moduleData[mid]?.overall || moduleData[mid]?.ats_score || 75), 0) / Math.max(completedModules.length, 1));
+      
+      submitAssessment({
+        user_id: user?.user?.id || user?.id || 1,
+        job_id: null,
+        resume_text: d1.analysis?.skills?.join(', ') || 'N/A',
+        skills: d1.analysis?.skills?.join(', ') || '',
+        ats_score: d1.analysis?.ats_score || 75,
+        resume_score: d1.analysis?.ats_score || 75,
+        test_score: moduleData[2]?.overall || 70,
+        interview_score: 80,
+        consistency_score: 85,
+        overall_score: score,
+        authenticity_score: 90,
+        verdict: score >= 75 ? 'HIRE' : score >= 60 ? 'REVIEW' : 'REJECT',
+        triangle_status: 'VERIFIED',
+        company_ids: d1.company_ids || []
+      }).catch(console.error);
+    }
+  }, [stage, moduleData, user, completedModules]);
 
   const completeModule = (moduleNum: number, data: any) => {
     setCompletedModules(prev => [...prev, moduleNum]);

@@ -15,6 +15,7 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
   const [stats, setStats] = useState<any>(null);
   const [jobs, setJobs] = useState<any[]>([]);
   const [interviews, setInterviews] = useState<any[]>([]);
+  const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterVerdict, setFilterVerdict] = useState("ALL");
@@ -70,6 +71,10 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
         const iRes = await axios.get(API + "/interviews/company/" + companyId, { headers });
         setInterviews(iRes.data?.interviews || []);
       } catch { setInterviews([]); }
+      try {
+        const aRes = await axios.get(API + "/admin/candidates/for-company/" + companyId, { headers });
+        setApplications(aRes.data || []);
+      } catch { setApplications([]); }
     } catch (e) { console.error(e); }
     setLoading(false);
   };
@@ -185,14 +190,14 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
 
       {/* Tabs */}
       <div style={{ display: "flex", gap: "8px", marginBottom: "24px", flexWrap: "wrap", background: "#fff", padding: "8px", borderRadius: "16px", border: "1.5px solid #E2E8F0", boxShadow: "0 2px 12px rgba(0,0,0,0.02)" }}>
-        {["overview", "leaderboard", "all candidates", "job postings", "interviews", "intelligence", "compare"].map(t => (
+        {["overview", "leaderboard", "all candidates", "applications", "job postings", "interviews", "intelligence", "compare"].map(t => (
           <button key={t} onClick={() => setTab(t)} style={{ padding: "10px 16px", background: tab === t ? "linear-gradient(135deg, #00B87C, #00D4AA)" : "transparent", color: tab === t ? "#fff" : "#64748B", border: "none", borderRadius: "12px", textTransform: "capitalize", fontWeight: "700", fontSize: "13px", cursor: "pointer", boxShadow: tab === t ? "0 4px 12px rgba(0,184,124,0.3)" : "none", transition: "all 0.2s" }}>{t}</button>
         ))}
         <button onClick={loadData} style={{ padding: "10px 16px", background: "#F1F5F9", border: "none", borderRadius: "12px", color: "#64748B", marginLeft: "auto", fontWeight: "700", fontSize: "13px", cursor: "pointer" }}>↻ Refresh</button>
       </div>
 
       {/* Search and Filter */}
-      {(tab === "leaderboard" || tab === "all candidates") && (
+      {(tab === "leaderboard" || tab === "all candidates" || tab === "applications") && (
         <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
           <input placeholder="Search by name or email..." value={search} onChange={e => setSearch(e.target.value)} style={{ ...inp, flex: 1, marginBottom: 0 }} />
           <select value={filterVerdict} onChange={e => setFilterVerdict(e.target.value)} style={{ ...inp, marginBottom: 0, width: "160px" }}>
@@ -343,6 +348,60 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
                       </tr>
                     );
                   })}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Applications Tab */}
+          {tab === "applications" && (
+            <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
+              <div style={{ padding: "20px", borderBottom: "1.5px solid #E2E8F0", background: "#F8FAFC" }}>
+                <h3 style={{ margin: 0, color: "#1E293B", fontSize: "18px" }}>📩 Direct Applications</h3>
+                <p style={{ margin: "4px 0 0", color: "#64748B", fontSize: "13px" }}>Candidates who explicitly selected your company during their assessment.</p>
+              </div>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+                <thead style={{ background: "#F1F5F9", color: "#64748B", textAlign: "left", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  <tr>
+                    <th style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0" }}>Candidate</th>
+                    <th style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0" }}>Role</th>
+                    <th style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0" }}>Score</th>
+                    <th style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0" }}>ATS / Test / Int</th>
+                    <th style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0" }}>Status</th>
+                    <th style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0" }}>Verdict</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {applications.filter(c => c.name?.toLowerCase().includes(search.toLowerCase()) || c.email?.toLowerCase().includes(search.toLowerCase())).filter(c => filterVerdict === "ALL" || c.verdict === filterVerdict).map((c, i) => {
+                    const vc = (v: string) => v === "HIRE" ? "#00B87C" : v === "REVIEW" ? "#F59E0B" : v === "REJECT" ? "#FF4444" : "#94A3B8";
+                    return (
+                      <tr key={c.id} style={{ borderBottom: "1px solid #E2E8F0", background: i % 2 === 0 ? "#fff" : "#FAFAFA", transition: "background 0.2s" }}>
+                        <td style={{ padding: "16px" }}>
+                          <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "14px" }}>{c.name}</div>
+                          <div style={{ color: "#94A3B8", fontSize: "12px" }}>{c.email}</div>
+                          <a href={c.resume_url} target="_blank" rel="noreferrer" style={{ fontSize: "11px", color: "#667EEA", textDecoration: "none", marginTop: "4px", display: "inline-block", fontWeight: "600" }}>📄 View Resume</a>
+                        </td>
+                        <td style={{ padding: "16px", color: "#475569", fontWeight: "500" }}>{c.role || "Software Engineer"}</td>
+                        <td style={{ padding: "16px" }}>
+                          <span style={{ fontSize: "18px", fontWeight: "900", color: vc(c.verdict) }}>{c.overall_score}%</span>
+                        </td>
+                        <td style={{ padding: "16px", color: "#64748B" }}>{c.ats_score}% / {c.test_score}% / {c.interview_score}%</td>
+                        <td style={{ padding: "16px" }}>
+                          {c.triangle_status === "FLAGGED" ? <span style={{ color: "#FF4444", background: "#FEF2F2", padding: "4px 8px", borderRadius: "8px", fontSize: "11px", fontWeight: "700" }}>🚩 FLAGGED</span> : <span style={{ color: "#00B87C", background: "#F0FDF4", padding: "4px 8px", borderRadius: "8px", fontSize: "11px", fontWeight: "700" }}>✅ VERIFIED</span>}
+                        </td>
+                        <td style={{ padding: "16px" }}>
+                          <span style={{ display: "inline-block", padding: "6px 12px", borderRadius: "10px", background: vc(c.verdict) + "22", color: vc(c.verdict), fontWeight: "800", fontSize: "12px" }}>{c.verdict}</span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {applications.length === 0 && (
+                    <tr>
+                      <td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "#64748B" }}>
+                        No candidates have directly applied to your company yet.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

@@ -3,7 +3,20 @@ import pool from '../db';
 
 const router = express.Router();
 
-// Submit assessment
+// Auto-migrate: ensure company_ids column exists on assessments table
+(async () => {
+  try {
+    await pool.query(`
+      ALTER TABLE assessments 
+      ADD COLUMN IF NOT EXISTS company_ids INTEGER[] DEFAULT '{}'
+    `);
+    console.log('✅ assessments.company_ids column ready');
+  } catch (err: any) {
+    console.warn('Migration warning (company_ids):', err.message);
+  }
+})();
+
+// Submit assessment (now includes company_ids)
 router.post('/submit', async (req, res) => {
   try {
     const {
@@ -11,7 +24,7 @@ router.post('/submit', async (req, res) => {
       ats_score, resume_score, interview_score, test_score,
       consistency_score, overall_score, authenticity_score,
       verdict, triangle_status, salary_min, salary_max,
-      improvement_plan
+      improvement_plan, company_ids
     } = req.body;
 
     const result = await pool.query(
@@ -20,16 +33,17 @@ router.post('/submit', async (req, res) => {
         ats_score, resume_score, interview_score, test_score,
         consistency_score, overall_score, authenticity_score,
         verdict, triangle_status, salary_min, salary_max,
-        improvement_plan
+        improvement_plan, company_ids
       ) VALUES (
-        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18
       ) RETURNING *`,
       [
         user_id, job_id, resume_text, resume_url, skills,
         ats_score, resume_score, interview_score, test_score,
         consistency_score, overall_score, authenticity_score,
         verdict, triangle_status, salary_min, salary_max,
-        improvement_plan
+        improvement_plan,
+        company_ids && company_ids.length > 0 ? company_ids : []
       ]
     );
     res.json(result.rows[0]);

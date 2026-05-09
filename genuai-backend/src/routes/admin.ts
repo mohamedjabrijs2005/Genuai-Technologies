@@ -74,6 +74,36 @@ router.get('/export-csv', async (req, res) => {
   }
 });
 
+// List all registered company accounts (for candidate company-selector)
+router.get('/companies', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, name, email FROM users WHERE role = 'company' ORDER BY name ASC`
+    );
+    res.json(result.rows);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Get candidates who explicitly targeted a specific company
+router.get('/candidates/for-company/:companyId', async (req, res) => {
+  try {
+    const { companyId } = req.params;
+    const result = await pool.query(
+      `SELECT a.*, u.name, u.email
+       FROM assessments a
+       JOIN users u ON a.user_id = u.id
+       WHERE $1 = ANY(a.company_ids)
+       ORDER BY a.overall_score DESC`,
+      [companyId]
+    );
+    res.json(result.rows);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 // Role-wise performance analytics
 router.get('/role-analytics', async (req, res) => {
   try {
