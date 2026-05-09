@@ -13,7 +13,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
 const otpStore: Record<string, { otp: string; expires: number; data: any }> = {};
 const FRONTEND_URL_PROD = 'https://genuai-technologies.vercel.app';
-const BACKEND_URL_PROD = 'https://genuai-backend.onrender.com';
+const BACKEND_URL_PROD = 'https://genuai-technologies.onrender.com';
 
 const isProd = process.env.NODE_ENV === 'production' || !!process.env.RENDER;
 
