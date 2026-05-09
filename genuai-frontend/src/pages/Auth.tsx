@@ -17,6 +17,9 @@ export default function Auth({ onLogin }: Props) {
 
   // ── Detect OAuth redirect from backend ──────────────────────────
   useEffect(() => {
+    // Reset OAuth loading state when returning to the page
+    setOauthLoading(null);
+
     const params = new URLSearchParams(window.location.search);
     const oauthUser = params.get("oauth_user");
     const oauthError = params.get("oauth_error");
