@@ -20,6 +20,10 @@ export default function Auth({ onLogin }: Props) {
     // Reset OAuth loading state when returning to the page
     setOauthLoading(null);
 
+    // Handle Back-Forward Cache (BFcache) to clear spinner on back button
+    const handlePageShow = () => setOauthLoading(null);
+    window.addEventListener("pageshow", handlePageShow);
+
     const params = new URLSearchParams(window.location.search);
     const oauthUser = params.get("oauth_user");
     const oauthError = params.get("oauth_error");
@@ -27,6 +31,7 @@ export default function Auth({ onLogin }: Props) {
     if (oauthError) {
       setError(decodeURIComponent(oauthError));
       window.history.replaceState({}, document.title, window.location.pathname);
+      window.removeEventListener("pageshow", handlePageShow);
       return;
     }
 
@@ -40,6 +45,8 @@ export default function Auth({ onLogin }: Props) {
         setError("OAuth login failed. Please try again.");
       }
     }
+
+    return () => window.removeEventListener("pageshow", handlePageShow);
   }, [onLogin]);
 
   const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }));
