@@ -10,7 +10,7 @@ import { Resend } from 'resend';
 
 const router = express.Router();
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM_EMAIL = process.env.FROM_EMAIL || 'genuai@resend.dev';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'GenuAI Technologies <onboarding@resend.dev>';
 const otpStore: Record<string, { otp: string; expires: number; data: any }> = {};
 const FRONTEND_URL_PROD = 'https://genuai-technologies.vercel.app';
 const BACKEND_URL_PROD = 'https://genuai-technologies.onrender.com';
@@ -200,15 +200,21 @@ router.post('/send-otp', async (req, res) => {
       to: email,
       subject: 'GenuAI Technologies — Email Verification OTP',
       html: `
-        <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#ffffff;color:#0F172A;padding:32px;border-radius:12px;border:1px solid #E2E8F0;box-shadow:0 4px 16px rgba(0,0,0,0.05)">
-          <h2 style="color:#2563EB">Genu<span style="color:#7C3AED">AI</span> Technologies</h2>
-          <p>Hello <strong>${name}</strong>,</p>
-          <p>Your email verification OTP is:</p>
-          <div style="background:#F8FAFC;border:2px solid #2563EB;border-radius:8px;padding:20px;text-align:center;margin:20px 0">
-            <span style="font-size:36px;font-weight:bold;color:#2563EB;letter-spacing:8px">${otp}</span>
+        <div style="font-family:'Segoe UI',sans-serif;max-width:550px;margin:0 auto;background:#ffffff;color:#1E293B;padding:40px;border-radius:16px;border:1px solid #E2E8F0;box-shadow:0 10px 25px rgba(0,0,0,0.05)">
+          <div style="text-align:center;margin-bottom:32px;">
+            <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:12px;background:#EFF6FF;color:#2563EB;font-size:24px;margin-bottom:16px;">✉️</div>
+            <h2 style="color:#0F172A;margin:0;font-size:24px;font-weight:800;">Verify Your Email</h2>
           </div>
-          <p style="color:#64748B">This OTP expires in 10 minutes.</p>
-          <p style="color:#94A3B8;font-size:12px;border-top:1px solid #E2E8F0;padding-top:16px;margin-top:24px">Powered by GenuAI Technologies · AI-Powered Recruitment Intelligence</p>
+          <p style="font-size:16px;line-height:1.6;margin-top:0;">Hello <strong>${name}</strong>,</p>
+          <p style="font-size:16px;line-height:1.6;color:#475569;">Welcome to GenuAI! To complete your registration and securely verify your email address, please use the 6-digit code below:</p>
+          <div style="background:#F8FAFC;border:2px dashed #CBD5E1;border-radius:12px;padding:24px;text-align:center;margin:32px 0">
+            <span style="font-size:42px;font-weight:900;color:#2563EB;letter-spacing:12px;font-family:monospace;">${otp}</span>
+          </div>
+          <p style="font-size:14px;color:#64748B;line-height:1.6;">This secure code will expire in exactly <strong>10 minutes</strong>. If you did not sign up for a GenuAI account, please ignore this email.</p>
+          <div style="border-top:1px solid #E2E8F0;padding-top:24px;margin-top:32px;text-align:center;">
+            <h3 style="color:#2563EB;margin:0 0 8px;font-size:16px;font-weight:800;">Genu<span style="color:#7C3AED">AI</span> Technologies</h3>
+            <p style="color:#94A3B8;font-size:12px;margin:0;">Next-Generation Recruitment Intelligence</p>
+          </div>
         </div>
       `,
     });
@@ -289,15 +295,21 @@ router.post('/forgot-password-otp', async (req, res) => {
       to: email,
       subject: 'GenuAI Technologies — Password Reset OTP',
       html: `
-        <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#ffffff;color:#0F172A;padding:32px;border-radius:12px;border:1px solid #E2E8F0;box-shadow:0 4px 16px rgba(0,0,0,0.05)">
-          <h2 style="color:#2563EB">Genu<span style="color:#7C3AED">AI</span> Technologies</h2>
-          <p>Hello <strong>${user.name}</strong>,</p>
-          <p>You requested a password reset. Your OTP is:</p>
-          <div style="background:#F8FAFC;border:2px solid #2563EB;border-radius:8px;padding:20px;text-align:center;margin:20px 0">
-            <span style="font-size:36px;font-weight:bold;color:#2563EB;letter-spacing:8px">${otp}</span>
+        <div style="font-family:'Segoe UI',sans-serif;max-width:550px;margin:0 auto;background:#ffffff;color:#1E293B;padding:40px;border-radius:16px;border:1px solid #E2E8F0;box-shadow:0 10px 25px rgba(0,0,0,0.05)">
+          <div style="text-align:center;margin-bottom:32px;">
+            <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:12px;background:#EFF6FF;color:#2563EB;font-size:24px;margin-bottom:16px;">🔐</div>
+            <h2 style="color:#0F172A;margin:0;font-size:24px;font-weight:800;">Password Reset Request</h2>
           </div>
-          <p style="color:#64748B">This OTP expires in 10 minutes. If you didn't request this, you can safely ignore this email.</p>
-          <p style="color:#94A3B8;font-size:12px;border-top:1px solid #E2E8F0;padding-top:16px;margin-top:24px">Powered by GenuAI Technologies</p>
+          <p style="font-size:16px;line-height:1.6;margin-top:0;">Hello <strong>${user.name}</strong>,</p>
+          <p style="font-size:16px;line-height:1.6;color:#475569;">We received a request to reset your password for your GenuAI account. To securely complete this process, please use the 6-digit verification code below:</p>
+          <div style="background:#F8FAFC;border:2px dashed #CBD5E1;border-radius:12px;padding:24px;text-align:center;margin:32px 0">
+            <span style="font-size:42px;font-weight:900;color:#2563EB;letter-spacing:12px;font-family:monospace;">${otp}</span>
+          </div>
+          <p style="font-size:14px;color:#64748B;line-height:1.6;">This secure code will expire in exactly <strong>10 minutes</strong>. If you did not initiate this password reset, please ignore this email or contact support if you have concerns.</p>
+          <div style="border-top:1px solid #E2E8F0;padding-top:24px;margin-top:32px;text-align:center;">
+            <h3 style="color:#2563EB;margin:0 0 8px;font-size:16px;font-weight:800;">Genu<span style="color:#7C3AED">AI</span> Technologies</h3>
+            <p style="color:#94A3B8;font-size:12px;margin:0;">Next-Generation Recruitment Intelligence</p>
+          </div>
         </div>
       `,
     });
