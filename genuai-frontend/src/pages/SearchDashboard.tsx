@@ -122,12 +122,12 @@ function JobBoard({ user, onBack, initialFilter = 'All' }: { user: any, onBack: 
 
 // The Hub (6 cards)
 const TOOLS = [
-  { id:'browse', icon:'💼', title:'Browse Jobs', desc:'Explore all open roles and opportunities across our network.', color:'#F59E0B', bg:'#FFFBEB', tags:['All Roles','Full-time','Contract'], ready:true, filter:'All' },
-  { id:'intern', icon:'🎓', title:'Internships', desc:'Find internship programs and entry-level positions for students.', color:'#8B5CF6', bg:'#F5F3FF', tags:['Students','Graduates','Summer'], ready:true, filter:'Internships' },
-  { id:'location', icon:'📍', title:'Filter by Location', desc:'Search opportunities in specific cities, states, or regions.', color:'#EF4444', bg:'#FEF2F2', tags:['On-site','Relocation','Local'], ready:true, filter:'On-site' },
-  { id:'remote', icon:'🖥️', title:'Remote / Hybrid', desc:'Discover flexible work options that fit your desired lifestyle.', color:'#3B82F6', bg:'#EFF6FF', tags:['Work from Anywhere','Hybrid'], ready:true, filter:'Remote' },
-  { id:'role', icon:'🏷️', title:'Filter by Role', desc:'Browse jobs by specific engineering, design, or product roles.', color:'#10B981', bg:'#ECFDF5', tags:['Frontend','Backend','Design'], ready:true, filter:'All' },
-  { id:'saved', icon:'⭐', title:'Saved Jobs', desc:"View and apply to the opportunities you've bookmarked.", color:'#F59E0B', bg:'#FFFBEB', tags:['Favorites','Tracked'], ready:false, filter:'All' },
+  { id:'network', icon:'🤝', title:'My Requirements', desc:'Connect with professionals, share updates, and build your profile.', color:'#0A66C2', bg:'#EFF6FF', tags:['LinkedIn Style','Networking'], ready:false, filter:'All' },
+  { id:'jobs', icon:'🌍', title:'Global Job Board', desc:'Search thousands of job listings across top platforms.', color:'#2563EB', bg:'#EFF6FF', tags:['Indeed / NaukriGulf','Jobs'], ready:true, filter:'All' },
+  { id:'events', icon:'🏆', title:'Competitions & Events', desc:'Participate in hackathons and university case studies.', color:'#F59E0B', bg:'#FFFBEB', tags:['Unstop Platform','Hackathons'], ready:false, filter:'All' },
+  { id:'pm', icon:'🧠', title:'PM Internship Allocation', desc:'AI-based matching scheme for Product Management internships.', color:'#8B5CF6', bg:'#F5F3FF', tags:['AI Matching','Product Management'], ready:false, filter:'All' },
+  { id:'news', icon:'📰', title:'Tech & Company News', desc:'Stay updated with the latest in tech, business, and startups.', color:'#10B981', bg:'#ECFDF5', tags:['Tech News','Company Updates'], ready:true, filter:'News' },
+  { id:'chat', icon:'💬', title:'Instant Connect', desc:'Real-time messenger to connect with recruiters and peers.', color:'#25D366', bg:'#ECFDF5', tags:['WhatsApp Style','Messaging'], ready:true, filter:'Chat' },
 ];
 
 export default function SearchDashboard({ user, onBack }: Props) {
@@ -171,7 +171,75 @@ export default function SearchDashboard({ user, onBack }: Props) {
       </nav>
 
       {openTool ? (
-        <JobBoard user={user} onBack={() => setOpenTool(null)} initialFilter={openTool.filter} />
+        openTool.id === 'news' ? (
+          <div style={{ maxWidth:'800px', margin:'0 auto', padding:'40px 24px' }}>
+            <button onClick={() => setOpenTool(null)} style={{ background:"none", border:"none", color:"#64748B", fontSize:"14px", cursor:"pointer", marginBottom:"24px", fontWeight:"700" }}>← Back to Search Hub</button>
+            <div style={{ background:'linear-gradient(135deg,#10B981,#059669)', borderRadius:'24px', padding:'32px', color:'#fff', marginBottom:'32px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+              <div>
+                <h1 style={{ fontSize:'28px', fontWeight:'900', margin:'0 0 8px' }}>Tech & Company News</h1>
+                <p style={{ fontSize:'14px', opacity:0.9, margin:0 }}>The latest updates relevant to your career.</p>
+              </div>
+              <div style={{ fontSize:'48px' }}>📰</div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {[
+                { tag: "AI Trends", title: "OpenAI Announces New Advanced Reasoning Models", src: "TechCrunch", time: "2 hours ago" },
+                { tag: "Hiring", title: "Top 10 Tech Companies Actively Hiring Remote Product Managers", src: "Forbes", time: "5 hours ago" },
+                { tag: "Startups", title: "GenuAI Technologies Secures Funding to Revolutionize AI Recruitment", src: "Tech Radar", time: "1 day ago" },
+                { tag: "Development", title: "React 19 Release: What Frontend Engineers Need to Know", src: "Dev.to", time: "2 days ago" },
+              ].map((news, i) => (
+                <div key={i} style={{ padding: "20px", background: "#fff", border: "1px solid #E2E8F0", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "10px", transition: "transform 0.2s, box-shadow 0.2s", cursor: "pointer" }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.05)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
+                  <span style={{ fontSize: "12px", fontWeight: "700", color: "#10B981", background: "#10B98115", padding: "4px 10px", borderRadius: "6px", alignSelf: "flex-start" }}>{news.tag}</span>
+                  <h4 style={{ margin: 0, color: "#1E293B", fontSize: "18px" }}>{news.title}</h4>
+                  <div style={{ fontSize: "13px", color: "#94A3B8" }}>{news.src} • {news.time}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : openTool.id === 'chat' ? (
+          <div style={{ maxWidth:'1000px', margin:'0 auto', padding:'40px 24px', height:'85vh', display:'flex', flexDirection:'column' }}>
+            <button onClick={() => setOpenTool(null)} style={{ background:"none", border:"none", color:"#64748B", fontSize:"14px", cursor:"pointer", marginBottom:"24px", fontWeight:"700", alignSelf:'flex-start' }}>← Back to Search Hub</button>
+            <div style={{ display: "flex", flex:1, border: "1.5px solid #E2E8F0", borderRadius: "16px", overflow: "hidden", background:'#fff', boxShadow:'0 10px 30px rgba(0,0,0,0.05)' }}>
+              <div style={{ width: "280px", background: "#F8FAFC", borderRight: "1.5px solid #E2E8F0", display: "flex", flexDirection: "column" }}>
+                <div style={{ padding: "20px", borderBottom: "1.5px solid #E2E8F0", fontWeight: "800", color: "#1E293B", fontSize: "16px", background:'#fff' }}>Instant Connect</div>
+                <div style={{ padding: "16px", background: "#E2E8F055", display: "flex", alignItems: "center", gap: "12px", borderBottom: "1px solid #E2E8F0", cursor: "pointer" }}>
+                  <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "linear-gradient(135deg,#25D366,#128C7E)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: "800", fontSize: "14px" }}>HR</div>
+                  <div style={{ flex: 1, overflow: "hidden" }}>
+                    <div style={{ fontSize: "14px", fontWeight: "700", color: "#1E293B" }}>GenuAI Recruiting</div>
+                    <div style={{ fontSize: "12px", color: "#64748B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Are you available for an...</div>
+                  </div>
+                </div>
+              </div>
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#F1F5F9" }}>
+                <div style={{ padding: "20px", background: "#fff", borderBottom: "1.5px solid #E2E8F0", display: "flex", alignItems: "center", gap: "12px" }}>
+                  <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "linear-gradient(135deg,#25D366,#128C7E)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: "800", fontSize: "14px" }}>HR</div>
+                  <div>
+                    <div style={{ fontWeight: "800", color: "#1E293B", fontSize: "16px" }}>GenuAI Recruiting</div>
+                    <div style={{ fontSize: "12px", color: "#25D366", fontWeight: "700" }}>Online</div>
+                  </div>
+                </div>
+                <div style={{ flex: 1, padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <div style={{ alignSelf: "center", background: "#E2E8F0", color: "#64748B", padding: "6px 14px", borderRadius: "12px", fontSize: "11px", fontWeight: "700" }}>Today</div>
+                  <div style={{ alignSelf: "flex-start", background: "#fff", padding: "14px 18px", borderRadius: "16px 16px 16px 0", maxWidth: "70%", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E2E8F0" }}>
+                    <div style={{ fontSize: "15px", color: "#1E293B", lineHeight: "1.5" }}>Hi {name}! We reviewed your impressive assessment score and would love to schedule a technical interview. Are you available sometime tomorrow?</div>
+                    <div style={{ fontSize: "11px", color: "#94A3B8", marginTop: "8px", textAlign: "right" }}>10:42 AM</div>
+                  </div>
+                </div>
+                <div style={{ padding: "20px", background: "#fff", borderTop: "1.5px solid #E2E8F0", display: "flex", gap: "16px", alignItems: "center" }}>
+                  <button style={{ background: "transparent", border: "none", fontSize: "24px", cursor: "pointer", opacity: 0.6 }}>📎</button>
+                  <input placeholder="Type your message..." style={{ flex: 1, padding: "14px 20px", border: "1.5px solid #E2E8F0", borderRadius: "24px", outline: "none", fontSize: "15px", background: "#F8FAFC" }} />
+                  <button style={{ background: "#25D366", color: "#fff", border: "none", borderRadius: "50%", width: "48px", height: "48px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 4px 12px rgba(37,211,102,0.3)" }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <JobBoard user={user} onBack={() => setOpenTool(null)} initialFilter={openTool.filter} />
+        )
       ) : (
         <div style={{ maxWidth:'1100px', margin:'0 auto', padding:'48px 24px' }}>
           <div style={{ marginBottom:'40px' }}>
