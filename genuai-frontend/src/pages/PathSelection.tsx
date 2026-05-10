@@ -70,16 +70,16 @@ export default function PathSelection({ user, onSelect, onLogout }: Props) {
             style={{ background: hovered === 'search' ? 'linear-gradient(135deg,#F59E0B,#EF4444)' : '#fff', border: hovered === 'search' ? '2px solid transparent' : '2px solid #E5E7EB', borderRadius: '24px', padding: '32px 28px', cursor: 'pointer', transition: 'all 0.25s ease', boxShadow: hovered === 'search' ? '0 20px 60px rgba(245,158,11,0.3)' : '0 2px 12px rgba(0,0,0,0.06)', transform: hovered === 'search' ? 'translateY(-4px)' : 'none' }}
           >
             <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: hovered === 'search' ? 'rgba(255,255,255,0.2)' : '#FFFBEB', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '26px', marginBottom: '20px' }}>🔍</div>
-            <h2 style={{ fontSize: '20px', fontWeight: '800', color: hovered === 'search' ? '#fff' : '#0F172A', margin: '0 0 10px', letterSpacing: '-0.4px' }}>Search Path</h2>
-            <p style={{ fontSize: '13px', color: hovered === 'search' ? 'rgba(255,255,255,0.8)' : '#64748B', lineHeight: '1.7', margin: '0 0 20px' }}>Explore jobs and internships filtered by location, work mode, and role. Find your perfect opportunity.</p>
+            <h2 style={{ fontSize: '20px', fontWeight: '800', color: hovered === 'search' ? '#fff' : '#0F172A', margin: '0 0 10px', letterSpacing: '-0.4px' }}>Search Hub</h2>
+            <p style={{ fontSize: '13px', color: hovered === 'search' ? 'rgba(255,255,255,0.8)' : '#64748B', lineHeight: '1.7', margin: '0 0 20px' }}>Explore jobs, connect with professionals, participate in hackathons, and stay updated with the latest news.</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {['💼 Browse Jobs', '🎓 Internships', '📍 Filter by Location', '🖥️ Remote / Hybrid', '🏷️ Filter by Role', '⭐ Saved Jobs'].map((item, i) => (
+              {['🤝 Professional Network', '🌍 Global Job Board', '🏆 Competitions & Events', '🧠 PM Internships', '📰 Tech & Company News', '💬 Instant Connect'].map((item, i) => (
                 <div key={i} style={{ background: hovered === 'search' ? 'rgba(255,255,255,0.15)' : '#FFF7ED', borderRadius: '8px', padding: '7px 12px', fontSize: '12px', fontWeight: '600', color: hovered === 'search' ? '#fff' : '#92400E' }}>{item}</div>
               ))}
             </div>
             <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{ flex: 1, height: '2px', background: hovered === 'search' ? 'rgba(255,255,255,0.3)' : '#E5E7EB' }} />
-              <span style={{ fontSize: '13px', fontWeight: '700', color: hovered === 'search' ? '#fff' : '#F59E0B' }}>Browse Jobs →</span>
+              <span style={{ fontSize: '13px', fontWeight: '700', color: hovered === 'search' ? '#fff' : '#F59E0B' }}>Enter Search Hub →</span>
             </div>
           </div>
 

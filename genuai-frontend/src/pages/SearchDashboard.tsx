@@ -122,7 +122,7 @@ function JobBoard({ user, onBack, initialFilter = 'All' }: { user: any, onBack: 
 
 // The Hub (6 cards)
 const TOOLS = [
-  { id:'network', icon:'🤝', title:'My Requirements', desc:'Connect with professionals, share updates, and build your profile.', color:'#0A66C2', bg:'#EFF6FF', tags:['LinkedIn Style','Networking'], ready:false, filter:'All' },
+  { id:'network', icon:'🤝', title:'Professional Network', desc:'Connect with professionals, share updates, and build your profile.', color:'#0A66C2', bg:'#EFF6FF', tags:['LinkedIn Style','Networking'], ready:false, filter:'All' },
   { id:'jobs', icon:'🌍', title:'Global Job Board', desc:'Search thousands of job listings across top platforms.', color:'#2563EB', bg:'#EFF6FF', tags:['Indeed / NaukriGulf','Jobs'], ready:true, filter:'All' },
   { id:'events', icon:'🏆', title:'Competitions & Events', desc:'Participate in hackathons and university case studies.', color:'#F59E0B', bg:'#FFFBEB', tags:['Unstop Platform','Hackathons'], ready:false, filter:'All' },
   { id:'pm', icon:'🧠', title:'PM Internship Allocation', desc:'AI-based matching scheme for Product Management internships.', color:'#8B5CF6', bg:'#F5F3FF', tags:['AI Matching','Product Management'], ready:false, filter:'All' },
