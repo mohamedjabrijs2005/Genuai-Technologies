@@ -268,8 +268,8 @@ export default function Auth({ onLogin }: Props) {
             </div>
           )}
 
-          {error && <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: "10px", padding: "11px 14px", marginBottom: "16px", color: "#DC2626", fontSize: "13px", fontWeight: "600" }}>! {error}</div>}
-          {success && <div style={{ background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: "10px", padding: "11px 14px", marginBottom: "16px", color: "#16A34A", fontSize: "13px", fontWeight: "600" }}>✓ {success}</div>}
+          {error && <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: "10px", padding: "11px 14px", marginBottom: "16px", color: "#DC2626", fontSize: "13px", fontWeight: "600" }}>{error} !</div>}
+          {success && <div style={{ background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: "10px", padding: "11px 14px", marginBottom: "16px", color: "#16A34A", fontSize: "13px", fontWeight: "600" }}>{success} ✓</div>}
 
           {showOtp ? (
             <div style={{ animation: "fadeIn 0.3s ease" }}>
