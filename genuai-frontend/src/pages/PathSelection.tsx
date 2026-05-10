@@ -17,7 +17,7 @@ export default function PathSelection({ user, onSelect, onLogout }: Props) {
           </div>
           <div>
             <div style={{ fontWeight: '800', fontSize: '16px', color: '#0F172A', letterSpacing: '-0.3px' }}>GenuAI Technologies</div>
-            <div style={{ fontSize: '11px', color: '#64748B', fontWeight: '500' }}>Assessment Platform</div>
+            <div style={{ fontSize: '11px', color: '#64748B', fontWeight: '500' }}>AI-Powered Recruitment Intelligence Platform</div>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -106,7 +106,7 @@ export default function PathSelection({ user, onSelect, onLogout }: Props) {
         </div>
 
         {/* Footer note */}
-        <p style={{ textAlign: 'center', color: '#94A3B8', fontSize: '13px', marginTop: '40px' }}>© 2025 GenuAI Technologies · AI-Powered Recruitment Platform</p>
+        <p style={{ textAlign: 'center', color: '#94A3B8', fontSize: '13px', marginTop: '40px' }}>© 2025 GenuAI Technologies · AI-Powered Recruitment Intelligence Platform</p>
       </div>
     </div>
   );

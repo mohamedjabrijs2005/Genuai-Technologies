@@ -171,7 +171,7 @@ export default function Auth({ onLogin }: Props) {
           </div>
           <div>
             <div style={{ color: "#fff", fontWeight: "900", fontSize: "24px", letterSpacing: "-0.5px" }}>GenuAI <span style={{ fontWeight: "400", opacity: 0.7, fontSize: "18px" }}>Technologies</span></div>
-            <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "11px", letterSpacing: "1px", fontWeight: "600", marginTop: "3px" }}>AI-POWERED RECRUITMENT PLATFORM</div>
+            <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "11px", letterSpacing: "1px", fontWeight: "600", marginTop: "3px" }}>AI-POWERED RECRUITMENT INTELLIGENCE PLATFORM</div>
           </div>
         </div>
 
@@ -245,7 +245,7 @@ export default function Auth({ onLogin }: Props) {
             </div>
             <div>
               <div style={{ fontWeight: "900", fontSize: "16px", color: "#0F172A" }}>GenuAI Technologies</div>
-              <div style={{ fontSize: "11px", color: "#94A3B8", fontWeight: "500" }}>Assessment Platform</div>
+              <div style={{ fontSize: "11px", color: "#94A3B8", fontWeight: "500" }}>AI-Powered Recruitment Intelligence Platform</div>
             </div>
           </div>
 

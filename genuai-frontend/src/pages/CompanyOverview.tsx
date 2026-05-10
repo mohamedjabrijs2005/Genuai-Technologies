@@ -25,7 +25,7 @@ export default function CompanyOverview({ user, onStartTest }: Props) {
           </div>
           <div>
             <div style={{ fontWeight:'800', fontSize:'16px', color:'#0F172A' }}>GenuAI Technologies</div>
-            <div style={{ fontSize:'11px', color:'#64748B' }}>AI Recruitment Platform</div>
+            <div style={{ fontSize:'11px', color:'#64748B' }}>AI-Powered Recruitment Intelligence Platform</div>
           </div>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
@@ -40,7 +40,7 @@ export default function CompanyOverview({ user, onStartTest }: Props) {
           <img src="/logo.png" alt="GenuAI" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
         </div>
         <h1 style={{ fontSize:'42px', fontWeight:'900', color:'#fff', margin:'0 0 12px', letterSpacing:'-1px' }}>GenuAI Technologies</h1>
-        <p style={{ fontSize:'17px', color:'rgba(255,255,255,0.8)', margin:'0 0 8px' }}>AI-Powered End-to-End Recruitment Assessment Platform</p>
+        <p style={{ fontSize:'17px', color:'rgba(255,255,255,0.8)', margin:'0 0 8px' }}>AI-Powered Recruitment Intelligence Platform</p>
         <p style={{ fontSize:'14px', color:'rgba(255,255,255,0.6)', maxWidth:'560px', margin:'0 auto' }}>
           We transform traditional hiring by evaluating candidates across six dimensions — skills, communication, problem-solving, aptitude, and personality — all powered by cutting-edge AI.
         </p>
