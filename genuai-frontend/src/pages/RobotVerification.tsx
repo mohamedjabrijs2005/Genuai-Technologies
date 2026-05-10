@@ -107,24 +107,28 @@ export default function RobotVerification({ onVerified }: Props) {
       <div style={{ background:"#fff", borderRadius:"16px", overflow:"hidden", boxShadow:"0 25px 60px rgba(0,0,0,0.35)", maxWidth:"420px", width:"100%", position:"relative", zIndex:1 }}>
 
         {/* Header */}
-        <div style={{ background:"linear-gradient(135deg,#2563EB,#7C3AED)", padding:"12px 16px", display:"flex", alignItems:"center", gap:"10px" }}>
-          <div style={{ width:"32px", height:"32px", borderRadius:"8px", overflow:"hidden", flexShrink:0 }}>
-            <img src="/logo.png" alt="GenuAI" style={{ width:"32px", height:"32px", objectFit:"cover" }} />
+        <div style={{ background:"linear-gradient(135deg,#2563EB,#7C3AED)", padding:"8px 12px", display:"flex", alignItems:"center", gap:"8px" }}>
+          <div style={{ width:"24px", height:"24px", borderRadius:"6px", overflow:"hidden", flexShrink:0 }}>
+            <img src="/logo.png" alt="GenuAI" style={{ width:"24px", height:"24px", objectFit:"cover" }} />
           </div>
           <div>
-            <div style={{ color:"#fff", fontWeight:"800", fontSize:"14px" }}>GenuAI Technologies</div>
-            <div style={{ color:"rgba(255,255,255,0.7)", fontSize:"10px" }}>Identity Verification</div>
+            <div style={{ color:"#fff", fontWeight:"800", fontSize:"12px", lineHeight:"1" }}>GenuAI</div>
+            <div style={{ color:"rgba(255,255,255,0.7)", fontSize:"9px", marginTop:"2px" }}>Identity Verification</div>
           </div>
-          <div style={{ marginLeft:"auto", background:"rgba(255,255,255,0.15)", borderRadius:"20px", padding:"4px 10px", color:"#fff", fontSize:"10px", fontWeight:"600" }}>🔒 Secure</div>
+          <div style={{ marginLeft:"auto", background:"rgba(255,255,255,0.15)", borderRadius:"20px", padding:"3px 8px", color:"#fff", fontSize:"9px", fontWeight:"600" }}>🔒 Secure</div>
         </div>
 
         {/* Challenge prompt */}
-        <div style={{ background:"#F8FAFC", borderBottom:"1px solid #E2E8F0", padding:"12px 16px" }}>
-          <div style={{ fontSize:"12px", color:"#64748B", fontWeight:"600", marginBottom:"2px" }}>Select all images with a</div>
-          <div style={{ fontSize:"18px", fontWeight:"900", color:"#1E293B" }}>
-            {cat.emoji} {cat.label}
+        <div style={{ background:"#F8FAFC", borderBottom:"1px solid #E2E8F0", padding:"8px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={{ fontSize:"11px", color:"#64748B", fontWeight:"600" }}>Select all images with a</div>
+            <div style={{ fontSize:"16px", fontWeight:"900", color:"#1E293B", marginTop:"2px" }}>
+              {cat.label}
+            </div>
           </div>
-          <div style={{ fontSize:"11px", color:"#94A3B8", marginTop:"2px" }}>Click all matching squares, then click verify</div>
+          <div style={{ fontSize: "28px" }}>
+            {cat.emoji}
+          </div>
         </div>
 
         {/* Image Grid */}
@@ -160,17 +164,17 @@ export default function RobotVerification({ onVerified }: Props) {
         )}
 
         {/* Footer controls */}
-        <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:"10px", borderTop:"1px solid #E2E8F0", background:"#FAFAFA" }}>
-          <button onClick={refresh} title="New challenge" style={{ width:"36px", height:"36px", border:"1.5px solid #E2E8F0", borderRadius:"50%", background:"#fff", cursor:"pointer", fontSize:"16px", display:"flex", alignItems:"center", justifyContent:"center" }}>🔄</button>
+        <div style={{ padding:"8px 12px", display:"flex", alignItems:"center", gap:"10px", borderTop:"1px solid #E2E8F0", background:"#FAFAFA" }}>
+          <button onClick={refresh} title="New challenge" style={{ width:"32px", height:"32px", border:"1.5px solid #E2E8F0", borderRadius:"50%", background:"#fff", cursor:"pointer", fontSize:"14px", display:"flex", alignItems:"center", justifyContent:"center" }}>🔄</button>
           <div style={{ flex:1, display:"flex", alignItems:"center", gap:"6px" }}>
-            <img src="https://www.gstatic.com/recaptcha/api2/logo_48.png" alt="" style={{ width:"28px", height:"28px" }} />
+            <img src="https://www.gstatic.com/recaptcha/api2/logo_48.png" alt="" style={{ width:"24px", height:"24px" }} />
             <div>
-              <div style={{ fontSize:"10px", fontWeight:"700", color:"#64748B" }}>GenuAI CAPTCHA</div>
-              <div style={{ fontSize:"9px", color:"#94A3B8" }}>Privacy · Terms</div>
+              <div style={{ fontSize:"9px", fontWeight:"700", color:"#64748B" }}>GenuAI CAPTCHA</div>
+              <div style={{ fontSize:"8px", color:"#94A3B8" }}>Privacy · Terms</div>
             </div>
           </div>
           <button onClick={verify} disabled={selected.size === 0 || status === "success"}
-            style={{ padding:"10px 24px", background: selected.size > 0 ? "linear-gradient(135deg,#2563EB,#7C3AED)" : "#E2E8F0", color: selected.size > 0 ? "#fff" : "#94A3B8", border:"none", borderRadius:"8px", fontWeight:"800", fontSize:"14px", cursor: selected.size > 0 ? "pointer" : "not-allowed", boxShadow: selected.size > 0 ? "0 4px 14px rgba(37,99,235,0.35)" : "none", transition:"all 0.2s" }}>
+            style={{ padding:"8px 20px", background: selected.size > 0 ? "linear-gradient(135deg,#2563EB,#7C3AED)" : "#E2E8F0", color: selected.size > 0 ? "#fff" : "#94A3B8", border:"none", borderRadius:"6px", fontWeight:"800", fontSize:"13px", cursor: selected.size > 0 ? "pointer" : "not-allowed", boxShadow: selected.size > 0 ? "0 4px 14px rgba(37,99,235,0.35)" : "none", transition:"all 0.2s" }}>
             Verify
           </button>
         </div>
