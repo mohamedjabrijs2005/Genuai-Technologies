@@ -107,21 +107,21 @@ export default function RobotVerification({ onVerified }: Props) {
       <div style={{ background:"#fff", borderRadius:"16px", overflow:"hidden", boxShadow:"0 25px 60px rgba(0,0,0,0.35)", maxWidth:"420px", width:"100%", position:"relative", zIndex:1 }}>
 
         {/* Header */}
-        <div style={{ background:"linear-gradient(135deg,#2563EB,#7C3AED)", padding:"18px 20px", display:"flex", alignItems:"center", gap:"14px" }}>
-          <div style={{ width:"44px", height:"44px", borderRadius:"10px", overflow:"hidden", flexShrink:0 }}>
-            <img src="/logo.png" alt="GenuAI" style={{ width:"44px", height:"44px", objectFit:"cover" }} />
+        <div style={{ background:"linear-gradient(135deg,#2563EB,#7C3AED)", padding:"12px 16px", display:"flex", alignItems:"center", gap:"10px" }}>
+          <div style={{ width:"32px", height:"32px", borderRadius:"8px", overflow:"hidden", flexShrink:0 }}>
+            <img src="/logo.png" alt="GenuAI" style={{ width:"32px", height:"32px", objectFit:"cover" }} />
           </div>
           <div>
-            <div style={{ color:"#fff", fontWeight:"800", fontSize:"15px" }}>GenuAI Technologies</div>
-            <div style={{ color:"rgba(255,255,255,0.7)", fontSize:"11px" }}>Identity Verification · GenuAI Assessment</div>
+            <div style={{ color:"#fff", fontWeight:"800", fontSize:"14px" }}>GenuAI Technologies</div>
+            <div style={{ color:"rgba(255,255,255,0.7)", fontSize:"10px" }}>Identity Verification</div>
           </div>
-          <div style={{ marginLeft:"auto", background:"rgba(255,255,255,0.15)", borderRadius:"20px", padding:"4px 12px", color:"#fff", fontSize:"11px", fontWeight:"600" }}>🔒 Secure</div>
+          <div style={{ marginLeft:"auto", background:"rgba(255,255,255,0.15)", borderRadius:"20px", padding:"4px 10px", color:"#fff", fontSize:"10px", fontWeight:"600" }}>🔒 Secure</div>
         </div>
 
         {/* Challenge prompt */}
-        <div style={{ background:"#F8FAFC", borderBottom:"1px solid #E2E8F0", padding:"14px 20px" }}>
-          <div style={{ fontSize:"12px", color:"#64748B", fontWeight:"600", marginBottom:"4px" }}>Select all images with a</div>
-          <div style={{ fontSize:"20px", fontWeight:"900", color:"#1E293B" }}>
+        <div style={{ background:"#F8FAFC", borderBottom:"1px solid #E2E8F0", padding:"12px 16px" }}>
+          <div style={{ fontSize:"12px", color:"#64748B", fontWeight:"600", marginBottom:"2px" }}>Select all images with a</div>
+          <div style={{ fontSize:"18px", fontWeight:"900", color:"#1E293B" }}>
             {cat.emoji} {cat.label}
           </div>
           <div style={{ fontSize:"11px", color:"#94A3B8", marginTop:"2px" }}>Click all matching squares, then click verify</div>

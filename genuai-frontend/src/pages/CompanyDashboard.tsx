@@ -32,6 +32,10 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
   const [emailStatus, setEmailStatus] = useState<string>("");
   const [compareList, setCompareList] = useState<any[]>([]);
   const [showCompare, setShowCompare] = useState(false);
+  const [profilePhoto] = useState<string | null>(() => {
+    const email = user?.user?.email || user?.email || "";
+    return email ? localStorage.getItem(`profilePhoto_${email}`) : null;
+  });
 
   const userName = user?.user?.name || user?.name || "Company";
   const companyId = user?.user?.id || user?.id || 9;
@@ -158,8 +162,8 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
           <span style={{ color: "#64748B", fontSize: "13px", fontWeight: "600" }}>Welcome, {userName}</span>
           <button onClick={exportCSV} style={{ padding: "7px 11px", background: "#F0FDF4", color: "#00B87C", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>⬇ Export CSV</button>
           <div style={{ width: "1px", height: "24px", background: "#E2E8F0", margin: "0 2px" }} />
-          <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg,#00B87C,#00D4AA)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800", color: "#fff", fontSize: "14px", overflow: "hidden", border: "2px solid #E2E8F0", flexShrink: 0 }}>
-            {userName.charAt(0).toUpperCase()}
+          <div style={{ width: "36px", height: "36px", borderRadius: "12px", background: profilePhoto ? "transparent" : "linear-gradient(135deg,#00B87C,#00D4AA)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800", color: "#fff", fontSize: "14px", overflow: "hidden", border: "2px solid #E2E8F0", flexShrink: 0 }}>
+            {profilePhoto ? <img src={profilePhoto} alt="logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : userName.charAt(0).toUpperCase()}
           </div>
           <button onClick={onLogout} style={{ padding: "7px 11px", background: "transparent", border: "1px solid #FF4444", color: "#FF4444", borderRadius: "8px", cursor: "pointer", fontSize: "12px", fontWeight: "600" }}>Logout</button>
         </div>

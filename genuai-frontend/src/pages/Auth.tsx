@@ -13,7 +13,24 @@ export default function Auth({ onLogin }: Props) {
   const [success, setSuccess] = useState("");
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "", role: "candidate", phone: "", college: "", github: "", linkedin: "" });
+
+  const handlePhotoUpload = (e: any) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setProfilePhoto(ev.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const storePhoto = (email: string) => {
+    if (profilePhoto) {
+      localStorage.setItem(`profilePhoto_${email}`, profilePhoto);
+    }
+  };
 
   // ── Detect OAuth redirect from backend ──────────────────────────
   useEffect(() => {
@@ -73,6 +90,7 @@ export default function Auth({ onLogin }: Props) {
       if (isLogin) {
         const res = await login({ email: form.email, password: form.password });
         localStorage.setItem("genuai_user", JSON.stringify(res.data));
+        storePhoto(res.data.user?.email || form.email);
         onLogin(res.data);
       } else {
         await sendOtp({ name: form.name, email: form.email, password: form.password, role: form.role, phone: form.phone, college: form.college, github: form.github, linkedin: form.linkedin });
@@ -89,6 +107,7 @@ export default function Auth({ onLogin }: Props) {
     try {
       const res = await verifyOtp({ email: form.email, otp: otpCode });
       localStorage.setItem("genuai_user", JSON.stringify(res.data));
+      storePhoto(res.data.user?.email || form.email);
       onLogin(res.data);
     } catch (e: any) { setError(e.response?.data?.error || "Invalid or expired OTP."); }
     setLoading(false);
@@ -247,6 +266,20 @@ export default function Auth({ onLogin }: Props) {
             <>
               {!isLogin && (
                 <>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "16px" }}>
+                    <div
+                      onClick={() => document.getElementById("auth-photo-input")?.click()}
+                      style={{ width: "80px", height: "80px", borderRadius: form.role === "company" ? "12px" : "50%", overflow: "hidden", border: "2px dashed #CBD5E1", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", background: "#F8FAFC", marginBottom: "8px" }}
+                    >
+                      {profilePhoto ? (
+                        <img src={profilePhoto} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      ) : (
+                        <span style={{ fontSize: "24px" }}>{form.role === "company" ? "🏢" : "📷"}</span>
+                      )}
+                    </div>
+                    <div style={{ fontSize: "12px", color: "#64748B", fontWeight: "600" }}>Upload {form.role === "company" ? "Company Logo" : "Professional Photo"}</div>
+                    <input id="auth-photo-input" type="file" accept="image/*" style={{ display: "none" }} onChange={handlePhotoUpload} />
+                  </div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                     <div><label style={lbl}>Full Name *</label><input placeholder="Your full name" value={form.name} onChange={e => set("name", e.target.value)} style={inp} /></div>
                     <div><label style={lbl}>Phone *</label><input placeholder="+91 98765 43210" value={form.phone} onChange={e => set("phone", e.target.value)} style={inp} /></div>

@@ -27,7 +27,10 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
   const [atsScore, setAtsScore] = useState(0);
   const [github, setGithub] = useState("");
   const [linkedin, setLinkedin] = useState("");
-  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(() => {
+    const email = user?.user?.email || user?.email || "";
+    return email ? localStorage.getItem(`profilePhoto_${email}`) : null;
+  });
   const [streakCount, setStreakCount] = useState(0);
   const [streakBonus, setStreakBonus] = useState(0);
   const [cheatCount, setCheatCount] = useState(0);
@@ -106,6 +109,8 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
   const [practiceStarted, setPracticeStarted] = useState(false);
   const [availableCompanies, setAvailableCompanies] = useState<any[]>([]);
   const [selectedCompanies, setSelectedCompanies] = useState<number[]>([]);
+  const [showSearchHub, setShowSearchHub] = useState(false);
+  const [activeHubModule, setActiveHubModule] = useState<string | null>(null);
 
   const userName = user?.user?.name || user?.name || "Candidate";
   const userEmail = user?.user?.email || user?.email || "";
@@ -554,6 +559,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
           {onResume && <button onClick={onResume} style={{ padding: "7px 11px", background: "#EEF2FF", color: "#667EEA", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>📄 Resume</button>}
           <button onClick={fetchHistory} disabled={historyLoading} style={{ padding: "7px 11px", background: "#FFF7ED", color: "#F97316", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>📊 History</button>
           <button onClick={fetchJobs} disabled={jobsLoading} style={{ padding: "7px 11px", background: "#F0FDF4", color: "#00B87C", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>💼 Jobs</button>
+          <button onClick={() => setShowSearchHub(true)} style={{ padding: "7px 11px", background: "#EFF6FF", color: "#2563EB", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>🌐 Search Hub</button>
           <button onClick={() => { setShowPractice(true); setPracticeStarted(false); setPracticeFeedback(null); setPracticeSelected(""); }} style={{ padding: "7px 11px", background: "#F5F3FF", color: "#7C3AED", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>🎯 Practice</button>
           {onMock && <button onClick={onMock} style={{ padding: "7px 11px", background: "#F5F3FF", color: "#7C3AED", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>🎓 Mock</button>}
           {onInterview && <button onClick={onInterview} style={{ padding: "7px 11px", background: "#E0F9FF", color: "#0891B2", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>🎥 Room</button>}
@@ -667,6 +673,115 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                 )}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Search Hub Modal */}
+      {showSearchHub && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(15,23,42,0.7)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", backdropFilter: "blur(4px)" }}>
+          <div style={{ background: "#fff", borderRadius: "20px", padding: "28px", maxWidth: activeHubModule && activeHubModule !== "Instant Connect" ? "800px" : "1000px", width: "100%", height: "85vh", overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: "0 25px 50px rgba(0,0,0,0.3)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexShrink: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                {activeHubModule && (
+                  <button onClick={() => setActiveHubModule(null)} style={{ padding: "8px", background: "#F1F5F9", border: "none", borderRadius: "50%", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                  </button>
+                )}
+                <div>
+                  <h2 style={{ color: "#1E293B", margin: "0 0 4px" }}>{activeHubModule ? activeHubModule : "🌐 GenuAI Search Hub"}</h2>
+                  <div style={{ fontSize: "12px", color: "#64748B" }}>{activeHubModule ? "Explore opportunities and connections" : "Your centralized platform for networking, jobs, and industry updates"}</div>
+                </div>
+              </div>
+              <button onClick={() => { setShowSearchHub(false); setActiveHubModule(null); }} style={{ padding: "8px 16px", background: "#F1F5F9", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", color: "#64748B" }}>✕ Close</button>
+            </div>
+
+            <div style={{ flex: 1, overflowY: "auto", paddingRight: "4px" }}>
+              {!activeHubModule ? (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
+                  {[
+                    { id: "Professional Network", icon: "🤝", color: "#0A66C2", desc: "Connect with professionals, share updates, and build your profile (LinkedIn Style)" },
+                    { id: "Global Job Board", icon: "🌍", color: "#2563EB", desc: "Search thousands of job listings across top platforms (Indeed/NaukriGulf Style)" },
+                    { id: "Competitions & Events", icon: "🏆", color: "#F59E0B", desc: "Participate in hackathons and case studies (Unstop Style)" },
+                    { id: "PM Internship Allocation", icon: "🧠", color: "#8B5CF6", desc: "AI-based matching scheme for Product Management roles" },
+                    { id: "Tech & Corporate News", icon: "📰", color: "#10B981", desc: "Stay updated with the latest in tech, business, and startups" },
+                    { id: "Instant Connect", icon: "💬", color: "#25D366", desc: "Real-time messenger to connect with recruiters and peers" },
+                  ].map(mod => (
+                    <div key={mod.id} onClick={() => setActiveHubModule(mod.id)}
+                      style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: "16px", padding: "24px", cursor: "pointer", transition: "all 0.2s", display: "flex", flexDirection: "column", gap: "12px" }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = mod.color; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = `0 10px 20px ${mod.color}22`; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "#E2E8F0"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+                    >
+                      <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: `${mod.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px" }}>
+                        {mod.icon}
+                      </div>
+                      <h3 style={{ margin: 0, color: "#1E293B", fontSize: "16px" }}>{mod.id}</h3>
+                      <p style={{ margin: 0, color: "#64748B", fontSize: "13px", lineHeight: "1.5" }}>{mod.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : activeHubModule === "Tech & Corporate News" ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  {[
+                    { tag: "AI Trends", title: "OpenAI Announces New Advanced Reasoning Models", src: "TechCrunch", time: "2 hours ago" },
+                    { tag: "Hiring", title: "Top 10 Tech Companies Actively Hiring Remote Product Managers", src: "Forbes", time: "5 hours ago" },
+                    { tag: "Startups", title: "GenuAI Technologies Secures Funding to Revolutionize AI Recruitment", src: "Tech Radar", time: "1 day ago" },
+                    { tag: "Development", title: "React 19 Release: What Frontend Engineers Need to Know", src: "Dev.to", time: "2 days ago" },
+                  ].map((news, i) => (
+                    <div key={i} style={{ padding: "16px", background: "#fff", border: "1px solid #E2E8F0", borderRadius: "12px", display: "flex", flexDirection: "column", gap: "8px", transition: "transform 0.2s, box-shadow 0.2s", cursor: "pointer" }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.05)"; }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
+                      <span style={{ fontSize: "11px", fontWeight: "700", color: "#10B981", background: "#10B98115", padding: "4px 8px", borderRadius: "6px", alignSelf: "flex-start" }}>{news.tag}</span>
+                      <h4 style={{ margin: 0, color: "#1E293B", fontSize: "16px" }}>{news.title}</h4>
+                      <div style={{ fontSize: "12px", color: "#94A3B8" }}>{news.src} • {news.time}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : activeHubModule === "Instant Connect" ? (
+                <div style={{ display: "flex", height: "100%", border: "1.5px solid #E2E8F0", borderRadius: "12px", overflow: "hidden" }}>
+                  <div style={{ width: "250px", background: "#F8FAFC", borderRight: "1.5px solid #E2E8F0", display: "flex", flexDirection: "column" }}>
+                    <div style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0", fontWeight: "800", color: "#1E293B", fontSize: "15px" }}>Recent Chats</div>
+                    <div style={{ padding: "12px 16px", background: "#E2E8F055", display: "flex", alignItems: "center", gap: "12px", borderBottom: "1px solid #E2E8F0", cursor: "pointer" }}>
+                      <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg,#10B981,#059669)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: "800", fontSize: "13px" }}>HR</div>
+                      <div style={{ flex: 1, overflow: "hidden" }}>
+                        <div style={{ fontSize: "13px", fontWeight: "700", color: "#1E293B" }}>HR Tech Solutions</div>
+                        <div style={{ fontSize: "11px", color: "#64748B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Are you available for an...</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#F1F5F9" }}>
+                    <div style={{ padding: "16px", background: "#fff", borderBottom: "1.5px solid #E2E8F0", display: "flex", alignItems: "center", gap: "12px" }}>
+                      <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg,#10B981,#059669)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: "800", fontSize: "13px" }}>HR</div>
+                      <div>
+                        <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "14px" }}>HR Tech Solutions</div>
+                        <div style={{ fontSize: "11px", color: "#10B981", fontWeight: "600" }}>Online</div>
+                      </div>
+                    </div>
+                    <div style={{ flex: 1, padding: "20px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "16px" }}>
+                      <div style={{ alignSelf: "center", background: "#E2E8F0", color: "#64748B", padding: "4px 12px", borderRadius: "12px", fontSize: "10px", fontWeight: "600" }}>Today</div>
+                      <div style={{ alignSelf: "flex-start", background: "#fff", padding: "12px 16px", borderRadius: "12px 12px 12px 0", maxWidth: "70%", boxShadow: "0 2px 4px rgba(0,0,0,0.02)", border: "1px solid #E2E8F0" }}>
+                        <div style={{ fontSize: "14px", color: "#1E293B", lineHeight: "1.5" }}>Hi {userName}! We reviewed your impressive assessment score and would love to schedule a technical interview. Are you available sometime tomorrow?</div>
+                        <div style={{ fontSize: "10px", color: "#94A3B8", marginTop: "6px", textAlign: "right" }}>10:42 AM</div>
+                      </div>
+                    </div>
+                    <div style={{ padding: "16px", background: "#fff", borderTop: "1.5px solid #E2E8F0", display: "flex", gap: "12px", alignItems: "center" }}>
+                      <button style={{ background: "transparent", border: "none", fontSize: "20px", cursor: "pointer", opacity: 0.6 }}>📎</button>
+                      <input placeholder="Type your message..." style={{ flex: 1, padding: "12px 16px", border: "1.5px solid #E2E8F0", borderRadius: "24px", outline: "none", fontSize: "14px", background: "#F8FAFC" }} />
+                      <button style={{ background: "#25D366", color: "#fff", border: "none", borderRadius: "50%", width: "42px", height: "42px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 2px 8px rgba(37,211,102,0.3)" }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", color: "#64748B", background: "#F8FAFC", borderRadius: "16px", border: "2px dashed #E2E8F0" }}>
+                  <div style={{ fontSize: "56px", marginBottom: "16px", opacity: 0.8 }}>🚀</div>
+                  <h3 style={{ margin: "0 0 8px", color: "#1E293B", fontSize: "22px", fontWeight: "800" }}>Coming Soon</h3>
+                  <p style={{ margin: 0, textAlign: "center", maxWidth: "400px", fontSize: "14px", lineHeight: "1.6" }}>The <strong>{activeHubModule}</strong> module is currently in development by the GenuAI team. Stay tuned for the next update!</p>
+                  <button onClick={() => setActiveHubModule(null)} style={{ marginTop: "24px", padding: "10px 20px", background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "10px", color: "#1E293B", fontWeight: "700", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>← Back to Hub</button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
