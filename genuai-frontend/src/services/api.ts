@@ -23,6 +23,8 @@ export const register = (data: any) => API.post("/auth/register", data);
 export const login = (data: any) => API.post("/auth/login", data);
 export const sendOtp = (data: any) => API.post("/auth/send-otp", data);
 export const verifyOtp = (data: any) => API.post("/auth/verify-otp", data);
+export const requestPasswordReset = (data: any) => API.post("/auth/forgot-password-otp", data);
+export const resetPassword = (data: any) => API.post("/auth/reset-password", data);
 
 // Assessment
 export const submitAssessment = (data: any) => API.post('/assessment/submit', data);

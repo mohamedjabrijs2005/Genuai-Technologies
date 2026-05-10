@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { login, register, sendOtp, verifyOtp } from "../services/api";
+import { login, register, sendOtp, verifyOtp, requestPasswordReset, resetPassword } from "../services/api";
 
 interface Props { onLogin: (user: any) => void; }
 
@@ -12,6 +12,8 @@ export default function Auth({ onLogin }: Props) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showOtp, setShowOtp] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [resetOtpSent, setResetOtpSent] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "", role: "candidate", phone: "", college: "", github: "", linkedin: "" });
@@ -110,6 +112,32 @@ export default function Auth({ onLogin }: Props) {
       storePhoto(res.data.user?.email || form.email);
       onLogin(res.data);
     } catch (e: any) { setError(e.response?.data?.error || "Invalid or expired OTP."); }
+    setLoading(false);
+  };
+
+  const handleForgotPasswordSubmit = async () => {
+    if (!form.email || !form.email.includes("@")) { setError("Valid email is required."); return; }
+    setLoading(true); setError(""); setSuccess("");
+    try {
+      await requestPasswordReset({ email: form.email });
+      setSuccess("Reset code sent to your email!");
+      setResetOtpSent(true);
+    } catch (e: any) { setError(e.response?.data?.error || "Failed to send reset code."); }
+    setLoading(false);
+  };
+
+  const handleResetPassword = async () => {
+    if (!otpCode || otpCode.length !== 6) { setError("Please enter the 6-digit OTP."); return; }
+    if (!form.password || form.password.length < 6) { setError("New password must be at least 6 characters."); return; }
+    setLoading(true); setError(""); setSuccess("");
+    try {
+      await resetPassword({ email: form.email, otp: otpCode, newPassword: form.password });
+      setSuccess("Password reset successfully! You can now log in.");
+      setIsForgotPassword(false);
+      setResetOtpSent(false);
+      setOtpCode("");
+      setForm(p => ({ ...p, password: "" }));
+    } catch (e: any) { setError(e.response?.data?.error || "Failed to reset password."); }
     setLoading(false);
   };
 
@@ -222,14 +250,14 @@ export default function Auth({ onLogin }: Props) {
           </div>
 
           <h2 style={{ color: "#0F172A", fontSize: "26px", fontWeight: "900", margin: "0 0 4px" }}>
-            {isLogin ? "Welcome back!" : "Create account"}
+            {isForgotPassword ? "Reset Password" : isLogin ? "Welcome back!" : "Create account"}
           </h2>
           <p style={{ color: "#64748B", fontSize: "14px", margin: "0 0 24px" }}>
-            {isLogin ? "Sign in to continue to your dashboard" : "Join GenuAI and get discovered by top companies"}
+            {isForgotPassword ? "Follow the steps below to reset your password" : isLogin ? "Sign in to continue to your dashboard" : "Join GenuAI and get discovered by top companies"}
           </p>
 
           {/* ── Sign In / Register Tab Toggle ─────────────── */}
-          {!showOtp && (
+          {!showOtp && !isForgotPassword && (
             <div style={{ display: "flex", marginBottom: "24px", background: "#E2E8F0", borderRadius: "12px", padding: "4px" }}>
               {["Login", "Register"].map(t => (
                 <button key={t} onClick={() => { setIsLogin(t === "Login"); setError(""); setSuccess(""); }}
@@ -260,6 +288,42 @@ export default function Auth({ onLogin }: Props) {
 
               <button onClick={() => setShowOtp(false)} style={{ width: "100%", padding: "12px", background: "transparent", color: "#64748B", border: "none", fontWeight: "600", cursor: "pointer", fontSize: "14px" }}>
                 ← Back to registration
+              </button>
+            </div>
+          ) : isForgotPassword ? (
+            <div style={{ animation: "fadeIn 0.3s ease" }}>
+              <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "#FEF2F2", color: "#EF4444", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px", margin: "0 auto 16px" }}>🔐</div>
+                <h3 style={{ margin: "0 0 8px", color: "#0F172A" }}>Reset Password</h3>
+                <p style={{ color: "#64748B", fontSize: "14px", margin: 0 }}>
+                  {resetOtpSent ? `Enter the 6-digit code sent to ${form.email}` : "Enter your email to receive a reset code"}
+                </p>
+              </div>
+
+              {!resetOtpSent ? (
+                <>
+                  <label style={lbl}>Email Address *</label>
+                  <input placeholder="your@email.com" value={form.email} type="email" onChange={e => set("email", e.target.value)} style={inp} />
+                  <button onClick={handleForgotPasswordSubmit} disabled={loading || !form.email}
+                    style={{ width: "100%", padding: "14px", background: loading || !form.email ? "#94A3B8" : "linear-gradient(135deg,#2563EB,#7C3AED)", color: "#fff", border: "none", borderRadius: "12px", fontWeight: "800", fontSize: "15px", cursor: loading || !form.email ? "not-allowed" : "pointer", marginTop: "8px", boxShadow: loading || !form.email ? "none" : "0 8px 24px rgba(37,99,235,0.35)", transition: "all 0.2s", marginBottom: "16px" }}>
+                    {loading ? "Sending..." : "Send Reset Code"}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <label style={lbl}>Verification Code *</label>
+                  <input placeholder="Enter 6-digit OTP" value={otpCode} maxLength={6} onChange={e => setOtpCode(e.target.value.replace(/[^0-9]/g, ''))} style={{ ...inp, fontSize: "24px", letterSpacing: "8px", textAlign: "center", fontWeight: "800" }} />
+                  <label style={lbl}>New Password *</label>
+                  <input placeholder="Enter new password" value={form.password} type="password" onChange={e => set("password", e.target.value)} style={inp} />
+                  <button onClick={handleResetPassword} disabled={loading || otpCode.length !== 6 || form.password.length < 6}
+                    style={{ width: "100%", padding: "14px", background: loading || otpCode.length !== 6 || form.password.length < 6 ? "#94A3B8" : "linear-gradient(135deg,#2563EB,#7C3AED)", color: "#fff", border: "none", borderRadius: "12px", fontWeight: "800", fontSize: "15px", cursor: loading || otpCode.length !== 6 || form.password.length < 6 ? "not-allowed" : "pointer", marginTop: "8px", boxShadow: loading || otpCode.length !== 6 || form.password.length < 6 ? "none" : "0 8px 24px rgba(37,99,235,0.35)", transition: "all 0.2s", marginBottom: "16px" }}>
+                    {loading ? "Resetting..." : "Reset Password"}
+                  </button>
+                </>
+              )}
+
+              <button onClick={() => { setIsForgotPassword(false); setResetOtpSent(false); setError(""); setSuccess(""); }} style={{ width: "100%", padding: "12px", background: "transparent", color: "#64748B", border: "none", fontWeight: "600", cursor: "pointer", fontSize: "14px" }}>
+                ← Back to Login
               </button>
             </div>
           ) : (
@@ -301,7 +365,13 @@ export default function Auth({ onLogin }: Props) {
 
               <label style={lbl}>Email Address *</label>
               <input placeholder="your@email.com" value={form.email} type="email" onChange={e => set("email", e.target.value)} style={inp} />
-              <label style={lbl}>Password *</label>
+              
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "8px" }}>
+                <label style={{...lbl, marginBottom: 0}}>Password *</label>
+                {isLogin && (
+                  <span onClick={() => { setIsForgotPassword(true); setError(""); setSuccess(""); setResetOtpSent(false); setOtpCode(""); setForm(p => ({ ...p, password: "" })); }} style={{ fontSize: '12px', color: '#2563EB', fontWeight: '700', cursor: 'pointer' }}>Forgot Password?</span>
+                )}
+              </div>
               <input placeholder="Min 6 characters" value={form.password} type="password" onChange={e => set("password", e.target.value)} style={inp} />
               {!isLogin && (
                 <>

@@ -272,4 +272,60 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.post('/forgot-password-otp', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Email is required' });
+
+    const existing = await pool.query('SELECT id, name FROM users WHERE email = $1', [email]);
+    if (existing.rows.length === 0) return res.status(400).json({ error: 'Email not found in our system' });
+
+    const user = existing.rows[0];
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    otpStore[email] = { otp, expires: Date.now() + 10 * 60 * 1000, data: { email } };
+
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: 'GenuAI Technologies — Password Reset OTP',
+      html: `
+        <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#0A0A0F;color:#fff;padding:32px;border-radius:12px;border:1px solid #00B87C">
+          <h2 style="color:#00B87C">Genu<span style="color:#00D4FF">AI</span> Technologies</h2>
+          <p>Hello <strong>${user.name}</strong>,</p>
+          <p>You requested a password reset. Your OTP is:</p>
+          <div style="background:#161B22;border:2px solid #00B87C;border-radius:8px;padding:20px;text-align:center;margin:20px 0">
+            <span style="font-size:36px;font-weight:bold;color:#00B87C;letter-spacing:8px">${otp}</span>
+          </div>
+          <p style="color:#64748B">This OTP expires in 10 minutes. If you didn't request this, you can safely ignore this email.</p>
+          <p style="color:#64748B;font-size:12px">Powered by GenuAI Technologies</p>
+        </div>
+      `,
+    });
+
+    res.json({ message: 'Password reset OTP sent to your email' });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    if (!email || !otp || !newPassword) return res.status(400).json({ error: 'All fields required' });
+
+    const record = otpStore[email];
+    if (!record) return res.status(400).json({ error: 'OTP not found or expired. Please request a new one.' });
+    if (Date.now() > record.expires) { delete otpStore[email]; return res.status(400).json({ error: 'OTP expired.' }); }
+    if (record.otp !== otp) return res.status(400).json({ error: 'Invalid OTP.' });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await pool.query('UPDATE users SET password_hash = $1 WHERE email = $2', [hashedPassword, email]);
+    delete otpStore[email];
+
+    res.json({ message: 'Password reset successfully' });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 export default router;
