@@ -108,9 +108,7 @@ export default function RobotVerification({ onVerified }: Props) {
 
         {/* Header */}
         <div style={{ background: "linear-gradient(135deg,#2563EB,#7C3AED)", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px" }}>
-          <div style={{ width: "24px", height: "24px", borderRadius: "6px", overflow: "hidden", flexShrink: 0 }}>
-            <img src="/logo.png" alt="GenuAI" style={{ width: "24px", height: "24px", objectFit: "cover" }} />
-          </div>
+          <img src="/logo.png" alt="GenuAI" style={{ width: "28px", height: "28px", objectFit: "contain", flexShrink: 0, filter: "brightness(1.1)" }} />
           <div>
             <div style={{ color: "#fff", fontWeight: "800", fontSize: "12px", lineHeight: "1" }}>GenuAI</div>
             <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "9px", marginTop: "2px" }}>Identity Verification</div>

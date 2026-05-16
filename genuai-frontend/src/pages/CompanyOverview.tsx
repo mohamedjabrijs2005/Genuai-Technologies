@@ -20,9 +20,7 @@ export default function CompanyOverview({ user, onStartTest }: Props) {
       {/* Navbar */}
       <nav style={{ background:'#fff', borderBottom:'1px solid #E5E7EB', padding:'0 40px', height:'64px', display:'flex', alignItems:'center', justifyContent:'space-between', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }}>
         <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <div style={{ width:'40px', height:'40px', borderRadius:'10px', overflow:'hidden' }}>
-            <img src="/logo.png" alt="GenuAI" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-          </div>
+          <img src="/logo.png" alt="GenuAI" style={{ width:'44px', height:'44px', objectFit:'contain', filter:'drop-shadow(0 2px 6px rgba(212,175,55,0.4))' }} />
           <div>
             <div style={{ fontWeight:'800', fontSize:'16px', color:'#0F172A' }}>GenuAI Technologies</div>
             <div style={{ fontSize:'11px', color:'#64748B' }}>AI-Powered Recruitment Intelligence Platform</div>
@@ -36,8 +34,8 @@ export default function CompanyOverview({ user, onStartTest }: Props) {
 
       {/* Hero Banner */}
       <div style={{ background:'linear-gradient(135deg,#1E3A8A,#2563EB,#7C3AED)', padding:'72px 40px', textAlign:'center' }}>
-        <div style={{ width:'80px', height:'80px', borderRadius:'22px', background:'rgba(255,255,255,1)', overflow:'hidden', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 24px', border:'1px solid rgba(255,255,255,0.25)', boxShadow:'0 8px 32px rgba(0,0,0,0.2)' }}>
-          <img src="/logo.png" alt="GenuAI" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+        <div style={{ width:'80px', height:'80px', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 24px' }}>
+          <img src="/logo.png" alt="GenuAI" style={{ width:'80px', height:'80px', objectFit:'contain', filter:'drop-shadow(0 4px 16px rgba(212,175,55,0.6))' }} />
         </div>
         <h1 style={{ fontSize:'42px', fontWeight:'900', color:'#fff', margin:'0 0 12px', letterSpacing:'-1px' }}>GenuAI Technologies</h1>
         <p style={{ fontSize:'17px', color:'rgba(255,255,255,0.8)', margin:'0 0 8px' }}>AI-Powered Recruitment Intelligence Platform</p>

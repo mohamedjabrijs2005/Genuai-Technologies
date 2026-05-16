@@ -152,7 +152,7 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
     <div style={{ minHeight: "100vh", background: "#F8FAFC", color: "#1E293B", padding: "20px", fontFamily: "sans-serif" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", background: "#fff", borderRadius: "16px", padding: "12px 20px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #E2E8F0" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <img src="/logo.png" alt="GenuAI" style={{ width: "44px", height: "44px", borderRadius: "50%", objectFit: "cover", boxShadow: "0 3px 12px rgba(0,184,124,0.4)" }} />
+          <img src="/logo.png" alt="GenuAI" style={{ width: "44px", height: "44px", objectFit: "contain", filter: "drop-shadow(0 2px 8px rgba(0,184,124,0.4))" }} />
           <div>
             <div style={{ fontWeight: "800", fontSize: "17px", color: "#1E293B", lineHeight: "1.1" }}>Genu<span style={{ color: "#00D4FF" }}>AI</span></div>
             <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "600", letterSpacing: "0.08em" }}>COMPANY DASHBOARD</div>
@@ -743,7 +743,7 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
       {/* Footer */}
       <div style={{ borderTop: "1px solid #E2E8F0", marginTop: "40px", paddingTop: "20px", paddingBottom: "20px", textAlign: "center" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "6px" }}>
-          <img src="/logo.png" alt="GenuAI" style={{ width: "24px", height: "24px", borderRadius: "6px" }} />
+          <img src="/logo.png" alt="GenuAI" style={{ width: "28px", height: "28px", objectFit: "contain" }} />
           <span style={{ color: "#1E293B", fontWeight: "700", fontSize: "14px" }}>GenuAI Technologies</span>
         </div>
         <p style={{ color: "#94A3B8", fontSize: "12px", margin: "0 0 4px" }}>AI-Powered Recruitment Intelligence Platform</p>

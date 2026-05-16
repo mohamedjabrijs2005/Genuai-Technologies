@@ -80,8 +80,8 @@ function JobBoard({ user, onBack, initialFilter = 'All' }: { user: any, onBack: 
                 <div key={job.id} style={{ background:'#fff', borderRadius:'16px', border:'1px solid #E2E8F0', padding:'24px', transition:'all 0.2s', boxShadow: selectedJob === job.id ? '0 12px 24px rgba(0,0,0,0.06)' : 'none', transform: selectedJob === job.id ? 'translateY(-2px)' : 'none' }}>
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
                     <div style={{ display:'flex', gap:'16px' }}>
-                      <div style={{ width:'48px', height:'48px', borderRadius:'12px', overflow:'hidden', border:'1px solid #E2E8F0' }}>
-                        <img src="/logo.png" alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                      <div style={{ width:'48px', height:'48px', borderRadius:'12px', border:'1px solid #E2E8F0', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
+                        <img src="/logo.png" alt="" style={{ width:'80%', height:'80%', objectFit:'contain' }} />
                       </div>
                       <div>
                         <h3 style={{ fontSize:'18px', fontWeight:'800', color:'#0F172A', margin:'0 0 4px' }}>{job.role}</h3>
@@ -153,9 +153,7 @@ export default function SearchDashboard({ user, onBack }: Props) {
 
       <nav style={{ background:'#fff', borderBottom:'1px solid #E5E7EB', padding:'0 40px', height:'64px', display:'flex', alignItems:'center', justifyContent:'space-between', boxShadow:'0 1px 3px rgba(0,0,0,0.06)', position:'sticky', top:0, zIndex:10 }}>
         <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <div style={{ width:'40px', height:'40px', borderRadius:'10px', overflow:'hidden' }}>
-            <img src="/logo.png" alt="GenuAI" style={{ width:'40px', height:'40px', objectFit:'cover' }} />
-          </div>
+          <img src="/logo.png" alt="GenuAI" style={{ width:'44px', height:'44px', objectFit:'contain', filter:'drop-shadow(0 2px 6px rgba(212,175,55,0.4))' }} />
           <div>
             <div style={{ fontWeight:'800', fontSize:'16px', color:'#0F172A' }}>GenuAI Technologies</div>
             <div style={{ fontSize:'11px', color:'#64748B' }}>Search Path</div>

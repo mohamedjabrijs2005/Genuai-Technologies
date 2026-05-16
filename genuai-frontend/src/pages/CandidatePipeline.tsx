@@ -122,9 +122,7 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
     <div style={{ minHeight:'100vh', background:'#F8FAFC', fontFamily:"'Inter','Segoe UI',sans-serif" }}>
       <div style={{ background:'#fff', borderBottom:'1px solid #E5E7EB', padding:'16px 32px', display:'flex', justifyContent:'space-between', alignItems:'center', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }}>
         <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <div style={{ width:'36px', height:'36px', borderRadius:'10px', overflow:'hidden' }}>
-            <img src="/logo.png" alt="GenuAI" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-          </div>
+          <img src="/logo.png" alt="GenuAI" style={{ width:'40px', height:'40px', objectFit:'contain', filter:'drop-shadow(0 2px 6px rgba(212,175,55,0.4))' }} />
           <div><div style={{ color:'#0F172A', fontWeight:'800', fontSize:'15px' }}>GenuAI Assessment</div><div style={{ color:'#64748B', fontSize:'12px', fontWeight:'500' }}>Candidate Pipeline</div></div>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>

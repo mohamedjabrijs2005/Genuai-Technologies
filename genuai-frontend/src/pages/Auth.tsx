@@ -321,9 +321,7 @@ export default function Auth({ onLogin }: Props) {
 
           {/* ── Logo + Brand ── */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-            <div style={{ width: "40px", height: "40px", borderRadius: "10px", overflow: "hidden", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
-              <img src="/logo.png" alt="GenuAI" style={{ width: "40px", height: "40px", objectFit: "cover" }} />
-            </div>
+            <img src="/logo.png" alt="GenuAI" style={{ width: "44px", height: "44px", objectFit: "contain", flexShrink: 0, filter: "drop-shadow(0 2px 6px rgba(212,175,55,0.4))" }} />
             <div>
               <div style={{ fontWeight: "900", fontSize: "15px", color: "#0F172A" }}>GenuAI Technologies</div>
               <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "500" }}>AI-Powered Recruitment Intelligence Platform</div>
@@ -446,9 +444,9 @@ export default function Auth({ onLogin }: Props) {
 
               <label style={lbl}>Email Address *</label>
               <input placeholder="your@email.com" value={form.email} type="email" onChange={e => set("email", e.target.value)} style={inp} />
-              
+
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "8px" }}>
-                <label style={{...lbl, marginBottom: 0}}>Password *</label>
+                <label style={{ ...lbl, marginBottom: 0 }}>Password *</label>
                 {isLogin && (
                   <span onClick={() => { setIsForgotPassword(true); setError(""); setSuccess(""); setResetOtpSent(false); setOtpCode(""); setForm(p => ({ ...p, password: "" })); }} style={{ fontSize: '12px', color: '#2563EB', fontWeight: '700', cursor: 'pointer' }}>Forgot Password?</span>
                 )}
@@ -577,7 +575,7 @@ export default function Auth({ onLogin }: Props) {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#fff", border: "1px solid #E2E8F0", borderRadius: "14px", padding: "10px 16px", marginBottom: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <div style={{ display: "flex" }}>
-                {[1,2,3,4,5].map(i => <span key={i} style={{ fontSize: "11px" }}>⭐</span>)}
+                {[1, 2, 3, 4, 5].map(i => <span key={i} style={{ fontSize: "11px" }}>⭐</span>)}
               </div>
               <span style={{ fontSize: "12px", fontWeight: "700", color: "#0F172A" }}>4.9/5</span>
               <span style={{ fontSize: "11px", color: "#94A3B8", fontWeight: "500" }}>from <span style={{ color: "#0F172A", fontWeight: "700" }}>{liveUserCount.toLocaleString()}+</span> users</span>
@@ -605,7 +603,7 @@ export default function Auth({ onLogin }: Props) {
                   <div style={{ color: "rgba(255,255,255,0.45)", fontSize: "10px" }}>{TESTIMONIALS[testimonialIdx].role}</div>
                 </div>
                 <div style={{ marginLeft: "auto", display: "flex", gap: "1px" }}>
-                  {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize: "10px", color: "#FFD700" }}>★</span>)}
+                  {[1, 2, 3, 4, 5].map(s => <span key={s} style={{ fontSize: "10px", color: "#FFD700" }}>★</span>)}
                 </div>
               </div>
             </div>

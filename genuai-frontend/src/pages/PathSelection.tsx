@@ -12,9 +12,7 @@ export default function PathSelection({ user, onSelect, onLogout }: Props) {
       {/* Navbar */}
       <nav style={{ background: '#fff', borderBottom: '1px solid #E5E7EB', padding: '0 40px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ width: '40px', height: '40px', borderRadius: '10px', overflow: 'hidden', flexShrink: 0, boxShadow: '0 2px 8px rgba(37,99,235,0.2)' }}>
-            <img src="/logo.png" alt="GenuAI" style={{ width: '40px', height: '40px', objectFit: 'cover' }} />
-          </div>
+          <img src="/logo.png" alt="GenuAI" style={{ width: '44px', height: '44px', objectFit: 'contain', flexShrink: 0, filter: 'drop-shadow(0 2px 6px rgba(212,175,55,0.4))' }} />
           <div>
             <div style={{ fontWeight: '800', fontSize: '16px', color: '#0F172A', letterSpacing: '-0.3px' }}>GenuAI Technologies</div>
             <div style={{ fontSize: '11px', color: '#64748B', fontWeight: '500' }}>AI-Powered Recruitment Intelligence Platform</div>

@@ -262,7 +262,7 @@ export default function AMCATTest({ user, role, assessmentId, onComplete, onTerm
     <div style={{ minHeight:'100vh', background:'#F8FAFC', display:'flex', flexDirection:'column' }}>
       <div style={{ background:'#fff', borderBottom:'1px solid #E2E8F0', padding:'12px 20px', display:'flex', justifyContent:'space-between', alignItems:'center', boxShadow:'0 1px 4px rgba(0,0,0,0.02)' }}>
         <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <img src='/logo.png' style={{ width:'32px', height:'32px', borderRadius:'8px' }} alt='logo' />
+          <img src='/logo.png' style={{ width:'36px', height:'36px', objectFit:'contain', filter:'drop-shadow(0 2px 6px rgba(212,175,55,0.4))' }} alt='logo' />
           <div>
             <div style={{ color:'#0F172A', fontWeight:'700', fontSize:'14px' }}>Section {currentSection+1}/4: {sec?.name}</div>
             <div style={{ color:'#64748B', fontSize:'12px' }}>Q{currentQ+1} of {sec?.questions.length} - {role}</div>

@@ -55,7 +55,7 @@ export default function AdminDashboard({ user, onLogout }: Props) {
     <div style={{ minHeight: "100vh", background: "#F8FAFC", color: "#1E293B", padding: "40px", fontFamily: "'Inter', sans-serif" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
         <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-          <img src="/logo.png" alt="GenuAI" style={{ width:'40px', height:'40px', borderRadius:'10px', boxShadow: "0 4px 10px rgba(0,0,0,0.1)" }} />
+          <img src="/logo.png" alt="GenuAI" style={{ width:'44px', height:'44px', objectFit:'contain', filter: 'drop-shadow(0 2px 8px rgba(212,175,55,0.4))' }} />
           <div>
             <h1 style={{ margin: 0, color: "#1E293B", fontSize: "28px", fontWeight: "900", letterSpacing: "-0.5px" }}>Genu<span style={{ color: "#00B87C" }}>AI</span></h1>
             <div style={{ color: "#64748B", fontSize: "13px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.05em" }}>Admin Portal</div>
@@ -183,7 +183,7 @@ export default function AdminDashboard({ user, onLogout }: Props) {
       {/* Footer */}
       <div style={{ marginTop: "60px", padding: "30px 0", textAlign: "center", borderTop: "1.5px solid #E2E8F0" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginBottom: "12px" }}>
-          <img src="/logo.png" alt="GenuAI" style={{ width: "28px", height: "28px", borderRadius: "8px" }} />
+          <img src="/logo.png" alt="GenuAI" style={{ width: "28px", height: "28px", objectFit: "contain" }} />
           <span style={{ color: "#1E293B", fontWeight: "800", fontSize: "16px", letterSpacing: "-0.5px" }}>GenuAI Technologies</span>
         </div>
         <p style={{ color: "#64748B", fontSize: "13px", margin: "0 0 8px", fontWeight: "600" }}>AI-Powered Recruitment Intelligence Platform</p>

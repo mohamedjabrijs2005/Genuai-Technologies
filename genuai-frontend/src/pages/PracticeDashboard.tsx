@@ -44,9 +44,7 @@ export default function PracticeDashboard({ user, onBack }: Props) {
 
       <nav style={{ background:'#fff', borderBottom:'1px solid #E5E7EB', padding:'0 40px', height:'64px', display:'flex', alignItems:'center', justifyContent:'space-between', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }}>
         <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <div style={{ width:'40px', height:'40px', borderRadius:'10px', overflow:'hidden' }}>
-            <img src="/logo.png" alt="GenuAI" style={{ width:'40px', height:'40px', objectFit:'cover' }} />
-          </div>
+          <img src="/logo.png" alt="GenuAI" style={{ width:'44px', height:'44px', objectFit:'contain', filter:'drop-shadow(0 2px 6px rgba(212,175,55,0.4))' }} />
           <div>
             <div style={{ fontWeight:'800', fontSize:'16px', color:'#0F172A' }}>GenuAI Technologies</div>
             <div style={{ fontSize:'11px', color:'#64748B' }}>Practice Hub</div>
