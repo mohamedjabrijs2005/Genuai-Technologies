@@ -12,59 +12,7 @@ export default function Module1_ProfileResume({ user, onComplete }: Props) {
   const [photo, setPhoto] = useState<string|null>(null);
   const [role, setRole] = useState('Software Engineer');
   const [analysis, setAnalysis] = useState<any>(null);
-  const [availableCompanies, setAvailableCompanies] = useState<any[]>([]);
-  const [selectedCompanies, setSelectedCompanies] = useState<number[]>([]);
   
-  const IMPORTANT_COMPANIES = [
-    { id: -1, name: 'Google' },
-    { id: -2, name: 'Microsoft' },
-    { id: -3, name: 'Amazon' },
-    { id: -4, name: 'Apple' },
-    { id: -5, name: 'Meta' },
-    { id: -6, name: 'Zoho' },
-    { id: -7, name: 'Accenture' },
-    { id: -8, name: 'JP Morgan' },
-    { id: -9, name: 'TCS' },
-    { id: -10, name: 'Infosys' },
-    { id: -11, name: 'Cognizant' },
-    { id: -12, name: 'Wipro' },
-    { id: -13, name: 'Capgemini' },
-    { id: -14, name: 'Deloitte' },
-    { id: -15, name: 'IBM' },
-    { id: -16, name: 'Intel' },
-    { id: -17, name: 'Cisco' }
-  ];
-
-  useEffect(() => {
-    axios.get(API + '/admin/companies')
-      .then(res => {
-        let dbCompanies = res.data || [];
-        
-        // Filter out fake/test companies
-        dbCompanies = dbCompanies.filter((c:any) => {
-          const lower = c.name?.toLowerCase() || '';
-          return !lower.includes('demo') && !lower.includes('mohamed jabri');
-        });
-
-        // De-duplicate db companies based on lowercase name
-        const uniqueDbCompanies: any[] = [];
-        const seenNames = new Set<string>();
-        for (const c of dbCompanies) {
-          const lower = c.name?.toLowerCase() || '';
-          if (!seenNames.has(lower)) {
-            seenNames.add(lower);
-            uniqueDbCompanies.push(c);
-          }
-        }
-
-        const dbNames = uniqueDbCompanies.map(c => c.name?.toLowerCase());
-        const filteredImportant = IMPORTANT_COMPANIES.filter(c => !dbNames.includes(c.name.toLowerCase()));
-        setAvailableCompanies([...filteredImportant, ...uniqueDbCompanies]);
-      })
-      .catch(() => {
-        setAvailableCompanies(IMPORTANT_COMPANIES);
-      });
-  }, []);
   const [error, setError] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
   const photoRef = useRef<HTMLInputElement>(null);
@@ -96,7 +44,7 @@ export default function Module1_ProfileResume({ user, onComplete }: Props) {
             <div style={{ background:'#00B87C11', borderRadius:'14px', padding:'16px', border:'1px solid #00B87C33' }}><div style={{ color:'#00B87C', fontWeight:'700', marginBottom:'8px' }}>Strengths</div>{analysis.strengths?.map((s:string,i:number)=><div key={i} style={{ color:'#64748B', fontSize:'13px', marginBottom:'4px' }}>• {s}</div>)}</div>
             <div style={{ background:'#F59E0B11', borderRadius:'14px', padding:'16px', border:'1px solid #F59E0B33' }}><div style={{ color:'#F59E0B', fontWeight:'700', marginBottom:'8px' }}>Improvements</div>{analysis.improvements?.map((s:string,i:number)=><div key={i} style={{ color:'#64748B', fontSize:'13px', marginBottom:'4px' }}>• {s}</div>)}</div>
           </div>
-          <button onClick={() => onComplete({ role, github, linkedin, portfolio, photo, analysis, company_ids: selectedCompanies })} style={{ width:'100%', padding:'16px', background:'linear-gradient(135deg,#667EEA,#764BA2)', color:'#fff', border:'none', borderRadius:'14px', fontWeight:'800', fontSize:'16px', cursor:'pointer' }}>Continue to Skill Test</button>
+          <button onClick={() => onComplete({ role, github, linkedin, portfolio, photo, analysis })} style={{ width:'100%', padding:'16px', background:'linear-gradient(135deg,#667EEA,#764BA2)', color:'#fff', border:'none', borderRadius:'14px', fontWeight:'800', fontSize:'16px', cursor:'pointer' }}>Continue to Skill Test</button>
         </div>
       </div>
     </div>
@@ -123,24 +71,6 @@ export default function Module1_ProfileResume({ user, onComplete }: Props) {
             <div><label style={lbl}>LinkedIn</label><input style={inp} placeholder='https://linkedin.com/in/username' value={linkedin} onChange={e=>setLinkedin(e.target.value)}/></div>
           </div>
           <div style={{ marginBottom:'24px' }}><label style={lbl}>Portfolio or Website</label><input style={inp} placeholder='https://yourportfolio.com' value={portfolio} onChange={e=>setPortfolio(e.target.value)}/></div>
-          <div style={{ marginBottom:'24px' }}>
-            <label style={lbl}>🏢 Select Companies You're Interested In</label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-              {availableCompanies.length === 0 ? (
-                 <div style={{ fontSize: "12px", color: "#64748B", fontStyle: "italic", padding: "10px", background: "#F8FAFC", borderRadius: "8px" }}>No companies available at the moment.</div>
-              ) : (
-                availableCompanies.map(c => (
-                  <div key={c.id} onClick={() => setSelectedCompanies(prev => prev.includes(c.id) ? prev.filter(id => id !== c.id) : [...prev, c.id])}
-                       style={{ padding: "10px 16px", border: "1.5px solid " + (selectedCompanies.includes(c.id) ? "#667EEA" : "#E2E8F0"), borderRadius: "20px", background: selectedCompanies.includes(c.id) ? "#EEF2FF" : "#F8FAFC", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", transition: "all 0.2s" }}>
-                    <div style={{ width: "16px", height: "16px", borderRadius: "4px", border: "1.5px solid " + (selectedCompanies.includes(c.id) ? "#667EEA" : "#CBD5E1"), background: selectedCompanies.includes(c.id) ? "#667EEA" : "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {selectedCompanies.includes(c.id) && <span style={{ color: "#fff", fontSize: "10px", fontWeight: "bold" }}>✓</span>}
-                    </div>
-                    <span style={{ fontSize: "13px", color: selectedCompanies.includes(c.id) ? "#4338CA" : "#1E293B", fontWeight: selectedCompanies.includes(c.id) ? "700" : "500" }}>{c.name}</span>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
           {error && <div style={{ color:'#EF4444', fontSize:'13px', marginBottom:'16px', textAlign:'center' }}>{error}</div>}
           <button onClick={handleAnalyze} style={{ width:'100%', padding:'16px', background:'linear-gradient(135deg,#667EEA,#764BA2)', color:'#fff', border:'none', borderRadius:'14px', fontWeight:'800', fontSize:'16px', cursor:'pointer' }}>Analyze Resume with AI</button>
         </div>

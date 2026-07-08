@@ -96,8 +96,10 @@ export default function Auth({ onLogin }: Props) {
       if (!form.name.trim()) return "Full name is required.";
       if (!form.phone.trim()) return "Phone number is required.";
       if (!form.college.trim()) return "College or company is required.";
-      if (!form.github.trim()) return "GitHub profile URL is required.";
-      if (!form.linkedin.trim()) return "LinkedIn profile URL is required.";
+      if (form.role !== 'admin') {
+        if (!form.github.trim()) return "GitHub profile URL is required.";
+        if (!form.linkedin.trim()) return "LinkedIn profile URL is required.";
+      }
       if (form.password !== form.confirmPassword) return "Passwords do not match.";
     }
     return null;
@@ -429,10 +431,12 @@ export default function Auth({ onLogin }: Props) {
                   </div>
                   <label style={lbl}>College / Company *</label>
                   <input placeholder="Your college or company name" value={form.college} onChange={e => set("college", e.target.value)} style={inp} />
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                    <div><label style={lbl}>GitHub URL *</label><input placeholder="github.com/username" value={form.github} onChange={e => set("github", e.target.value)} style={inp} /></div>
-                    <div><label style={lbl}>LinkedIn URL *</label><input placeholder="linkedin.com/in/name" value={form.linkedin} onChange={e => set("linkedin", e.target.value)} style={inp} /></div>
-                  </div>
+                  {form.role !== 'admin' && (
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                      <div><label style={lbl}>GitHub URL *</label><input placeholder="github.com/username" value={form.github} onChange={e => set("github", e.target.value)} style={inp} /></div>
+                      <div><label style={lbl}>LinkedIn URL *</label><input placeholder="linkedin.com/in/name" value={form.linkedin} onChange={e => set("linkedin", e.target.value)} style={inp} /></div>
+                    </div>
+                  )}
                   <label style={lbl}>Register As *</label>
                   <select value={form.role} onChange={e => set("role", e.target.value)} style={{ ...inp, background: "#F8FAFC" }}>
                     <option value="candidate">Candidate - Looking for jobs</option>

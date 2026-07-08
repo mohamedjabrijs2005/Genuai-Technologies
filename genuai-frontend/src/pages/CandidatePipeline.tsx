@@ -3,8 +3,11 @@ import Module1_ProfileResume from './Module1_ProfileResume';
 import AMCATTest from './AMCATTest';
 import Module3_SVARTest from './Module3_SVARTest';
 import Module4_Hackathon from './Module4_Hackathon';
+import Module6_GroupDiscussion from './Module6_GroupDiscussion';
 import { submitAssessment } from '../services/api';
 import { useEffect, useRef } from 'react';
+import axios from 'axios';
+const API = import.meta.env.VITE_API_URL;
 
 interface Props {
   user: any;
@@ -12,7 +15,7 @@ interface Props {
   onInterview: (roomId?: string) => void;   // was () => void
 }
 
-type Stage = 'overview' | 'module1' | 'module2' | 'module3' | 'module4' | 'module5' | 'module6';
+type Stage = 'interest' | 'overview' | 'module1' | 'module2' | 'module3' | 'module4' | 'module5' | 'module6' | 'module7';
 
 const MODULES = [
   { id:1, title:'Profile & Resume', icon:'📋', desc:'Upload resume, AI analysis, ATS scoring', color:'#667EEA', stage:'module1' },
@@ -20,18 +23,69 @@ const MODULES = [
   { id:3, title:'SVAR Verbal Test', icon:'🎙️', desc:'Listening, speaking, fluency assessment', color:'#F59E0B', stage:'module3' },
   { id:4, title:'Hackathon', icon:'🏆', desc:'Real-world problem solving, project submission', color:'#00B87C', stage:'module4' },
   { id:5, title:'AI Interview', icon:'🤖', desc:'Voice and face verify, environment check, AI interview', color:'#EF4444', stage:'module5' },
-  { id:6, title:'Final Results', icon:'📊', desc:'Comprehensive score across all modules', color:'#667EEA', stage:'module6' },
+  { id:6, title:'Group Discussion', icon:'🗣️', desc:'Collaborative problem solving and communication', color:'#8B5CF6', stage:'module6' },
+  { id:7, title:'Final Results', icon:'📊', desc:'Comprehensive score across all modules', color:'#667EEA', stage:'module7' },
+];
+
+const IMPORTANT_COMPANIES = [
+  { id: -1, name: 'Google' },
+  { id: -2, name: 'Microsoft' },
+  { id: -3, name: 'Amazon' },
+  { id: -4, name: 'Apple' },
+  { id: -5, name: 'Meta' },
+  { id: -6, name: 'Zoho' },
+  { id: -7, name: 'Accenture' },
+  { id: -8, name: 'JP Morgan' },
+  { id: -9, name: 'TCS' },
+  { id: -10, name: 'Infosys' },
+  { id: -11, name: 'Cognizant' },
+  { id: -12, name: 'Wipro' },
+  { id: -13, name: 'Capgemini' },
+  { id: -14, name: 'Deloitte' },
+  { id: -15, name: 'IBM' },
+  { id: -16, name: 'Intel' },
+  { id: -17, name: 'Cisco' }
 ];
 
 export default function CandidatePipeline({ user, onLogout, onInterview }: Props) {
-  const [stage, setStage] = useState<Stage>('overview');
+  const [stage, setStage] = useState<Stage>('interest');
   const [completedModules, setCompletedModules] = useState<number[]>([]);
   const [moduleData, setModuleData] = useState<Record<number,any>>({});
   const [role, setRole] = useState('Software Engineer');
+  const [availableCompanies, setAvailableCompanies] = useState<any[]>([]);
+  const [selectedCompanies, setSelectedCompanies] = useState<number[]>([]);
+  const [availableJobsList, setAvailableJobsList] = useState<any[]>([]);
+  const [targetJobs, setTargetJobs] = useState<number[]>([]);
   const submittedRef = useRef(false);
 
   useEffect(() => {
-    if (stage === 'module6' && !submittedRef.current) {
+    axios.get(API + '/admin/companies')
+      .then(res => {
+        let dbCompanies = res.data || [];
+        dbCompanies = dbCompanies.filter((c:any) => !c.name?.toLowerCase().includes('demo') && !c.name?.toLowerCase().includes('mohamed jabri'));
+        const uniqueDbCompanies: any[] = []; const seenNames = new Set<string>();
+        for (const c of dbCompanies) { if (!seenNames.has(c.name?.toLowerCase())) { seenNames.add(c.name?.toLowerCase()); uniqueDbCompanies.push(c); } }
+        
+        const dbNames = uniqueDbCompanies.map(c => c.name?.toLowerCase());
+        const filteredImportant = IMPORTANT_COMPANIES.filter(c => !dbNames.includes(c.name.toLowerCase()));
+        setAvailableCompanies([...filteredImportant, ...uniqueDbCompanies]);
+      }).catch(() => {
+        setAvailableCompanies(IMPORTANT_COMPANIES);
+      });
+    axios.get(API + '/jobs/list').then(res => {
+      const dbJobs = res.data.jobs || [];
+      const defaultJobs: any[] = [];
+      IMPORTANT_COMPANIES.forEach(comp => {
+        defaultJobs.push({ id: comp.id * 100 - 1, company_id: comp.id, company_name: comp.name, title: 'Software Engineer' });
+        defaultJobs.push({ id: comp.id * 100 - 2, company_id: comp.id, company_name: comp.name, title: 'AI Engineer' });
+        defaultJobs.push({ id: comp.id * 100 - 3, company_id: comp.id, company_name: comp.name, title: 'Data Scientist' });
+      });
+      setAvailableJobsList([...dbJobs, ...defaultJobs]);
+    }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (stage === 'module7' && !submittedRef.current) {
       submittedRef.current = true;
       const d1 = moduleData[1] || {};
       const score = Math.round(completedModules.reduce((acc, mid) => acc + (moduleData[mid]?.overall || moduleData[mid]?.ats_score || 75), 0) / Math.max(completedModules.length, 1));
@@ -50,10 +104,10 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
         authenticity_score: 90,
         verdict: score >= 75 ? 'HIRE' : score >= 60 ? 'REVIEW' : 'REJECT',
         triangle_status: 'VERIFIED',
-        company_ids: d1.company_ids || []
+        company_ids: selectedCompanies
       }).catch(console.error);
     }
-  }, [stage, moduleData, user, completedModules]);
+  }, [stage, moduleData, user, completedModules, selectedCompanies]);
 
   const completeModule = (moduleNum: number, data: any) => {
     setCompletedModules(prev => [...prev, moduleNum]);
@@ -69,6 +123,65 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
   const isCompleted = (moduleId: number) => completedModules.includes(moduleId);
   const userName = user?.user?.name || user?.name || 'Candidate';
 
+  if (stage === 'interest') {
+    return (
+      <div style={{ minHeight:'100vh', background:'#F8FAFC', padding:'40px 20px', fontFamily:"'Inter','Segoe UI',sans-serif" }}>
+        <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+          <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "24px", padding: "40px", boxShadow: "0 4px 20px rgba(0,0,0,0.05)", textAlign: "center" }}>
+            <div style={{ fontSize: "48px", marginBottom: "16px" }}>🎯</div>
+            <h2 style={{ color: "#0F172A", margin: "0 0 12px", fontSize: "32px", fontWeight: "900", letterSpacing:"-0.5px" }}>Which companies are you interested in?</h2>
+            <p style={{ color: "#64748B", fontSize: "16px", margin: "0 0 32px" }}>Select one or more companies to view their open roles.</p>
+            
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "32px", textAlign: "left" }}>
+              {availableCompanies.length === 0 ? (
+                <div style={{ gridColumn: "span 2", fontSize: "14px", color: "#64748B", fontStyle: "italic", padding: "16px", background: "#F8FAFC", borderRadius: "12px", textAlign: "center" }}>Loading companies...</div>
+              ) : (
+                availableCompanies.map(c => (
+                  <div key={c.id} onClick={() => setSelectedCompanies(prev => prev.includes(c.id) ? prev.filter(id => id !== c.id) : [...prev, c.id])}
+                    style={{ padding: "16px", border: "2px solid " + (selectedCompanies.includes(c.id) ? "#2563EB" : "#E5E7EB"), borderRadius: "16px", background: selectedCompanies.includes(c.id) ? "#EFF6FF" : "#fff", cursor: "pointer", display: "flex", alignItems: "center", gap: "12px", transition: "all 0.2s" }}>
+                    <div style={{ width: "22px", height: "22px", borderRadius: "6px", border: "2px solid " + (selectedCompanies.includes(c.id) ? "#2563EB" : "#CBD5E1"), background: selectedCompanies.includes(c.id) ? "#2563EB" : "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {selectedCompanies.includes(c.id) && <span style={{ color: "#fff", fontSize: "12px", fontWeight: "bold" }}>✓</span>}
+                    </div>
+                    <span style={{ fontSize: "15px", color: selectedCompanies.includes(c.id) ? "#1E3A8A" : "#0F172A", fontWeight: selectedCompanies.includes(c.id) ? "700" : "600" }}>{c.name}</span>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {selectedCompanies.length > 0 && (
+              <div style={{ textAlign: "left", marginBottom: "40px", padding: "24px", background: "#F8FAFC", borderRadius: "16px", border: "1px solid #E5E7EB" }}>
+                <h3 style={{ margin: "0 0 16px", color: "#0F172A", fontSize: "18px", fontWeight: "800" }}>Available Vacancies</h3>
+                {availableJobsList.filter(j => selectedCompanies.includes(j.company_id)).length === 0 ? (
+                  <div style={{ color: "#64748B", fontSize: "14px" }}>No active vacancies posted by the selected companies right now. You can still continue to the general assessment.</div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                    {availableJobsList.filter(j => selectedCompanies.includes(j.company_id)).map(job => (
+                      <div key={job.id} onClick={() => setTargetJobs(prev => prev.includes(job.id) ? prev.filter(id => id !== job.id) : [...prev, job.id])}
+                        style={{ padding: "16px", border: "2px solid " + (targetJobs.includes(job.id) ? "#059669" : "#E5E7EB"), borderRadius: "12px", background: targetJobs.includes(job.id) ? "#ECFDF5" : "#fff", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", transition: "all 0.2s" }}>
+                        <div>
+                          <div style={{ fontWeight: "700", color: targetJobs.includes(job.id) ? "#065F46" : "#0F172A", fontSize: "15px", marginBottom: "4px" }}>{job.title}</div>
+                          <div style={{ fontSize: "13px", color: "#64748B", fontWeight: "500" }}>🏢 {job.company_name}</div>
+                        </div>
+                        <div style={{ width: "22px", height: "22px", borderRadius: "50%", border: "2px solid " + (targetJobs.includes(job.id) ? "#059669" : "#CBD5E1"), background: targetJobs.includes(job.id) ? "#059669" : "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                           {targetJobs.includes(job.id) && <span style={{ color: "#fff", fontSize: "12px", fontWeight: "bold" }}>✓</span>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <button onClick={() => setStage('overview')} disabled={selectedCompanies.length === 0} 
+              style={{ padding: "18px 48px", background: selectedCompanies.length === 0 ? "#E2E8F0" : "linear-gradient(135deg,#2563EB,#7C3AED)", color: selectedCompanies.length === 0 ? "#94A3B8" : "#fff", border: "none", borderRadius: "16px", fontWeight: "800", fontSize: "16px", cursor: selectedCompanies.length === 0 ? "not-allowed" : "pointer", boxShadow: selectedCompanies.length === 0 ? "none" : "0 8px 25px rgba(37,99,235,0.3)", transition: "all 0.2s" }}>
+              Continue to Assessment →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (stage === 'module1') return <Module1_ProfileResume user={user} onComplete={data => { setRole(data.role || 'Software Engineer'); completeModule(1, data); }}/>;
   if (stage === 'module2') return <AMCATTest user={user?.user||user} role={role} onComplete={data => completeModule(2, data)} onTerminate={() => setStage('overview')}/>;
   if (stage === 'module3') return <Module3_SVARTest user={user} role={role} onComplete={data => completeModule(3, data)} onTerminate={() => setStage('overview')}/>;
@@ -79,7 +192,9 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
   return null;
 }
 
-  if (stage === 'module6') return (
+  if (stage === 'module6') return <Module6_GroupDiscussion user={user} role={role} onComplete={data => completeModule(6, data)}/>;
+
+  if (stage === 'module7') return (
     <div style={{ minHeight:'100vh', background:'#F8FAFC', padding:'32px' }}>
       <div style={{ maxWidth:'800px', margin:'0 auto' }}>
         <div style={{ background:'#fff', borderRadius:'24px', border:'1px solid #E2E8F0', overflow:'hidden', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
@@ -90,7 +205,7 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
           </div>
           <div style={{ padding:'36px' }}>
             <div style={{ display:'grid', gap:'16px' }}>
-              {MODULES.slice(0,5).map((m,i) => {
+              {MODULES.slice(0,6).map((m,i) => {
                 const data = moduleData[m.id];
                 const done = isCompleted(m.id);
                 const score = data?.overall || data?.ats_score || (done ? 75 : 0);
@@ -110,7 +225,7 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
               <div style={{ color:'#667EEA', fontSize:'56px', fontWeight:'900' }}>
                 {completedModules.length > 0 ? Math.round(completedModules.reduce((acc, mid) => { const d = moduleData[mid]; const s = d?.overall || d?.ats_score || 75; return acc + s; }, 0) / completedModules.length) : 0}%
               </div>
-              <div style={{ color:'#64748B', fontSize:'13px', marginTop:'4px' }}>{completedModules.length}/5 modules completed</div>
+              <div style={{ color:'#64748B', fontSize:'13px', marginTop:'4px' }}>{completedModules.length}/6 modules completed</div>
             </div>
           </div>
         </div>

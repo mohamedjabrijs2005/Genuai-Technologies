@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 interface Props { onVerified: () => void; }
 
@@ -11,40 +11,43 @@ const CATEGORIES = [
   { key: "bus", label: "Bus", plural: "Buses", emoji: "🚌" },
 ];
 
-// Real photos via loremflickr (keyword-based, consistent with lock ID)
 const POOL: { id: string; url: string; cat: string }[] = [
-  // Lorries / Trucks
+  // Lorries
   { id: "l1", cat: "lorry", url: "https://loremflickr.com/180/180/lorry,truck?lock=11" },
   { id: "l2", cat: "lorry", url: "https://loremflickr.com/180/180/lorry,truck?lock=12" },
   { id: "l3", cat: "lorry", url: "https://loremflickr.com/180/180/semi,truck?lock=13" },
   { id: "l4", cat: "lorry", url: "https://loremflickr.com/180/180/cargo,truck?lock=14" },
   { id: "l5", cat: "lorry", url: "https://loremflickr.com/180/180/lorry,truck?lock=15" },
   // Cars
-  { id: "c1", cat: "car", url: "https://loremflickr.com/180/180/car,automobile?lock=21" },
-  { id: "c2", cat: "car", url: "https://loremflickr.com/180/180/sedan,car?lock=22" },
-  { id: "c3", cat: "car", url: "https://loremflickr.com/180/180/sports,car?lock=23" },
-  { id: "c4", cat: "car", url: "https://loremflickr.com/180/180/car,vehicle?lock=24" },
-  { id: "c5", cat: "car", url: "https://loremflickr.com/180/180/automobile?lock=25" },
-  // Bikes / Motorcycles
-  { id: "b1", cat: "bike", url: "https://loremflickr.com/180/180/motorcycle?lock=31" },
-  { id: "b2", cat: "bike", url: "https://loremflickr.com/180/180/motorbike?lock=32" },
-  { id: "b3", cat: "bike", url: "https://loremflickr.com/180/180/motorcycle,bike?lock=33" },
-  { id: "b4", cat: "bike", url: "https://loremflickr.com/180/180/harley,motorcycle?lock=34" },
+  { id: "c1", cat: "car", url: "https://loremflickr.com/cache/resized/7354_8952108080_5dc9bd4e9c_n_180_180_nofilter.jpg" },
+  { id: "c2", cat: "car", url: "https://loremflickr.com/cache/resized/8242_8590782444_78616f0945_m_180_180_nofilter.jpg" },
+  { id: "c3", cat: "car", url: "https://loremflickr.com/cache/resized/8186_8146407031_a8bb4e278f_180_180_nofilter.jpg" },
+  { id: "c4", cat: "car", url: "https://loremflickr.com/cache/resized/8290_7717637210_0baffd07a1_m_180_180_nofilter.jpg" },
+  { id: "c5", cat: "car", url: "https://loremflickr.com/cache/resized/6059_6360674879_a081d25a8d_m_180_180_nofilter.jpg" },
+  // Bikes
+  { id: "b1", cat: "bike", url: "https://loremflickr.com/cache/resized/65535_26744569311_6ab7f2d0e5_n_180_180_nofilter.jpg" },
+  { id: "b2", cat: "bike", url: "https://loremflickr.com/cache/resized/5724_23446740402_bb0bf0272d_n_180_180_nofilter.jpg" },
+  { id: "b3", cat: "bike", url: "https://loremflickr.com/cache/resized/595_21077854030_015400d1b0_n_180_180_nofilter.jpg" },
+  { id: "b4", cat: "bike", url: "https://loremflickr.com/cache/resized/495_19079311194_02afda5cb4_n_180_180_nofilter.jpg" },
+  { id: "b5", cat: "bike", url: "https://loremflickr.com/cache/resized/7691_17494013615_8f3139ccb8_n_180_180_nofilter.jpg" },
   // Houses
-  { id: "h1", cat: "house", url: "https://loremflickr.com/180/180/house,home?lock=41" },
-  { id: "h2", cat: "house", url: "https://loremflickr.com/180/180/suburban,house?lock=42" },
-  { id: "h3", cat: "house", url: "https://loremflickr.com/180/180/cottage,house?lock=43" },
-  { id: "h4", cat: "house", url: "https://loremflickr.com/180/180/residential,home?lock=44" },
+  { id: "h1", cat: "house", url: "https://loremflickr.com/cache/resized/65535_54567349572_6fe83302ac_m_180_180_nofilter.jpg" },
+  { id: "h2", cat: "house", url: "https://loremflickr.com/cache/resized/65535_54543036893_36b15d2829_n_180_180_nofilter.jpg" },
+  { id: "h3", cat: "house", url: "https://loremflickr.com/cache/resized/65535_54459325933_659535a7f6_n_180_180_nofilter.jpg" },
+  { id: "h4", cat: "house", url: "https://loremflickr.com/cache/resized/65535_54452293698_696f7b6582_n_180_180_nofilter.jpg" },
+  { id: "h5", cat: "house", url: "https://loremflickr.com/cache/resized/65535_54449563298_2ef2271cdf_m_180_180_nofilter.jpg" },
   // Bridges
-  { id: "br1", cat: "bridge", url: "https://loremflickr.com/180/180/bridge?lock=51" },
-  { id: "br2", cat: "bridge", url: "https://loremflickr.com/180/180/suspension,bridge?lock=52" },
-  { id: "br3", cat: "bridge", url: "https://loremflickr.com/180/180/river,bridge?lock=53" },
-  { id: "br4", cat: "bridge", url: "https://loremflickr.com/180/180/arch,bridge?lock=54" },
+  { id: "br1", cat: "bridge", url: "https://loremflickr.com/cache/resized/65535_54393318804_8e616b0cc6_m_180_180_nofilter.jpg" },
+  { id: "br2", cat: "bridge", url: "https://loremflickr.com/cache/resized/65535_54368936937_9d2f351b74_n_180_180_nofilter.jpg" },
+  { id: "br3", cat: "bridge", url: "https://loremflickr.com/cache/resized/65535_54332034154_f74e4e9f67_n_180_180_nofilter.jpg" },
+  { id: "br4", cat: "bridge", url: "https://loremflickr.com/cache/resized/65535_54313443017_5ef7184051_n_180_180_nofilter.jpg" },
+  { id: "br5", cat: "bridge", url: "https://loremflickr.com/cache/resized/65535_54305442874_f5f8b4934f_n_180_180_nofilter.jpg" },
   // Buses
-  { id: "bu1", cat: "bus", url: "https://loremflickr.com/180/180/city,bus?lock=61" },
-  { id: "bu2", cat: "bus", url: "https://loremflickr.com/180/180/double,decker,bus?lock=62" },
-  { id: "bu3", cat: "bus", url: "https://loremflickr.com/180/180/transit,bus?lock=63" },
-  { id: "bu4", cat: "bus", url: "https://loremflickr.com/180/180/coach,bus?lock=64" },
+  { id: "bu1", cat: "bus", url: "https://loremflickr.com/cache/resized/65535_54450248777_a3daa985ae_180_180_nofilter.jpg" },
+  { id: "bu2", cat: "bus", url: "https://loremflickr.com/cache/resized/65535_54449396750_f04aa20cc9_n_180_180_nofilter.jpg" },
+  { id: "bu3", cat: "bus", url: "https://loremflickr.com/cache/resized/65535_54439656804_863f030f99_n_180_180_nofilter.jpg" },
+  { id: "bu4", cat: "bus", url: "https://loremflickr.com/cache/resized/65535_54421559597_2c03695956_n_180_180_nofilter.jpg" },
+  { id: "bu5", cat: "bus", url: "https://loremflickr.com/cache/resized/65535_54414880622_5975b39bd9_180_180_nofilter.jpg" },
 ];
 
 function shuffle<T>(arr: T[]): T[] { return [...arr].sort(() => Math.random() - 0.5); }
@@ -62,6 +65,14 @@ export default function RobotVerification({ onVerified }: Props) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState<"idle" | "wrong" | "success">("idle");
   const [attempts, setAttempts] = useState(0);
+
+  // Preload all images silently so they appear instantly
+  useEffect(() => {
+    POOL.forEach(img => {
+      const i = new Image();
+      i.src = img.url;
+    });
+  }, []);
 
   const toggle = (id: string) => {
     setSelected(prev => {

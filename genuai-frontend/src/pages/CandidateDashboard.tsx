@@ -17,7 +17,7 @@ interface Props {
 const ROLES = ["Software Engineer", "AI Engineer", "Data Scientist", "Frontend Developer", "Backend Developer", "Full Stack Developer", "DevOps Engineer", "Product Manager"];
 
 export default function CandidateDashboard({ user, onLogout, onInterview, onResume, onMock, onAMCAT }: Props) {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [resumeText, setResumeText] = useState("");
   const [skills, setSkills] = useState("");
@@ -111,15 +111,16 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
   const [selectedCompanies, setSelectedCompanies] = useState<number[]>([]);
   const [showSearchHub, setShowSearchHub] = useState(false);
   const [activeHubModule, setActiveHubModule] = useState<string | null>(null);
+  const [availableJobsList, setAvailableJobsList] = useState<any[]>([]);
+  const [targetJobs, setTargetJobs] = useState<number[]>([]);
 
   const userName = user?.user?.name || user?.name || "Candidate";
   const userEmail = user?.user?.email || user?.email || "";
   const userId = user?.user?.id || user?.id || 1;
 
   useEffect(() => {
-    axios.get(API + "/admin/companies")
-      .then(res => setAvailableCompanies(res.data))
-      .catch(() => { });
+    axios.get(API + "/admin/companies").then(res => setAvailableCompanies(res.data)).catch(() => { });
+    axios.get(API + "/jobs/list").then(res => setAvailableJobsList(res.data.jobs || [])).catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -571,13 +572,70 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: "8px", marginBottom: "28px" }}>
-        {["Profile and Resume", "Skill Test", "Voice Pitch", "Results"].map((s, i) => (
-          <div key={i} style={{ flex: 1, padding: "10px", textAlign: "center", borderRadius: "10px", background: step === i + 1 ? "linear-gradient(135deg, #667eea, #764ba2)" : step > i + 1 ? "#DCFCE7" : "#F1F5F9", color: step === i + 1 ? "#fff" : step > i + 1 ? "#16A34A" : "#94A3B8", fontSize: "13px", fontWeight: "bold" }}>
-            {i + 1}. {s}
+      {step > 0 && (
+        <div style={{ display: "flex", gap: "8px", marginBottom: "28px" }}>
+          {["Profile and Resume", "Skill Test", "Voice Pitch", "Results"].map((s, i) => (
+            <div key={i} style={{ flex: 1, padding: "10px", textAlign: "center", borderRadius: "10px", background: step === i + 1 ? "linear-gradient(135deg, #667eea, #764ba2)" : step > i + 1 ? "#DCFCE7" : "#F1F5F9", color: step === i + 1 ? "#fff" : step > i + 1 ? "#16A34A" : "#94A3B8", fontSize: "13px", fontWeight: "bold" }}>
+              {i + 1}. {s}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {step === 0 && (
+        <div style={{ maxWidth: "800px", margin: "40px auto" }}>
+          <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "40px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", textAlign: "center" }}>
+            <div style={{ fontSize: "48px", marginBottom: "16px" }}>🎯</div>
+            <h2 style={{ color: "#1E293B", margin: "0 0 12px", fontSize: "28px", fontWeight: "800" }}>Which companies are you interested in?</h2>
+            <p style={{ color: "#64748B", fontSize: "15px", margin: "0 0 32px" }}>Select one or more companies to view their open roles.</p>
+            
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "32px", textAlign: "left" }}>
+              {availableCompanies.length === 0 ? (
+                <div style={{ gridColumn: "span 2", fontSize: "14px", color: "#64748B", fontStyle: "italic", padding: "16px", background: "#F8FAFC", borderRadius: "12px", textAlign: "center" }}>Loading companies...</div>
+              ) : (
+                availableCompanies.map(c => (
+                  <div key={c.id} onClick={() => setSelectedCompanies(prev => prev.includes(c.id) ? prev.filter(id => id !== c.id) : [...prev, c.id])}
+                    style={{ padding: "16px", border: "2px solid " + (selectedCompanies.includes(c.id) ? "#667EEA" : "#E2E8F0"), borderRadius: "12px", background: selectedCompanies.includes(c.id) ? "#EEF2FF" : "#fff", cursor: "pointer", display: "flex", alignItems: "center", gap: "12px", transition: "all 0.2s" }}>
+                    <div style={{ width: "20px", height: "20px", borderRadius: "6px", border: "2px solid " + (selectedCompanies.includes(c.id) ? "#667EEA" : "#CBD5E1"), background: selectedCompanies.includes(c.id) ? "#667EEA" : "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {selectedCompanies.includes(c.id) && <span style={{ color: "#fff", fontSize: "12px", fontWeight: "bold" }}>✓</span>}
+                    </div>
+                    <span style={{ fontSize: "15px", color: selectedCompanies.includes(c.id) ? "#4338CA" : "#1E293B", fontWeight: selectedCompanies.includes(c.id) ? "700" : "600" }}>{c.name}</span>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {selectedCompanies.length > 0 && (
+              <div style={{ textAlign: "left", marginBottom: "32px", padding: "24px", background: "#F8FAFC", borderRadius: "16px", border: "1.5px solid #E2E8F0" }}>
+                <h3 style={{ margin: "0 0 16px", color: "#1E293B", fontSize: "18px", fontWeight: "700" }}>Available Vacancies</h3>
+                {availableJobsList.filter(j => selectedCompanies.includes(j.company_id)).length === 0 ? (
+                  <div style={{ color: "#64748B", fontSize: "14px" }}>No active vacancies posted by the selected companies right now. You can still continue to the general assessment.</div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                    {availableJobsList.filter(j => selectedCompanies.includes(j.company_id)).map(job => (
+                      <div key={job.id} onClick={() => setTargetJobs(prev => prev.includes(job.id) ? prev.filter(id => id !== job.id) : [...prev, job.id])}
+                        style={{ padding: "14px 16px", border: "2px solid " + (targetJobs.includes(job.id) ? "#00B87C" : "#E2E8F0"), borderRadius: "10px", background: targetJobs.includes(job.id) ? "#F0FDF4" : "#fff", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", transition: "all 0.2s" }}>
+                        <div>
+                          <div style={{ fontWeight: "700", color: targetJobs.includes(job.id) ? "#15803D" : "#1E293B", fontSize: "15px", marginBottom: "2px" }}>{job.title}</div>
+                          <div style={{ fontSize: "12px", color: "#64748B" }}>🏢 {job.company_name}</div>
+                        </div>
+                        <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: "2px solid " + (targetJobs.includes(job.id) ? "#00B87C" : "#CBD5E1"), background: targetJobs.includes(job.id) ? "#00B87C" : "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                           {targetJobs.includes(job.id) && <span style={{ color: "#fff", fontSize: "10px", fontWeight: "bold" }}>✓</span>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <button onClick={() => setStep(1)} disabled={selectedCompanies.length === 0} 
+              style={{ padding: "16px 40px", background: selectedCompanies.length === 0 ? "#E2E8F0" : "linear-gradient(135deg,#667EEA,#764BA2)", color: selectedCompanies.length === 0 ? "#94A3B8" : "#fff", border: "none", borderRadius: "14px", fontWeight: "800", fontSize: "16px", cursor: selectedCompanies.length === 0 ? "not-allowed" : "pointer", boxShadow: selectedCompanies.length === 0 ? "none" : "0 8px 25px rgba(102,126,234,0.3)", transition: "all 0.2s" }}>
+              Continue to Assessment →
+            </button>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
       {/* Practice Mode Modal */}
       {showPractice && (
@@ -824,22 +882,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
             <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>Your Skills (comma separated)</label>
             <input value={skills} onChange={e => setSkills(e.target.value)} placeholder="Python, React, SQL, Machine Learning..." style={{ ...inp, marginBottom: "14px" }} />
 
-            <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>🏢 Select Companies You're Interested In</label>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "14px" }}>
-              {availableCompanies.length === 0 ? (
-                <div style={{ gridColumn: "span 2", fontSize: "12px", color: "#64748B", fontStyle: "italic", padding: "10px", background: "#F8FAFC", borderRadius: "8px" }}>No companies available at the moment.</div>
-              ) : (
-                availableCompanies.map(c => (
-                  <div key={c.id} onClick={() => setSelectedCompanies(prev => prev.includes(c.id) ? prev.filter(id => id !== c.id) : [...prev, c.id])}
-                    style={{ padding: "10px", border: "1.5px solid " + (selectedCompanies.includes(c.id) ? "#667EEA" : "#E2E8F0"), borderRadius: "8px", background: selectedCompanies.includes(c.id) ? "#EEF2FF" : "#F8FAFC", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", transition: "all 0.2s" }}>
-                    <div style={{ width: "16px", height: "16px", borderRadius: "4px", border: "1.5px solid " + (selectedCompanies.includes(c.id) ? "#667EEA" : "#CBD5E1"), background: selectedCompanies.includes(c.id) ? "#667EEA" : "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {selectedCompanies.includes(c.id) && <span style={{ color: "#fff", fontSize: "10px", fontWeight: "bold" }}>✓</span>}
-                    </div>
-                    <span style={{ fontSize: "13px", color: selectedCompanies.includes(c.id) ? "#4338CA" : "#1E293B", fontWeight: selectedCompanies.includes(c.id) ? "700" : "500" }}>{c.name}</span>
-                  </div>
-                ))
-              )}
-            </div>
+            {/* Company selection has been moved to Step 0 */}
 
             {atsScore > 0 && <div style={{ padding: "10px 14px", background: "#DCFCE7", borderRadius: "10px", color: "#00B87C", marginBottom: "12px", fontWeight: "700", fontSize: "14px" }}>🎯 ATS Score: {atsScore}%</div>}
 

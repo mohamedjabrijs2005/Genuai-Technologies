@@ -7,6 +7,7 @@ const MODULES = [
   { icon:'🎙️', title:'SVAR Verbal Test', desc:'Speaking, listening, fluency — proctored', color:'#DC2626' },
   { icon:'🏆', title:'Hackathon Challenge', desc:'Real-world problem solving with code submission', color:'#059669' },
   { icon:'🤖', title:'AI Interview', desc:'Live interview with AI scoring on 10+ parameters', color:'#0891B2' },
+  { icon:'🗣️', title:'Group Discussion', desc:'Collaborative problem solving and communication', color:'#8B5CF6' },
   { icon:'📊', title:'Final Results', desc:'Comprehensive scorecard shared with company HR', color:'#D97706' },
 ];
 
@@ -40,7 +41,7 @@ export default function CompanyOverview({ user, onStartTest }: Props) {
         <h1 style={{ fontSize:'42px', fontWeight:'900', color:'#fff', margin:'0 0 12px', letterSpacing:'-1px' }}>GenuAI Technologies</h1>
         <p style={{ fontSize:'17px', color:'rgba(255,255,255,0.8)', margin:'0 0 8px' }}>AI-Powered Recruitment Intelligence Platform</p>
         <p style={{ fontSize:'14px', color:'rgba(255,255,255,0.6)', maxWidth:'560px', margin:'0 auto' }}>
-          We transform traditional hiring by evaluating candidates across six dimensions — skills, communication, problem-solving, aptitude, and personality — all powered by cutting-edge AI.
+          We transform traditional hiring by evaluating candidates across seven dimensions — skills, communication, problem-solving, aptitude, collaboration, and personality — all powered by cutting-edge AI.
         </p>
 
       </div>
@@ -49,7 +50,7 @@ export default function CompanyOverview({ user, onStartTest }: Props) {
       <div style={{ maxWidth:'1000px', margin:'0 auto', padding:'60px 24px' }}>
         <div style={{ textAlign:'center', marginBottom:'40px' }}>
           <span style={{ background:'#EFF6FF', color:'#2563EB', fontSize:'12px', fontWeight:'700', padding:'6px 16px', borderRadius:'20px', border:'1px solid #BFDBFE' }}>ASSESSMENT PIPELINE</span>
-          <h2 style={{ fontSize:'28px', fontWeight:'900', color:'#0F172A', margin:'16px 0 8px', letterSpacing:'-0.5px' }}>Your 6-Module Journey</h2>
+          <h2 style={{ fontSize:'28px', fontWeight:'900', color:'#0F172A', margin:'16px 0 8px', letterSpacing:'-0.5px' }}>Your 7-Module Journey</h2>
           <p style={{ color:'#64748B', fontSize:'14px' }}>Each module is carefully designed to evaluate a different competency</p>
         </div>
 
