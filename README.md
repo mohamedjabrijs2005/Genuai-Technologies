@@ -13,7 +13,7 @@
 ## 🏆 Achievement
 
 > **1st Rank — AI-PrepPulse Hackathon** among **60,000+ national participants**
-> Built by **Mohamed Jabri Jaffar Sadiq (Safik)**
+> Built by **Mohamed Jabri Jaffar Sadiq**
 > Sri Sairam Institute of Technology, Chennai — 2nd Year Engineering
 
 ---
