@@ -1,17 +1,11 @@
 import express from 'express';
 import pool from '../db';
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 
 const router = express.Router();
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-const FROM_EMAIL = `"GenuAI Technologies" <${process.env.EMAIL_USER}>`;
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+const FROM_EMAIL = `"GenuAI Technologies" <${process.env.SENDGRID_SENDER_EMAIL}>`;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://genuai-technologies.vercel.app';
 
 function generateRoomId(): string {
@@ -94,7 +88,7 @@ router.post('/schedule', async (req, res) => {
     const roomLink = `${FRONTEND_URL}?room=${room_id}`;
 
     if (candidateEmail) {
-      await transporter.sendMail({
+      await sgMail.send({
         from: FROM_EMAIL,
         to: candidateEmail,
         subject: `GenuAI Interview Scheduled - ${job_title} at ${companyName}`,

@@ -1,17 +1,11 @@
 import express from 'express';
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const router = express.Router();
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-const FROM_EMAIL = `"GenuAI Technologies" <${process.env.EMAIL_USER}>`;
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+const FROM_EMAIL = `"GenuAI Technologies" <${process.env.SENDGRID_SENDER_EMAIL}>`;
 
 router.post('/send', async (req, res) => {
   try {
@@ -146,7 +140,7 @@ router.post('/send', async (req, res) => {
 </body>
 </html>`;
 
-    await transporter.sendMail({
+    await sgMail.send({
       from: FROM_EMAIL,
       to: candidateEmail || process.env.RECRUITER_EMAIL!,
       subject: `Your GenuAI Assessment Result - ${verdict}`,
@@ -207,7 +201,7 @@ router.post('/verdict', async (req, res) => {
 <p style="color:#94A3B8;font-size:12px;margin:0;font-style:italic;">GenuAI Technologies — Filtering fake candidates. Finding real talent.</p>
 </div></div></body></html>`;
 
-    await transporter.sendMail({
+    await sgMail.send({
       from: FROM_EMAIL,
       to: process.env.RECRUITER_EMAIL!,
       subject,
