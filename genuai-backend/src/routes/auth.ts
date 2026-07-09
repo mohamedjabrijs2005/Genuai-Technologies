@@ -6,17 +6,11 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import { Strategy as LinkedInStrategy } from 'passport-linkedin-oauth2';
 import pool from '../db';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 const router = express.Router();
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-const FROM_EMAIL = `"GenuAI Technologies" <${process.env.EMAIL_USER}>`;
+const resend = new Resend(process.env.RESEND_API_KEY);
+const FROM_EMAIL = process.env.FROM_EMAIL || 'GenuAI Technologies <onboarding@resend.dev>';
 const otpStore: Record<string, { otp: string; expires: number; data: any }> = {};
 const FRONTEND_URL_PROD = 'https://genuai-technologies.vercel.app';
 const BACKEND_URL_PROD = 'https://genuai-technologies.onrender.com';
@@ -201,7 +195,7 @@ router.post('/send-otp', async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpStore[email] = { otp, expires: Date.now() + 10 * 60 * 1000, data: { name, email, password, role, phone, college } };
 
-    await transporter.sendMail({
+    await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
       subject: 'GenuAI Technologies — Email Verification OTP',
@@ -296,7 +290,7 @@ router.post('/forgot-password-otp', async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpStore[email] = { otp, expires: Date.now() + 10 * 60 * 1000, data: { email } };
 
-    await transporter.sendMail({
+    await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
       subject: 'GenuAI Technologies — Password Reset OTP',
