@@ -1,10 +1,17 @@
 import express from 'express';
 import pool from '../db';
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
 const router = express.Router();
-const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+const FROM_EMAIL = `"GenuAI Technologies" <${process.env.EMAIL_USER}>`;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://genuai-technologies.vercel.app';
 
 function generateRoomId(): string {
@@ -87,7 +94,7 @@ router.post('/schedule', async (req, res) => {
     const roomLink = `${FRONTEND_URL}?room=${room_id}`;
 
     if (candidateEmail) {
-      await resend.emails.send({
+      await transporter.sendMail({
         from: FROM_EMAIL,
         to: candidateEmail,
         subject: `GenuAI Interview Scheduled - ${job_title} at ${companyName}`,
