@@ -173,7 +173,6 @@ export default function App() {
       <CompanyDashboard
         user={user}
         onLogout={handleLogout}
-        onInterview={goToInterview}
       />
     );
   }
