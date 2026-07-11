@@ -140,6 +140,18 @@ export default function App() {
   //  RENDER TREE
   // ══════════════════════════════════════════════════════════════════════
 
+  const pathname = window.location.pathname;
+  if (pathname === "/test-admin") {
+    return <AdminDashboard user={{ user: { name: "Test Admin", role: "admin", id: 1 }, token: "test_token" }} onLogout={() => window.location.href="/"} />;
+  }
+  if (pathname === "/test-company") {
+    // Note: CompanyDashboard no longer takes onInterview in the updated version
+    return <CompanyDashboard user={{ user: { name: "Test Company", role: "company", id: 9 }, token: "test_token" }} onLogout={() => window.location.href="/"} />;
+  }
+  if (pathname === "/test-candidate") {
+    return <CandidatePipeline user={{ user: { name: "Test Candidate", role: "candidate", id: 101, email: "candidate@test.com" }, token: "test_token" }} onLogout={() => window.location.href="/"} onInterview={() => {}} />;
+  }
+
   // 1. Mobile secondary camera
   if (isMobile && mobileRoom) {
     return <MobileCam roomId={mobileRoom} />;

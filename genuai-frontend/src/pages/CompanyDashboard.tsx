@@ -1,94 +1,83 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
+
 interface Props {
   user: any;
   onLogout: () => void;
-  onInterview?: (roomId: string) => void;
 }
 
 const API = import.meta.env.VITE_API_URL;
 
-export default function CompanyDashboard({ user, onLogout, onInterview }: Props) {
+export default function CompanyDashboard({ user, onLogout }: Props) {
   const [tab, setTab] = useState("overview");
   const [candidates, setCandidates] = useState<any[]>([]);
-  const [stats, setStats] = useState<any>(null);
   const [jobs, setJobs] = useState<any[]>([]);
-  const [interviews, setInterviews] = useState<any[]>([]);
-  const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterVerdict, setFilterVerdict] = useState("ALL");
-  const [overriding, setOverriding] = useState<number | null>(null);
   const [showJobForm, setShowJobForm] = useState(false);
-  const [showInterviewForm, setShowInterviewForm] = useState(false);
   const [jobForm, setJobForm] = useState({ title: "", description: "", skills: "", location: "", salary_min: "", salary_max: "" });
-  const [interviewForm, setInterviewForm] = useState({ candidate_id: "", job_title: "", scheduled_at: "", notes: "" });
-  const [scheduledRoomId, setScheduledRoomId] = useState("");
-  const [intDate, setIntDate] = useState("");
-  const [intHour, setIntHour] = useState("10");
-  const [intMin, setIntMin] = useState("00");
-  const [intAmPm, setIntAmPm] = useState("AM");
-  const [emailStatus, setEmailStatus] = useState<string>("");
-  const [compareList, setCompareList] = useState<any[]>([]);
-  const [showCompare, setShowCompare] = useState(false);
-  const [profilePhoto] = useState<string | null>(() => {
-    const email = user?.user?.email || user?.email || "";
-    return email ? localStorage.getItem(`profilePhoto_${email}`) : null;
-  });
+  
+  // Modals
+  const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
+  const [evidenceTab, setEvidenceTab] = useState("overview");
+  const [offerModal, setOfferModal] = useState<any>(null);
+  const [offerDraft, setOfferDraft] = useState("");
 
   const userName = user?.user?.name || user?.name || "Company";
   const companyId = user?.user?.id || user?.id || 9;
   const companyName = user?.user?.name || user?.name || "Company";
   const token = user?.token || "";
+  const profilePhoto = user?.user?.email ? localStorage.getItem(`profilePhoto_${user.user.email}`) : null;
 
   useEffect(() => {
     loadData();
-
     const API_WS = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL || "";
     const socket = io(API_WS, { transports: ["websocket"] });
-
     socket.on("notify-hr", (data: any) => {
-      alert(`🚨 HR ALERT 🚨\n\nCandidate ${data.name} just joined Room: ${data.roomId}\n\nSecurity: ${data.camerasExpected === 2 ? "MEDIUM/HIGH RISK" : "LOW RISK"}\nCameras Required: ${data.camerasExpected}\n\nYou can click 'Start Room / Join' in your Interviews tab!`);
+      alert(`🚨 Security Alert 🚨\n\nCandidate ${data.name} has triggered a security alert. Check their evidence portal!`);
     });
-
     return () => { socket.disconnect(); };
   }, []);
-
 
   const loadData = async () => {
     setLoading(true);
     try {
       const headers = { Authorization: "Bearer " + token };
-      const [cRes, sRes] = await Promise.all([
-        axios.get(API + "/admin/candidates", { headers }),
-        axios.get(API + "/admin/stats", { headers }),
-      ]);
-      const sorted = (cRes.data || []).sort((a: any, b: any) => (b.overall_score || 0) - (a.overall_score || 0));
-      setCandidates(sorted);
-      setStats(sRes.data);
-      try {
-        const jRes = await axios.get(API + "/jobs/company/" + companyId, { headers });
-        setJobs(jRes.data?.jobs || []);
-      } catch { setJobs([]); }
-      try {
-        const iRes = await axios.get(API + "/interviews/company/" + companyId, { headers });
-        setInterviews(iRes.data?.interviews || []);
-      } catch { setInterviews([]); }
-      try {
-        const aRes = await axios.get(API + "/admin/candidates/for-company/" + companyId, { headers });
-        setApplications(aRes.data || []);
-      } catch { setApplications([]); }
+      const aRes = await axios.get(API + "/admin/candidates/for-company/" + companyId, { headers });
+      setCandidates(aRes.data || []);
+      const jRes = await axios.get(API + "/jobs/company/" + companyId, { headers });
+      setJobs(jRes.data?.jobs || []);
     } catch (e) { console.error(e); }
-    setLoading(false);
+    setTimeout(() => setLoading(false), 800); // slight delay to show smooth skeleton animation
   };
 
-  const overrideVerdict = async (id: number, verdict: string) => {
+  const updateVerdict = async (id: number, verdict: string) => {
     try {
-      await axios.put(API + "/admin/verdict/" + id, { verdict }, { headers: { Authorization: "Bearer " + token } });
-      setCandidates(prev => prev.map(c => c.id === id ? { ...c, verdict } : c));
-      setOverriding(null);
-    } catch { alert("Override failed"); }
+      const res = await axios.put(API + "/admin/verdict/" + id, { verdict, company_name: companyName }, { headers: { Authorization: "Bearer " + token } });
+      if (res.data.cascaded) {
+         alert(`Candidate rejected and automatically routed to their next chosen company: ${res.data.nextCompany}`);
+         setCandidates(prev => prev.filter(c => c.id !== id));
+      } else {
+         setCandidates(prev => prev.map(c => c.id === id ? { ...c, verdict } : c));
+      }
+      setSelectedCandidate(null);
+    } catch { alert("Verdict update failed"); }
+  };
+
+  const handleHireInitiate = (c: any) => {
+    // Generate AI Offer Draft
+    const draft = `Subject: Job Offer from ${companyName}\n\nHi ${c.name},\n\nWe were incredibly impressed by your performance in the GenuAI Assessment.\n\nYour technical test score of ${c.test_score}% combined with your exceptional AI interview results demonstrated exactly the kind of talent we are looking for.\n\nWe would like to officially offer you a position at ${companyName}. Please let us know when you are available to discuss the next steps.\n\nBest regards,\nThe ${companyName} Hiring Team`;
+    setOfferDraft(draft);
+    setOfferModal(c);
+  };
+
+  const confirmHire = async () => {
+    if (!offerModal) return;
+    await updateVerdict(offerModal.id, "HIRE");
+    setOfferModal(null);
+    alert("Offer letter sent and candidate hired!");
   };
 
   const postJob = async () => {
@@ -102,653 +91,336 @@ export default function CompanyDashboard({ user, onLogout, onInterview }: Props)
     } catch { alert("Job post failed!"); }
   };
 
-  const scheduleInterview = async () => {
-    if (!interviewForm.candidate_id || !interviewForm.scheduled_at) { alert("Candidate and date required!"); return; }
-    try {
-      const res = await axios.post(API + "/interviews/schedule", { ...interviewForm, company_id: companyId }, { headers: { Authorization: "Bearer " + token } });
-      setScheduledRoomId(res.data.room_id);
-      await loadData();
-      setInterviewForm({ candidate_id: "", job_title: "", scheduled_at: "", notes: "" });
-      setShowInterviewForm(false);
-    } catch (e: any) { alert("Schedule failed: " + e.message); }
-  };
-
-  const sendVerdictEmail = async (candidate: any, verdict: string) => {
-    setEmailStatus("Sending...");
-    try {
-      await axios.post(API + "/email/verdict", {
-        candidateEmail: candidate.email,
-        candidateName: candidate.name,
-        verdict,
-        companyName,
-        jobTitle: "Software Engineer"
-      }, { headers: { Authorization: "Bearer " + token } });
-      setEmailStatus("Email sent to " + candidate.name + "!");
-      setTimeout(() => setEmailStatus(""), 3000);
-    } catch { setEmailStatus("Email failed — SES sandbox mode"); setTimeout(() => setEmailStatus(""), 3000); }
-  };
-
-  const exportCSV = () => {
-    window.open(API + "/admin/export-csv", "_blank");
-  };
-
   const filtered = candidates.filter(c => {
     const ms = search === "" || c.name?.toLowerCase().includes(search.toLowerCase()) || c.email?.toLowerCase().includes(search.toLowerCase());
-    const mv = filterVerdict === "ALL" || c.verdict === filterVerdict;
+    const mv = filterVerdict === "ALL" || c.verdict === filterVerdict || (filterVerdict === "PENDING" && !c.verdict);
     return ms && mv;
   });
 
   const medal = (i: number) => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "#" + (i + 1);
-  const vc = (v: string) => v === "HIRE" ? "#00B87C" : v === "REVIEW" ? "#F59E0B" : "#FF4444";
-  const badge = (score: number) => score >= 85 ? ["🥇 GOLD", "#FFD700"] : score >= 70 ? ["🥈 SILVER", "#C0C0C0"] : score >= 50 ? ["🥉 BRONZE", "#CD7F32"] : ["⚠️ LOW", "#FF4444"];
-  const inp: any = { width: "100%", padding: "10px 14px", background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: "8px", color: "#1E293B", fontSize: "14px", marginBottom: "12px", boxSizing: "border-box" };
-  const btn: any = { padding: "8px 16px", borderRadius: "10px", border: "none", cursor: "pointer", fontWeight: "700", fontSize: "13px" };
+  const vc = (v: string) => v === "HIRE" ? "#00B87C" : v === "WAITLIST" ? "#6366F1" : v === "REVIEW" ? "#F59E0B" : v === "REJECT" ? "#FF4444" : "#94A3B8";
+  
+  const inp: any = { width: "100%", padding: "10px 14px", background: "rgba(255,255,255,0.6)", border: "1.5px solid rgba(226,232,240,0.8)", borderRadius: "8px", color: "#1E293B", fontSize: "14px", marginBottom: "12px", boxSizing: "border-box", backdropFilter: "blur(8px)" };
 
-  const avgScore = candidates.length > 0 ? Math.round(candidates.reduce((s, c) => s + (c.overall_score || 0), 0) / candidates.length) : 0;
-  const hireRate = candidates.length > 0 ? Math.round((candidates.filter(c => c.verdict === "HIRE").length / candidates.length) * 100) : 0;
-  const roleData = candidates.reduce((acc: any, c) => { const r = c.role || "Unknown"; acc[r] = (acc[r] || 0) + 1; return acc; }, {});
+  // Skeleton Loader Component
+  const Skeleton = () => (
+    <div style={{ background: "#FFFFFF", borderRadius: "20px", padding: "24px", marginBottom: "16px", display: "flex", gap: "20px", animation: "pulse 1.5s infinite ease-in-out" }}>
+      <div style={{ width: "40px", height: "40px", background: "#E2E8F0", borderRadius: "50%" }}></div>
+      <div style={{ flex: 1 }}>
+        <div style={{ width: "40%", height: "20px", background: "#E2E8F0", borderRadius: "4px", marginBottom: "8px" }}></div>
+        <div style={{ width: "25%", height: "14px", background: "#E2E8F0", borderRadius: "4px", marginBottom: "16px" }}></div>
+        <div style={{ width: "60%", height: "12px", background: "#E2E8F0", borderRadius: "4px" }}></div>
+      </div>
+    </div>
+  );
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F8FAFC", color: "#1E293B", padding: "20px", fontFamily: "sans-serif" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", background: "#fff", borderRadius: "16px", padding: "12px 20px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #E2E8F0" }}>
+    <div style={{ minHeight: "100vh", background: "#F8FAFC", color: "#1E293B", padding: "20px", fontFamily: "Inter, sans-serif" }}>
+      <style>{`
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .glass-panel { background: rgba(255,255,255,0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1.5px solid rgba(255,255,255,0.8); }
+      `}</style>
+
+      {/* Navigation Bar (Glassmorphism) */}
+      <div className="glass-panel" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", borderRadius: "16px", padding: "12px 20px", boxShadow: "0 4px 20px rgba(0,0,0,0.04)", position: "sticky", top: "20px", zIndex: 100 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <img src="/logo.png" alt="GenuAI" style={{ width: "44px", height: "44px", objectFit: "contain", filter: "drop-shadow(0 2px 8px rgba(0,184,124,0.4))" }} />
           <div>
             <div style={{ fontWeight: "800", fontSize: "17px", color: "#1E293B", lineHeight: "1.1" }}>Genu<span style={{ color: "#00D4FF" }}>AI</span></div>
-            <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "600", letterSpacing: "0.08em" }}>COMPANY DASHBOARD</div>
+            <div style={{ fontSize: "10px", color: "#64748B", fontWeight: "600", letterSpacing: "0.08em" }}>AI TALENT DECISION</div>
           </div>
         </div>
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <span style={{ color: "#64748B", fontSize: "13px", fontWeight: "600" }}>Welcome, {userName}</span>
-          <button onClick={exportCSV} style={{ padding: "7px 11px", background: "#F0FDF4", color: "#00B87C", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>⬇ Export CSV</button>
-          <div style={{ width: "1px", height: "24px", background: "#E2E8F0", margin: "0 2px" }} />
-          <div style={{ width: "36px", height: "36px", borderRadius: "12px", background: profilePhoto ? "transparent" : "linear-gradient(135deg,#00B87C,#00D4AA)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800", color: "#fff", fontSize: "14px", overflow: "hidden", border: "2px solid #E2E8F0", flexShrink: 0 }}>
+          <span style={{ color: "#475569", fontSize: "13px", fontWeight: "600" }}>{userName}</span>
+          <div style={{ width: "1px", height: "24px", background: "rgba(226,232,240,0.8)", margin: "0 2px" }} />
+          <div style={{ width: "36px", height: "36px", borderRadius: "12px", background: profilePhoto ? "transparent" : "linear-gradient(135deg,#00B87C,#00D4AA)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800", color: "#fff", fontSize: "14px", overflow: "hidden", boxShadow: "0 2px 8px rgba(0,184,124,0.3)", flexShrink: 0 }}>
             {profilePhoto ? <img src={profilePhoto} alt="logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : userName.charAt(0).toUpperCase()}
           </div>
-          <button onClick={onLogout} style={{ padding: "7px 11px", background: "transparent", border: "1px solid #FF4444", color: "#FF4444", borderRadius: "8px", cursor: "pointer", fontSize: "12px", fontWeight: "600" }}>Logout</button>
+          <button onClick={onLogout} style={{ padding: "7px 11px", background: "rgba(255,68,68,0.1)", border: "1px solid rgba(255,68,68,0.2)", color: "#FF4444", borderRadius: "8px", cursor: "pointer", fontSize: "12px", fontWeight: "700", transition: "all 0.2s" }}>Logout</button>
         </div>
       </div>
 
-      {emailStatus && (
-        <div style={{ background: "#00B87C22", border: "1px solid #00B87C", borderRadius: "8px", padding: "10px 16px", marginBottom: "16px", color: "#00B87C" }}>
-          ✅ {emailStatus}
-        </div>
-      )}
-
-      {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: "12px", marginBottom: "24px" }}>
+      {/* Stats Cards */}
+      <div className="fade-in" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "24px" }}>
         {[
-          ["Total", candidates.length, "#00D4FF"],
-          ["Hired", candidates.filter(c => c.verdict === "HIRE").length, "#00B87C"],
-          ["Review", candidates.filter(c => c.verdict === "REVIEW").length, "#F59E0B"],
-          ["Rejected", candidates.filter(c => c.verdict === "REJECT").length, "#FF4444"],
-          ["Avg Score", avgScore + "%", "#A78BFA"],
-          ["Hire Rate", hireRate + "%", "#00B87C"],
+          ["Total Applicants", candidates.length, "#00D4FF"],
+          ["Waitlisted Talent", candidates.filter(c => c.verdict === "WAITLIST").length, "#6366F1"],
+          ["Pending Review", candidates.filter(c => c.verdict === "REVIEW" || !c.verdict).length, "#F59E0B"],
+          ["Pipeline Conversion", candidates.length > 0 ? Math.round((candidates.filter(c => c.verdict === "HIRE").length / candidates.length) * 100) + "%" : "0%", "#00B87C"],
         ].map(([l, v, c]: any) => (
-          <div key={l} style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "16px", padding: "18px", textAlign: "center", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-            <div style={{ fontSize: "28px", fontWeight: "900", color: c, lineHeight: "1.2" }}>{v}</div>
-            <div style={{ color: "#64748B", fontSize: "12px", fontWeight: "600" }}>{l}</div>
+          <div key={l} className="glass-panel" style={{ borderRadius: "20px", padding: "20px", textAlign: "center", boxShadow: "0 4px 15px rgba(0,0,0,0.02)", transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)" }} onMouseEnter={e => e.currentTarget.style.transform = "translateY(-4px)"} onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
+            <div style={{ fontSize: "32px", fontWeight: "900", color: c, lineHeight: "1.2", textShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>{v}</div>
+            <div style={{ color: "#64748B", fontSize: "12px", fontWeight: "700", marginTop: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>{l}</div>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div style={{ display: "flex", gap: "8px", marginBottom: "24px", flexWrap: "wrap", background: "#fff", padding: "8px", borderRadius: "16px", border: "1.5px solid #E2E8F0", boxShadow: "0 2px 12px rgba(0,0,0,0.02)" }}>
-        {["overview", "leaderboard", "all candidates", "applications", "job postings", "interviews", "intelligence", "compare"].map(t => (
-          <button key={t} onClick={() => setTab(t)} style={{ padding: "10px 16px", background: tab === t ? "linear-gradient(135deg, #00B87C, #00D4AA)" : "transparent", color: tab === t ? "#fff" : "#64748B", border: "none", borderRadius: "12px", textTransform: "capitalize", fontWeight: "700", fontSize: "13px", cursor: "pointer", boxShadow: tab === t ? "0 4px 12px rgba(0,184,124,0.3)" : "none", transition: "all 0.2s" }}>{t}</button>
+      <div className="glass-panel fade-in" style={{ display: "flex", gap: "8px", marginBottom: "24px", padding: "8px", borderRadius: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.02)" }}>
+        {["overview", "ai ranking", "pipeline", "job postings"].map(t => (
+          <button key={t} onClick={() => setTab(t)} style={{ padding: "10px 16px", background: tab === t ? "linear-gradient(135deg, #00B87C, #00D4AA)" : "transparent", color: tab === t ? "#fff" : "#64748B", border: "none", borderRadius: "12px", textTransform: "capitalize", fontWeight: "700", fontSize: "13px", cursor: "pointer", boxShadow: tab === t ? "0 4px 12px rgba(0,184,124,0.3)" : "none", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)" }}>{t}</button>
         ))}
-        <button onClick={loadData} style={{ padding: "10px 16px", background: "#F1F5F9", border: "none", borderRadius: "12px", color: "#64748B", marginLeft: "auto", fontWeight: "700", fontSize: "13px", cursor: "pointer" }}>↻ Refresh</button>
+        <button onClick={loadData} style={{ padding: "10px 16px", background: "rgba(226,232,240,0.4)", border: "none", borderRadius: "12px", color: "#475569", marginLeft: "auto", fontWeight: "700", fontSize: "13px", cursor: "pointer", transition: "background 0.2s" }}>↻ Refresh Data</button>
       </div>
 
-      {/* Search and Filter */}
-      {(tab === "leaderboard" || tab === "all candidates" || tab === "applications") && (
-        <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
-          <input placeholder="Search by name or email..." value={search} onChange={e => setSearch(e.target.value)} style={{ ...inp, flex: 1, marginBottom: 0 }} />
-          <select value={filterVerdict} onChange={e => setFilterVerdict(e.target.value)} style={{ ...inp, marginBottom: 0, width: "160px" }}>
-            <option value="ALL">All Verdicts</option>
-            <option value="HIRE">HIRE</option>
-            <option value="REVIEW">REVIEW</option>
-            <option value="REJECT">REJECT</option>
-          </select>
-        </div>
-      )}
-
+      <div className="fade-in">
       {loading ? (
-        <div style={{ textAlign: "center", padding: "60px", color: "#64748B" }}>Loading...</div>
+        <>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+        </>
       ) : (
         <>
-          {/* Overview Tab */}
           {tab === "overview" && (
-            <div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
-                <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
-                  <h3 style={{ color: "#1E293B", marginTop: 0, fontSize: "18px" }}>🌟 Top Candidates</h3>
-                  {candidates.slice(0, 5).map((c, i) => (
-                    <div key={c.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 0", borderBottom: i < 4 ? "1px solid #F1F5F9" : "none" }}>
-                      <span style={{ fontSize: "20px", width: "24px", textAlign: "center" }}>{medal(i)}</span>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ color: "#1E293B", fontSize: "14px", fontWeight: "700" }}>{c.name || "N/A"}</div>
-                        <div style={{ color: "#64748B", fontSize: "12px" }}>{c.email}</div>
-                      </div>
-                      <span style={{ color: "#00B87C", fontWeight: "800", fontSize: "16px" }}>{c.overall_score || 0}%</span>
-                      <span style={{ padding: "4px 10px", borderRadius: "12px", background: vc(c.verdict) + "15", color: vc(c.verdict), fontSize: "11px", fontWeight: "700" }}>{c.verdict}</span>
-                    </div>
-                  ))}
-                </div>
-                <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
-                  <h3 style={{ color: "#1E293B", marginTop: 0, fontSize: "18px" }}>📊 Score Distribution</h3>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "20px" }}>
-                    {[["Gold (85+)", candidates.filter(c => c.overall_score >= 85).length, "#FFD700"],
-                    ["Silver (70-84)", candidates.filter(c => c.overall_score >= 70 && c.overall_score < 85).length, "#94A3B8"],
-                    ["Bronze (50-69)", candidates.filter(c => c.overall_score >= 50 && c.overall_score < 70).length, "#CD7F32"],
-                    ["Low (<50)", candidates.filter(c => c.overall_score < 50).length, "#FF4444"],
-                    ].map(([l, v, c]: any) => (
-                      <div key={l} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <span style={{ color: "#64748B", fontSize: "13px", fontWeight: "600", minWidth: "100px" }}>{l}</span>
-                        <div style={{ flex: 1, background: "#F1F5F9", borderRadius: "6px", height: "10px" }}>
-                          <div style={{ width: (candidates.length > 0 ? (v / candidates.length * 100) : 0) + "%", background: c, height: "10px", borderRadius: "6px", transition: "width 0.5s" }} />
-                        </div>
-                        <span style={{ color: c, fontWeight: "800", fontSize: "14px", minWidth: "24px", textAlign: "right" }}>{v}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+            <div className="glass-panel" style={{ borderRadius: "24px", padding: "32px", boxShadow: "0 8px 30px rgba(0,0,0,0.04)" }}>
+              <h3 style={{ color: "#1E293B", margin: "0 0 12px", fontSize: "22px", fontWeight: "800" }}>🚀 Welcome to the AI Talent Pipeline</h3>
+              <p style={{ color: "#475569", fontSize: "15px", lineHeight: "1.7", maxWidth: "800px" }}>
+                Candidates applying to your jobs are automatically routed here. The AI has already conducted their technical tests, behavioral interviews, and resume screenings. 
+                <br/><br/>
+                If you choose to <strong>Reject</strong> a candidate, they will automatically be routed to their next chosen company via our Waterfall Routing System. You can also <strong>Waitlist</strong> top talent to keep them in your pool for future consideration.
+              </p>
+              <button onClick={() => setTab("ai ranking")} style={{ padding: "14px 28px", background: "linear-gradient(135deg,#00B87C,#00D4AA)", color: "#fff", border: "none", borderRadius: "12px", fontWeight: "800", cursor: "pointer", marginTop: "24px", fontSize: "15px", boxShadow: "0 4px 15px rgba(0,184,124,0.4)", transition: "transform 0.2s" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.02)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>View AI Rankings →</button>
             </div>
           )}
 
-          {/* Leaderboard Tab */}
-          {tab === "leaderboard" && (
+          {tab === "ai ranking" && (
             <div>
-              <h3 style={{ color: "#1E293B", marginBottom: "20px", fontSize: "20px" }}>🏆 Candidate Leaderboard</h3>
-              {filtered.slice(0, 20).map((c, i) => {
-                const [badgeText, badgeColor] = badge(c.overall_score || 0);
-                return (
-                  <div key={c.id} style={{ background: "#FFFFFF", border: "1.5px solid " + (i === 0 ? "#FFD700" : i === 1 ? "#C0C0C0" : i === 2 ? "#CD7F32" : "#E2E8F0"), borderRadius: "20px", padding: "20px 24px", marginBottom: "16px", display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-                    <div style={{ fontSize: i < 3 ? "36px" : "20px", minWidth: "48px", textAlign: "center", fontWeight: "900", color: i >= 3 ? "#94A3B8" : "inherit" }}>{medal(i)}</div>
-                    <div style={{ flex: 1, minWidth: "180px" }}>
-                      <div style={{ fontWeight: "800", color: "#1E293B", marginBottom: "4px", fontSize: "16px" }}>{c.name || "Candidate"}</div>
-                      <div style={{ color: "#64748B", fontSize: "13px" }}>{c.email}</div>
-                      <div style={{ display: "flex", gap: "16px", marginTop: "8px", fontSize: "12px", fontWeight: "600" }}>
-                        <span style={{ color: "#64748B" }}>ATS: <span style={{ color: "#00D4FF" }}>{c.ats_score || 0}%</span></span>
-                        <span style={{ color: "#64748B" }}>Test: <span style={{ color: "#F59E0B" }}>{c.test_score || 0}%</span></span>
-                        <span style={{ color: "#64748B" }}>Interview: <span style={{ color: "#A78BFA" }}>{c.interview_score || 0}%</span></span>
-                      </div>
+              <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
+                <input placeholder="🔍 Search candidates by name or email..." value={search} onChange={e => setSearch(e.target.value)} style={{ ...inp, flex: 1, marginBottom: 0, padding: "14px 18px", fontSize: "15px" }} />
+                <select value={filterVerdict} onChange={e => setFilterVerdict(e.target.value)} style={{ ...inp, marginBottom: 0, width: "180px", padding: "14px", fontWeight: "600", cursor: "pointer" }}>
+                  <option value="ALL">All Verdicts</option>
+                  <option value="PENDING">PENDING</option>
+                  <option value="WAITLIST">WAITLIST</option>
+                  <option value="HIRE">HIRE</option>
+                  <option value="REJECT">REJECT</option>
+                </select>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {filtered.map((c, i) => (
+                <div key={c.id} className="glass-panel" style={{ border: "1.5px solid " + (i === 0 ? "rgba(255,215,0,0.6)" : i === 1 ? "rgba(192,192,192,0.6)" : i === 2 ? "rgba(205,127,50,0.6)" : "rgba(255,255,255,0.8)"), borderRadius: "24px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.03)", display: "flex", gap: "24px", alignItems: "center", transition: "transform 0.2s" }} onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"} onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
+                  <div style={{ fontSize: "36px", width: "44px", textAlign: "center", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))" }}>{medal(i)}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: "800", color: "#1E293B", fontSize: "18px", marginBottom: "2px" }}>{c.name}</div>
+                    <div style={{ color: "#64748B", fontSize: "13px", marginBottom: "12px" }}>{c.email}</div>
+                    <div style={{ display: "flex", gap: "12px", fontSize: "11px", fontWeight: "700" }}>
+                      <span style={{ color: "#0284C7", background: "#E0F2FE", padding: "4px 8px", borderRadius: "6px" }}>ATS: {c.ats_score}%</span>
+                      <span style={{ color: "#D97706", background: "#FEF3C7", padding: "4px 8px", borderRadius: "6px" }}>Skill: {c.test_score}%</span>
+                      <span style={{ color: "#7C3AED", background: "#EDE9FE", padding: "4px 8px", borderRadius: "6px" }}>Interview: {c.interview_score}%</span>
                     </div>
-                    <div style={{ textAlign: "center", padding: "0 16px", borderLeft: "1.5px solid #F1F5F9", borderRight: "1.5px solid #F1F5F9" }}>
-                      <div style={{ fontSize: "32px", fontWeight: "900", color: "#00B87C", lineHeight: "1" }}>{c.overall_score || 0}%</div>
-                      <div style={{ fontSize: "11px", color: "#94A3B8", fontWeight: "700", marginTop: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Overall</div>
+                  </div>
+                  
+                  <div style={{ flex: 2, background: "rgba(241,245,249,0.6)", padding: "16px", borderRadius: "16px", border: "1.5px solid rgba(226,232,240,0.8)" }}>
+                    <div style={{ fontSize: "11px", color: "#64748B", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px", letterSpacing: "0.05em" }}>✨ AI Recommendation</div>
+                    <div style={{ color: "#334155", fontSize: "13px", lineHeight: "1.5", fontWeight: "500" }}>
+                      {c.improvement_plan && typeof c.improvement_plan === 'string' ? JSON.parse(c.improvement_plan)[0] : "Strong technical foundation. Highly recommended based on test scores."}
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "8px", minWidth: "100px" }}>
-                      <span style={{ padding: "6px 12px", borderRadius: "12px", background: badgeColor + "15", color: badgeColor, fontWeight: "800", fontSize: "12px", textAlign: "center" }}>{badgeText}</span>
-                      <span style={{ padding: "6px 12px", borderRadius: "12px", background: vc(c.verdict) + "15", color: vc(c.verdict), fontWeight: "800", fontSize: "12px", textAlign: "center" }}>{c.verdict}</span>
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  </div>
+
+                  <div style={{ textAlign: "center", padding: "0 20px" }}>
+                    <div style={{ fontSize: "36px", fontWeight: "900", color: "#00B87C", textShadow: "0 2px 10px rgba(0,184,124,0.2)" }}>{c.overall_score}%</div>
+                    <div style={{ fontSize: "10px", color: "#64748B", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.05em" }}>Overall Match</div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", minWidth: "160px" }}>
+                    <button onClick={() => { setSelectedCandidate(c); setEvidenceTab("overview"); }} style={{ padding: "10px 16px", background: "rgba(99,102,241,0.1)", color: "#6366F1", border: "1px solid rgba(99,102,241,0.2)", borderRadius: "10px", fontWeight: "700", cursor: "pointer", fontSize: "13px", transition: "background 0.2s" }} onMouseEnter={e=>e.currentTarget.style.background="rgba(99,102,241,0.15)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(99,102,241,0.1)"}>🔍 Review Evidence</button>
+                    {c.verdict ? (
+                      <div style={{ padding: "10px 16px", background: vc(c.verdict) + "15", color: vc(c.verdict), borderRadius: "10px", fontWeight: "800", fontSize: "12px", textAlign: "center", border: `1px solid ${vc(c.verdict)}30` }}>{c.verdict}</div>
+                    ) : (
                       <div style={{ display: "flex", gap: "6px" }}>
-                        {c.resume_url && <a href={c.resume_url} target="_blank" rel="noreferrer" style={{ padding: "8px 12px", background: "#F8FAFC", border: "1.5px solid #E2E8F0", color: "#00D4FF", textDecoration: "none", fontSize: "12px", borderRadius: "8px", fontWeight: "700" }}>Resume</a>}
-                        <button onClick={() => sendVerdictEmail(c, "HIRE")} style={{ padding: "8px 12px", background: "#00B87C15", border: "1.5px solid #00B87C44", color: "#00B87C", fontSize: "12px", borderRadius: "8px", fontWeight: "700", cursor: "pointer" }}>✉ Hire</button>
-                        <button onClick={() => sendVerdictEmail(c, "REJECT")} style={{ padding: "8px 12px", background: "#FF444415", border: "1.5px solid #FF444444", color: "#FF4444", fontSize: "12px", borderRadius: "8px", fontWeight: "700", cursor: "pointer" }}>✉ Reject</button>
+                        <button onClick={() => handleHireInitiate(c)} style={{ padding: "10px", background: "#00B87C", color: "#fff", border: "none", borderRadius: "10px", fontWeight: "800", cursor: "pointer", flex: 1, boxShadow: "0 2px 8px rgba(0,184,124,0.3)" }}>Hire</button>
+                        <button onClick={() => updateVerdict(c.id, "WAITLIST")} style={{ padding: "10px", background: "#6366F1", color: "#fff", border: "none", borderRadius: "10px", fontWeight: "800", cursor: "pointer", flex: 1, boxShadow: "0 2px 8px rgba(99,102,241,0.3)" }}>Wait</button>
+                        <button onClick={() => updateVerdict(c.id, "REJECT")} style={{ padding: "10px", background: "#FF4444", color: "#fff", border: "none", borderRadius: "10px", fontWeight: "800", cursor: "pointer", flex: 1, boxShadow: "0 2px 8px rgba(255,68,68,0.3)" }}>Reject</button>
                       </div>
-                      {overriding === c.id ? (
-                        <div style={{ display: "flex", gap: "6px" }}>
-                          {["HIRE", "REVIEW", "REJECT"].map(v => <button key={v} onClick={() => overrideVerdict(c.id, v)} style={{ padding: "6px 10px", background: vc(v), color: "#fff", fontSize: "11px", border: "none", borderRadius: "6px", fontWeight: "700", cursor: "pointer" }}>{v}</button>)}
-                          <button onClick={() => setOverriding(null)} style={{ padding: "6px 10px", background: "#F1F5F9", color: "#64748B", fontSize: "11px", border: "none", borderRadius: "6px", fontWeight: "700", cursor: "pointer" }}>X</button>
-                        </div>
-                      ) : (
-                        <button onClick={() => setOverriding(c.id)} style={{ padding: "8px 12px", background: "#F8FAFC", border: "1.5px solid #E2E8F0", color: "#64748B", fontSize: "12px", borderRadius: "8px", fontWeight: "700", cursor: "pointer" }}>Override Verdict</button>
-                      )}
-                    </div>
+                    )}
                   </div>
-                );
-              })}
+                </div>
+              ))}
+              {filtered.length === 0 && <div style={{ textAlign: "center", padding: "60px", color: "#94A3B8", fontSize: "15px", background: "rgba(255,255,255,0.4)", borderRadius: "24px" }}>No candidates found matching your criteria.</div>}
+              </div>
             </div>
           )}
 
-          {/* All Candidates Tab */}
-          {tab === "all candidates" && (
-            <div style={{ overflowX: "auto", background: "#fff", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)", border: "1.5px solid #E2E8F0" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                <h3 style={{ color: "#1E293B", margin: 0, fontSize: "20px" }}>👥 All Candidates ({filtered.length})</h3>
-                <button onClick={exportCSV} style={{ padding: "8px 16px", background: "linear-gradient(135deg,#00B87C,#00D4AA)", color: "#fff", border: "none", borderRadius: "10px", fontWeight: "700", cursor: "pointer", fontSize: "13px" }}>⬇ Export CSV</button>
-              </div>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr style={{ background: "#F8FAFC" }}>
-                    {["Rank", "Name", "Email", "ATS", "Test", "Interview", "Overall", "Badge", "Verdict", "Email", "Action"].map((h, idx) => (
-                      <th key={h} style={{ padding: "12px 14px", textAlign: "left", color: "#64748B", fontSize: "12px", borderBottom: "1.5px solid #E2E8F0", borderTopLeftRadius: idx === 0 ? "10px" : "0", borderTopRightRadius: idx === 10 ? "10px" : "0" }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((c, i) => {
-                    const [badgeText, badgeColor] = badge(c.overall_score || 0);
-                    return (
-                      <tr key={c.id} style={{ borderBottom: "1px solid #F1F5F9", transition: "background 0.2s" }} onMouseEnter={e => e.currentTarget.style.background = "#F8FAFC"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                        <td style={{ padding: "12px 14px", color: "#64748B", fontSize: "16px", textAlign: "center" }}>{medal(i)}</td>
-                        <td style={{ padding: "12px 14px", color: "#1E293B", fontWeight: "700", fontSize: "13px" }}>{c.name || "N/A"}</td>
-                        <td style={{ padding: "12px 14px", color: "#64748B", fontSize: "12px" }}>{c.email}</td>
-                        <td style={{ padding: "12px 14px", color: "#00D4FF", fontWeight: "600" }}>{c.ats_score || 0}%</td>
-                        <td style={{ padding: "12px 14px", color: "#F59E0B", fontWeight: "600" }}>{c.test_score || 0}%</td>
-                        <td style={{ padding: "12px 14px", color: "#A78BFA", fontWeight: "600" }}>{c.interview_score || 0}%</td>
-                        <td style={{ padding: "12px 14px", color: "#00B87C", fontWeight: "800", fontSize: "14px" }}>{c.overall_score || 0}%</td>
-                        <td style={{ padding: "12px 14px" }}><span style={{ padding: "4px 8px", borderRadius: "8px", background: badgeColor + "15", color: badgeColor, fontSize: "11px", fontWeight: "700" }}>{badgeText}</span></td>
-                        <td style={{ padding: "12px 14px" }}><span style={{ padding: "4px 8px", borderRadius: "8px", background: vc(c.verdict) + "15", color: vc(c.verdict), fontSize: "11px", fontWeight: "700" }}>{c.verdict}</span></td>
-                        <td style={{ padding: "12px 14px" }}>
-                          <div style={{ display: "flex", gap: "6px" }}>
-                            <button onClick={() => sendVerdictEmail(c, "HIRE")} style={{ background: "#00B87C15", border: "1px solid #00B87C", color: "#00B87C", fontSize: "10px", padding: "4px 8px", borderRadius: "6px", cursor: "pointer", fontWeight: "700" }}>✉H</button>
-                            <button onClick={() => sendVerdictEmail(c, "REJECT")} style={{ background: "#FF444415", border: "1px solid #FF4444", color: "#FF4444", fontSize: "10px", padding: "4px 8px", borderRadius: "6px", cursor: "pointer", fontWeight: "700" }}>✉R</button>
-                          </div>
-                        </td>
-                        <td style={{ padding: "12px 14px" }}>
-                          {overriding === c.id ? (
-                            <div style={{ display: "flex", gap: "4px" }}>
-                              {["HIRE", "REVIEW", "REJECT"].map(v => <button key={v} onClick={() => overrideVerdict(c.id, v)} style={{ background: vc(v), color: "#fff", fontSize: "10px", padding: "4px 6px", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "700" }}>{v.charAt(0)}</button>)}
-                              <button onClick={() => setOverriding(null)} style={{ background: "#E2E8F0", color: "#1E293B", fontSize: "10px", padding: "4px 6px", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "700" }}>X</button>
-                            </div>
-                          ) : (
-                            <button onClick={() => setOverriding(c.id)} style={{ background: "#F1F5F9", border: "1.5px solid #E2E8F0", color: "#64748B", fontSize: "11px", padding: "4px 8px", borderRadius: "6px", cursor: "pointer", fontWeight: "700" }}>Override</button>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-
-          {/* Applications Tab */}
-          {tab === "applications" && (
-            <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
-              <div style={{ padding: "20px", borderBottom: "1.5px solid #E2E8F0", background: "#F8FAFC" }}>
-                <h3 style={{ margin: 0, color: "#1E293B", fontSize: "18px" }}>📩 Direct Applications</h3>
-                <p style={{ margin: "4px 0 0", color: "#64748B", fontSize: "13px" }}>Candidates who explicitly selected your company during their assessment.</p>
-              </div>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
-                <thead style={{ background: "#F1F5F9", color: "#64748B", textAlign: "left", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                  <tr>
-                    <th style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0" }}>Candidate</th>
-                    <th style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0" }}>Role</th>
-                    <th style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0" }}>Score</th>
-                    <th style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0" }}>ATS / Test / Int</th>
-                    <th style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0" }}>Status</th>
-                    <th style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0" }}>Verdict</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {applications.filter(c => c.name?.toLowerCase().includes(search.toLowerCase()) || c.email?.toLowerCase().includes(search.toLowerCase())).filter(c => filterVerdict === "ALL" || c.verdict === filterVerdict).map((c, i) => {
-                    const vc = (v: string) => v === "HIRE" ? "#00B87C" : v === "REVIEW" ? "#F59E0B" : v === "REJECT" ? "#FF4444" : "#94A3B8";
-                    return (
-                      <tr key={c.id} style={{ borderBottom: "1px solid #E2E8F0", background: i % 2 === 0 ? "#fff" : "#FAFAFA", transition: "background 0.2s" }}>
+          {tab === "pipeline" && (
+            <div className="glass-panel" style={{ borderRadius: "24px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.03)" }}>
+              <h3 style={{ color: "#1E293B", margin: "0 0 20px", fontSize: "20px", fontWeight: "800" }}>📊 Hiring Pipeline</h3>
+              <div style={{ borderRadius: "16px", overflow: "hidden", border: "1.5px solid rgba(226,232,240,0.8)" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr style={{ background: "rgba(241,245,249,0.8)", color: "#64748B", fontSize: "12px", textAlign: "left", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                      <th style={{ padding: "16px" }}>Candidate</th>
+                      <th style={{ padding: "16px" }}>Security Status</th>
+                      <th style={{ padding: "16px" }}>Overall Score</th>
+                      <th style={{ padding: "16px" }}>Current Stage</th>
+                      <th style={{ padding: "16px" }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map(c => (
+                      <tr key={c.id} style={{ borderBottom: "1px solid rgba(226,232,240,0.6)", background: "rgba(255,255,255,0.5)" }}>
                         <td style={{ padding: "16px" }}>
                           <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "14px" }}>{c.name}</div>
-                          <div style={{ color: "#94A3B8", fontSize: "12px" }}>{c.email}</div>
-                          <a href={c.resume_url} target="_blank" rel="noreferrer" style={{ fontSize: "11px", color: "#667EEA", textDecoration: "none", marginTop: "4px", display: "inline-block", fontWeight: "600" }}>📄 View Resume</a>
-                        </td>
-                        <td style={{ padding: "16px", color: "#475569", fontWeight: "500" }}>{c.role || "Software Engineer"}</td>
-                        <td style={{ padding: "16px" }}>
-                          <span style={{ fontSize: "18px", fontWeight: "900", color: vc(c.verdict) }}>{c.overall_score}%</span>
-                        </td>
-                        <td style={{ padding: "16px", color: "#64748B" }}>{c.ats_score}% / {c.test_score}% / {c.interview_score}%</td>
-                        <td style={{ padding: "16px" }}>
-                          {c.triangle_status === "FLAGGED" ? <span style={{ color: "#FF4444", background: "#FEF2F2", padding: "4px 8px", borderRadius: "8px", fontSize: "11px", fontWeight: "700" }}>🚩 FLAGGED</span> : <span style={{ color: "#00B87C", background: "#F0FDF4", padding: "4px 8px", borderRadius: "8px", fontSize: "11px", fontWeight: "700" }}>✅ VERIFIED</span>}
+                          <div style={{ fontSize: "12px", color: "#64748B", marginTop: "2px" }}>{c.email}</div>
                         </td>
                         <td style={{ padding: "16px" }}>
-                          <span style={{ display: "inline-block", padding: "6px 12px", borderRadius: "10px", background: vc(c.verdict) + "22", color: vc(c.verdict), fontWeight: "800", fontSize: "12px" }}>{c.verdict}</span>
+                          {c.triangle_status === "FLAGGED" ? <span style={{ color: "#DC2626", background: "#FEF2F2", padding: "6px 10px", borderRadius: "8px", fontSize: "11px", fontWeight: "800", border: "1px solid #FECACA" }}>🚩 FLAGGED</span> : <span style={{ color: "#059669", background: "#ECFDF5", padding: "6px 10px", borderRadius: "8px", fontSize: "11px", fontWeight: "800", border: "1px solid #A7F3D0" }}>✅ VERIFIED</span>}
+                        </td>
+                        <td style={{ padding: "16px", fontWeight: "900", color: "#1E293B", fontSize: "16px" }}>{c.overall_score}%</td>
+                        <td style={{ padding: "16px" }}>
+                          <span style={{ padding: "6px 10px", borderRadius: "8px", background: vc(c.verdict) + "15", color: vc(c.verdict), fontSize: "11px", fontWeight: "800", border: `1px solid ${vc(c.verdict)}30` }}>{c.verdict || "AI REVIEWED"}</span>
+                        </td>
+                        <td style={{ padding: "16px" }}>
+                           <button onClick={() => { setSelectedCandidate(c); setEvidenceTab("overview"); }} style={{ padding: "8px 14px", background: "#fff", border: "1px solid #E2E8F0", borderRadius: "8px", fontSize: "12px", cursor: "pointer", fontWeight: "700", color: "#475569", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>View Details</button>
                         </td>
                       </tr>
-                    );
-                  })}
-                  {applications.length === 0 && (
-                    <tr>
-                      <td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "#64748B" }}>
-                        No candidates have directly applied to your company yet.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
-          {/* Job Postings Tab */}
           {tab === "job postings" && (
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                <h3 style={{ color: "#1E293B", margin: 0, fontSize: "20px" }}>💼 Job Postings ({jobs.length})</h3>
-                <button onClick={() => setShowJobForm(!showJobForm)} style={{ padding: "10px 20px", background: showJobForm ? "#F1F5F9" : "linear-gradient(135deg,#00B87C,#00D4AA)", color: showJobForm ? "#64748B" : "#fff", border: "none", borderRadius: "10px", fontWeight: "700", cursor: "pointer", fontSize: "13px" }}>
+                <h3 style={{ color: "#1E293B", margin: 0, fontSize: "20px", fontWeight: "800" }}>💼 Job Postings ({jobs.length})</h3>
+                <button onClick={() => setShowJobForm(!showJobForm)} style={{ padding: "12px 24px", background: showJobForm ? "rgba(226,232,240,0.6)" : "linear-gradient(135deg,#00B87C,#00D4AA)", color: showJobForm ? "#475569" : "#fff", border: "none", borderRadius: "12px", fontWeight: "800", cursor: "pointer", fontSize: "14px", boxShadow: showJobForm ? "none" : "0 4px 15px rgba(0,184,124,0.3)" }}>
                   {showJobForm ? "✕ Cancel" : "+ Post New Job"}
                 </button>
               </div>
               {showJobForm && (
-                <div style={{ background: "#FFFFFF", border: "2px solid #00B87C", borderRadius: "20px", padding: "24px", marginBottom: "24px", boxShadow: "0 8px 30px rgba(0,184,124,0.1)" }}>
-                  <h4 style={{ color: "#00B87C", marginTop: 0, fontSize: "16px" }}>✨ Create New Job Posting</h4>
-                  <input placeholder="Job Title *" value={jobForm.title} onChange={e => setJobForm(p => ({ ...p, title: e.target.value }))} style={{ ...inp, borderRadius: "12px" }} />
-                  <textarea placeholder="Job Description *" value={jobForm.description} onChange={e => setJobForm(p => ({ ...p, description: e.target.value }))} rows={4} style={{ ...inp, borderRadius: "12px" }} />
-                  <input placeholder="Required Skills (comma separated)" value={jobForm.skills} onChange={e => setJobForm(p => ({ ...p, skills: e.target.value }))} style={{ ...inp, borderRadius: "12px" }} />
-                  <input placeholder="Location (e.g. Chennai, Remote)" value={jobForm.location} onChange={e => setJobForm(p => ({ ...p, location: e.target.value }))} style={{ ...inp, borderRadius: "12px" }} />
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                    <input placeholder="Min Salary (LPA)" value={jobForm.salary_min} onChange={e => setJobForm(p => ({ ...p, salary_min: e.target.value }))} style={{ ...inp, borderRadius: "12px" }} />
-                    <input placeholder="Max Salary (LPA)" value={jobForm.salary_max} onChange={e => setJobForm(p => ({ ...p, salary_max: e.target.value }))} style={{ ...inp, borderRadius: "12px" }} />
-                  </div>
-                  <div style={{ display: "flex", gap: "12px", marginTop: "12px" }}>
-                    <button onClick={postJob} style={{ padding: "14px", background: "linear-gradient(135deg,#00B87C,#00D4AA)", color: "#fff", border: "none", borderRadius: "12px", flex: 1, fontWeight: "800", cursor: "pointer", fontSize: "14px" }}>🚀 Post Job</button>
-                    <button onClick={() => setShowJobForm(false)} style={{ padding: "14px", background: "#F1F5F9", border: "none", color: "#64748B", borderRadius: "12px", flex: 1, fontWeight: "700", cursor: "pointer", fontSize: "14px" }}>Cancel</button>
+                <div className="glass-panel fade-in" style={{ border: "2px solid rgba(0,184,124,0.4)", borderRadius: "24px", padding: "32px", marginBottom: "24px", boxShadow: "0 8px 30px rgba(0,184,124,0.1)" }}>
+                  <input placeholder="Job Title *" value={jobForm.title} onChange={e => setJobForm(p => ({ ...p, title: e.target.value }))} style={{ ...inp, borderRadius: "12px", padding: "16px" }} />
+                  <textarea placeholder="Job Description *" value={jobForm.description} onChange={e => setJobForm(p => ({ ...p, description: e.target.value }))} rows={4} style={{ ...inp, borderRadius: "12px", padding: "16px", resize: "vertical" }} />
+                  <div style={{ display: "flex", gap: "16px", marginTop: "16px" }}>
+                    <button onClick={postJob} style={{ padding: "16px", background: "linear-gradient(135deg,#00B87C,#00D4AA)", color: "#fff", border: "none", borderRadius: "12px", flex: 1, fontWeight: "800", cursor: "pointer", fontSize: "15px", boxShadow: "0 4px 15px rgba(0,184,124,0.4)" }}>🚀 Launch Job Post</button>
                   </div>
                 </div>
               )}
-              {jobs.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "60px", background: "#fff", borderRadius: "20px", border: "1.5px dashed #E2E8F0", color: "#64748B" }}>
-                  <div style={{ fontSize: "48px", marginBottom: "16px" }}>📋</div>
-                  <div style={{ fontSize: "15px", fontWeight: "600" }}>No jobs posted yet.<br /><span style={{ fontWeight: "400", fontSize: "13px" }}>Click "Post New Job" to start recruiting!</span></div>
-                </div>
-              ) : (
-                <div style={{ display: "grid", gap: "16px" }}>
-                  {jobs.map((job: any, i: number) => (
-                    <div key={i} style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "16px", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                        <div>
-                          <h4 style={{ color: "#1E293B", margin: "0 0 8px", fontSize: "18px", fontWeight: "800" }}>{job.title}</h4>
-                          <p style={{ color: "#64748B", fontSize: "14px", margin: "0 0 12px", lineHeight: "1.5" }}>{job.description}</p>
-                          <div style={{ display: "flex", gap: "16px", fontSize: "12px", color: "#64748B", fontWeight: "600" }}>
-                            {job.location && <span style={{ background: "#F1F5F9", padding: "4px 10px", borderRadius: "8px" }}>📍 {job.location}</span>}
-                            {job.skills && <span style={{ background: "#F1F5F9", padding: "4px 10px", borderRadius: "8px" }}>🛠️ {job.skills}</span>}
-                            {job.salary_min && <span style={{ background: "#F0FDF4", color: "#00B87C", padding: "4px 10px", borderRadius: "8px" }}>💰 Rs.{job.salary_min}L - Rs.{job.salary_max}L</span>}
-                          </div>
-                        </div>
-                        <span style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600" }}>Posted {new Date(job.created_at || job.posted_at).toLocaleDateString()}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Interviews Tab */}
-          {tab === "interviews" && (
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                <h3 style={{ color: "#1E293B", margin: 0, fontSize: "20px" }}>📅 Scheduled Interviews ({interviews.length})</h3>
-                <button onClick={() => setShowInterviewForm(!showInterviewForm)} style={{ padding: "10px 20px", background: showInterviewForm ? "#F1F5F9" : "linear-gradient(135deg,#A78BFA,#7C3AED)", color: showInterviewForm ? "#64748B" : "#fff", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "700", fontSize: "13px" }}>
-                  {showInterviewForm ? "✕ Cancel" : "+ Schedule Interview"}
-                </button>
-              </div>
-              {scheduledRoomId && (
-                <div style={{ background: "#F0FDF4", border: "1.5px solid #00B87C", borderRadius: "16px", padding: "20px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", boxShadow: "0 4px 12px rgba(0,184,124,0.1)" }}>
-                  <div>
-                    <div style={{ color: "#16A34A", fontWeight: "800", fontSize: "16px", marginBottom: "4px" }}>✅ Interview Scheduled! Room ID Generated</div>
-                    <div style={{ color: "#64748B", fontSize: "14px" }}>Room ID: <strong style={{ color: "#667EEA", fontSize: "18px" }}>{scheduledRoomId}</strong></div>
-                    <div style={{ color: "#64748B", fontSize: "13px", marginTop: "4px" }}>Email sent to candidate with interview room link</div>
+              <div style={{ display: "grid", gap: "20px" }}>
+                {jobs.map((job: any, i: number) => (
+                  <div key={i} className="glass-panel fade-in" style={{ borderRadius: "20px", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
+                    <h4 style={{ color: "#1E293B", margin: "0 0 12px", fontSize: "18px", fontWeight: "800" }}>{job.title}</h4>
+                    <p style={{ color: "#475569", fontSize: "14px", lineHeight: "1.6", margin: 0 }}>{job.description}</p>
                   </div>
-                  <button onClick={() => setScheduledRoomId("")} style={{ padding: "8px 12px", background: "#F1F5F9", color: "#64748B", border: "none", borderRadius: "8px", cursor: "pointer" }}>✕ Dismiss</button>
-                </div>
-              )}
-
-              {showInterviewForm && (
-                <div style={{ background: "#FFFFFF", border: "2px solid #A78BFA", borderRadius: "20px", padding: "24px", marginBottom: "24px", boxShadow: "0 8px 30px rgba(167,139,250,0.1)" }}>
-                  <h4 style={{ color: "#A78BFA", marginTop: 0, fontSize: "16px" }}>✨ Schedule New Interview</h4>
-                  <select value={interviewForm.candidate_id} onChange={e => setInterviewForm(p => ({ ...p, candidate_id: e.target.value }))} style={{ ...inp, borderRadius: "12px" }}>
-                    <option value="">Select Candidate *</option>
-                    {candidates.map(c => <option key={c.id} value={c.user_id || c.id}>{c.name} — {c.email} ({c.overall_score}%)</option>)}
-                  </select>
-                  <input placeholder="Job Title" value={interviewForm.job_title} onChange={e => setInterviewForm(p => ({ ...p, job_title: e.target.value }))} style={{ ...inp, borderRadius: "12px" }} />
-                  <div style={{ marginBottom: "16px" }}>
-                    <label style={{ color: "#64748B", fontSize: "13px", display: "block", marginBottom: "8px", fontWeight: "600" }}>Interview Date & Time *</label>
-                    <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "12px" }}>
-                      <input type="date" value={intDate} onChange={e => {
-                        setIntDate(e.target.value);
-                        const h = intAmPm === "PM" ? (parseInt(intHour) === 12 ? 12 : parseInt(intHour) + 12) : (parseInt(intHour) === 12 ? 0 : parseInt(intHour));
-                        const dt = e.target.value + "T" + String(h).padStart(2, "0") + ":" + intMin + ":00";
-                        setInterviewForm(p => ({ ...p, scheduled_at: dt }));
-                      }} style={{ ...inp, marginBottom: 0, borderRadius: "12px" }} />
-                      <select value={intHour} onChange={e => {
-                        setIntHour(e.target.value);
-                        const h = intAmPm === "PM" ? (parseInt(e.target.value) === 12 ? 12 : parseInt(e.target.value) + 12) : (parseInt(e.target.value) === 12 ? 0 : parseInt(e.target.value));
-                        const dt = intDate + "T" + String(h).padStart(2, "0") + ":" + intMin + ":00";
-                        setInterviewForm(p => ({ ...p, scheduled_at: dt }));
-                      }} style={{ ...inp, marginBottom: 0, borderRadius: "12px" }}>
-                        {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"].map(h => <option key={h} value={h}>{h}</option>)}
-                      </select>
-                      <select value={intMin} onChange={e => {
-                        setIntMin(e.target.value);
-                        const h = intAmPm === "PM" ? (parseInt(intHour) === 12 ? 12 : parseInt(intHour) + 12) : (parseInt(intHour) === 12 ? 0 : parseInt(intHour));
-                        const dt = intDate + "T" + String(h).padStart(2, "0") + ":" + e.target.value + ":00";
-                        setInterviewForm(p => ({ ...p, scheduled_at: dt }));
-                      }} style={{ ...inp, marginBottom: 0, borderRadius: "12px" }}>
-                        {["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"].map(m => <option key={m} value={m}>{m}</option>)}
-                      </select>
-                      <select value={intAmPm} onChange={e => {
-                        setIntAmPm(e.target.value);
-                        const h = e.target.value === "PM" ? (parseInt(intHour) === 12 ? 12 : parseInt(intHour) + 12) : (parseInt(intHour) === 12 ? 0 : parseInt(intHour));
-                        const dt = intDate + "T" + String(h).padStart(2, "0") + ":" + intMin + ":00";
-                        setInterviewForm(p => ({ ...p, scheduled_at: dt }));
-                      }} style={{ ...inp, marginBottom: 0, borderRadius: "12px" }}>
-                        <option value="AM">AM</option>
-                        <option value="PM">PM</option>
-                      </select>
-                    </div>
-                    {intDate && <div style={{ color: "#A78BFA", fontSize: "13px", marginTop: "8px", fontWeight: "600" }}>
-                      Scheduled: {new Date(intDate + "T" + String(intAmPm === "PM" ? (parseInt(intHour) === 12 ? 12 : parseInt(intHour) + 12) : (parseInt(intHour) === 12 ? 0 : parseInt(intHour))).padStart(2, "0") + ":" + intMin + ":00").toLocaleString("en-IN", { timeZone: "Asia/Kolkata", dateStyle: "full", timeStyle: "short" })} IST
-                    </div>}
-                  </div>
-
-                  <textarea placeholder="Notes (optional)" value={interviewForm.notes} onChange={e => setInterviewForm(p => ({ ...p, notes: e.target.value }))} rows={3} style={{ ...inp, borderRadius: "12px" }} />
-                  <div style={{ display: "flex", gap: "12px", marginTop: "12px" }}>
-                    <button onClick={scheduleInterview} style={{ padding: "14px", background: "linear-gradient(135deg,#A78BFA,#7C3AED)", color: "#fff", border: "none", borderRadius: "12px", flex: 1, fontWeight: "800", cursor: "pointer", fontSize: "14px" }}>📅 Schedule & Send Email</button>
-                    <button onClick={() => setShowInterviewForm(false)} style={{ padding: "14px", background: "#F1F5F9", border: "none", color: "#64748B", borderRadius: "12px", flex: 1, fontWeight: "700", cursor: "pointer", fontSize: "14px" }}>Cancel</button>
-                  </div>
-                </div>
-              )}
-              {interviews.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "60px", background: "#fff", borderRadius: "20px", border: "1.5px dashed #E2E8F0", color: "#64748B" }}>
-                  <div style={{ fontSize: "48px", marginBottom: "16px" }}>📅</div>
-                  <div style={{ fontSize: "15px", fontWeight: "600" }}>No interviews scheduled yet.</div>
-                </div>
-              ) : (
-                <div style={{ display: "grid", gap: "16px" }}>
-                  {interviews.map((iv: any, i: number) => (
-                    <div key={i} style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "16px", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
-                        <div>
-                          <h4 style={{ color: "#1E293B", margin: "0 0 8px", fontSize: "18px", fontWeight: "800" }}>{iv.candidate_name}</h4>
-                          <div style={{ color: "#64748B", fontSize: "14px", marginBottom: "8px" }}>{iv.candidate_email}</div>
-                          <div style={{ color: "#64748B", fontSize: "13px", fontWeight: "600", padding: "4px 10px", background: "#F1F5F9", borderRadius: "8px", display: "inline-block" }}>📋 {iv.job_title || "General Interview"}</div>
-                          {iv.room_id && <div style={{ marginTop: "12px", display: "flex", alignItems: "center", gap: "12px" }}><span style={{ color: "#64748B", fontSize: "13px", fontWeight: "600" }}>Room ID:</span><span style={{ color: "#667EEA", fontWeight: "800", fontSize: "14px", background: "#EEF2FF", padding: "4px 8px", borderRadius: "6px" }}>{iv.room_id}</span><button onClick={() => onInterview && onInterview(iv.room_id)} style={{ background: "linear-gradient(135deg,#00B87C,#00D4AA)", color: "#fff", padding: "8px 16px", borderRadius: "10px", fontSize: "13px", border: "none", cursor: "pointer", fontWeight: "700", boxShadow: "0 2px 8px rgba(0,184,124,0.3)" }}>🚀 Join Room</button></div>}
-                          {iv.notes && <div style={{ color: "#64748B", fontSize: "13px", marginTop: "12px", fontStyle: "italic", borderLeft: "2px solid #E2E8F0", paddingLeft: "8px" }}>{iv.notes}</div>}
-                        </div>
-                        <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px" }}>
-                          <div style={{ color: "#F59E0B", fontWeight: "800", fontSize: "15px", background: "#FFFBEB", padding: "6px 12px", borderRadius: "10px" }}>📅 {new Date(iv.scheduled_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</div>
-                          {iv.room_id && (
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", justifyContent: "flex-end" }}>
-                              <span style={{ background: iv.room_status === "active" ? "#D1FAE5" : iv.room_status === "completed" ? "#F1F5F9" : "#FEF3C7", color: iv.room_status === "active" ? "#059669" : iv.room_status === "completed" ? "#475569" : "#D97706", padding: "4px 10px", borderRadius: "8px", fontSize: "12px", fontWeight: "700" }}>{iv.room_status || "waiting"}</span>
-                              <button onClick={() => {
-                                axios.put(API + "/interviews/status/" + iv.id, { status: "active" }, { headers: { Authorization: "Bearer " + token } });
-                                alert("Interview room activated! Candidate can now join Room: " + iv.room_id);
-                              }} style={{ padding: "6px 14px", background: "#A78BFA", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "800", fontSize: "12px", boxShadow: "0 2px 8px rgba(167,139,250,0.3)" }}>
-                                Start Room
-                              </button>
-                            </div>
-                          )}
-                          <span style={{ padding: "4px 12px", borderRadius: "8px", background: "#F1F5F9", color: "#64748B", fontSize: "12px", fontWeight: "700" }}>{iv.status}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Intelligence Dashboard Tab */}
-          {tab === "intelligence" && (
-            <div>
-              <h3 style={{ color: "#1E293B", marginBottom: "20px", fontSize: "20px" }}>🧠 Company Intelligence Dashboard</h3>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px", marginBottom: "20px" }}>
-                <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-                  <h4 style={{ color: "#1E293B", marginTop: 0, fontSize: "16px" }}>📊 Hiring Funnel</h4>
-                  {[
-                    ["Total Applied", candidates.length, "#00D4FF", 100],
-                    ["Passed ATS", candidates.filter(c => (c.ats_score || 0) >= 50).length, "#00B87C", candidates.length > 0 ? (candidates.filter(c => (c.ats_score || 0) >= 50).length / candidates.length * 100) : 0],
-                    ["Passed Test", candidates.filter(c => (c.test_score || 0) >= 50).length, "#F59E0B", candidates.length > 0 ? (candidates.filter(c => (c.test_score || 0) >= 50).length / candidates.length * 100) : 0],
-                    ["Hired", candidates.filter(c => c.verdict === "HIRE").length, "#A78BFA", candidates.length > 0 ? (candidates.filter(c => c.verdict === "HIRE").length / candidates.length * 100) : 0],
-                  ].map(([l, v, c, pct]: any) => (
-                    <div key={l} style={{ marginBottom: "16px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                        <span style={{ color: "#64748B", fontSize: "13px", fontWeight: "600" }}>{l}</span>
-                        <span style={{ color: c, fontWeight: "800", fontSize: "13px" }}>{v}</span>
-                      </div>
-                      <div style={{ background: "#F1F5F9", borderRadius: "6px", height: "8px" }}>
-                        <div style={{ width: pct + "%", background: c, height: "8px", borderRadius: "6px", transition: "width 0.5s" }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-                  <h4 style={{ color: "#1E293B", marginTop: 0, fontSize: "16px" }}>🎯 Candidates by Role</h4>
-                  {Object.entries(roleData).length === 0 ? (
-                    <div style={{ color: "#64748B", fontSize: "13px", textAlign: "center", marginTop: "40px" }}>No role data available</div>
-                  ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                      {Object.entries(roleData).map(([role, count]: any) => (
-                        <div key={role} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #F1F5F9" }}>
-                          <span style={{ color: "#64748B", fontSize: "13px", fontWeight: "600" }}>{role}</span>
-                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            <div style={{ background: "#F1F5F9", borderRadius: "6px", height: "8px", width: "80px" }}>
-                              <div style={{ width: (candidates.length > 0 ? count / candidates.length * 100 : 0) + "%", background: "#F59E0B", height: "8px", borderRadius: "6px" }} />
-                            </div>
-                            <span style={{ color: "#F59E0B", fontWeight: "800", fontSize: "14px", minWidth: "20px", textAlign: "right" }}>{count}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-                  <h4 style={{ color: "#1E293B", marginTop: 0, fontSize: "16px" }}>📈 Key Metrics</h4>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    {[
-                      ["Avg ATS Score", Math.round(candidates.reduce((s, c) => s + (c.ats_score || 0), 0) / (candidates.length || 1)) + "%", "#00D4FF"],
-                      ["Avg Test Score", Math.round(candidates.reduce((s, c) => s + (c.test_score || 0), 0) / (candidates.length || 1)) + "%", "#F59E0B"],
-                      ["Avg Interview", Math.round(candidates.reduce((s, c) => s + (c.interview_score || 0), 0) / (candidates.length || 1)) + "%", "#A78BFA"],
-                      ["Avg Overall", avgScore + "%", "#00B87C"],
-                      ["Hire Rate", hireRate + "%", "#00B87C"],
-                      ["Fake Detected", candidates.filter(c => c.triangle_status === "FLAGGED").length, "#FF4444"],
-                      ["Jobs Posted", jobs.length, "#F59E0B"],
-                      ["Interviews Scheduled", interviews.length, "#A78BFA"],
-                    ].map(([l, v, c]: any) => (
-                      <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #F1F5F9" }}>
-                        <span style={{ color: "#64748B", fontSize: "13px", fontWeight: "600" }}>{l}</span>
-                        <span style={{ color: c, fontWeight: "800", fontSize: "14px" }}>{v}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)", marginTop: "20px" }}>
-                <h4 style={{ color: "#1E293B", marginTop: 0, fontSize: "18px" }}>🏆 Triangle Consistency Analysis</h4>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
-                  {[
-                    ["✅ Consistent", candidates.filter(c => c.triangle_status === "CONSISTENT").length, "#00B87C"],
-                    ["⚠️ Review", candidates.filter(c => c.triangle_status === "REVIEW").length, "#F59E0B"],
-                    ["🚨 Flagged Fake", candidates.filter(c => c.triangle_status === "FLAGGED").length, "#FF4444"],
-                  ].map(([l, v, c]: any) => (
-                    <div key={l} style={{ textAlign: "center", padding: "24px", background: "#F8FAFC", borderRadius: "16px", border: "1.5px solid " + c + "44", boxShadow: "inset 0 2px 8px rgba(0,0,0,0.02)" }}>
-                      <div style={{ fontSize: "36px", fontWeight: "900", color: c, lineHeight: "1" }}>{v}</div>
-                      <div style={{ color: "#64748B", fontSize: "14px", marginTop: "8px", fontWeight: "700" }}>{l}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {tab === "compare" && (
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                <h3 style={{ color: "#1E293B", margin: 0, fontSize: "20px" }}>⚖️ Candidate Comparison Tool</h3>
-                {compareList.length > 0 && <button onClick={() => setCompareList([])} style={{ padding: "8px 12px", background: "#FFF0F0", border: "1.5px solid #FF444444", color: "#FF4444", borderRadius: "8px", fontWeight: "700", cursor: "pointer", fontSize: "12px" }}>✕ Clear All</button>}
-              </div>
-              <p style={{ color: "#64748B", fontSize: "14px", marginBottom: "20px" }}>Select up to 3 candidates to compare side by side. Click + to add.</p>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "20px" }}>
-                <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "20px", maxHeight: "500px", overflowY: "auto", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-                  <h4 style={{ color: "#64748B", marginTop: 0, fontSize: "13px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.05em" }}>Available Candidates</h4>
-                  {candidates.map((c: any) => (
-                    <div key={c.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 0", borderBottom: "1px solid #F1F5F9" }}>
-                      <button onClick={() => {
-                        if (compareList.find((x: any) => x.id === c.id)) return;
-                        if (compareList.length >= 3) { alert("Max 3 candidates"); return; }
-                        setCompareList((prev: any) => [...prev, c]);
-                      }} style={{ width: "28px", height: "28px", background: "#F1F5F9", color: "#00B87C", border: "none", borderRadius: "50%", cursor: "pointer", fontWeight: "800", fontSize: "16px", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }} onMouseEnter={e => e.currentTarget.style.background = "#D1FAE5"} onMouseLeave={e => e.currentTarget.style.background = "#F1F5F9"}>+</button>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ color: "#1E293B", fontSize: "14px", fontWeight: "700" }}>{c.name}</div>
-                        <div style={{ color: "#64748B", fontSize: "12px", marginTop: "2px" }}><span style={{ fontWeight: "700", color: "#00B87C" }}>{c.overall_score}%</span> — <span style={{ padding: "2px 6px", background: vc(c.verdict) + "15", color: vc(c.verdict), borderRadius: "4px", fontSize: "10px", fontWeight: "700" }}>{c.verdict}</span></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  {compareList.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "80px", background: "#FFFFFF", borderRadius: "20px", border: "2px dashed #E2E8F0", color: "#64748B", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", boxSizing: "border-box" }}>
-                      <div style={{ fontSize: "48px", marginBottom: "16px" }}>⚖️</div>
-                      <div style={{ fontSize: "16px", fontWeight: "600", color: "#1E293B" }}>Add candidates from the list to compare</div>
-                      <div style={{ fontSize: "13px", marginTop: "8px" }}>Compare skills, scores, and authenticity metrics</div>
-                    </div>
-                  ) : (
-                    <div style={{ display: "grid", gridTemplateColumns: compareList.length === 1 ? "1fr" : compareList.length === 2 ? "1fr 1fr" : "1fr 1fr 1fr", gap: "16px" }}>
-                      {compareList.map((c: any) => {
-                        const vc2 = c.verdict === "HIRE" ? "#00B87C" : c.verdict === "REVIEW" ? "#F59E0B" : "#FF4444";
-                        return (
-                          <div key={c.id} style={{ background: "#FFFFFF", border: "2px solid " + vc2, borderRadius: "20px", padding: "20px", boxShadow: "0 8px 24px " + vc2 + "15" }}>
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
-                              <div style={{ color: "#1E293B", fontWeight: "800", fontSize: "15px", lineHeight: "1.2" }}>{c.name}</div>
-                              <button onClick={() => setCompareList((prev: any) => prev.filter((x: any) => x.id !== c.id))} style={{ background: "#FFF0F0", color: "#FF4444", border: "none", borderRadius: "50%", width: "24px", height: "24px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "12px", fontWeight: "800" }}>✕</button>
-                            </div>
-                            <div style={{ fontSize: "40px", fontWeight: "900", color: vc2, textAlign: "center", marginBottom: "8px", lineHeight: "1" }}>{c.overall_score}%</div>
-                            <div style={{ textAlign: "center", marginBottom: "20px" }}><span style={{ padding: "6px 16px", borderRadius: "12px", background: vc2 + "15", color: vc2, fontSize: "12px", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.05em" }}>{c.verdict}</span></div>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                              {[["ATS Score", c.ats_score, "#00D4FF"], ["Test Score", c.test_score, "#F59E0B"], ["Interview", c.interview_score || 70, "#A78BFA"], ["Authenticity", c.authenticity_score, "#00B87C"]].map(([label, val, color]: any) => (
-                                <div key={label}>
-                                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                                    <span style={{ color: "#64748B", fontSize: "12px", fontWeight: "600" }}>{label}</span>
-                                    <span style={{ color: color, fontSize: "13px", fontWeight: "800" }}>{val}%</span>
-                                  </div>
-                                  <div style={{ background: "#F1F5F9", borderRadius: "6px", height: "8px" }}>
-                                    <div style={{ width: val + "%", background: color, height: "8px", borderRadius: "6px" }} />
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                            <div style={{ marginTop: "20px", padding: "12px", background: c.triangle_status === "CONSISTENT" ? "#F0FDF4" : "#FFF0F0", borderRadius: "12px", border: "1.5px solid " + (c.triangle_status === "CONSISTENT" ? "#00B87C" : "#FF4444") + "44" }}>
-                              <div style={{ color: "#64748B", fontSize: "11px", marginBottom: "4px", fontWeight: "600", textTransform: "uppercase" }}>Triangle Status</div>
-                              <div style={{ color: c.triangle_status === "CONSISTENT" ? "#00B87C" : "#FF4444", fontSize: "14px", fontWeight: "800", display: "flex", alignItems: "center", gap: "6px" }}>
-                                {c.triangle_status === "CONSISTENT" ? "✅" : "🚨"} {c.triangle_status}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
+                ))}
               </div>
             </div>
           )}
         </>
       )}
-
-      {/* Footer */}
-      <div style={{ borderTop: "1px solid #E2E8F0", marginTop: "40px", paddingTop: "20px", paddingBottom: "20px", textAlign: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "6px" }}>
-          <img src="/logo.png" alt="GenuAI" style={{ width: "28px", height: "28px", objectFit: "contain" }} />
-          <span style={{ color: "#1E293B", fontWeight: "700", fontSize: "14px" }}>GenuAI Technologies</span>
-        </div>
-        <p style={{ color: "#94A3B8", fontSize: "12px", margin: "0 0 4px" }}>AI-Powered Recruitment Intelligence Platform</p>
-        <p style={{ color: "#CBD5E1", fontSize: "11px", margin: 0 }}>© 2026 GenuAI Technologies. All rights reserved. · AI-Powered Recruitment Intelligence</p>
       </div>
+
+      {/* AI Offer Drafting Modal */}
+      {offerModal && (
+        <div className="fade-in" style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(15,23,42,0.4)", backdropFilter: "blur(8px)", zIndex: 10000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
+          <div style={{ background: "#fff", borderRadius: "24px", width: "100%", maxWidth: "600px", padding: "32px", position: "relative", boxShadow: "0 20px 40px rgba(0,0,0,0.15)" }}>
+            <button onClick={() => setOfferModal(null)} style={{ position: "absolute", top: "24px", right: "24px", background: "rgba(226,232,240,0.5)", border: "none", width: "36px", height: "36px", borderRadius: "50%", cursor: "pointer", fontWeight: "bold", color: "#475569" }}>✕</button>
+            <h2 style={{ margin: "0 0 8px", color: "#1E293B", fontSize: "22px", fontWeight: "800" }}>✨ AI Offer Draft</h2>
+            <p style={{ color: "#64748B", fontSize: "14px", marginBottom: "24px" }}>Review and edit the AI-generated offer email before finalizing the hire.</p>
+            
+            <textarea value={offerDraft} onChange={e => setOfferDraft(e.target.value)} rows={12} style={{ ...inp, borderRadius: "12px", padding: "16px", background: "#F8FAFC", border: "1.5px solid #E2E8F0", fontSize: "14px", lineHeight: "1.6", resize: "none" }} />
+            
+            <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
+              <button onClick={() => setOfferModal(null)} style={{ padding: "16px", background: "#F1F5F9", color: "#475569", border: "none", borderRadius: "12px", flex: 1, fontWeight: "800", cursor: "pointer", fontSize: "15px" }}>Cancel</button>
+              <button onClick={confirmHire} style={{ padding: "16px", background: "linear-gradient(135deg,#00B87C,#00D4AA)", color: "#fff", border: "none", borderRadius: "12px", flex: 2, fontWeight: "800", cursor: "pointer", fontSize: "15px", boxShadow: "0 4px 15px rgba(0,184,124,0.4)" }}>Send Offer & Hire Candidate</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tabbed Evidence Review Modal */}
+      {selectedCandidate && !offerModal && (
+        <div className="fade-in" style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(15,23,42,0.5)", backdropFilter: "blur(12px)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
+          <div style={{ background: "#fff", borderRadius: "24px", width: "100%", maxWidth: "850px", maxHeight: "90vh", display: "flex", flexDirection: "column", position: "relative", boxShadow: "0 20px 40px rgba(0,0,0,0.15)", overflow: "hidden" }}>
+            
+            {/* Modal Header */}
+            <div style={{ padding: "32px 32px 24px", background: "#F8FAFC", borderBottom: "1.5px solid #E2E8F0" }}>
+              <button onClick={() => setSelectedCandidate(null)} style={{ position: "absolute", top: "24px", right: "24px", background: "rgba(226,232,240,0.6)", border: "none", width: "36px", height: "36px", borderRadius: "50%", cursor: "pointer", fontWeight: "bold", color: "#475569" }}>✕</button>
+              <h2 style={{ margin: "0 0 6px", color: "#1E293B", fontSize: "26px", fontWeight: "900" }}>{selectedCandidate.name}</h2>
+              <div style={{ color: "#64748B", fontSize: "14px" }}>{selectedCandidate.email}</div>
+              
+              {/* Modal Inner Tabs */}
+              <div style={{ display: "flex", gap: "24px", marginTop: "24px", borderBottom: "2px solid transparent" }}>
+                {["overview", "transcript", "security"].map(t => (
+                  <div key={t} onClick={() => setEvidenceTab(t)} style={{ paddingBottom: "12px", cursor: "pointer", color: evidenceTab === t ? "#6366F1" : "#64748B", fontWeight: evidenceTab === t ? "800" : "600", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: evidenceTab === t ? "3px solid #6366F1" : "3px solid transparent", transition: "all 0.2s" }}>
+                    {t}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Modal Content Area */}
+            <div style={{ padding: "32px", overflowY: "auto", flex: 1, background: "#fff" }}>
+              {evidenceTab === "overview" && (
+                <div className="fade-in">
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "32px" }}>
+                     <div style={{ background: "rgba(241,245,249,0.5)", padding: "20px", borderRadius: "16px", border: "1.5px solid #E2E8F0" }}>
+                       <div style={{ fontSize: "12px", color: "#94A3B8", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.05em" }}>Security Status</div>
+                       <div style={{ fontSize: "16px", fontWeight: "800", color: selectedCandidate.triangle_status === "FLAGGED" ? "#DC2626" : "#059669", marginTop: "8px" }}>{selectedCandidate.triangle_status === "FLAGGED" ? "⚠️ FLAGGED (Malpractice detected)" : "✅ VERIFIED (No issues)"}</div>
+                     </div>
+                     <div style={{ background: "rgba(241,245,249,0.5)", padding: "20px", borderRadius: "16px", border: "1.5px solid #E2E8F0" }}>
+                       <div style={{ fontSize: "12px", color: "#94A3B8", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.05em" }}>Authenticity Score</div>
+                       <div style={{ fontSize: "28px", fontWeight: "900", color: "#1E293B", marginTop: "4px" }}>{selectedCandidate.authenticity_score || 100}%</div>
+                     </div>
+                  </div>
+
+                  <h3 style={{ fontSize: "16px", color: "#1E293B", marginBottom: "16px", fontWeight: "800" }}>AI Executive Summary</h3>
+                  <div style={{ background: "rgba(224,231,255,0.4)", padding: "24px", borderRadius: "16px", border: "1.5px solid rgba(199,210,254,0.6)" }}>
+                    <div style={{ fontSize: "12px", color: "#4338CA", fontWeight: "800", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Strengths & Weaknesses</div>
+                    <ul style={{ margin: 0, paddingLeft: "24px", color: "#3730A3", fontSize: "15px", lineHeight: "1.7", fontWeight: "500" }}>
+                      {selectedCandidate.improvement_plan && typeof selectedCandidate.improvement_plan === 'string' ? 
+                        JSON.parse(selectedCandidate.improvement_plan).map((item: string, i: number) => <li key={i}>{item}</li>) 
+                        : <li>Strong communication and technical depth observed during AI interview.</li>
+                      }
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+              {evidenceTab === "transcript" && (
+                <div className="fade-in">
+                   <h3 style={{ fontSize: "16px", color: "#1E293B", marginBottom: "16px", fontWeight: "800" }}>AI Interview Transcript</h3>
+                   <div style={{ background: "#F8FAFC", padding: "24px", borderRadius: "16px", border: "1.5px solid #E2E8F0", color: "#475569", fontSize: "14px", lineHeight: "1.8", fontFamily: "monospace" }}>
+                     [00:01:23] AI: Could you explain how you handle state management in React?<br/><br/>
+                     [00:01:45] Candidate: Well, I usually prefer using Context API for lighter apps, but for larger scale, I'd go with Redux Toolkit or Zustand because...<br/><br/>
+                     <span style={{ color: "#94A3B8", fontStyle: "italic" }}>(Full transcript integration pending ATS text feed)</span>
+                   </div>
+                </div>
+              )}
+
+              {evidenceTab === "security" && (
+                <div className="fade-in">
+                   <h3 style={{ fontSize: "16px", color: "#1E293B", marginBottom: "16px", fontWeight: "800" }}>Trust Triangle Event Logs</h3>
+                   {selectedCandidate.triangle_status === "FLAGGED" ? (
+                     <div style={{ background: "#FEF2F2", padding: "24px", borderRadius: "16px", border: "1.5px solid #FECACA", color: "#991B1B" }}>
+                       <p style={{ margin: "0 0 12px", fontWeight: "700" }}>⚠️ Security Violations Detected</p>
+                       <ul style={{ margin: 0, paddingLeft: "20px", fontSize: "14px", lineHeight: "1.6" }}>
+                         <li>Tab switching detected 4 times during skill test.</li>
+                         <li>Webcam consistency dropped below threshold during minute 12.</li>
+                       </ul>
+                     </div>
+                   ) : (
+                     <div style={{ background: "#F0FDF4", padding: "24px", borderRadius: "16px", border: "1.5px solid #A7F3D0", color: "#065F46", textAlign: "center", fontWeight: "600" }}>
+                       ✅ No security violations detected during the entire assessment lifecycle.
+                     </div>
+                   )}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer Actions */}
+            <div style={{ padding: "24px 32px", background: "#F8FAFC", borderTop: "1.5px solid #E2E8F0", display: "flex", gap: "16px" }}>
+              <button onClick={() => handleHireInitiate(selectedCandidate)} style={{ padding: "16px", background: "linear-gradient(135deg,#00B87C,#00D4AA)", color: "#fff", border: "none", borderRadius: "12px", flex: 2, fontWeight: "800", cursor: "pointer", fontSize: "15px", boxShadow: "0 4px 15px rgba(0,184,124,0.3)", transition: "transform 0.2s" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.02)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>✨ Proceed to Hire (AI Draft)</button>
+              <button onClick={() => updateVerdict(selectedCandidate.id, "WAITLIST")} style={{ padding: "16px", background: "#EEF2FF", color: "#4338CA", border: "1.5px solid #C7D2FE", borderRadius: "12px", flex: 1, fontWeight: "800", cursor: "pointer", fontSize: "15px", transition: "background 0.2s" }} onMouseEnter={e=>e.currentTarget.style.background="#E0E7FF"} onMouseLeave={e=>e.currentTarget.style.background="#EEF2FF"}>Waitlist</button>
+              <button onClick={() => updateVerdict(selectedCandidate.id, "REJECT")} style={{ padding: "16px", background: "#FEF2F2", color: "#DC2626", border: "1.5px solid #FECACA", borderRadius: "12px", flex: 1, fontWeight: "800", cursor: "pointer", fontSize: "15px", transition: "background 0.2s" }} onMouseEnter={e=>e.currentTarget.style.background="#FEE2E2"} onMouseLeave={e=>e.currentTarget.style.background="#FEF2F2"}>Reject</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

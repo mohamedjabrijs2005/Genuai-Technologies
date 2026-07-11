@@ -35,15 +35,61 @@ router.get('/stats', async (req, res) => {
   }
 });
 
-// Update verdict
+// Update verdict (with Waterfall Routing Cascade)
 router.put('/verdict/:id', async (req, res) => {
   try {
-    const { verdict } = req.body;
+    const { verdict, company_name } = req.body;
+    const { id } = req.params;
+
+    // Fetch the assessment
+    const result = await pool.query('SELECT a.*, u.email, u.name as candidate_name FROM assessments a JOIN users u ON a.user_id = u.id WHERE a.id = $1', [id]);
+    const assessment = result.rows[0];
+
+    if (!assessment) throw new Error("Assessment not found");
+
+    if (verdict === 'REJECT' && assessment.company_ids && assessment.company_ids.length > 0) {
+      const activeId = assessment.active_company_id;
+      const currentIndex = assessment.company_ids.indexOf(activeId);
+      
+      // If there is a next company in the array
+      if (currentIndex >= 0 && currentIndex < assessment.company_ids.length - 1) {
+        const nextCompanyId = assessment.company_ids[currentIndex + 1];
+        
+        // Update active_company_id to the next company, keep verdict as null or REVIEW for the new company
+        await pool.query(
+          'UPDATE assessments SET active_company_id = $1, verdict = $2 WHERE id = $3',
+          [nextCompanyId, 'REVIEW', id]
+        );
+
+        // Fetch next company name
+        const nextCompRes = await pool.query('SELECT name FROM users WHERE id = $1', [nextCompanyId]);
+        const nextCompanyName = nextCompRes.rows[0]?.name || "another company";
+
+        // Import sendgrid
+        const sgMail = require('@sendgrid/mail');
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+        
+        try {
+          await sgMail.send({
+            to: assessment.email,
+            from: process.env.SENDGRID_SENDER_EMAIL!,
+            subject: 'Update on your GenuAI Application',
+            text: `Hi ${assessment.candidate_name},\n\nUnfortunately, you were not selected by ${company_name || 'the previous company'}. However, your profile has been automatically forwarded to your next choice, ${nextCompanyName}.\n\nBest of luck!\nThe GenuAI Team`,
+          });
+        } catch (emailErr) {
+          console.error("Failed to send waterfall email:", emailErr);
+        }
+
+        return res.json({ updated: true, cascaded: true, nextCompany: nextCompanyName });
+      }
+    }
+
+    // Default behavior if HIRE, or if REJECT with no more companies left
     await pool.query(
       'UPDATE assessments SET verdict = $1 WHERE id = $2',
-      [verdict, req.params.id]
+      [verdict, id]
     );
-    res.json({ updated: true });
+    res.json({ updated: true, cascaded: false });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
@@ -86,7 +132,7 @@ router.get('/companies', async (req, res) => {
   }
 });
 
-// Get candidates who explicitly targeted a specific company
+// Get candidates who are currently ACTIVE for this specific company
 router.get('/candidates/for-company/:companyId', async (req, res) => {
   try {
     const { companyId } = req.params;
@@ -94,7 +140,7 @@ router.get('/candidates/for-company/:companyId', async (req, res) => {
       `SELECT a.*, u.name, u.email
        FROM assessments a
        JOIN users u ON a.user_id = u.id
-       WHERE $1 = ANY(a.company_ids)
+       WHERE a.active_company_id = $1
        ORDER BY a.overall_score DESC`,
       [companyId]
     );
