@@ -13,6 +13,14 @@ const CATEGORIES = [
   { id: "Automata", title: "Automata (Live Coding)", icon: "💻", desc: "Write full algorithms from scratch (Arrays, Strings, Recursion)." }
 ];
 
+const SUB_TOPICS: Record<string, string[]> = {
+  Logical: ["Coding-Decoding", "Blood Relations", "Directional Sense", "Data Sufficiency", "Logical Sequences", "Syllogism", "Seating Arrangement", "Clocks & Calendars"],
+  Quantitative: ["Number System", "HCF & LCM", "Divisibility", "Percentages", "Profit & Loss", "Time-Speed-Distance", "Probability", "Permutations & Combinations", "Simple & Compound Interest"],
+  English: ["Vocabulary Synonyms", "Vocabulary Antonyms", "Error Identification", "Sentence Correction", "Sentence Improvement", "Prepositions & Articles", "Active/Passive Voice"],
+  AutomataFix: ["Array Manipulation", "String Parsing", "Loop Logic", "Conditional Logic", "Recursion Base Case", "Basic Math Logic", "Off-by-one errors"],
+  Automata: ["Arrays", "Strings", "Linked Lists", "Recursion", "Sorting", "Searching", "Matrix Manipulation", "Basic Hash Maps"]
+};
+
 interface MCQQuestion { type: "mcq"; question: string; options: string[]; correctIndex: number; explanation: string; }
 interface CodeQuestion { type: "code"; title: string; description: string; codeTemplate: string; language: string; }
 type Question = MCQQuestion | CodeQuestion;
@@ -52,9 +60,15 @@ export default function SkillTestPractice({ user, onBack }: Props) {
     setUserCode("");
     
     try {
+      const topics = SUB_TOPICS[cat] || ["General Concepts"];
+      const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+      
+      const prevQ = history.length > 0 ? `Avoid these previous questions: ${history.map(h => h.question.question || h.question.title).join('; ')}` : "";
+
       let prompt = "";
       if (cat === "Logical" || cat === "Quantitative" || cat === "English") {
-        prompt = `Generate a highly challenging ${diff} level AMCAT-style Multiple Choice Question for the category: ${cat}.
+        prompt = `Generate a unique, highly challenging ${diff} level AMCAT-style Multiple Choice Question for the category: ${cat}.
+Specifically focus on the sub-topic: **${randomTopic}**. ${prevQ}
 Return ONLY valid JSON with this exact structure:
 {
   "type": "mcq",
@@ -64,17 +78,18 @@ Return ONLY valid JSON with this exact structure:
   "explanation": "Detailed explanation of the correct logic."
 }`;
       } else if (cat === "AutomataFix") {
-        prompt = `Generate a ${diff} level AMCAT Automata Fix (Debugging) question. Provide a short snippet of code with a deliberate syntax or logical bug.
+        prompt = `Generate a unique ${diff} level AMCAT Automata Fix (Debugging) question focusing on **${randomTopic}**. ${prevQ}
+Provide a short snippet of code with a deliberate syntax or logical bug.
 Return ONLY valid JSON with this exact structure:
 {
   "type": "code",
-  "title": "Fix the Bug: [Concept name]",
+  "title": "Fix the Bug: [Specific Concept Name]",
   "description": "Explain what the code is SUPPOSED to do, but mention there is a bug.",
   "codeTemplate": "def find_max(arr):\\n    max_val = 0 # Bug here if array has negative numbers\\n    for i in arr:\\n        if i > max_val:\\n            max_val = i\\n    return max_val",
   "language": "python"
 }`;
       } else if (cat === "Automata") {
-        prompt = `Generate a ${diff} level AMCAT Automata (Live Coding) competitive programming question (e.g., Arrays, Strings, Sorting).
+        prompt = `Generate a unique ${diff} level AMCAT Automata (Live Coding) competitive programming question focusing on **${randomTopic}**. ${prevQ}
 Return ONLY valid JSON with this exact structure:
 {
   "type": "code",
@@ -88,7 +103,7 @@ Return ONLY valid JSON with this exact structure:
       const res = await axios.post("https://api.groq.com/openai/v1/chat/completions", {
         model: "llama-3.3-70b-versatile",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.8, response_format: { type: "json_object" }
+        temperature: 0.9, response_format: { type: "json_object" }
       }, { headers: { Authorization: `Bearer ${GROQ_KEY}`, "Content-Type": "application/json" } });
       
       const q = JSON.parse(res.data.choices[0].message.content);
