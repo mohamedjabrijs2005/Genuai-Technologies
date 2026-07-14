@@ -30,8 +30,12 @@ export default function ResumeGenerator({ user, onBack }: Props) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
   
-  const name = user?.user?.name || user?.name || "Candidate Name";
-  const email = user?.user?.email || user?.email || "candidate@example.com";
+  const defaultName = user?.user?.name || user?.name || "Candidate Name";
+  const defaultEmail = user?.user?.email || user?.email || "candidate@example.com";
+
+  // Editable Name and Email
+  const [candidateName, setCandidateName] = useState(defaultName);
+  const [candidateEmail, setCandidateEmail] = useState(defaultEmail);
 
   const generate = async () => {
     if (!role || !skills || !experience || !education) {
@@ -44,8 +48,8 @@ export default function ResumeGenerator({ user, onBack }: Props) {
 You are an expert ATS resume writer. Format the output so Applicant Tracking Systems can easily parse it. DO NOT use markdown tables or complex formatting. Use standard headings (##), bullet points (-), and bold text (**) for emphasis.
 
 Candidate Information:
-- Name: ${name}
-- Email: ${email}
+- Name: ${candidateName || "Not provided"}
+- Email: ${candidateEmail || "Not provided"}
 - Phone: ${phone || "Not provided"}
 - Location: ${location || "Not provided"}
 - Links & Profiles (LinkedIn/GitHub/Portfolio): ${links || "Not provided"}
@@ -137,6 +141,14 @@ Instructions:
             
             <h2 style={sectionHeader}>1. Personal Information</h2>
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px" }}>
+               <div>
+                 <label style={lbl}>Full Name *</label>
+                 <input value={candidateName} onChange={e=>setCandidateName(e.target.value)} placeholder="e.g. John Doe" style={inp} />
+               </div>
+               <div>
+                 <label style={lbl}>Email Address *</label>
+                 <input value={candidateEmail} onChange={e=>setCandidateEmail(e.target.value)} placeholder="e.g. john@example.com" style={inp} />
+               </div>
                <div>
                  <label style={lbl}>Phone Number</label>
                  <input value={phone} onChange={e=>setPhone(e.target.value)} placeholder="+1 (555) 000-0000" style={inp} />
