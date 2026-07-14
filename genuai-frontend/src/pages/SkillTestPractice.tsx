@@ -10,7 +10,8 @@ const CATEGORIES = [
   { id: "Quantitative", title: "Quantitative Aptitude", icon: "📐", desc: "Numerical ability, probability, time & speed." },
   { id: "English", title: "English Grammar", icon: "📖", desc: "Vocabulary, sentence correction, and reading comprehension." },
   { id: "AutomataFix", title: "Automata Fix (Debugging)", icon: "🐛", desc: "Find and fix logical or syntax errors in existing code." },
-  { id: "Automata", title: "Automata (Live Coding)", icon: "💻", desc: "Write full algorithms from scratch (Arrays, Strings, Recursion)." }
+  { id: "Automata", title: "Automata (Live Coding)", icon: "💻", desc: "Write full algorithms from scratch (Arrays, Strings, Recursion)." },
+  { id: "CoreCS", title: "Core CS Fundamentals", icon: "🖥️", desc: "Operating Systems, DBMS, Computer Networks, and Architecture." }
 ];
 
 const SUB_TOPICS: Record<string, string[]> = {
@@ -18,7 +19,8 @@ const SUB_TOPICS: Record<string, string[]> = {
   Quantitative: ["Number System", "HCF & LCM", "Divisibility", "Percentages", "Profit & Loss", "Time-Speed-Distance", "Probability", "Permutations & Combinations", "Simple & Compound Interest"],
   English: ["Vocabulary Synonyms", "Vocabulary Antonyms", "Error Identification", "Sentence Correction", "Sentence Improvement", "Prepositions & Articles", "Active/Passive Voice"],
   AutomataFix: ["Array Manipulation", "String Parsing", "Loop Logic", "Conditional Logic", "Recursion Base Case", "Basic Math Logic", "Off-by-one errors"],
-  Automata: ["Arrays", "Strings", "Linked Lists", "Recursion", "Sorting", "Searching", "Matrix Manipulation", "Basic Hash Maps"]
+  Automata: ["Arrays", "Strings", "Linked Lists", "Recursion", "Sorting", "Searching", "Matrix Manipulation", "Basic Hash Maps"],
+  CoreCS: ["Operating Systems", "DBMS & SQL", "Computer Networks", "Computer Architecture", "Software Engineering", "Deadlocks & Concurrency", "OSI Model"]
 };
 
 interface MCQQuestion { type: "mcq"; question: string; options: string[]; correctIndex: number; explanation: string; }
@@ -66,7 +68,7 @@ export default function SkillTestPractice({ user, onBack }: Props) {
       const prevQ = history.length > 0 ? `Avoid these previous questions: ${history.map(h => h.question.question || h.question.title).join('; ')}` : "";
 
       let prompt = "";
-      if (cat === "Logical" || cat === "Quantitative" || cat === "English") {
+      if (cat === "Logical" || cat === "Quantitative" || cat === "English" || cat === "CoreCS") {
         prompt = `Generate a unique, highly challenging ${diff} level AMCAT-style Multiple Choice Question for the category: ${cat}.
 Specifically focus on the sub-topic: **${randomTopic}**. ${prevQ}
 Return ONLY valid JSON with this exact structure:
@@ -103,10 +105,15 @@ Return ONLY valid JSON with this exact structure:
       const res = await axios.post("https://api.groq.com/openai/v1/chat/completions", {
         model: "llama-3.3-70b-versatile",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.9, response_format: { type: "json_object" }
+        temperature: 0.8, response_format: { type: "json_object" }
       }, { headers: { Authorization: `Bearer ${GROQ_KEY}`, "Content-Type": "application/json" } });
       
-      const q = JSON.parse(res.data.choices[0].message.content);
+      let responseText = res.data.choices[0].message.content.trim();
+      if (responseText.startsWith("\`\`\`")) {
+        responseText = responseText.replace(/^\`\`\`(json)?\n/, "").replace(/\n\`\`\`$/, "");
+      }
+      
+      const q = JSON.parse(responseText);
       setQuestion(q);
       if (q.type === "code") setUserCode(q.codeTemplate);
     } catch (e) {
