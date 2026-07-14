@@ -66,14 +66,40 @@ export default function PracticeDashboard({ user, onBack }: Props) {
       </nav>
 
       <div style={{ maxWidth:'1100px', margin:'0 auto', padding:'48px 24px' }}>
-        <div style={{ background:"#fff", borderRadius:"24px", padding:"40px", border:"1px solid #E2E8F0", boxShadow:"0 10px 25px rgba(0,0,0,0.02)", marginBottom:"40px", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
+        <div style={{ marginBottom:'40px' }}>
+          <h1 style={{ fontSize:'32px', fontWeight:'900', color:'#0F172A', margin:'0 0 8px', letterSpacing:'-0.6px' }}>Practice Hub</h1>
+          <p style={{ color:'#64748B', fontSize:'15px', margin:0 }}>Sharpen every skill before your official assessment</p>
+        </div>
+
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'20px' }}>
+          {TOOLS.map(tool => {
+            const isHover = active === tool.id;
+            return (
+              <div key={tool.id} onMouseEnter={() => setActive(tool.id)} onMouseLeave={() => setActive(null)}
+                style={{ background:'#fff', borderRadius:'20px', border: isHover ? '2px solid ' + tool.color : '2px solid #E5E7EB', padding:'28px', cursor:'pointer', transition:'all 0.2s ease', boxShadow: isHover ? '0 12px 40px ' + tool.color + '33' : '0 2px 8px rgba(0,0,0,0.04)', transform: isHover ? 'translateY(-3px)' : 'none', position:'relative' }}>
+                {!tool.ready && <div style={{ position:'absolute', top:'14px', right:'14px', background:'#FEF3C7', color:'#92400E', fontSize:'10px', fontWeight:'800', padding:'3px 8px', borderRadius:'20px' }}>SOON</div>}
+                <div style={{ width:'52px', height:'52px', borderRadius:'14px', background:tool.bg, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'24px', marginBottom:'16px' }}>{tool.icon}</div>
+                <h3 style={{ fontSize:'16px', fontWeight:'800', color:'#0F172A', margin:'0 0 8px' }}>{tool.title}</h3>
+                <p style={{ fontSize:'13px', color:'#64748B', lineHeight:'1.6', margin:'0 0 16px' }}>{tool.desc}</p>
+                <div style={{ display:'flex', flexWrap:'wrap', gap:'6px', marginBottom:'20px' }}>
+                  {tool.tags.map((t,i) => <span key={i} style={{ background:tool.bg, color:tool.color, fontSize:'11px', fontWeight:'700', padding:'3px 10px', borderRadius:'20px' }}>{t}</span>)}
+                </div>
+                <button onClick={() => handleOpen(tool)} style={{ width:'100%', padding:'10px', background: isHover ? tool.color : 'transparent', border:'1px solid ' + tool.color, borderRadius:'10px', color: isHover ? '#fff' : tool.color, fontWeight:'700', fontSize:'13px', cursor:'pointer', transition:'all 0.2s' }}>
+                  {tool.ready ? (isHover ? 'Launch →' : 'Open Tool') : 'Coming Soon'}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        <div style={{ background:"#fff", borderRadius:"24px", padding:"40px", border:"1px solid #E2E8F0", boxShadow:"0 10px 25px rgba(0,0,0,0.02)", marginTop:"40px", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
           <div style={{ position:"absolute", top:"-50px", right:"-50px", width:"200px", height:"200px", background:"radial-gradient(circle, rgba(37,99,235,0.05) 0%, rgba(255,255,255,0) 70%)" }}></div>
           <div style={{ position:"absolute", bottom:"-50px", left:"-50px", width:"150px", height:"150px", background:"radial-gradient(circle, rgba(124,58,237,0.05) 0%, rgba(255,255,255,0) 70%)" }}></div>
           
           <div style={{ display:"flex", alignItems:"center", gap:"16px", marginBottom:"24px" }}>
             <div style={{ fontSize:"40px" }}>🚀</div>
             <div>
-              <h1 style={{ fontSize:"32px", fontWeight:"900", color:"#0F172A", margin:"0 0 4px", letterSpacing:"-0.5px" }}>Candidate Practice Hub</h1>
+              <h2 style={{ fontSize:"28px", fontWeight:"900", color:"#0F172A", margin:"0 0 4px", letterSpacing:"-0.5px" }}>Candidate Practice Hub</h2>
               <p style={{ color:"#64748B", fontSize:"15px", margin:0, fontWeight:"600" }}>The ultimate AI-powered preparation environment</p>
             </div>
           </div>
@@ -96,27 +122,6 @@ export default function PracticeDashboard({ user, onBack }: Props) {
               <div style={{ color:"#64748B", fontSize:"12px", lineHeight:"1.5" }}>Replicate the exact conditions of real proctored tests to build true confidence.</div>
             </div>
           </div>
-        </div>
-
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'20px' }}>
-          {TOOLS.map(tool => {
-            const isHover = active === tool.id;
-            return (
-              <div key={tool.id} onMouseEnter={() => setActive(tool.id)} onMouseLeave={() => setActive(null)}
-                style={{ background:'#fff', borderRadius:'20px', border: isHover ? '2px solid ' + tool.color : '2px solid #E5E7EB', padding:'28px', cursor:'pointer', transition:'all 0.2s ease', boxShadow: isHover ? '0 12px 40px ' + tool.color + '33' : '0 2px 8px rgba(0,0,0,0.04)', transform: isHover ? 'translateY(-3px)' : 'none', position:'relative' }}>
-                {!tool.ready && <div style={{ position:'absolute', top:'14px', right:'14px', background:'#FEF3C7', color:'#92400E', fontSize:'10px', fontWeight:'800', padding:'3px 8px', borderRadius:'20px' }}>SOON</div>}
-                <div style={{ width:'52px', height:'52px', borderRadius:'14px', background:tool.bg, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'24px', marginBottom:'16px' }}>{tool.icon}</div>
-                <h3 style={{ fontSize:'16px', fontWeight:'800', color:'#0F172A', margin:'0 0 8px' }}>{tool.title}</h3>
-                <p style={{ fontSize:'13px', color:'#64748B', lineHeight:'1.6', margin:'0 0 16px' }}>{tool.desc}</p>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:'6px', marginBottom:'20px' }}>
-                  {tool.tags.map((t,i) => <span key={i} style={{ background:tool.bg, color:tool.color, fontSize:'11px', fontWeight:'700', padding:'3px 10px', borderRadius:'20px' }}>{t}</span>)}
-                </div>
-                <button onClick={() => handleOpen(tool)} style={{ width:'100%', padding:'10px', background: isHover ? tool.color : 'transparent', border:'1px solid ' + tool.color, borderRadius:'10px', color: isHover ? '#fff' : tool.color, fontWeight:'700', fontSize:'13px', cursor:'pointer', transition:'all 0.2s' }}>
-                  {tool.ready ? (isHover ? 'Launch →' : 'Open Tool') : 'Coming Soon'}
-                </button>
-              </div>
-            );
-          })}
         </div>
 
         <div style={{ marginTop:'32px', background:'#fff', borderRadius:'16px', border:'1px solid #E5E7EB', padding:'24px 32px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
