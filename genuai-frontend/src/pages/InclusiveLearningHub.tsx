@@ -32,18 +32,22 @@ export default function InclusiveLearningHub({ user, onBack }: Props) {
   const [content, setContent] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const generateSyllabus = async () => {
-    if (!searchQuery.trim()) return;
+  const generateSyllabus = async (overrideQuery?: string) => {
+    const query = overrideQuery || searchQuery;
+    if (!query.trim()) return;
+    
+    if (overrideQuery) setSearchQuery(overrideQuery);
+
     setSyllabusLoading(true);
     setSyllabus([]);
     setActiveModule(null);
     setContent("");
-    setCurrentSkill(searchQuery.trim());
+    setCurrentSkill(query.trim());
     window.speechSynthesis.cancel();
     setIsPlaying(false);
 
     try {
-      const prompt = `The user wants to learn about the skill/concept: "${searchQuery}". 
+      const prompt = `The user wants to learn about the skill/concept: "${query}". 
 Generate a comprehensive 5-module learning syllabus covering this topic from beginner to advanced. 
 Return the result strictly as a JSON object with this exact format:
 {
@@ -148,7 +152,7 @@ Format the output using simple Markdown (## headers, **bold**, and \`\`\` for co
               placeholder="What do you want to learn? (e.g. React Hooks, System Design, DevOps)" 
               style={{ flex:1, padding:"12px 16px", border:"none", background:"transparent", outline:"none", fontSize:"14px", color:"#0F172A" }}
             />
-            <button onClick={generateSyllabus} disabled={syllabusLoading || !searchQuery.trim()} style={{ background:"#0F172A", color:"#fff", border:"none", padding:"0 24px", fontWeight:"700", cursor:(syllabusLoading||!searchQuery.trim())?"not-allowed":"pointer" }}>
+            <button onClick={() => generateSyllabus()} disabled={syllabusLoading || !searchQuery.trim()} style={{ background:"#0F172A", color:"#fff", border:"none", padding:"0 24px", fontWeight:"700", cursor:(syllabusLoading||!searchQuery.trim())?"not-allowed":"pointer" }}>
               {syllabusLoading ? "Searching..." : "Learn"}
             </button>
           </div>
@@ -180,7 +184,7 @@ Format the output using simple Markdown (## headers, **bold**, and \`\`\` for co
             </div>
           </div>
 
-          {syllabus.length > 0 && (
+          {syllabus.length > 0 ? (
             <div style={{ background:"#fff", borderRadius:"20px", padding:"24px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
               <h3 style={{ fontSize:"14px", fontWeight:"800", color:"#0F172A", margin:"0 0 16px", textTransform:"uppercase", letterSpacing:"0.5px" }}>{currentSkill} Syllabus</h3>
               <div style={{ display:"flex", flexDirection:"column", gap:"12px" }}>
@@ -199,18 +203,55 @@ Format the output using simple Markdown (## headers, **bold**, and \`\`\` for co
                 ))}
               </div>
             </div>
+          ) : (
+            <div style={{ background:"#fff", borderRadius:"20px", padding:"24px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
+               <h3 style={{ fontSize:"14px", fontWeight:"800", color:"#0F172A", margin:"0 0 16px", textTransform:"uppercase", letterSpacing:"0.5px" }}>Popular Topics</h3>
+               <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
+                 {["System Design", "Dynamic Programming", "React Hooks", "Docker Basics", "Microservices"].map(t => (
+                    <button key={t} onClick={() => generateSyllabus(t)} style={{ padding:"12px 16px", background:"#F8FAFC", border:"1px solid #E2E8F0", borderRadius:"12px", textAlign:"left", cursor:"pointer", fontWeight:"600", color:"#334155", display:"flex", justifyContent:"space-between" }} onMouseEnter={e=>e.currentTarget.style.background="#F1F5F9"} onMouseLeave={e=>e.currentTarget.style.background="#F8FAFC"}>
+                      <span>{t}</span>
+                      <span style={{ color:"#94A3B8" }}>→</span>
+                    </button>
+                 ))}
+               </div>
+            </div>
           )}
         </div>
 
         {/* Right Content Area: Multimodal Lesson */}
         <div style={{ flex:1, display:"flex", flexDirection:"column", gap:"24px" }}>
           {!activeModule ? (
-            <div style={{ background:"#fff", borderRadius:"24px", padding:"60px 40px", border:"1px dashed #CBD5E1", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", flex:1 }}>
-              <div style={{ fontSize:"64px", marginBottom:"24px" }}>🔍</div>
-              <h2 style={{ fontSize:"24px", fontWeight:"800", color:"#0F172A", marginBottom:"12px" }}>Search to generate a syllabus</h2>
-              <p style={{ color:"#64748B", fontSize:"15px", maxWidth:"450px", lineHeight:"1.6" }}>
-                Enter a topic above (e.g. "REST APIs", "Machine Learning Basics") and select a module to generate an AI Native Language lesson with Voice and Visual references.
-              </p>
+            <div style={{ flex:1, display:"flex", flexDirection:"column", gap:"24px" }}>
+              <div style={{ background:"#fff", borderRadius:"24px", padding:"48px", border:"1px solid #E2E8F0", boxShadow:"0 10px 25px rgba(0,0,0,0.02)", flex:1, display:"flex", flexDirection:"column" }}>
+                <div style={{ fontSize:"48px", marginBottom:"20px" }}>🌍</div>
+                <h2 style={{ fontSize:"32px", fontWeight:"900", color:"#0F172A", marginBottom:"16px", letterSpacing:"-0.5px" }}>Welcome to the Inclusive Learning Hub</h2>
+                <p style={{ color:"#475569", fontSize:"16px", lineHeight:"1.8", maxWidth:"750px", marginBottom:"40px" }}>
+                  This AI-powered education engine is designed to dramatically lower your cognitive load. By learning complex engineering concepts in your Native Language first, you can increase retention and grasp abstract logic significantly faster.
+                </p>
+
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"24px", marginBottom:"48px" }}>
+                  <div style={{ background:"#EFF6FF", padding:"24px", borderRadius:"16px", border:"1px solid #BFDBFE" }}>
+                    <div style={{ fontSize:"28px", marginBottom:"12px" }}>🗣️</div>
+                    <div style={{ fontWeight:"800", fontSize:"16px", color:"#1E3A8A", marginBottom:"8px" }}>Native NLP</div>
+                    <div style={{ color:"#3B82F6", fontSize:"14px", lineHeight:"1.6" }}>Lessons are dynamically generated and translated into languages like Hindi, Tamil, and Mandarin on the fly.</div>
+                  </div>
+                  <div style={{ background:"#F0FDF4", padding:"24px", borderRadius:"16px", border:"1px solid #BBF7D0" }}>
+                    <div style={{ fontSize:"28px", marginBottom:"12px" }}>📺</div>
+                    <div style={{ fontWeight:"800", fontSize:"16px", color:"#14532D", marginBottom:"8px" }}>Visual Searching</div>
+                    <div style={{ color:"#22C55E", fontSize:"14px", lineHeight:"1.6" }}>We automatically query YouTube for the best localized video tutorials based on your exact module.</div>
+                  </div>
+                  <div style={{ background:"#FEF2F2", padding:"24px", borderRadius:"16px", border:"1px solid #FECACA" }}>
+                    <div style={{ fontSize:"28px", marginBottom:"12px" }}>🔊</div>
+                    <div style={{ fontWeight:"800", fontSize:"16px", color:"#7F1D1D", marginBottom:"8px" }}>Text-to-Speech</div>
+                    <div style={{ color:"#EF4444", fontSize:"14px", lineHeight:"1.6" }}>Listen to the AI tutor read the explanations aloud natively using browser synthesis technology.</div>
+                  </div>
+                </div>
+
+                <div style={{ background:"#F8FAFC", padding:"32px", borderRadius:"20px", border:"1px dashed #CBD5E1", textAlign:"center", marginTop:"auto" }}>
+                   <div style={{ fontWeight:"800", color:"#0F172A", fontSize:"18px", marginBottom:"12px" }}>Ready to start learning?</div>
+                   <div style={{ color:"#64748B", fontSize:"15px" }}>Type any skill in the search bar above or select a popular topic from the sidebar.</div>
+                </div>
+              </div>
             </div>
           ) : (
             <>
