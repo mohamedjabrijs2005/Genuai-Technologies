@@ -3,6 +3,7 @@ import AIMockInterview from './AIMockInterview';
 import ResumeGenerator from './ResumeGenerator';
 import CoverLetterGenerator from './CoverLetterGenerator';
 import SVARPractice from './SVARPractice';
+import InclusiveLearningHub from './InclusiveLearningHub';
 
 interface Props { user: any; onBack: () => void; }
 
@@ -12,7 +13,7 @@ const TOOLS = [
   { id:'resume',   icon:'📄', title:'Resume Generator',       desc:'Build a professional ATS-optimized resume using AI. Tailored to your target role and skills.',                   color:'#0891B2', bg:'#ECFEFF', tags:['ATS Optimized','PDF Export','Role Tailored'], ready:true },
   { id:'cover',    icon:'✉️', title:'Cover Letter Generator', desc:'Generate compelling, personalized cover letters for any job posting in under 30 seconds.',                       color:'#059669', bg:'#ECFDF5', tags:['Personalized','Job-specific','Instant'], ready:true },
   { id:'svar',     icon:'🎙️', title:'SVAR Speaking Practice', desc:'Improve your verbal communication, fluency, and listening comprehension with scored exercises.',                  color:'#DC2626', bg:'#FEF2F2', tags:['Speaking','Listening','Fluency'], ready:true },
-  { id:'learning', icon:'🧠', title:'Inclusive Learning Hub', desc:'Access curated courses, video tutorials, DSA sheets, coding challenges, and interview prep guides.',             color:'#D97706', bg:'#FFFBEB', tags:['DSA','System Design','Interview Prep','Video'], ready:false },
+  { id:'learning', icon:'🧠', title:'Inclusive Learning Hub', desc:'Access curated courses, video tutorials, DSA sheets, coding challenges, and interview prep guides.',             color:'#D97706', bg:'#FFFBEB', tags:['DSA','System Design','Interview Prep','Video'], ready:true },
 ];
 
 export default function PracticeDashboard({ user, onBack }: Props) {
@@ -33,6 +34,7 @@ export default function PracticeDashboard({ user, onBack }: Props) {
   if (openTool === 'resume') return <ResumeGenerator user={user} onBack={() => setOpenTool(null)} />;
   if (openTool === 'cover') return <CoverLetterGenerator user={user} onBack={() => setOpenTool(null)} />;
   if (openTool === 'svar') return <SVARPractice user={user} onBack={() => setOpenTool(null)} />;
+  if (openTool === 'learning') return <InclusiveLearningHub user={user} onBack={() => setOpenTool(null)} />;
 
   return (
     <div style={{ minHeight:'100vh', background:'#F8FAFC', fontFamily:"'Inter','Segoe UI',sans-serif" }}>
