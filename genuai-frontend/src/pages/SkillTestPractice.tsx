@@ -210,14 +210,6 @@ Return ONLY JSON:
           ))}
         </div>
 
-        <div style={{ background:"#FEF2F2", padding:"20px", borderRadius:"16px", border:"1px solid #FECACA", marginBottom:"32px", display:"flex", gap:"16px", alignItems:"flex-start" }}>
-          <div style={{ fontSize:"24px" }}>⚠️</div>
-          <div>
-            <div style={{ fontWeight:"800", color:"#991B1B", fontSize:"14px", marginBottom:"4px" }}>Strict Testing Environment</div>
-            <div style={{ color:"#B91C1C", fontSize:"13px", lineHeight:"1.5" }}>Once the test begins, a strict timer will start. Because this is adaptive, you cannot skip questions or go back. The AI will evaluate your answers instantly.</div>
-          </div>
-        </div>
-
         <button onClick={startTest} style={{ width:"100%", padding:"18px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"14px", fontWeight:"800", fontSize:"16px", cursor:"pointer", boxShadow:"0 8px 24px rgba(15,23,42,0.2)" }}>
           Start Simulation →
         </button>
