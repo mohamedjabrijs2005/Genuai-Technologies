@@ -186,7 +186,7 @@ Return ONLY JSON:
       evaluation: evalResult
     }]);
 
-    if (currentQIndex + 1 >= 3) { // 3 questions per session
+    if (currentQIndex + 1 >= 20) { // 20 questions per session
       finishTest();
     } else {
       setCurrentQIndex(i => i + 1);
@@ -242,7 +242,7 @@ Return ONLY JSON:
   // ── RESULTS PHASE ──
   if (phase === "results") {
     const correctCount = history.filter(h => h.isCorrect).length;
-    const scoreColor = correctCount === 3 ? "#10B981" : correctCount > 0 ? "#F59E0B" : "#EF4444";
+    const scoreColor = correctCount >= 16 ? "#10B981" : correctCount >= 8 ? "#F59E0B" : "#EF4444";
     return (
       <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", padding:"40px 20px" }}>
         <div style={{ maxWidth:"900px", margin:"0 auto" }}>
@@ -251,9 +251,9 @@ Return ONLY JSON:
             <h1 style={{ fontSize:"32px", fontWeight:"900", color:"#0F172A", marginBottom:"8px" }}>Assessment Complete</h1>
             <div style={{ color:"#64748B", fontSize:"16px", fontWeight:"600", marginBottom:"24px" }}>{currentCatData.title} Module</div>
             
-            <div style={{ fontSize:"56px", fontWeight:"900", color:scoreColor, marginBottom:"16px", lineHeight:1 }}>{correctCount}/3</div>
+            <div style={{ fontSize:"56px", fontWeight:"900", color:scoreColor, marginBottom:"16px", lineHeight:1 }}>{correctCount}/20</div>
             <div style={{ display:"inline-block", background:scoreColor+"11", color:scoreColor, borderRadius:"20px", padding:"8px 24px", fontSize:"14px", fontWeight:"800", border:`1px solid ${scoreColor}33` }}>
-              {correctCount === 3 ? "Excellent Adaptive Performance!" : "Keep practicing to master harder difficulties."}
+              {correctCount >= 16 ? "Excellent Adaptive Performance!" : "Keep practicing to master harder difficulties."}
             </div>
           </div>
 
@@ -327,7 +327,7 @@ Return ONLY JSON:
           <div>
             <div style={{ fontWeight:"900", fontSize:"16px", color:"#0F172A" }}>{currentCatData.title}</div>
             <div style={{ fontSize:"12px", color:"#64748B", fontWeight:"700", marginTop:"2px", display:"flex", gap:"8px" }}>
-              <span>Question {currentQIndex+1}/3</span>
+              <span>Question {currentQIndex+1}/20</span>
               <span style={{ color:"#D97706" }}>• Adaptive: {difficulty}</span>
             </div>
           </div>
