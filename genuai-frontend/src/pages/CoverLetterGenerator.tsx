@@ -27,9 +27,6 @@ export default function CoverLetterGenerator({ user, onBack }: Props) {
   
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
-  
-  const name = user?.user?.name || user?.name || "Candidate";
-  const email = user?.user?.email || user?.email || "candidate@example.com";
 
   const generate = async () => {
     if (!jobDetails || !skills || !experience) {
@@ -40,7 +37,7 @@ export default function CoverLetterGenerator({ user, onBack }: Props) {
     try {
       const prompt = `Write a highly professional, compelling, and perfectly formatted cover letter based strictly on the following inputs. Seamlessly weave these sections together so it reads like a natural, persuasive letter written by a top-tier candidate.
 
-1. Applicant Information: ${applicantInfo || `${name}, ${email}`}
+1. Applicant Information: ${applicantInfo || "Not provided (Format generally)"}
 2. Recipient / Company Information: ${companyInfo || "Not provided (Format generally)"}
 3. Job Details: ${jobDetails}
 4. Salutation: ${salutation}
@@ -114,7 +111,7 @@ Instructions:
             
             <h2 style={{...sectionHeader, marginTop: 0}}>1. Headers & Details</h2>
             <label style={lbl}>Applicant Information</label>
-            <textarea value={applicantInfo} onChange={e=>setApplicantInfo(e.target.value)} placeholder={`Name, Phone, Email, LinkedIn...\n(Defaults to ${name}, ${email})`} rows={2} style={{...inp, resize:"vertical"}} />
+            <textarea value={applicantInfo} onChange={e=>setApplicantInfo(e.target.value)} placeholder="Name, Phone, Email, LinkedIn..." rows={2} style={{...inp, resize:"vertical"}} />
 
             <label style={lbl}>Recipient / Company Information</label>
             <textarea value={companyInfo} onChange={e=>setCompanyInfo(e.target.value)} placeholder="Hiring Manager Name, Title, Company Name, Address..." rows={2} style={{...inp, resize:"vertical"}} />
@@ -152,7 +149,7 @@ Instructions:
             <textarea value={cta} onChange={e=>setCta(e.target.value)} placeholder="I would welcome the opportunity to discuss this further..." rows={2} style={{...inp, resize:"vertical"}} />
 
             <label style={lbl}>Sign-Off / Signature</label>
-            <textarea value={signOff} onChange={e=>setSignOff(e.target.value)} placeholder={`Sincerely,\n${name}`} rows={2} style={{...inp, resize:"vertical"}} />
+            <textarea value={signOff} onChange={e=>setSignOff(e.target.value)} placeholder="Sincerely,\nJohn Doe" rows={2} style={{...inp, resize:"vertical"}} />
 
             <div style={{ position:"sticky", bottom:"-28px", background:"#fff", padding:"20px 0", borderTop:"1px solid #E2E8F0", marginTop:"32px" }}>
               <button onClick={generate} disabled={loading} style={{ width:"100%", padding:"16px", background:loading?"#E2E8F0":"linear-gradient(135deg,#059669,#10B981)", color:loading?"#94A3B8":"#fff", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"15px", cursor:loading?"not-allowed":"pointer", boxShadow:loading?"none":"0 8px 24px rgba(5,150,105,0.3)", transition:"transform 0.2s" }} onMouseEnter={e=>!loading && (e.currentTarget.style.transform="scale(1.02)")} onMouseLeave={e=>!loading && (e.currentTarget.style.transform="scale(1)")}>

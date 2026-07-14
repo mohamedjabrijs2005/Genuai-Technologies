@@ -29,13 +29,10 @@ export default function ResumeGenerator({ user, onBack }: Props) {
   
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
-  
-  const defaultName = user?.user?.name || user?.name || "Candidate Name";
-  const defaultEmail = user?.user?.email || user?.email || "candidate@example.com";
 
-  // Editable Name and Email
-  const [candidateName, setCandidateName] = useState(defaultName);
-  const [candidateEmail, setCandidateEmail] = useState(defaultEmail);
+  // Editable Name and Email - intentionally blank by default
+  const [candidateName, setCandidateName] = useState("");
+  const [candidateEmail, setCandidateEmail] = useState("");
 
   const generate = async () => {
     if (!role || !skills || !experience || !education) {
