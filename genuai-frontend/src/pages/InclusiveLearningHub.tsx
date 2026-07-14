@@ -10,10 +10,21 @@ const LANGUAGES = [
   { code: "hi-IN", label: "Hindi (India)", native: "हिंदी" },
   { code: "ta-IN", label: "Tamil (India)", native: "தமிழ்" },
   { code: "te-IN", label: "Telugu (India)", native: "తెలుగు" },
+  { code: "bn-IN", label: "Bengali (India)", native: "বাংলা" },
+  { code: "ur-PK", label: "Urdu (Pakistan)", native: "اردو" },
   { code: "zh-CN", label: "Mandarin (China)", native: "中文" },
   { code: "ja-JP", label: "Japanese (Japan)", native: "日本語" },
+  { code: "ko-KR", label: "Korean (South Korea)", native: "한국어" },
   { code: "es-ES", label: "Spanish (Spain)", native: "Español" },
   { code: "fr-FR", label: "French (France)", native: "Français" },
+  { code: "de-DE", label: "German (Germany)", native: "Deutsch" },
+  { code: "it-IT", label: "Italian (Italy)", native: "Italiano" },
+  { code: "pt-BR", label: "Portuguese (Brazil)", native: "Português" },
+  { code: "ru-RU", label: "Russian (Russia)", native: "Русский" },
+  { code: "ar-SA", label: "Arabic (Saudi Arabia)", native: "العربية" },
+  { code: "sw-KE", label: "Swahili (Kenya)", native: "Kiswahili" },
+  { code: "tr-TR", label: "Turkish (Turkey)", native: "Türkçe" },
+  { code: "vi-VN", label: "Vietnamese (Vietnam)", native: "Tiếng Việt" }
 ];
 
 interface Module { id: string; title: string; description: string; }
@@ -207,7 +218,7 @@ Format the output using simple Markdown (## headers, **bold**, and \`\`\` for co
             <div style={{ background:"#fff", borderRadius:"20px", padding:"24px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
                <h3 style={{ fontSize:"14px", fontWeight:"800", color:"#0F172A", margin:"0 0 16px", textTransform:"uppercase", letterSpacing:"0.5px" }}>Popular Topics</h3>
                <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
-                 {["System Design", "Dynamic Programming", "React Hooks", "Docker Basics", "Microservices"].map(t => (
+                 {["System Design", "Dynamic Programming", "React Hooks", "Docker Basics", "Microservices", "Machine Learning", "GraphQL APIs", "Cybersecurity", "Blockchain Basics", "Kubernetes", "AWS Cloud Concepts"].map(t => (
                     <button key={t} onClick={() => generateSyllabus(t)} style={{ padding:"12px 16px", background:"#F8FAFC", border:"1px solid #E2E8F0", borderRadius:"12px", textAlign:"left", cursor:"pointer", fontWeight:"600", color:"#334155", display:"flex", justifyContent:"space-between" }} onMouseEnter={e=>e.currentTarget.style.background="#F1F5F9"} onMouseLeave={e=>e.currentTarget.style.background="#F8FAFC"}>
                       <span>{t}</span>
                       <span style={{ color:"#94A3B8" }}>→</span>
