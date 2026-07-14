@@ -4,12 +4,13 @@ import ResumeGenerator from './ResumeGenerator';
 import CoverLetterGenerator from './CoverLetterGenerator';
 import SVARPractice from './SVARPractice';
 import InclusiveLearningHub from './InclusiveLearningHub';
+import SkillTestPractice from './SkillTestPractice';
 
 interface Props { user: any; onBack: () => void; }
 
 const TOOLS = [
   { id:'mock',     icon:'🤖', title:'AI Mock Interview',      desc:'Practice with an AI interviewer tailored to your role. Get instant feedback on answers, tone, and clarity.',    color:'#2563EB', bg:'#EFF6FF', tags:['HR Round','Technical','Behavioral'], ready:true },
-  { id:'skills',   icon:'💡', title:'Skill Test Practice',    desc:'Attempt AMCAT-style coding, aptitude, English, and automata questions with detailed explanations.',              color:'#7C3AED', bg:'#F5F3FF', tags:['Coding','Aptitude','English','Automata'], ready:false },
+  { id:'skills',   icon:'💡', title:'Skill Test Practice',    desc:'Attempt AMCAT-style coding, aptitude, English, and automata questions with detailed explanations.',              color:'#7C3AED', bg:'#F5F3FF', tags:['Coding','Aptitude','English','Automata'], ready:true },
   { id:'resume',   icon:'📄', title:'Resume Generator',       desc:'Build a professional ATS-optimized resume using AI. Tailored to your target role and skills.',                   color:'#0891B2', bg:'#ECFEFF', tags:['ATS Optimized','PDF Export','Role Tailored'], ready:true },
   { id:'cover',    icon:'✉️', title:'Cover Letter Generator', desc:'Generate compelling, personalized cover letters for any job posting in under 30 seconds.',                       color:'#059669', bg:'#ECFDF5', tags:['Personalized','Job-specific','Instant'], ready:true },
   { id:'svar',     icon:'🎙️', title:'SVAR Speaking Practice', desc:'Improve your verbal communication, fluency, and listening comprehension with scored exercises.',                  color:'#DC2626', bg:'#FEF2F2', tags:['Speaking','Listening','Fluency'], ready:true },
@@ -31,6 +32,7 @@ export default function PracticeDashboard({ user, onBack }: Props) {
 
   // ── Route to tool ──
   if (openTool === 'mock') return <AIMockInterview user={user} onBack={() => setOpenTool(null)} />;
+  if (openTool === 'skills') return <SkillTestPractice user={user} onBack={() => setOpenTool(null)} />;
   if (openTool === 'resume') return <ResumeGenerator user={user} onBack={() => setOpenTool(null)} />;
   if (openTool === 'cover') return <CoverLetterGenerator user={user} onBack={() => setOpenTool(null)} />;
   if (openTool === 'svar') return <SVARPractice user={user} onBack={() => setOpenTool(null)} />;
