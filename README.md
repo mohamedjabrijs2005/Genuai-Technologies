@@ -3,7 +3,7 @@
 > **AI-Powered Recruitment Intelligence Platform**
 > Filtering fake candidates. Finding real talent.
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-00B87C?style=for-the-badge)](https://d1ssw1t0a4j2nf.cloudfront.net)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-00B87C?style=for-the-badge)](https://genuai-technologies.vercel.app/)
 [![AWS](https://img.shields.io/badge/AWS-Powered-FF9900?style=for-the-badge&logo=amazon-aws)](https://aws.amazon.com)
 [![React](https://img.shields.io/badge/React-TypeScript-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org)
 [![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js)](https://nodejs.org)
