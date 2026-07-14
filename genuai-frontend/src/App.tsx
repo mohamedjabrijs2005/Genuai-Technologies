@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 
 // ── Pages ──────────────────────────────────────────────────────────────────
 import Auth               from "./pages/Auth";
-import RobotVerification  from "./pages/RobotVerification";
 import PathSelection      from "./pages/PathSelection";
 import CompanyOverview    from "./pages/CompanyOverview";
 import PracticeDashboard  from "./pages/PracticeDashboard";
@@ -18,7 +17,6 @@ import AMCATTest          from "./pages/AMCATTest";
 // ── Page type ──────────────────────────────────────────────────────────────
 type Page =
   | "auth"           // login / register  (not logged in)
-  | "robot-verify"   // CAPTCHA after login
   | "path-select"    // Practice vs Test
   | "practice"       // Practice hub
   | "search"         // Search jobs hub
@@ -94,8 +92,8 @@ export default function App() {
     // Candidate: if restoring session skip CAPTCHA, go straight to path-select
     if (isRestore) { setPage("path-select"); return; }
 
-    // Fresh login: show CAPTCHA first
-    setPage("robot-verify");
+    // Fresh login: go straight to path-select
+    setPage("path-select");
   };
 
   // ── Auth handlers ──────────────────────────────────────────────────────
@@ -223,15 +221,6 @@ export default function App() {
   }
 
   // ── Candidate flow ─────────────────────────────────────────────────────
-
-  // 8. CAPTCHA — human verification
-  if (page === "robot-verify") {
-    return (
-      <RobotVerification
-        onVerified={() => setPage("path-select")}
-      />
-    );
-  }
 
   // 9. Path selection — Practice or Official Test
   if (page === "path-select") {
