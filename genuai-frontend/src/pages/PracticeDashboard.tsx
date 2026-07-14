@@ -66,9 +66,36 @@ export default function PracticeDashboard({ user, onBack }: Props) {
       </nav>
 
       <div style={{ maxWidth:'1100px', margin:'0 auto', padding:'48px 24px' }}>
-        <div style={{ marginBottom:'40px' }}>
-          <h1 style={{ fontSize:'32px', fontWeight:'900', color:'#0F172A', margin:'0 0 8px', letterSpacing:'-0.6px' }}>Practice Hub</h1>
-          <p style={{ color:'#64748B', fontSize:'15px', margin:0 }}>Sharpen every skill before your official assessment</p>
+        <div style={{ background:"#fff", borderRadius:"24px", padding:"40px", border:"1px solid #E2E8F0", boxShadow:"0 10px 25px rgba(0,0,0,0.02)", marginBottom:"40px", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
+          <div style={{ position:"absolute", top:"-50px", right:"-50px", width:"200px", height:"200px", background:"radial-gradient(circle, rgba(37,99,235,0.05) 0%, rgba(255,255,255,0) 70%)" }}></div>
+          <div style={{ position:"absolute", bottom:"-50px", left:"-50px", width:"150px", height:"150px", background:"radial-gradient(circle, rgba(124,58,237,0.05) 0%, rgba(255,255,255,0) 70%)" }}></div>
+          
+          <div style={{ display:"flex", alignItems:"center", gap:"16px", marginBottom:"24px" }}>
+            <div style={{ fontSize:"40px" }}>🚀</div>
+            <div>
+              <h1 style={{ fontSize:"32px", fontWeight:"900", color:"#0F172A", margin:"0 0 4px", letterSpacing:"-0.5px" }}>Candidate Practice Hub</h1>
+              <p style={{ color:"#64748B", fontSize:"15px", margin:0, fontWeight:"600" }}>The ultimate AI-powered preparation environment</p>
+            </div>
+          </div>
+          
+          <p style={{ color:"#475569", fontSize:"15px", lineHeight:"1.7", maxWidth:"800px", marginBottom:"32px" }}>
+            Welcome to your personal training ground. This multimodal hub leverages advanced Natural Language Processing (NLP) to help you master every stage of the hiring process. From generating ATS-optimized resumes to simulating high-pressure live coding tests and conducting voice-to-voice mock interviews, everything you need is right here.
+          </p>
+
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:"16px" }}>
+            <div style={{ background:"#F8FAFC", padding:"16px", borderRadius:"12px", border:"1px dashed #CBD5E1" }}>
+              <div style={{ color:"#334155", fontWeight:"800", fontSize:"14px", marginBottom:"4px" }}>🎙️ Voice-First Tech</div>
+              <div style={{ color:"#64748B", fontSize:"12px", lineHeight:"1.5" }}>Practice your communication with live transcription (STT) and voice feedback (TTS).</div>
+            </div>
+            <div style={{ background:"#F8FAFC", padding:"16px", borderRadius:"12px", border:"1px dashed #CBD5E1" }}>
+              <div style={{ color:"#334155", fontWeight:"800", fontSize:"14px", marginBottom:"4px" }}>🌍 Native Learning</div>
+              <div style={{ color:"#64748B", fontSize:"12px", lineHeight:"1.5" }}>Lower your cognitive load by learning complex concepts in your native language.</div>
+            </div>
+            <div style={{ background:"#F8FAFC", padding:"16px", borderRadius:"12px", border:"1px dashed #CBD5E1" }}>
+              <div style={{ color:"#334155", fontWeight:"800", fontSize:"14px", marginBottom:"4px" }}>⏱️ Stress Simulation</div>
+              <div style={{ color:"#64748B", fontSize:"12px", lineHeight:"1.5" }}>Replicate the exact conditions of real proctored tests to build true confidence.</div>
+            </div>
+          </div>
         </div>
 
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'20px' }}>
