@@ -8,23 +8,44 @@ const GROQ_KEY = import.meta.env.VITE_GROQ_KEY;
 const LANGUAGES = [
   { code: "en-US", label: "English (US)", native: "English" },
   { code: "hi-IN", label: "Hindi (India)", native: "हिंदी" },
+  { code: "es-ES", label: "Spanish (Spain)", native: "Español" },
+  { code: "fr-FR", label: "French (France)", native: "Français" },
+  { code: "zh-CN", label: "Mandarin (China)", native: "中文" },
+  { code: "ar-SA", label: "Arabic (Saudi Arabia)", native: "العربية" },
+  { code: "ru-RU", label: "Russian (Russia)", native: "Русский" },
+  { code: "pt-BR", label: "Portuguese (Brazil)", native: "Português" },
+  { code: "de-DE", label: "German (Germany)", native: "Deutsch" },
+  { code: "ja-JP", label: "Japanese (Japan)", native: "日本語" },
+  { code: "ko-KR", label: "Korean (South Korea)", native: "한국어" },
+  { code: "it-IT", label: "Italian (Italy)", native: "Italiano" },
+  { code: "tr-TR", label: "Turkish (Turkey)", native: "Türkçe" },
+  { code: "vi-VN", label: "Vietnamese (Vietnam)", native: "Tiếng Việt" },
   { code: "ta-IN", label: "Tamil (India)", native: "தமிழ்" },
   { code: "te-IN", label: "Telugu (India)", native: "తెలుగు" },
   { code: "bn-IN", label: "Bengali (India)", native: "বাংলা" },
   { code: "ur-PK", label: "Urdu (Pakistan)", native: "اردو" },
-  { code: "zh-CN", label: "Mandarin (China)", native: "中文" },
-  { code: "ja-JP", label: "Japanese (Japan)", native: "日本語" },
-  { code: "ko-KR", label: "Korean (South Korea)", native: "한국어" },
-  { code: "es-ES", label: "Spanish (Spain)", native: "Español" },
-  { code: "fr-FR", label: "French (France)", native: "Français" },
-  { code: "de-DE", label: "German (Germany)", native: "Deutsch" },
-  { code: "it-IT", label: "Italian (Italy)", native: "Italiano" },
-  { code: "pt-BR", label: "Portuguese (Brazil)", native: "Português" },
-  { code: "ru-RU", label: "Russian (Russia)", native: "Русский" },
-  { code: "ar-SA", label: "Arabic (Saudi Arabia)", native: "العربية" },
   { code: "sw-KE", label: "Swahili (Kenya)", native: "Kiswahili" },
-  { code: "tr-TR", label: "Turkish (Turkey)", native: "Türkçe" },
-  { code: "vi-VN", label: "Vietnamese (Vietnam)", native: "Tiếng Việt" }
+  { code: "nl-NL", label: "Dutch (Netherlands)", native: "Nederlands" },
+  { code: "el-GR", label: "Greek (Greece)", native: "Ελληνικά" },
+  { code: "he-IL", label: "Hebrew (Israel)", native: "עברית" },
+  { code: "pl-PL", label: "Polish (Poland)", native: "Polski" },
+  { code: "th-TH", label: "Thai (Thailand)", native: "ไทย" },
+  { code: "id-ID", label: "Indonesian (Indonesia)", native: "Bahasa Indonesia" },
+  { code: "ms-MY", label: "Malay (Malaysia)", native: "Bahasa Melayu" },
+  { code: "tl-PH", label: "Tagalog (Philippines)", native: "Tagalog" },
+  { code: "sv-SE", label: "Swedish (Sweden)", native: "Svenska" },
+  { code: "da-DK", label: "Danish (Denmark)", native: "Dansk" },
+  { code: "no-NO", label: "Norwegian (Norway)", native: "Norsk" },
+  { code: "fi-FI", label: "Finnish (Finland)", native: "Suomi" },
+  { code: "cs-CZ", label: "Czech (Czechia)", native: "Čeština" },
+  { code: "hu-HU", label: "Hungarian (Hungary)", native: "Magyar" },
+  { code: "ro-RO", label: "Romanian (Romania)", native: "Română" },
+  { code: "uk-UA", label: "Ukrainian (Ukraine)", native: "Українська" },
+  { code: "ml-IN", label: "Malayalam (India)", native: "മലയാളം" },
+  { code: "kn-IN", label: "Kannada (India)", native: "ಕನ್ನಡ" },
+  { code: "mr-IN", label: "Marathi (India)", native: "मराठी" },
+  { code: "gu-IN", label: "Gujarati (India)", native: "ગુજરાતી" },
+  { code: "pa-IN", label: "Punjabi (India)", native: "ਪੰਜਾਬੀ" }
 ];
 
 interface Module { id: string; title: string; description: string; }
@@ -146,7 +167,9 @@ Format the output using simple Markdown (## headers, **bold**, and \`\`\` for co
       {/* Header */}
       <div style={{ background:"#fff", borderBottom:"1px solid #E2E8F0", padding:"16px 32px", display:"flex", alignItems:"center", justifyContent:"space-between", boxShadow:"0 1px 4px rgba(0,0,0,0.03)", position:"sticky", top:0, zIndex:10 }}>
         <div style={{ display:"flex", alignItems:"center", gap:"16px" }}>
-          <div style={{ background:"#FFFBEB", padding:"10px", borderRadius:"12px", fontSize:"24px", border:"1px solid #FEF3C7" }}>🧠</div>
+          <div style={{ width:"48px", height:"48px", background:"#FFFBEB", borderRadius:"12px", border:"1px solid #FEF3C7", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
+            <img src="/icons/learning_brain.png" alt="Brain" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+          </div>
           <div>
             <div style={{ fontWeight:"900", fontSize:"18px", color:"#0F172A" }}>Inclusive Learning Hub</div>
             <div style={{ fontSize:"13px", color:"#64748B", fontWeight:"500", marginTop:"2px" }}>Dynamic AI Education Engine</div>
@@ -188,7 +211,9 @@ Format the output using simple Markdown (## headers, **bold**, and \`\`\` for co
         <div style={{ width:"340px", display:"flex", flexDirection:"column", gap:"24px", flexShrink:0 }}>
           
           <div style={{ background:"linear-gradient(135deg,#2563EB,#1E40AF)", borderRadius:"20px", padding:"24px", color:"#fff", boxShadow:"0 8px 24px rgba(37,99,235,0.2)" }}>
-            <div style={{ fontSize:"28px", marginBottom:"12px" }}>🤖</div>
+            <div style={{ width:"48px", height:"48px", marginBottom:"12px", overflow:"hidden", borderRadius:"12px" }}>
+              <img src="/icons/ai_mock_interview.png" alt="AI" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+            </div>
             <div style={{ fontWeight:"800", fontSize:"16px", marginBottom:"8px" }}>AI Dynamic Syllabus</div>
             <div style={{ fontSize:"13px", lineHeight:"1.6", opacity:0.9 }}>
               Search for any skill. The AI generates a structured syllabus and explains concepts natively to reduce cognitive load.
@@ -234,34 +259,61 @@ Format the output using simple Markdown (## headers, **bold**, and \`\`\` for co
           {!activeModule ? (
             <div style={{ flex:1, display:"flex", flexDirection:"column", gap:"24px" }}>
               <div style={{ background:"#fff", borderRadius:"24px", padding:"48px", border:"1px solid #E2E8F0", boxShadow:"0 10px 25px rgba(0,0,0,0.02)", flex:1, display:"flex", flexDirection:"column" }}>
-                <div style={{ fontSize:"48px", marginBottom:"20px" }}>🌍</div>
+                <div style={{ width:"64px", height:"64px", marginBottom:"20px", overflow:"hidden", borderRadius:"16px" }}>
+                  <img src="/icons/icon_globe.png" alt="Globe" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+                </div>
                 <h2 style={{ fontSize:"32px", fontWeight:"900", color:"#0F172A", marginBottom:"16px", letterSpacing:"-0.5px" }}>Welcome to the Inclusive Learning Hub</h2>
                 <p style={{ color:"#475569", fontSize:"16px", lineHeight:"1.8", maxWidth:"750px", marginBottom:"40px" }}>
-                  This AI-powered education engine is designed to dramatically lower your cognitive load. By learning complex engineering concepts in your Native Language first, you can increase retention and grasp abstract logic significantly faster.
+                  This AI-powered education engine is designed to dramatically lower your cognitive load. By learning complex engineering concepts in your Native Language first, you can increase retention and grasp abstract logic significantly faster. Currently supporting {LANGUAGES.length} global languages!
                 </p>
 
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"24px", marginBottom:"48px" }}>
                   <div style={{ background:"#EFF6FF", padding:"24px", borderRadius:"16px", border:"1px solid #BFDBFE" }}>
-                    <div style={{ fontSize:"28px", marginBottom:"12px" }}>🗣️</div>
+                    <div style={{ width:"40px", height:"40px", marginBottom:"12px", overflow:"hidden", borderRadius:"10px" }}>
+                      <img src="/icons/svar_mic.png" alt="Mic" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+                    </div>
                     <div style={{ fontWeight:"800", fontSize:"16px", color:"#1E3A8A", marginBottom:"8px" }}>Native NLP</div>
-                    <div style={{ color:"#3B82F6", fontSize:"14px", lineHeight:"1.6" }}>Lessons are dynamically generated and translated into languages like Hindi, Tamil, and Mandarin on the fly.</div>
+                    <div style={{ color:"#3B82F6", fontSize:"14px", lineHeight:"1.6" }}>Lessons are dynamically generated and translated into {LANGUAGES.length} languages on the fly.</div>
                   </div>
                   <div style={{ background:"#F0FDF4", padding:"24px", borderRadius:"16px", border:"1px solid #BBF7D0" }}>
-                    <div style={{ fontSize:"28px", marginBottom:"12px" }}>📺</div>
+                    <div style={{ width:"40px", height:"40px", marginBottom:"12px", overflow:"hidden", borderRadius:"10px" }}>
+                      <img src="/icons/icon_tv.png" alt="TV" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+                    </div>
                     <div style={{ fontWeight:"800", fontSize:"16px", color:"#14532D", marginBottom:"8px" }}>Visual Searching</div>
                     <div style={{ color:"#22C55E", fontSize:"14px", lineHeight:"1.6" }}>We automatically query YouTube for the best localized video tutorials based on your exact module.</div>
                   </div>
                   <div style={{ background:"#FEF2F2", padding:"24px", borderRadius:"16px", border:"1px solid #FECACA" }}>
-                    <div style={{ fontSize:"28px", marginBottom:"12px" }}>🔊</div>
+                    <div style={{ width:"40px", height:"40px", marginBottom:"12px", overflow:"hidden", borderRadius:"10px" }}>
+                      <img src="/icons/svar_mic.png" alt="Voice" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+                    </div>
                     <div style={{ fontWeight:"800", fontSize:"16px", color:"#7F1D1D", marginBottom:"8px" }}>Text-to-Speech</div>
                     <div style={{ color:"#EF4444", fontSize:"14px", lineHeight:"1.6" }}>Listen to the AI tutor read the explanations aloud natively using browser synthesis technology.</div>
                   </div>
                 </div>
 
-                <div style={{ background:"#F8FAFC", padding:"32px", borderRadius:"20px", border:"1px dashed #CBD5E1", textAlign:"center", marginTop:"auto" }}>
-                   <div style={{ fontWeight:"800", color:"#0F172A", fontSize:"18px", marginBottom:"12px" }}>Ready to start learning?</div>
-                   <div style={{ color:"#64748B", fontSize:"15px" }}>Type any skill in the search bar above or select a popular topic from the sidebar.</div>
+                {/* Popular Topics Grid to fill space */}
+                <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
+                  <h3 style={{ fontSize:"20px", fontWeight:"800", color:"#0F172A", marginBottom:"20px" }}>Featured Learning Tracks</h3>
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(220px, 1fr))", gap:"16px" }}>
+                    {[
+                      { icon: "⚛️", title: "React Fundamentals", desc: "Hooks, State, & Props" },
+                      { icon: "🐳", title: "Docker Mastery", desc: "Containers & Images" },
+                      { icon: "🌐", title: "System Design", desc: "Scale & Architecture" },
+                      { icon: "🔐", title: "Cybersecurity", desc: "Threats & Defenses" },
+                      { icon: "🐍", title: "Python Basics", desc: "Syntax & Structures" },
+                      { icon: "🧠", title: "Machine Learning", desc: "Models & Training" },
+                      { icon: "☁️", title: "AWS Cloud", desc: "EC2, S3, & VPCs" },
+                      { icon: "⚡", title: "GraphQL", desc: "Queries & Mutations" }
+                    ].map(track => (
+                      <button key={track.title} onClick={() => generateSyllabus(track.title)} style={{ background:"#F8FAFC", border:"1px solid #E2E8F0", padding:"20px", borderRadius:"16px", textAlign:"left", cursor:"pointer", transition:"all 0.2s" }} onMouseEnter={e=>{e.currentTarget.style.borderColor="#94A3B8"; e.currentTarget.style.background="#F1F5F9";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="#E2E8F0"; e.currentTarget.style.background="#F8FAFC";}}>
+                        <div style={{ fontSize:"28px", marginBottom:"12px" }}>{track.icon}</div>
+                        <div style={{ fontWeight:"800", color:"#0F172A", fontSize:"15px", marginBottom:"4px" }}>{track.title}</div>
+                        <div style={{ color:"#64748B", fontSize:"13px" }}>{track.desc}</div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
+
               </div>
             </div>
           ) : (
@@ -270,7 +322,9 @@ Format the output using simple Markdown (## headers, **bold**, and \`\`\` for co
               <div style={{ background:"#fff", borderRadius:"24px", padding:"32px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)", display:"flex", alignItems:"center", justifyContent:"space-between", gap:"24px" }}>
                 <div>
                   <div style={{ display:"flex", alignItems:"center", gap:"10px", marginBottom:"8px" }}>
-                    <span style={{ fontSize:"24px" }}>📺</span>
+                    <div style={{ width:"32px", height:"32px", overflow:"hidden", borderRadius:"8px" }}>
+                      <img src="/icons/icon_tv.png" alt="TV" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+                    </div>
                     <h2 style={{ fontSize:"18px", fontWeight:"800", color:"#0F172A", margin:0 }}>Visual Learning</h2>
                   </div>
                   <div style={{ color:"#64748B", fontSize:"14px", lineHeight:"1.6" }}>Find the best video tutorials for <strong>{activeModule.title}</strong> in {language.native}.</div>

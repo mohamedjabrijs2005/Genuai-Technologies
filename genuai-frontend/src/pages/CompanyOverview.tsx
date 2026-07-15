@@ -1,14 +1,13 @@
-
 interface Props { user: any; onStartTest: () => void; }
 
 const MODULES = [
-  { icon:'📋', title:'Profile & Resume', desc:'AI resume analysis, ATS scoring, skill extraction', color:'#2563EB' },
-  { icon:'💡', title:'AMCAT Skill Test', desc:'Coding, Aptitude, English & Automata — timed', color:'#7C3AED' },
-  { icon:'🎙️', title:'SVAR Verbal Test', desc:'Speaking, listening, fluency — proctored', color:'#DC2626' },
-  { icon:'🏆', title:'Hackathon Challenge', desc:'Real-world problem solving with code submission', color:'#059669' },
-  { icon:'🤖', title:'AI Interview', desc:'Live interview with AI scoring on 10+ parameters', color:'#0891B2' },
-  { icon:'🗣️', title:'Group Discussion', desc:'Collaborative problem solving and communication', color:'#8B5CF6' },
-  { icon:'📊', title:'Final Results', desc:'Comprehensive scorecard shared with company HR', color:'#D97706' },
+  { imgSrc:'/icons/resume_gen.png', title:'Profile & Resume', desc:'AI resume analysis, ATS scoring, skill extraction', color:'#2563EB' },
+  { imgSrc:'/icons/skill_test.png', title:'GenuAI Skill Test', desc:'Coding, Aptitude, English & Automata — timed', color:'#7C3AED' },
+  { imgSrc:'/icons/svar_mic.png', title:'SVAR Verbal Test', desc:'Speaking, listening, fluency — proctored', color:'#DC2626' },
+  { imgSrc:'/icons/icon_hackathon.png', title:'Hackathon Challenge', desc:'Real-world problem solving with code submission', color:'#059669' },
+  { imgSrc:'/icons/ai_mock_interview.png', title:'AI Interview', desc:'Live interview with AI scoring on 10+ parameters', color:'#0891B2' },
+  { imgSrc:'/icons/learning_brain.png', title:'Group Discussion', desc:'Collaborative problem solving and communication', color:'#8B5CF6' },
+  { imgSrc:'/icons/cat_logical.png', title:'Final Results', desc:'Comprehensive scorecard shared with company HR', color:'#D97706' },
 ];
 
 
@@ -57,7 +56,9 @@ export default function CompanyOverview({ user, onStartTest }: Props) {
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'16px', marginBottom:'40px' }}>
           {MODULES.map((m,i)=>(
             <div key={i} style={{ background:'#fff', borderRadius:'16px', padding:'24px', border:'1px solid #E5E7EB', display:'flex', gap:'16px', alignItems:'flex-start' }}>
-              <div style={{ width:'44px', height:'44px', borderRadius:'12px', background:m.color+'15', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'22px', flexShrink:0 }}>{m.icon}</div>
+              <div style={{ width:'44px', height:'44px', borderRadius:'12px', background:m.color+'15', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden', border:`1px solid ${m.color}33` }}>
+                <img src={m.imgSrc} alt={m.title} style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+              </div>
               <div>
                 <div style={{ display:'flex', alignItems:'center', gap:'8px', marginBottom:'4px' }}>
                   <span style={{ background:m.color+'15', color:m.color, fontSize:'10px', fontWeight:'800', padding:'2px 8px', borderRadius:'10px' }}>Step {i+1}</span>

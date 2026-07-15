@@ -164,104 +164,128 @@ export default function AIMockInterview({ user, onBack }: Props) {
 
   // ── SETUP ──
   if (phase === "setup") return (
-    <div style={{ minHeight:"100vh", background:"#F8FAFC", display:"flex", alignItems:"center", justifyContent:"center", padding:"40px 20px", fontFamily:"'Inter','Segoe UI',sans-serif" }}>
-      <div style={{ background:"#fff", borderRadius:"24px", padding:"40px", maxWidth:"560px", width:"100%", boxShadow:"0 10px 25px rgba(0,0,0,0.03)", border:"1px solid #E2E8F0" }}>
-        
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#64748B", fontSize:"13px", cursor:"pointer", marginBottom:"24px", fontWeight:"600", padding:0 }}>
-          ← Back to Practice Hub
-        </button>
-        
-        <div style={{ width:"64px", height:"64px", borderRadius:"16px", background:"#EFF6FF", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"32px", marginBottom:"20px", border:"1px solid #DBEAFE" }}>🤖</div>
-        <h1 style={{ fontSize:"26px", fontWeight:"900", color:"#0F172A", margin:"0 0 8px" }}>AI Mock Interview</h1>
-        <p style={{ color:"#64748B", fontSize:"14px", margin:"0 0 32px", lineHeight:"1.6" }}>
-          Practice with an AI interviewer. Get instant feedback on every answer and utilize live voice transcription.
-        </p>
-
-        <label style={{ color:"#64748B", fontSize:"12px", fontWeight:"700", display:"block", marginBottom:"6px", textTransform:"uppercase", letterSpacing:"0.05em" }}>Your Target Role</label>
-        <select value={role} onChange={e => setRole(e.target.value)} style={{ ...inp, marginBottom:"20px", cursor:"pointer" }}>
-          {ROLES.map(r => <option key={r}>{r}</option>)}
-        </select>
-
-        <label style={{ color:"#64748B", fontSize:"12px", fontWeight:"700", display:"block", marginBottom:"10px", textTransform:"uppercase", letterSpacing:"0.05em" }}>Interview Type</label>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"12px", marginBottom:"24px" }}>
-          {TYPES.map(t => (
-            <div key={t.key} onClick={() => setType(t.key)} style={{ padding:"16px 12px", border:`2px solid ${type===t.key?"#2563EB":"#E2E8F0"}`, borderRadius:"16px", cursor:"pointer", textAlign:"center", background:type===t.key?"#EFF6FF":"#fff", transition:"all 0.2s", boxShadow:type===t.key?"0 4px 12px rgba(37,99,235,0.1)":"none" }}>
-              <div style={{ fontSize:"24px", marginBottom:"8px" }}>{t.emoji}</div>
-              <div style={{ fontWeight:"700", fontSize:"13px", color:type===t.key?"#2563EB":"#0F172A" }}>{t.label}</div>
-            </div>
-          ))}
+    <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
+      <div style={{ background:"#fff", borderBottom:"1px solid #E2E8F0", padding:"16px 40px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"#64748B", fontSize:"14px", cursor:"pointer", fontWeight:"700", padding:0 }}>← Back to Practice Hub</button>
+        <div style={{ fontWeight:"800", color:"#0F172A", fontSize:"18px" }}>AI Mock Interview</div>
+        <div style={{ width:"120px" }}></div>
+      </div>
+      <div style={{ flex:1, display:"flex", maxWidth:"1400px", margin:"0 auto", width:"100%", padding:"60px 40px" }}>
+        <div style={{ flex:1, paddingRight:"80px", display:"flex", flexDirection:"column", justifyContent:"center" }}>
+          <div style={{ fontSize:"64px", marginBottom:"24px" }}>🤖</div>
+          <h1 style={{ fontSize:"48px", fontWeight:"900", color:"#0F172A", marginBottom:"24px", letterSpacing:"-1px", lineHeight:"1.1" }}>Master Your Next<br/>Technical Interview</h1>
+          <p style={{ color:"#475569", fontSize:"18px", lineHeight:"1.6", marginBottom:"40px", maxWidth:"500px" }}>
+            Experience a hyper-realistic, AI-driven interview environment. Utilize live voice transcription and receive instantaneous, actionable feedback on every response.
+          </p>
+          <div style={{ display:"flex", gap:"16px" }}>
+             <div style={{ background:"#EFF6FF", color:"#2563EB", padding:"12px 24px", borderRadius:"12px", fontWeight:"700", fontSize:"14px" }}>✓ Live Speech-to-Text</div>
+             <div style={{ background:"#F0FDF4", color:"#16A34A", padding:"12px 24px", borderRadius:"12px", fontWeight:"700", fontSize:"14px" }}>✓ Instant AI Grading</div>
+          </div>
         </div>
+        
+        <div style={{ flex:1, maxWidth:"600px" }}>
+          <div style={{ background:"#fff", borderRadius:"24px", padding:"48px", boxShadow:"0 20px 40px rgba(0,0,0,0.04)", border:"1px solid #E2E8F0" }}>
+            <h2 style={{ fontSize:"24px", fontWeight:"800", color:"#0F172A", marginBottom:"32px" }}>Configure Session</h2>
+            
+            <label style={{ color:"#64748B", fontSize:"12px", fontWeight:"800", display:"block", marginBottom:"8px", textTransform:"uppercase" }}>Your Target Role</label>
+            <select value={role} onChange={e => setRole(e.target.value)} style={{ ...inp, marginBottom:"28px", cursor:"pointer", background:"#F8FAFC", padding:"16px", borderRadius:"14px" }}>
+              {ROLES.map(r => <option key={r}>{r}</option>)}
+            </select>
 
-        <label style={{ color:"#64748B", fontSize:"12px", fontWeight:"700", display:"flex", justifyContent:"space-between", marginBottom:"12px", textTransform:"uppercase", letterSpacing:"0.05em" }}>
-          <span>Number of Questions</span>
-          <span style={{ color:"#2563EB", fontWeight:"900", fontSize:"14px" }}>{questionCount}</span>
-        </label>
-        <input type="range" min={3} max={10} value={questionCount} onChange={e => setQuestionCount(Number(e.target.value))} style={{ width:"100%", marginBottom:"32px", accentColor:"#2563EB", cursor:"pointer" }} />
+            <label style={{ color:"#64748B", fontSize:"12px", fontWeight:"800", display:"block", marginBottom:"12px", textTransform:"uppercase" }}>Interview Type</label>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"12px", marginBottom:"36px" }}>
+              {TYPES.map(t => (
+                <div key={t.key} onClick={() => setType(t.key)} style={{ padding:"20px 12px", border:`2px solid ${type===t.key?"#2563EB":"#F1F5F9"}`, borderRadius:"16px", cursor:"pointer", textAlign:"center", background:type===t.key?"#EFF6FF":"#fff", transition:"all 0.2s" }}>
+                  <div style={{ fontSize:"28px", marginBottom:"12px" }}>{t.emoji}</div>
+                  <div style={{ fontWeight:"800", fontSize:"13px", color:type===t.key?"#2563EB":"#334155" }}>{t.label}</div>
+                </div>
+              ))}
+            </div>
 
-        <button onClick={startInterview} disabled={loading} style={{ width:"100%", padding:"16px", background:loading?"#E2E8F0":"#0F172A", color:loading?"#94A3B8":"#fff", border:"none", borderRadius:"14px", fontWeight:"800", fontSize:"16px", cursor:loading?"not-allowed":"pointer", boxShadow:loading?"none":"0 8px 24px rgba(15,23,42,0.2)", transition:"transform 0.2s" }} onMouseEnter={e=>!loading&&(e.currentTarget.style.transform="scale(1.02)")} onMouseLeave={e=>!loading&&(e.currentTarget.style.transform="scale(1)")}>
-          {loading ? "Preparing AI Interviewer..." : `Start ${questionCount}-Question Interview →`}
-        </button>
+            <label style={{ color:"#64748B", fontSize:"12px", fontWeight:"800", display:"flex", justifyContent:"space-between", marginBottom:"16px", textTransform:"uppercase" }}>
+              <span>Number of Questions</span>
+              <span style={{ color:"#2563EB", fontWeight:"900", fontSize:"16px" }}>{questionCount}</span>
+            </label>
+            <input type="range" min={3} max={10} value={questionCount} onChange={e => setQuestionCount(Number(e.target.value))} style={{ width:"100%", marginBottom:"40px", accentColor:"#2563EB", cursor:"pointer" }} />
+
+            <button onClick={startInterview} disabled={loading} style={{ width:"100%", padding:"20px", background:loading?"#E2E8F0":"#0F172A", color:loading?"#94A3B8":"#fff", border:"none", borderRadius:"16px", fontWeight:"800", fontSize:"16px", cursor:loading?"not-allowed":"pointer", boxShadow:loading?"none":"0 12px 24px rgba(15,23,42,0.15)", transition:"all 0.2s" }}>
+              {loading ? "Preparing AI Interviewer..." : `Start ${questionCount}-Question Interview →`}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 
   // ── RESULTS ──
   if (phase === "results") return (
-    <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", padding:"40px 20px" }}>
-      <div style={{ maxWidth:"800px", margin:"0 auto" }}>
-        
-        <div style={{ background:"#fff", borderRadius:"24px", padding:"40px", textAlign:"center", marginBottom:"24px", border:"1px solid #E2E8F0", boxShadow:"0 10px 25px rgba(0,0,0,0.03)" }}>
+    <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif" }}>
+      <div style={{ background:"#0F172A", color:"#fff", padding:"60px 40px", textAlign:"center" }}>
+        <div style={{ maxWidth:"1000px", margin:"0 auto" }}>
           <div style={{ fontSize:"64px", marginBottom:"16px" }}>🏆</div>
-          <div style={{ color:"#64748B", fontSize:"14px", fontWeight:"700", textTransform:"uppercase", letterSpacing:"1px", marginBottom:"8px" }}>Interview Complete</div>
-          <div style={{ fontSize:"56px", fontWeight:"900", color:scoreColor, marginBottom:"16px", lineHeight:1 }}>{avgScore}%</div>
-          <div style={{ color:"#0F172A", fontSize:"16px", fontWeight:"600", marginBottom:"16px" }}>{role} · {type} Round · {history.length} Questions</div>
-          
-          <div style={{ display:"inline-block", background:scoreColor+"11", color:scoreColor, borderRadius:"20px", padding:"8px 24px", fontSize:"14px", fontWeight:"800", border:`1px solid ${scoreColor}33` }}>
-            {avgScore >= 80 ? "Excellent — You're ready for the real thing!" : avgScore >= 60 ? "Good — Keep practising your structured answers!" : "Needs Improvement — Practice using the STAR method."}
+          <h1 style={{ fontSize:"40px", fontWeight:"900", margin:"0 0 12px" }}>Interview Complete</h1>
+          <div style={{ fontSize:"20px", color:"#94A3B8", marginBottom:"32px" }}>{role} · {type} Round</div>
+          <div style={{ display:"inline-flex", alignItems:"center", gap:"16px", background:"#1E293B", padding:"12px 32px", borderRadius:"24px" }}>
+            <span style={{ fontSize:"48px", fontWeight:"900", color:scoreColor }}>{avgScore}%</span>
+            <div style={{ textAlign:"left" }}>
+              <div style={{ color:"#F8FAFC", fontWeight:"800", fontSize:"16px" }}>Overall Score</div>
+              <div style={{ color:scoreColor, fontWeight:"700", fontSize:"14px" }}>
+                {avgScore >= 80 ? "Excellent Performance!" : avgScore >= 60 ? "Good — Keep Practising" : "Needs Improvement"}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ maxWidth:"1200px", margin:"0 auto", padding:"60px 20px" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"32px" }}>
+          <h2 style={{ fontSize:"24px", fontWeight:"900", color:"#0F172A", margin:0 }}>Detailed Feedback ({history.length} Questions)</h2>
+          <div style={{ display:"flex", gap:"12px" }}>
+            <button onClick={() => { setPhase("setup"); setHistory([]); setQIndex(0); }} style={{ padding:"12px 24px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"14px", cursor:"pointer" }}>🔄 New Interview</button>
+            <button onClick={onBack} style={{ padding:"12px 24px", background:"#fff", color:"#475569", border:"1px solid #E2E8F0", borderRadius:"12px", fontWeight:"800", fontSize:"14px", cursor:"pointer" }}>Exit</button>
           </div>
         </div>
 
-        <h2 style={{ fontSize:"20px", fontWeight:"800", color:"#0F172A", marginBottom:"20px", paddingLeft:"8px" }}>Detailed Feedback</h2>
-
-        {history.map((h, i) => {
-          const qColor = h.fb?.score >= 80 ? "#10B981" : h.fb?.score >= 60 ? "#F59E0B" : "#EF4444";
-          return (
-            <div key={i} style={{ background:"#fff", borderRadius:"16px", padding:"28px", marginBottom:"20px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"16px" }}>
-                <div style={{ background:"#F1F5F9", color:"#475569", fontWeight:"800", fontSize:"12px", padding:"4px 12px", borderRadius:"12px" }}>Question {i+1}</div>
-                <div style={{ fontWeight:"900", color:qColor, fontSize:"18px", background:qColor+"11", padding:"4px 12px", borderRadius:"12px" }}>{h.fb?.score || 0}%</div>
-              </div>
-              <div style={{ fontWeight:"800", color:"#0F172A", marginBottom:"16px", fontSize:"16px", lineHeight:"1.6" }}>{h.q}</div>
-              
-              <div style={{ background:"#F8FAFC", padding:"16px", borderRadius:"12px", marginBottom:"20px", border:"1px solid #F1F5F9" }}>
-                <div style={{ color:"#64748B", fontSize:"11px", fontWeight:"700", textTransform:"uppercase", marginBottom:"8px" }}>Your Answer</div>
-                <div style={{ color:"#334155", fontSize:"14px", lineHeight:"1.6", fontStyle:"italic" }}>"{h.a}"</div>
-              </div>
-
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"20px" }}>
-                <div style={{ background:"#F0FDF4", borderRadius:"12px", padding:"16px", border:"1px solid #DCFCE7" }}>
-                  <div style={{ fontSize:"13px", fontWeight:"800", color:"#16A34A", marginBottom:"8px" }}>✅ Strengths</div>
-                  {(h.fb?.strengths||[]).map((s:string,idx:number) => <div key={idx} style={{ fontSize:"13px", color:"#15803D", marginBottom:"6px", lineHeight:"1.5" }}>• {s}</div>)}
+        <div style={{ display:"grid", gap:"24px" }}>
+          {history.map((h, i) => {
+            const qColor = h.fb?.score >= 80 ? "#10B981" : h.fb?.score >= 60 ? "#F59E0B" : "#EF4444";
+            return (
+              <div key={i} style={{ background:"#fff", borderRadius:"20px", padding:"32px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"20px" }}>
+                  <div style={{ flex:1, paddingRight:"32px" }}>
+                    <div style={{ color:"#64748B", fontWeight:"800", fontSize:"13px", textTransform:"uppercase", letterSpacing:"1px", marginBottom:"8px" }}>Question {i+1}</div>
+                    <div style={{ fontWeight:"800", color:"#0F172A", fontSize:"18px", lineHeight:"1.6" }}>{h.q}</div>
+                  </div>
+                  <div style={{ textAlign:"right" }}>
+                    <div style={{ fontWeight:"900", color:qColor, fontSize:"28px", lineHeight:1 }}>{h.fb?.score || 0}%</div>
+                    <div style={{ fontWeight:"700", color:qColor, fontSize:"12px", marginTop:"4px" }}>{h.fb?.rating}</div>
+                  </div>
                 </div>
-                <div style={{ background:"#FFF7ED", borderRadius:"12px", padding:"16px", border:"1px solid #FFEDD5" }}>
-                  <div style={{ fontSize:"13px", fontWeight:"800", color:"#F59E0B", marginBottom:"8px" }}>📈 Areas to Improve</div>
-                  {(h.fb?.improvements||[]).map((s:string,idx:number) => <div key={idx} style={{ fontSize:"13px", color:"#B45309", marginBottom:"6px", lineHeight:"1.5" }}>• {s}</div>)}
+                
+                <div style={{ background:"#F8FAFC", padding:"20px", borderRadius:"12px", marginBottom:"24px", border:"1px solid #F1F5F9", fontStyle:"italic", color:"#334155", fontSize:"15px", lineHeight:"1.7" }}>
+                  "{h.a}"
                 </div>
+
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"24px", marginBottom:"24px" }}>
+                  <div style={{ background:"#F0FDF4", borderRadius:"16px", padding:"20px", border:"1px solid #DCFCE7" }}>
+                    <div style={{ fontSize:"14px", fontWeight:"800", color:"#16A34A", marginBottom:"12px" }}>✅ Strengths</div>
+                    {(h.fb?.strengths||[]).map((s:string,idx:number) => <div key={idx} style={{ fontSize:"14px", color:"#15803D", marginBottom:"8px", lineHeight:"1.5" }}>• {s}</div>)}
+                  </div>
+                  <div style={{ background:"#FFF7ED", borderRadius:"16px", padding:"20px", border:"1px solid #FFEDD5" }}>
+                    <div style={{ fontSize:"14px", fontWeight:"800", color:"#F59E0B", marginBottom:"12px" }}>📈 Areas to Improve</div>
+                    {(h.fb?.improvements||[]).map((s:string,idx:number) => <div key={idx} style={{ fontSize:"14px", color:"#B45309", marginBottom:"8px", lineHeight:"1.5" }}>• {s}</div>)}
+                  </div>
+                </div>
+
+                {h.fb?.ideal_answer && (
+                  <div style={{ background:"#EFF6FF", borderRadius:"16px", padding:"20px", border:"1px solid #DBEAFE" }}>
+                    <div style={{ fontSize:"14px", fontWeight:"800", color:"#2563EB", marginBottom:"8px" }}>💡 Ideal Answer Example</div>
+                    <div style={{ color:"#1E40AF", fontSize:"15px", lineHeight:"1.6" }}>{h.fb.ideal_answer}</div>
+                  </div>
+                )}
               </div>
-
-              {h.fb?.ideal_answer && (
-                <div style={{ background:"#EFF6FF", borderRadius:"12px", padding:"16px", border:"1px solid #DBEAFE" }}>
-                  <div style={{ fontSize:"13px", fontWeight:"800", color:"#2563EB", marginBottom:"8px" }}>💡 Ideal Answer Structure</div>
-                  <div style={{ color:"#1E40AF", fontSize:"14px", lineHeight:"1.6" }}>{h.fb.ideal_answer}</div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-
-        <div style={{ display:"flex", gap:"16px", marginTop:"32px" }}>
-          <button onClick={() => { setPhase("setup"); setHistory([]); setQIndex(0); }} style={{ flex:1, padding:"16px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"14px", fontWeight:"800", fontSize:"15px", cursor:"pointer", boxShadow:"0 4px 12px rgba(15,23,42,0.2)" }}>🔄 Start New Interview</button>
-          <button onClick={onBack} style={{ flex:1, padding:"16px", background:"#fff", color:"#475569", border:"1.5px solid #E2E8F0", borderRadius:"14px", fontWeight:"800", fontSize:"15px", cursor:"pointer", boxShadow:"0 2px 4px rgba(0,0,0,0.02)" }}>← Back to Practice Hub</button>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -270,102 +294,92 @@ export default function AIMockInterview({ user, onBack }: Props) {
   // ── INTERVIEW ──
   const progress = ((qIndex) / questionCount) * 100;
   return (
-    <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
-      {/* Header */}
-      <div style={{ background:"#fff", borderBottom:"1px solid #E2E8F0", padding:"0 32px", height:"72px", display:"flex", alignItems:"center", justifyContent:"space-between", boxShadow:"0 1px 4px rgba(0,0,0,0.03)" }}>
+    <div style={{ height:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+      {/* HackerRank Style Header */}
+      <div style={{ background:"#0F172A", color:"#fff", padding:"0 32px", height:"64px", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
         <div style={{ display:"flex", alignItems:"center", gap:"16px" }}>
-          <div style={{ background:"#EFF6FF", padding:"8px", borderRadius:"10px", fontSize:"20px" }}>🤖</div>
-          <div>
-            <div style={{ fontWeight:"800", fontSize:"16px", color:"#0F172A" }}>AI Mock Interview</div>
-            <div style={{ fontSize:"12px", color:"#64748B", fontWeight:"500", marginTop:"2px" }}>{role} · {type} Round</div>
-          </div>
+          <div style={{ fontWeight:"800", fontSize:"16px", letterSpacing:"0.5px" }}>GenuAI Interview Environment</div>
+          <div style={{ background:"#1E293B", padding:"4px 12px", borderRadius:"6px", fontSize:"12px", fontWeight:"700", color:"#94A3B8" }}>{role} ({type})</div>
         </div>
-        <div style={{ display:"flex", alignItems:"center", gap:"24px" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:"32px" }}>
           <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
-            <div style={{ fontSize:"13px", color:"#475569", fontWeight:"700" }}>Question {qIndex+1} of {questionCount}</div>
-            <div style={{ width:"140px", height:"8px", background:"#F1F5F9", borderRadius:"4px", overflow:"hidden" }}>
-              <div style={{ width:`${progress}%`, height:"100%", background:"#2563EB", borderRadius:"4px", transition:"width 0.4s ease" }} />
+            <div style={{ fontSize:"13px", color:"#94A3B8", fontWeight:"700" }}>Question {qIndex+1} of {questionCount}</div>
+            <div style={{ width:"160px", height:"6px", background:"#334155", borderRadius:"3px", overflow:"hidden" }}>
+              <div style={{ width:`${progress}%`, height:"100%", background:"#3B82F6", borderRadius:"3px", transition:"width 0.4s ease" }} />
             </div>
           </div>
-          <button onClick={onBack} style={{ padding:"8px 16px", border:"1.5px solid #E2E8F0", borderRadius:"10px", background:"#fff", fontSize:"13px", color:"#64748B", cursor:"pointer", fontWeight:"700" }}>End Session</button>
+          <button onClick={onBack} style={{ padding:"8px 16px", border:"1px solid #334155", borderRadius:"8px", background:"transparent", fontSize:"13px", color:"#CBD5E1", cursor:"pointer", fontWeight:"600", transition:"all 0.2s" }} onMouseEnter={e=>{e.currentTarget.style.background="#1E293B";e.currentTarget.style.color="#fff"}} onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="#CBD5E1"}}>
+            End Session
+          </button>
         </div>
       </div>
 
-      <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", padding:"40px 20px" }}>
-        <div style={{ maxWidth:"800px", width:"100%" }}>
-          
-          {/* Question Card */}
-          <div style={{ background:"#fff", border:"1px solid #E2E8F0", borderRadius:"24px", padding:"40px", marginBottom:"24px", boxShadow:"0 10px 25px rgba(0,0,0,0.03)", position:"relative" }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"24px" }}>
-              <div style={{ display:"flex", gap:"12px" }}>
-                <span style={{ background:"#EFF6FF", color:"#2563EB", fontSize:"12px", fontWeight:"800", padding:"6px 14px", borderRadius:"20px", textTransform:"uppercase", letterSpacing:"0.5px" }}>{type} Round</span>
-              </div>
-              <button onClick={readQuestionAloud} disabled={isPlaying} style={{ background:"#F8FAFC", border:"1px solid #E2E8F0", color:"#0F172A", padding:"8px 16px", borderRadius:"12px", cursor:isPlaying?"not-allowed":"pointer", fontWeight:"700", fontSize:"13px", display:"flex", alignItems:"center", gap:"8px", transition:"background 0.2s" }} onMouseEnter={e=>e.currentTarget.style.background="#F1F5F9"} onMouseLeave={e=>e.currentTarget.style.background="#F8FAFC"}>
-                {isPlaying ? "🔊 Speaking..." : "▶ Read Question"}
-              </button>
-            </div>
-            <p style={{ fontSize:"22px", fontWeight:"800", color:"#0F172A", margin:0, lineHeight:"1.6" }}>{currentQ}</p>
+      <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
+        {/* Left Pane - Question */}
+        <div style={{ width:"45%", background:"#fff", borderRight:"1px solid #E2E8F0", padding:"48px", overflowY:"auto", display:"flex", flexDirection:"column" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"32px" }}>
+            <div style={{ fontSize:"13px", fontWeight:"900", color:"#2563EB", textTransform:"uppercase", letterSpacing:"1px", background:"#EFF6FF", padding:"6px 12px", borderRadius:"8px" }}>{type} Round</div>
+            <button onClick={readQuestionAloud} disabled={isPlaying} style={{ background:"#F8FAFC", border:"1px solid #E2E8F0", color:"#0F172A", padding:"8px 16px", borderRadius:"12px", cursor:isPlaying?"not-allowed":"pointer", fontWeight:"700", fontSize:"13px", display:"flex", alignItems:"center", gap:"8px", transition:"background 0.2s" }} onMouseEnter={e=>e.currentTarget.style.background="#F1F5F9"} onMouseLeave={e=>e.currentTarget.style.background="#F8FAFC"}>
+              {isPlaying ? "🔊 Speaking..." : "▶ Read Question"}
+            </button>
           </div>
+          <p style={{ fontSize:"26px", fontWeight:"800", color:"#0F172A", margin:0, lineHeight:"1.6" }}>{currentQ}</p>
+        </div>
 
-          {/* Answer Area */}
-          {!feedback && (
-            <div style={{ background:"#fff", borderRadius:"24px", padding:"32px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"16px" }}>
-                <label style={{ color:"#0F172A", fontSize:"15px", fontWeight:"800" }}>Your Answer</label>
-                {isRecording && <span style={{ color:"#DC2626", fontSize:"12px", fontWeight:"700", display:"flex", alignItems:"center", gap:"6px" }}><div style={{ width:"8px", height:"8px", background:"#DC2626", borderRadius:"50%" }} className="pulse-dot"></div> Live Transcription Active</span>}
+        {/* Right Pane - Answer / Feedback */}
+        <div style={{ flex:1, background:"#F8FAFC", padding:"48px", overflowY:"auto" }}>
+          {!feedback ? (
+            <div style={{ background:"#fff", borderRadius:"16px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)", display:"flex", flexDirection:"column", minHeight:"400px", height:"100%" }}>
+              <div style={{ padding:"20px 24px", borderBottom:"1px solid #E2E8F0", background:"#F1F5F9", borderRadius:"16px 16px 0 0", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <div style={{ fontWeight:"800", color:"#334155", fontSize:"13px", textTransform:"uppercase", letterSpacing:"0.5px" }}>Response Editor</div>
+                {isRecording && <span style={{ color:"#DC2626", fontSize:"12px", fontWeight:"800", display:"flex", alignItems:"center", gap:"6px" }}><div style={{ width:"8px", height:"8px", background:"#DC2626", borderRadius:"50%" }} className="pulse-dot"></div> Live Transcription Active</span>}
               </div>
-              
-              <textarea value={answer} onChange={e => setAnswer(e.target.value)} placeholder="Type your answer, or click 'Live Voice Answer' to speak it..." rows={6} style={{ ...inp, resize:"vertical", lineHeight:"1.7", fontSize:"15px" }} />
-              
-              <div style={{ display:"flex", gap:"16px", marginTop:"20px" }}>
-                <button onClick={isRecording ? stopVoice : startVoice} style={{ padding:"14px 24px", background:isRecording?"#FEF2F2":"#F8FAFC", border:`2px solid ${isRecording?"#FCA5A5":"#E2E8F0"}`, borderRadius:"12px", color:isRecording?"#DC2626":"#475569", fontWeight:"800", fontSize:"14px", cursor:"pointer", display:"flex", alignItems:"center", gap:"8px", transition:"all 0.2s" }}>
+              <textarea value={answer} onChange={e => setAnswer(e.target.value)} placeholder="Type your answer, or click 'Live Voice Answer' to speak it..." style={{ flex:1, border:"none", padding:"32px", fontSize:"16px", lineHeight:"1.8", color:"#0F172A", outline:"none", resize:"none", fontFamily:"'Inter', sans-serif" }} />
+              <div style={{ padding:"24px", borderTop:"1px solid #E2E8F0", background:"#F8FAFC", borderRadius:"0 0 16px 16px", display:"flex", gap:"16px" }}>
+                <button onClick={isRecording ? stopVoice : startVoice} style={{ padding:"16px 24px", background:isRecording?"#FEF2F2":"#fff", border:`2px solid ${isRecording?"#FCA5A5":"#E2E8F0"}`, borderRadius:"12px", color:isRecording?"#DC2626":"#475569", fontWeight:"800", fontSize:"15px", cursor:"pointer", display:"flex", alignItems:"center", gap:"8px", transition:"all 0.2s" }}>
                   {isRecording ? "⏹ Stop Listening" : "🎙️ Live Voice Answer"}
                 </button>
-                <button onClick={submitAnswer} disabled={!answer.trim() || loading} style={{ flex:1, padding:"14px", background:answer.trim()&&!loading?"#0F172A":"#E2E8F0", color:answer.trim()&&!loading?"#fff":"#94A3B8", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"15px", cursor:answer.trim()&&!loading?"pointer":"not-allowed", transition:"transform 0.2s", boxShadow:answer.trim()&&!loading?"0 4px 12px rgba(15,23,42,0.2)":"none" }} onMouseEnter={e=>!loading&&answer.trim()&&(e.currentTarget.style.transform="scale(1.02)")} onMouseLeave={e=>!loading&&answer.trim()&&(e.currentTarget.style.transform="scale(1)")}>
+                <button onClick={submitAnswer} disabled={!answer.trim() || loading} style={{ flex:1, padding:"16px", background:answer.trim()&&!loading?"#0F172A":"#E2E8F0", color:answer.trim()&&!loading?"#fff":"#94A3B8", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"15px", cursor:answer.trim()&&!loading?"pointer":"not-allowed", transition:"all 0.2s", boxShadow:answer.trim()&&!loading?"0 4px 12px rgba(15,23,42,0.2)":"none" }}>
                   {loading ? "Evaluating Answer..." : "Submit Answer →"}
                 </button>
               </div>
             </div>
-          )}
-
-          {/* Feedback Area */}
-          {feedback && (
-            <div style={{ background:"#fff", borderRadius:"24px", padding:"32px", border:"1px solid #E2E8F0", boxShadow:"0 10px 25px rgba(0,0,0,0.05)", animation:"slideUp 0.3s ease-out" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"24px", paddingBottom:"20px", borderBottom:"1px solid #E2E8F0" }}>
+          ) : (
+            <div style={{ background:"#fff", borderRadius:"16px", border:"1px solid #E2E8F0", boxShadow:"0 10px 30px rgba(0,0,0,0.05)", padding:"40px", animation:"slideUp 0.3s ease-out" }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"32px", paddingBottom:"24px", borderBottom:"1px solid #E2E8F0" }}>
                 <div>
-                  <div style={{ fontWeight:"900", fontSize:"20px", color:"#0F172A", marginBottom:"4px" }}>AI Feedback</div>
-                  <div style={{ color:"#64748B", fontSize:"14px" }}>Evaluation complete</div>
+                  <div style={{ fontWeight:"900", fontSize:"28px", color:"#0F172A", marginBottom:"8px" }}>AI Evaluation</div>
+                  <div style={{ color:"#64748B", fontSize:"15px", lineHeight:"1.6" }}>Instant feedback on your response.</div>
                 </div>
-                <div style={{ display:"flex", alignItems:"center", gap:"16px" }}>
-                  <div style={{ background:scoreColor+"11", color:scoreColor, padding:"6px 16px", borderRadius:"20px", fontWeight:"800", fontSize:"14px" }}>{feedback.rating}</div>
-                  <div style={{ fontSize:"36px", fontWeight:"900", color:scoreColor }}>{feedback.score}%</div>
+                <div style={{ textAlign:"right" }}>
+                  <div style={{ fontSize:"56px", fontWeight:"900", color:scoreColor, lineHeight:"1" }}>{feedback.score}%</div>
+                  <div style={{ color:scoreColor, fontWeight:"800", fontSize:"15px", marginTop:"8px" }}>{feedback.rating}</div>
                 </div>
               </div>
               
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"20px", marginBottom:"24px" }}>
-                <div style={{ background:"#F0FDF4", borderRadius:"16px", padding:"20px", border:"1px solid #DCFCE7" }}>
-                  <div style={{ fontSize:"14px", fontWeight:"800", color:"#16A34A", marginBottom:"12px" }}>✅ What you did well</div>
-                  {(feedback.strengths||[]).map((s:string,i:number) => <div key={i} style={{ fontSize:"14px", color:"#15803D", marginBottom:"8px", lineHeight:"1.6" }}>• {s}</div>)}
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"24px", marginBottom:"32px" }}>
+                <div style={{ background:"#F0FDF4", borderRadius:"16px", padding:"24px", border:"1px solid #DCFCE7" }}>
+                  <div style={{ fontSize:"15px", fontWeight:"800", color:"#16A34A", marginBottom:"16px", display:"flex", alignItems:"center", gap:"8px" }}><span style={{fontSize:"18px"}}>✅</span> What you did well</div>
+                  {(feedback.strengths||[]).map((s:string,i:number) => <div key={i} style={{ fontSize:"14px", color:"#15803D", marginBottom:"12px", lineHeight:"1.6" }}>• {s}</div>)}
                 </div>
-                <div style={{ background:"#FFF7ED", borderRadius:"16px", padding:"20px", border:"1px solid #FFEDD5" }}>
-                  <div style={{ fontSize:"14px", fontWeight:"800", color:"#F59E0B", marginBottom:"12px" }}>📈 What to improve</div>
-                  {(feedback.improvements||[]).map((s:string,i:number) => <div key={i} style={{ fontSize:"14px", color:"#B45309", marginBottom:"8px", lineHeight:"1.6" }}>• {s}</div>)}
+                <div style={{ background:"#FFF7ED", borderRadius:"16px", padding:"24px", border:"1px solid #FFEDD5" }}>
+                  <div style={{ fontSize:"15px", fontWeight:"800", color:"#F59E0B", marginBottom:"16px", display:"flex", alignItems:"center", gap:"8px" }}><span style={{fontSize:"18px"}}>📈</span> What to improve</div>
+                  {(feedback.improvements||[]).map((s:string,i:number) => <div key={i} style={{ fontSize:"14px", color:"#B45309", marginBottom:"12px", lineHeight:"1.6" }}>• {s}</div>)}
                 </div>
               </div>
               
               {feedback.ideal_answer && (
-                <div style={{ background:"#EFF6FF", borderRadius:"16px", padding:"20px", marginBottom:"24px", border:"1px solid #DBEAFE" }}>
-                  <div style={{ fontSize:"14px", fontWeight:"800", color:"#2563EB", marginBottom:"8px" }}>💡 Ideal Answer Example</div>
-                  <div style={{ fontSize:"15px", color:"#1E40AF", lineHeight:"1.6" }}>{feedback.ideal_answer}</div>
+                <div style={{ background:"#EFF6FF", borderRadius:"16px", padding:"24px", marginBottom:"32px", border:"1px solid #DBEAFE" }}>
+                  <div style={{ fontSize:"15px", fontWeight:"800", color:"#2563EB", marginBottom:"12px", display:"flex", alignItems:"center", gap:"8px" }}><span style={{fontSize:"18px"}}>💡</span> Ideal Answer Example</div>
+                  <div style={{ fontSize:"15px", color:"#1E40AF", lineHeight:"1.7" }}>{feedback.ideal_answer}</div>
                 </div>
               )}
               
-              <button onClick={nextQuestion} disabled={loading} style={{ width:"100%", padding:"16px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"14px", fontWeight:"800", fontSize:"16px", cursor:"pointer", transition:"transform 0.2s", boxShadow:"0 4px 12px rgba(15,23,42,0.2)" }} onMouseEnter={e=>!loading&&(e.currentTarget.style.transform="scale(1.01)")} onMouseLeave={e=>!loading&&(e.currentTarget.style.transform="scale(1)")}>
+              <button onClick={nextQuestion} disabled={loading} style={{ width:"100%", padding:"20px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"14px", fontWeight:"800", fontSize:"16px", cursor:loading?"not-allowed":"pointer", boxShadow:loading?"none":"0 8px 24px rgba(15,23,42,0.2)", transition:"all 0.2s" }} onMouseEnter={e=>!loading&&(e.currentTarget.style.transform="scale(1.01)")} onMouseLeave={e=>!loading&&(e.currentTarget.style.transform="scale(1)")}>
                 {loading ? "Preparing next question..." : qIndex + 1 >= questionCount ? "Finish Interview & See Results →" : `Next Question (${qIndex+2}/${questionCount}) →`}
               </button>
             </div>
           )}
-
         </div>
       </div>
 

@@ -18,13 +18,13 @@ interface Props {
 type Stage = 'interest' | 'overview' | 'module1' | 'module2' | 'module3' | 'module4' | 'module5' | 'module6' | 'module7';
 
 const MODULES = [
-  { id:1, title:'Profile & Resume', icon:'📋', desc:'Upload resume, AI analysis, ATS scoring', color:'#667EEA', stage:'module1' },
-  { id:2, title:'AMCAT Skill Test', icon:'💻', desc:'Coding, Aptitude, English, Automata — timed sections', color:'#764BA2', stage:'module2' },
-  { id:3, title:'SVAR Verbal Test', icon:'🎙️', desc:'Listening, speaking, fluency assessment', color:'#F59E0B', stage:'module3' },
-  { id:4, title:'Hackathon', icon:'🏆', desc:'Real-world problem solving, project submission', color:'#00B87C', stage:'module4' },
-  { id:5, title:'AI Interview', icon:'🤖', desc:'Voice and face verify, environment check, AI interview', color:'#EF4444', stage:'module5' },
-  { id:6, title:'Group Discussion', icon:'🗣️', desc:'Collaborative problem solving and communication', color:'#8B5CF6', stage:'module6' },
-  { id:7, title:'Final Results', icon:'📊', desc:'Comprehensive score across all modules', color:'#667EEA', stage:'module7' },
+  { id:1, title:'Profile & Resume', imgSrc:'/icons/resume_gen.png', desc:'Upload resume, AI analysis, ATS scoring', color:'#667EEA', stage:'module1' },
+  { id:2, title:'GenuAI Skill Test', imgSrc:'/icons/skill_test.png', desc:'Coding, Aptitude, English, Automata — timed sections', color:'#764BA2', stage:'module2' },
+  { id:3, title:'SVAR Verbal Test', imgSrc:'/icons/svar_mic.png', desc:'Listening, speaking, fluency assessment', color:'#F59E0B', stage:'module3' },
+  { id:4, title:'Hackathon', imgSrc:'/icons/icon_hackathon.png', desc:'Real-world problem solving, project submission', color:'#00B87C', stage:'module4' },
+  { id:5, title:'AI Interview', imgSrc:'/icons/ai_mock_interview.png', desc:'Voice and face verify, environment check, AI interview', color:'#EF4444', stage:'module5' },
+  { id:6, title:'Group Discussion', imgSrc:'/icons/learning_brain.png', desc:'Collaborative problem solving and communication', color:'#8B5CF6', stage:'module6' },
+  { id:7, title:'Final Results', imgSrc:'/icons/cat_logical.png', desc:'Comprehensive score across all modules', color:'#667EEA', stage:'module7' },
 ];
 
 const IMPORTANT_COMPANIES = [
@@ -128,7 +128,9 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
       <div style={{ minHeight:'100vh', background:'#F8FAFC', padding:'40px 20px', fontFamily:"'Inter','Segoe UI',sans-serif" }}>
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
           <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "24px", padding: "40px", boxShadow: "0 4px 20px rgba(0,0,0,0.05)", textAlign: "center" }}>
-            <div style={{ fontSize: "48px", marginBottom: "16px" }}>🎯</div>
+            <div style={{ width:"64px", height:"64px", margin:"0 auto 20px", overflow:"hidden", borderRadius:"16px", background:"#F8FAFC", border:"1px solid #E2E8F0" }}>
+              <img src="/icons/icon_globe.png" alt="Target" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+            </div>
             <h2 style={{ color: "#0F172A", margin: "0 0 12px", fontSize: "32px", fontWeight: "900", letterSpacing:"-0.5px" }}>Which companies are you interested in?</h2>
             <p style={{ color: "#64748B", fontSize: "16px", margin: "0 0 32px" }}>Select one or more companies to view their open roles.</p>
             
@@ -199,7 +201,9 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
       <div style={{ maxWidth:'800px', margin:'0 auto' }}>
         <div style={{ background:'#fff', borderRadius:'24px', border:'1px solid #E2E8F0', overflow:'hidden', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
           <div style={{ background:'linear-gradient(135deg,#667EEA,#764BA2)', padding:'32px 36px', textAlign:'center' }}>
-            <div style={{ fontSize:'56px', marginBottom:'12px' }}>🎓</div>
+            <div style={{ width:"80px", height:"80px", margin:"0 auto 16px", overflow:"hidden", borderRadius:"20px", background:"#fff" }}>
+              <img src="/icons/cat_english.png" alt="Graduation" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+            </div>
             <div style={{ color:'#fff', fontSize:'24px', fontWeight:'800' }}>Assessment Complete!</div>
             <div style={{ color:'rgba(255,255,255,0.9)', fontSize:'14px', marginTop:'4px' }}>Your comprehensive evaluation report</div>
           </div>
@@ -212,7 +216,9 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
                 return (
                   <div key={i} style={{ background:'#F8FAFC', borderRadius:'16px', padding:'20px', border:'1px solid #E2E8F0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                     <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-                      <span style={{ fontSize:'28px' }}>{m.icon}</span>
+                      <div style={{ width:'40px', height:'40px', borderRadius:'10px', overflow:'hidden', background:'#fff', border:'1px solid #E2E8F0' }}>
+                        <img src={m.imgSrc} alt={m.title} style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+                      </div>
                       <div><div style={{ color:'#0F172A', fontWeight:'700', fontSize:'15px' }}>{m.title}</div><div style={{ color:'#64748B', fontSize:'12px' }}>{done ? 'Completed' : 'Not attempted'}</div></div>
                     </div>
                     <div style={{ fontSize:'28px', fontWeight:'900', color: score>=70?'#00B87C':score>=50?'#F59E0B':'#EF4444' }}>{done ? score+'%' : '-'}</div>
@@ -241,20 +247,22 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
           <div><div style={{ color:'#0F172A', fontWeight:'800', fontSize:'15px' }}>GenuAI Assessment</div><div style={{ color:'#64748B', fontSize:'12px', fontWeight:'500' }}>Candidate Pipeline</div></div>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-          <div style={{ color:'#64748B', fontSize:'13px', fontWeight:'600' }}>👤 {userName}</div>
+          <div style={{ color:'#64748B', fontSize:'13px', fontWeight:'600' }}>ðŸ‘¤ {userName}</div>
           <button onClick={onLogout} style={{ background:'#F1F5F9', color:'#EF4444', border:'1px solid #FECACA', borderRadius:'8px', padding:'8px 16px', cursor:'pointer', fontSize:'13px', fontWeight:'700' }}>Logout</button>
         </div>
       </div>
       <div style={{ maxWidth:'900px', margin:'0 auto', padding:'40px 32px' }}>
         <div style={{ marginBottom:'40px' }}>
-          <div style={{ color:'#0F172A', fontSize:'28px', fontWeight:'900', marginBottom:'8px', letterSpacing:'-0.5px' }}>Welcome, {userName} 👋</div>
+          <div style={{ color:'#0F172A', fontSize:'28px', fontWeight:'900', marginBottom:'8px', letterSpacing:'-0.5px' }}>Welcome, {userName} ðŸ‘‹</div>
           <div style={{ color:'#64748B', fontSize:'15px' }}>Complete all modules to get your comprehensive assessment score</div>
         </div>
         <div style={{ display:'flex', gap:'8px', marginBottom:'40px', alignItems:'center' }}>
           {MODULES.map((m,i) => (
             <div key={i} style={{ display:'flex', alignItems:'center', gap:'8px', flex:1 }}>
               <div style={{ flex:1, display:'flex', flexDirection:'column' as any, alignItems:'center', gap:'6px' }}>
-                <div style={{ width:'40px', height:'40px', borderRadius:'50%', background: isCompleted(m.id)?m.color:canAccess(m.id)?m.color+'22':'#F1F5F9', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'18px', border: isCompleted(m.id)?'2px solid '+m.color:'2px solid transparent' }}>{isCompleted(m.id)?'✓':m.icon}</div>
+                <div style={{ width:'40px', height:'40px', borderRadius:'50%', background: isCompleted(m.id)?m.color:canAccess(m.id)?m.color+'22':'#F1F5F9', display:'flex', alignItems:'center', justifyContent:'center', border: isCompleted(m.id)?'2px solid '+m.color:'2px solid transparent', overflow:"hidden" }}>
+                  {isCompleted(m.id) ? <span style={{ color:"#fff", fontSize:"18px" }}>✓</span> : <img src={m.imgSrc} alt={m.title} style={{ width:"70%", height:"70%", objectFit:"cover", mixBlendMode:"multiply", opacity: canAccess(m.id)?1:0.5 }} />}
+                </div>
                 <div style={{ color: isCompleted(m.id)?'#0F172A':canAccess(m.id)?'#64748B':'#94A3B8', fontSize:'11px', fontWeight:'700', textAlign:'center', maxWidth:'70px' }}>{m.title}</div>
               </div>
               {i < MODULES.length-1 && <div style={{ width:'24px', height:'2px', background: isCompleted(m.id)?m.color:'#E2E8F0', flexShrink:0 }}/>}
@@ -270,7 +278,9 @@ export default function CandidatePipeline({ user, onLogout, onInterview }: Props
             return (
               <div key={i} style={{ background:'#fff', borderRadius:'20px', border: done ? '2px solid '+m.color+'44' : '1px solid #E2E8F0', padding:'24px', opacity: accessible?1:0.6, boxShadow: accessible ? '0 4px 12px rgba(0,0,0,0.02)' : 'none' }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'16px' }}>
-                  <div style={{ width:'48px', height:'48px', background:m.color+'15', borderRadius:'14px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'24px' }}>{m.icon}</div>
+                  <div style={{ width:'48px', height:'48px', background:m.color+'15', borderRadius:'14px', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
+                    <img src={m.imgSrc} alt={m.title} style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+                  </div>
                   {done ? <span style={{ background:'#D1FAE5', color:'#059669', padding:'4px 12px', borderRadius:'20px', fontSize:'12px', fontWeight:'700' }}>Done {score ? score+'%' : ''}</span>
                   : accessible ? <span style={{ background:m.color+'15', color:m.color, padding:'4px 12px', borderRadius:'20px', fontSize:'12px', fontWeight:'700' }}>Ready</span>
                   : <span style={{ background:'#F1F5F9', color:'#94A3B8', padding:'4px 12px', borderRadius:'20px', fontSize:'12px', fontWeight:'700' }}>Locked</span>}

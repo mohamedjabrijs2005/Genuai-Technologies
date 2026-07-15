@@ -6,21 +6,21 @@ interface Props { user: any; onBack: () => void; }
 const GROQ_KEY = import.meta.env.VITE_GROQ_KEY;
 
 const CATEGORIES = [
-  { id: "Logical", title: "Logical Reasoning", icon: "🧩", desc: "Deductive logic, coding-decoding, and directional sense." },
-  { id: "Quantitative", title: "Quantitative Aptitude", icon: "📐", desc: "Numerical ability, probability, time & speed." },
-  { id: "English", title: "English Grammar", icon: "📖", desc: "Vocabulary, sentence correction, and reading comprehension." },
-  { id: "AutomataFix", title: "Automata Fix (Debugging)", icon: "🐛", desc: "Find and fix logical or syntax errors in existing code." },
-  { id: "Automata", title: "Automata (Live Coding)", icon: "💻", desc: "Write full algorithms from scratch (Arrays, Strings, Recursion)." },
-  { id: "CoreCS", title: "Core CS Fundamentals", icon: "🖥️", desc: "Operating Systems, DBMS, Computer Networks, and Architecture." }
+  { id: 'logical', name: 'Logical Reasoning', imgSrc: '/icons/cat_logical.png', color: '#2563EB', bg: '#EFF6FF', desc: 'Syllogisms, blood relations, patterns' },
+  { id: 'quantitative', name: 'Quantitative Aptitude', imgSrc: '/icons/cat_quant.png', color: '#059669', bg: '#ECFDF5', desc: 'Permutations, probability, algebra' },
+  { id: 'english', name: 'English Comprehension', imgSrc: '/icons/cat_english.png', color: '#D97706', bg: '#FFFBEB', desc: 'Grammar, vocabulary, reading comp' },
+  { id: 'automata_fix', name: 'GenuAI Automata Fix', imgSrc: '/icons/cat_autofix.png', color: '#DC2626', bg: '#FEF2F2', desc: 'Debug logical and syntax errors in C/C++/Java' },
+  { id: 'automata', name: 'GenuAI Automata', imgSrc: '/icons/cat_automata.png', color: '#7C3AED', bg: '#F5F3FF', desc: 'Live competitive programming assessment' },
+  { id: 'core', name: 'Core Computer Science', imgSrc: '/icons/learning_brain.png', color: '#0891B2', bg: '#ECFEFF', desc: 'OS, DBMS, Computer Networks, OOPS' },
 ];
 
 const SUB_TOPICS: Record<string, string[]> = {
-  Logical: ["Coding-Decoding", "Blood Relations", "Directional Sense", "Data Sufficiency", "Logical Sequences", "Syllogism", "Seating Arrangement", "Clocks & Calendars"],
-  Quantitative: ["Number System", "HCF & LCM", "Divisibility", "Percentages", "Profit & Loss", "Time-Speed-Distance", "Probability", "Permutations & Combinations", "Simple & Compound Interest"],
-  English: ["Vocabulary Synonyms", "Vocabulary Antonyms", "Error Identification", "Sentence Correction", "Sentence Improvement", "Prepositions & Articles", "Active/Passive Voice"],
-  AutomataFix: ["Array Manipulation", "String Parsing", "Loop Logic", "Conditional Logic", "Recursion Base Case", "Basic Math Logic", "Off-by-one errors"],
-  Automata: ["Arrays", "Strings", "Linked Lists", "Recursion", "Sorting", "Searching", "Matrix Manipulation", "Basic Hash Maps"],
-  CoreCS: ["Operating Systems", "DBMS & SQL", "Computer Networks", "Computer Architecture", "Software Engineering", "Deadlocks & Concurrency", "OSI Model"]
+  logical: ["Coding-Decoding", "Blood Relations", "Directional Sense", "Data Sufficiency", "Logical Sequences", "Syllogism", "Seating Arrangement", "Clocks & Calendars"],
+  quantitative: ["Number System", "HCF & LCM", "Divisibility", "Percentages", "Profit & Loss", "Time-Speed-Distance", "Probability", "Permutations & Combinations", "Simple & Compound Interest"],
+  english: ["Vocabulary Synonyms", "Vocabulary Antonyms", "Error Identification", "Sentence Correction", "Sentence Improvement", "Prepositions & Articles", "Active/Passive Voice"],
+  automata_fix: ["Array Manipulation", "String Parsing", "Loop Logic", "Conditional Logic", "Recursion Base Case", "Basic Math Logic", "Off-by-one errors"],
+  automata: ["Arrays", "Strings", "Linked Lists", "Recursion", "Sorting", "Searching", "Matrix Manipulation", "Basic Hash Maps"],
+  core: ["Operating Systems", "DBMS & SQL", "Computer Networks", "Computer Architecture", "Software Engineering", "Deadlocks & Concurrency", "OSI Model"]
 };
 
 interface MCQQuestion { type: "mcq"; question: string; options: string[]; correctIndex: number; explanation: string; }
@@ -68,8 +68,8 @@ export default function SkillTestPractice({ user, onBack }: Props) {
       const prevQ = history.length > 0 ? `Avoid these previous questions: ${history.map(h => h.question.question || h.question.title).join('; ')}` : "";
 
       let prompt = "";
-      if (cat === "Logical" || cat === "Quantitative" || cat === "English" || cat === "CoreCS") {
-        prompt = `Generate a unique, highly challenging ${diff} level AMCAT-style Multiple Choice Question for the category: ${cat}.
+      if (cat !== "automata_fix" && cat !== "automata") {
+        prompt = `Generate a unique, highly challenging ${diff} level GenuAI-style Multiple Choice Question for the category: ${cat}.
 Specifically focus on the sub-topic: **${randomTopic}**. ${prevQ}
 Return ONLY valid JSON with this exact structure:
 {
@@ -79,8 +79,8 @@ Return ONLY valid JSON with this exact structure:
   "correctIndex": 0,
   "explanation": "Detailed explanation of the correct logic."
 }`;
-      } else if (cat === "AutomataFix") {
-        prompt = `Generate a unique ${diff} level AMCAT Automata Fix (Debugging) question focusing on **${randomTopic}**. ${prevQ}
+      } else if (cat === "automata_fix") {
+        prompt = `Generate a unique ${diff} level GenuAI Automata Fix (Debugging) question focusing on **${randomTopic}**. ${prevQ}
 Provide a short snippet of code with a deliberate syntax or logical bug.
 Return ONLY valid JSON with this exact structure:
 {
@@ -90,8 +90,8 @@ Return ONLY valid JSON with this exact structure:
   "codeTemplate": "def find_max(arr):\\n    max_val = 0 # Bug here if array has negative numbers\\n    for i in arr:\\n        if i > max_val:\\n            max_val = i\\n    return max_val",
   "language": "python"
 }`;
-      } else if (cat === "Automata") {
-        prompt = `Generate a unique ${diff} level AMCAT Automata (Live Coding) competitive programming question focusing on **${randomTopic}**. ${prevQ}
+      } else if (cat === "automata") {
+        prompt = `Generate a unique ${diff} level GenuAI Automata (Live Coding) competitive programming question focusing on **${randomTopic}**. ${prevQ}
 Return ONLY valid JSON with this exact structure:
 {
   "type": "code",
@@ -135,7 +135,7 @@ Return ONLY valid JSON with this exact structure:
   const evaluateCode = async (q: CodeQuestion, code: string) => {
     setLoading(true);
     try {
-      const prompt = `You are an automated AMCAT compiler. Evaluate the following candidate code for the problem: "${q.title}".
+      const prompt = `You are an automated GenuAI compiler. Evaluate the following candidate code for the problem: "${q.title}".
 Description: ${q.description}
 Candidate Code:
 \`\`\`${q.language}
@@ -210,31 +210,51 @@ Return ONLY JSON:
 
   // ── SETUP PHASE ──
   if (phase === "setup") return (
-    <div style={{ minHeight:"100vh", background:"#F8FAFC", padding:"40px 20px", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", alignItems:"center", justifyContent:"center" }}>
-      <div style={{ background:"#fff", borderRadius:"24px", padding:"48px", maxWidth:"800px", width:"100%", boxShadow:"0 10px 25px rgba(0,0,0,0.03)", border:"1px solid #E2E8F0" }}>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#64748B", fontSize:"14px", cursor:"pointer", marginBottom:"32px", fontWeight:"700", padding:0 }}>
-          ← Back to Practice Hub
-        </button>
-        
-        <h1 style={{ fontSize:"32px", fontWeight:"900", color:"#0F172A", margin:"0 0 12px", letterSpacing:"-0.5px" }}>AMCAT Skill Test Practice</h1>
-        <p style={{ color:"#475569", fontSize:"16px", margin:"0 0 40px", lineHeight:"1.6" }}>
-          Experience a highly realistic, AI-driven AMCAT simulation. Features strict timers, adaptive difficulty (CAT methodology), and intelligent compiler evaluation for Automata.
-        </p>
-
-        <label style={{ color:"#64748B", fontSize:"13px", fontWeight:"800", display:"block", marginBottom:"16px", textTransform:"uppercase", letterSpacing:"1px" }}>Select Assessment Module</label>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"40px" }}>
-          {CATEGORIES.map(c => (
-            <div key={c.id} onClick={() => setCategory(c.id)} style={{ padding:"20px", border:`2px solid ${category===c.id?"#2563EB":"#E2E8F0"}`, borderRadius:"16px", cursor:"pointer", background:category===c.id?"#EFF6FF":"#fff", transition:"all 0.2s" }}>
-              <div style={{ fontSize:"28px", marginBottom:"12px" }}>{c.icon}</div>
-              <div style={{ fontWeight:"800", fontSize:"16px", color:category===c.id?"#1E3A8A":"#0F172A", marginBottom:"4px" }}>{c.title}</div>
-              <div style={{ fontSize:"13px", color:"#64748B", lineHeight:"1.5" }}>{c.desc}</div>
-            </div>
-          ))}
+    <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
+      <div style={{ background:"#fff", borderBottom:"1px solid #E2E8F0", padding:"16px 40px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"#64748B", fontSize:"14px", cursor:"pointer", fontWeight:"700", padding:0 }}>← Back to Practice Hub</button>
+        <div style={{ fontWeight:"800", color:"#0F172A", fontSize:"18px" }}>GenuAI Skill Test</div>
+        <div style={{ width:"120px" }}></div>
+      </div>
+      <div style={{ flex:1, display:"flex", maxWidth:"1100px", margin:"0 auto", width:"100%", padding:"60px 40px", alignItems:"center" }}>
+        <div style={{ flex:1, paddingRight:"60px", display:"flex", flexDirection:"column", justifyContent:"center" }}>
+          <div style={{ fontSize:"56px", marginBottom:"24px" }}>🎯</div>
+          <h1 style={{ fontSize:"40px", fontWeight:"900", color:"#0F172A", marginBottom:"24px", letterSpacing:"-1px", lineHeight:"1.1" }}>Master Your Next<br/>Assessment</h1>
+          <p style={{ color:"#475569", fontSize:"16px", lineHeight:"1.6", marginBottom:"40px", maxWidth:"500px" }}>
+            Experience a highly realistic, AI-driven GenuAI simulation. Features strict timers, adaptive difficulty (CAT methodology), and intelligent compiler evaluation for Automata.
+          </p>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:"12px" }}>
+             <div style={{ background:"#FEF2F2", color:"#DC2626", padding:"10px 16px", borderRadius:"10px", fontWeight:"700", fontSize:"13px" }}>✓ Strict Timers</div>
+             <div style={{ background:"#F0FDF4", color:"#16A34A", padding:"10px 16px", borderRadius:"10px", fontWeight:"700", fontSize:"13px" }}>✓ Adaptive AI (CAT)</div>
+             <div style={{ background:"#EFF6FF", color:"#2563EB", padding:"10px 16px", borderRadius:"10px", fontWeight:"700", fontSize:"13px" }}>✓ Live Code Compiler</div>
+             <div style={{ background:"#F3E8FF", color:"#9333EA", padding:"10px 16px", borderRadius:"10px", fontWeight:"700", fontSize:"13px" }}>✓ Real-time Scoring</div>
+             <div style={{ background:"#FEF3C7", color:"#D97706", padding:"10px 16px", borderRadius:"10px", fontWeight:"700", fontSize:"13px" }}>✓ GenuAI Curriculum</div>
+          </div>
         </div>
+        
+        <div style={{ flex:1, maxWidth:"500px" }}>
+          <div style={{ background:"#fff", borderRadius:"24px", padding:"40px", boxShadow:"0 20px 40px rgba(0,0,0,0.04)", border:"1px solid #E2E8F0" }}>
+            <h2 style={{ fontSize:"22px", fontWeight:"800", color:"#0F172A", marginBottom:"24px" }}>Select Module</h2>
+            
+            <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:"12px", marginBottom:"32px", maxHeight:"400px", overflowY:"auto", paddingRight:"8px" }}>
+              {CATEGORIES.map(c => (
+                <div key={c.id} onClick={() => setCategory(c.id)} style={{ display:"flex", alignItems:"center", gap:"16px", padding:"16px", border:`2px solid ${category===c.id?"#2563EB":"#F1F5F9"}`, borderRadius:"16px", cursor:"pointer", background:category===c.id?"#EFF6FF":"#fff", transition:"all 0.2s" }}>
+                  <div style={{ width:"48px", height:"48px", borderRadius:"12px", background:c.bg, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
+                    <img src={c.imgSrc} alt={c.name} style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight:"800", fontSize:"15px", color:category===c.id?"#1E3A8A":"#0F172A", marginBottom:"4px" }}>{c.name}</div>
+                    <div style={{ fontSize:"12px", color:"#64748B", lineHeight:"1.4" }}>{c.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-        <button onClick={startTest} style={{ width:"100%", padding:"18px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"14px", fontWeight:"800", fontSize:"16px", cursor:"pointer", boxShadow:"0 8px 24px rgba(15,23,42,0.2)" }}>
-          Start Simulation →
-        </button>
+            <button onClick={startTest} style={{ width:"100%", padding:"16px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"14px", fontWeight:"800", fontSize:"15px", cursor:"pointer", boxShadow:"0 12px 24px rgba(15,23,42,0.15)", transition:"all 0.2s" }}>
+              Start Simulation →
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -244,73 +264,88 @@ Return ONLY JSON:
     const correctCount = history.filter(h => h.isCorrect).length;
     const scoreColor = correctCount >= 16 ? "#10B981" : correctCount >= 8 ? "#F59E0B" : "#EF4444";
     return (
-      <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", padding:"40px 20px" }}>
-        <div style={{ maxWidth:"900px", margin:"0 auto" }}>
-          <div style={{ background:"#fff", borderRadius:"24px", padding:"48px", textAlign:"center", marginBottom:"24px", border:"1px solid #E2E8F0", boxShadow:"0 10px 25px rgba(0,0,0,0.03)" }}>
+      <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif" }}>
+        <div style={{ background:"#0F172A", color:"#fff", padding:"60px 40px", textAlign:"center" }}>
+          <div style={{ maxWidth:"1000px", margin:"0 auto" }}>
             <div style={{ fontSize:"64px", marginBottom:"16px" }}>🏆</div>
-            <h1 style={{ fontSize:"32px", fontWeight:"900", color:"#0F172A", marginBottom:"8px" }}>Assessment Complete</h1>
-            <div style={{ color:"#64748B", fontSize:"16px", fontWeight:"600", marginBottom:"24px" }}>{currentCatData.title} Module</div>
-            
-            <div style={{ fontSize:"56px", fontWeight:"900", color:scoreColor, marginBottom:"16px", lineHeight:1 }}>{correctCount}/20</div>
-            <div style={{ display:"inline-block", background:scoreColor+"11", color:scoreColor, borderRadius:"20px", padding:"8px 24px", fontSize:"14px", fontWeight:"800", border:`1px solid ${scoreColor}33` }}>
-              {correctCount >= 16 ? "Excellent Adaptive Performance!" : "Keep practicing to master harder difficulties."}
+            <h1 style={{ fontSize:"40px", fontWeight:"900", margin:"0 0 12px" }}>Assessment Complete</h1>
+            <div style={{ fontSize:"20px", color:"#94A3B8", marginBottom:"32px" }}>{currentCatData.name} Module</div>
+            <div style={{ display:"inline-flex", alignItems:"center", gap:"16px", background:"#1E293B", padding:"12px 32px", borderRadius:"24px" }}>
+              <span style={{ fontSize:"48px", fontWeight:"900", color:scoreColor }}>{correctCount}/20</span>
+              <div style={{ textAlign:"left" }}>
+                <div style={{ color:"#F8FAFC", fontWeight:"800", fontSize:"16px" }}>Final Score</div>
+                <div style={{ color:scoreColor, fontWeight:"700", fontSize:"14px" }}>
+                  {correctCount >= 16 ? "Excellent Adaptive Performance!" : "Keep practicing to master harder difficulties."}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ maxWidth:"1200px", margin:"0 auto", padding:"60px 20px" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"32px" }}>
+            <h2 style={{ fontSize:"24px", fontWeight:"900", color:"#0F172A", margin:0 }}>Adaptive Breakdown</h2>
+            <div style={{ display:"flex", gap:"12px" }}>
+              <button onClick={() => setPhase("setup")} style={{ padding:"12px 24px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"14px", cursor:"pointer" }}>🔄 Retake</button>
+              <button onClick={onBack} style={{ padding:"12px 24px", background:"#fff", color:"#475569", border:"1px solid #E2E8F0", borderRadius:"12px", fontWeight:"800", fontSize:"14px", cursor:"pointer" }}>Exit</button>
             </div>
           </div>
 
-          <h2 style={{ fontSize:"20px", fontWeight:"800", color:"#0F172A", marginBottom:"20px", paddingLeft:"8px" }}>Adaptive Question Breakdown</h2>
-
-          {history.map((h, i) => (
-            <div key={i} style={{ background:"#fff", borderRadius:"20px", padding:"32px", marginBottom:"24px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"20px", paddingBottom:"16px", borderBottom:"1px solid #F1F5F9" }}>
-                <div style={{ display:"flex", gap:"12px", alignItems:"center" }}>
-                  <span style={{ background:"#F1F5F9", color:"#475569", fontWeight:"800", fontSize:"13px", padding:"6px 12px", borderRadius:"8px" }}>Question {i+1}</span>
-                  <span style={{ background:"#FFFBEB", color:"#D97706", fontWeight:"800", fontSize:"12px", padding:"4px 10px", borderRadius:"6px", border:"1px solid #FEF3C7" }}>{h.difficulty} Level</span>
-                </div>
-                <div style={{ fontWeight:"900", color:h.isCorrect?"#10B981":"#EF4444", fontSize:"16px", background:h.isCorrect?"#D1FAE5":"#FEE2E2", padding:"6px 16px", borderRadius:"8px" }}>
-                  {h.isCorrect ? "Correct" : "Incorrect"}
-                </div>
-              </div>
-
-              {h.question.type === "mcq" ? (
-                <>
-                  <div style={{ fontWeight:"700", color:"#0F172A", marginBottom:"20px", fontSize:"16px", lineHeight:"1.6" }}>{h.question.question}</div>
-                  <div style={{ background:"#F8FAFC", padding:"16px", borderRadius:"12px", marginBottom:"20px" }}>
-                    <div style={{ color:"#64748B", fontSize:"12px", fontWeight:"700", textTransform:"uppercase", marginBottom:"8px" }}>Your Answer</div>
-                    <div style={{ color:h.isCorrect?"#10B981":"#EF4444", fontWeight:"700", fontSize:"15px" }}>{h.userAnswer}</div>
+          <div style={{ display:"grid", gap:"24px" }}>
+            {history.map((h, i) => (
+              <div key={i} style={{ background:"#fff", borderRadius:"20px", padding:"32px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"24px", paddingBottom:"16px", borderBottom:"1px solid #F1F5F9" }}>
+                  <div style={{ display:"flex", gap:"12px", alignItems:"center" }}>
+                    <span style={{ color:"#475569", fontWeight:"800", fontSize:"13px", textTransform:"uppercase", letterSpacing:"1px" }}>Question {i+1}</span>
+                    <span style={{ background:"#FFFBEB", color:"#D97706", fontWeight:"800", fontSize:"12px", padding:"4px 10px", borderRadius:"6px", border:"1px solid #FEF3C7" }}>{h.difficulty} Level</span>
                   </div>
-                  {!h.isCorrect && (
-                    <div style={{ background:"#F0FDF4", padding:"16px", borderRadius:"12px", marginBottom:"20px", border:"1px solid #DCFCE7" }}>
-                      <div style={{ color:"#16A34A", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", marginBottom:"8px" }}>Correct Answer</div>
-                      <div style={{ color:"#15803D", fontWeight:"700", fontSize:"15px" }}>{h.question.options[h.question.correctIndex]}</div>
+                  <div style={{ fontWeight:"900", color:h.isCorrect?"#10B981":"#EF4444", fontSize:"16px", background:h.isCorrect?"#D1FAE5":"#FEE2E2", padding:"6px 16px", borderRadius:"8px" }}>
+                    {h.isCorrect ? "Correct" : "Incorrect"}
+                  </div>
+                </div>
+
+                {h.question.type === "mcq" ? (
+                  <>
+                    <div style={{ fontWeight:"700", color:"#0F172A", marginBottom:"24px", fontSize:"18px", lineHeight:"1.6" }}>{h.question.question}</div>
+                    
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"24px", marginBottom:"24px" }}>
+                      <div style={{ background:"#F8FAFC", padding:"20px", borderRadius:"12px", border:"1px solid #F1F5F9" }}>
+                        <div style={{ color:"#64748B", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", marginBottom:"8px" }}>Your Answer</div>
+                        <div style={{ color:h.isCorrect?"#10B981":"#EF4444", fontWeight:"700", fontSize:"15px" }}>{h.userAnswer}</div>
+                      </div>
+                      {!h.isCorrect && (
+                        <div style={{ background:"#F0FDF4", padding:"20px", borderRadius:"12px", border:"1px solid #DCFCE7" }}>
+                          <div style={{ color:"#16A34A", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", marginBottom:"8px" }}>Correct Answer</div>
+                          <div style={{ color:"#15803D", fontWeight:"700", fontSize:"15px" }}>{h.question.options[h.question.correctIndex]}</div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <div style={{ background:"#EFF6FF", padding:"20px", borderRadius:"12px", border:"1px solid #BFDBFE" }}>
-                    <div style={{ color:"#1D4ED8", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", marginBottom:"8px" }}>Explanation</div>
-                    <div style={{ color:"#1E3A8A", fontSize:"14px", lineHeight:"1.6" }}>{h.question.explanation}</div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div style={{ fontWeight:"800", color:"#0F172A", marginBottom:"8px", fontSize:"18px" }}>{h.question.title}</div>
-                  <div style={{ color:"#475569", marginBottom:"20px", fontSize:"14px", lineHeight:"1.6" }}>{h.question.description}</div>
-                  
-                  <div style={{ background:"#0F172A", borderRadius:"12px", padding:"20px", marginBottom:"20px", overflowX:"auto" }}>
-                    <div style={{ color:"#94A3B8", fontSize:"11px", fontWeight:"800", textTransform:"uppercase", marginBottom:"12px", letterSpacing:"1px" }}>Your Submitted Code</div>
-                    <pre style={{ margin:0, color:"#F8FAFC", fontSize:"13px", fontFamily:"monospace" }}>{h.userAnswer}</pre>
-                  </div>
-                  
-                  <div style={{ background:h.isCorrect?"#F0FDF4":"#FEF2F2", padding:"20px", borderRadius:"12px", border:`1px solid ${h.isCorrect?"#DCFCE7":"#FECACA"}` }}>
-                    <div style={{ color:h.isCorrect?"#16A34A":"#DC2626", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", marginBottom:"8px" }}>Compiler AI Evaluation</div>
-                    <div style={{ color:h.isCorrect?"#15803D":"#991B1B", fontSize:"14px", lineHeight:"1.6", whiteSpace:"pre-wrap" }}>{h.evaluation?.feedback}</div>
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
-
-          <div style={{ display:"flex", gap:"16px", marginTop:"32px" }}>
-            <button onClick={() => setPhase("setup")} style={{ flex:1, padding:"16px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"14px", fontWeight:"800", fontSize:"15px", cursor:"pointer" }}>🔄 Retake Assessment</button>
-            <button onClick={onBack} style={{ flex:1, padding:"16px", background:"#fff", color:"#475569", border:"1.5px solid #E2E8F0", borderRadius:"14px", fontWeight:"800", fontSize:"15px", cursor:"pointer" }}>← Back to Practice Hub</button>
+                    
+                    <div style={{ background:"#EFF6FF", padding:"20px", borderRadius:"12px", border:"1px solid #BFDBFE" }}>
+                      <div style={{ color:"#1D4ED8", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", marginBottom:"8px" }}>Explanation</div>
+                      <div style={{ color:"#1E3A8A", fontSize:"15px", lineHeight:"1.6" }}>{h.question.explanation}</div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontWeight:"800", color:"#0F172A", marginBottom:"8px", fontSize:"20px" }}>{h.question.title}</div>
+                    <div style={{ color:"#475569", marginBottom:"24px", fontSize:"15px", lineHeight:"1.6" }}>{h.question.description}</div>
+                    
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"24px", marginBottom:"20px" }}>
+                      <div style={{ background:"#0F172A", borderRadius:"12px", padding:"24px", overflowX:"auto" }}>
+                        <div style={{ color:"#94A3B8", fontSize:"11px", fontWeight:"800", textTransform:"uppercase", marginBottom:"12px", letterSpacing:"1px" }}>Your Submitted Code</div>
+                        <pre style={{ margin:0, color:"#F8FAFC", fontSize:"14px", fontFamily:"'Fira Code', monospace" }}>{h.userAnswer}</pre>
+                      </div>
+                      
+                      <div style={{ background:h.isCorrect?"#F0FDF4":"#FEF2F2", padding:"24px", borderRadius:"12px", border:`1px solid ${h.isCorrect?"#DCFCE7":"#FECACA"}` }}>
+                        <div style={{ color:h.isCorrect?"#16A34A":"#DC2626", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", marginBottom:"12px" }}>Compiler AI Evaluation</div>
+                        <div style={{ color:h.isCorrect?"#15803D":"#991B1B", fontSize:"15px", lineHeight:"1.7", whiteSpace:"pre-wrap" }}>{h.evaluation?.feedback}</div>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -319,87 +354,105 @@ Return ONLY JSON:
 
   // ── TEST PHASE ──
   return (
-    <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
-      {/* Strict Header */}
-      <div style={{ background:"#fff", borderBottom:"1px solid #E2E8F0", padding:"0 32px", height:"72px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:10, boxShadow:"0 2px 8px rgba(0,0,0,0.02)" }}>
+    <div style={{ height:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+      {/* HackerRank Style Header */}
+      <div style={{ background:"#0F172A", color:"#fff", padding:"0 32px", height:"64px", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
         <div style={{ display:"flex", alignItems:"center", gap:"16px" }}>
-          <div style={{ background:"#EFF6FF", padding:"8px", borderRadius:"10px", fontSize:"20px" }}>{currentCatData.icon}</div>
-          <div>
-            <div style={{ fontWeight:"900", fontSize:"16px", color:"#0F172A" }}>{currentCatData.title}</div>
-            <div style={{ fontSize:"12px", color:"#64748B", fontWeight:"700", marginTop:"2px", display:"flex", gap:"8px" }}>
-              <span>Question {currentQIndex+1}/20</span>
-              <span style={{ color:"#D97706" }}>• Adaptive: {difficulty}</span>
-            </div>
+          <div style={{ fontWeight:"800", fontSize:"16px", letterSpacing:"0.5px", display:"flex", alignItems:"center", gap:"12px" }}>
+            <div style={{ width:"24px", height:"24px", borderRadius:"6px", background:currentCatData.bg, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
+               <img src={currentCatData.imgSrc} alt={currentCatData.name} style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+            </div> GenuAI Assessment Environment
           </div>
+          <div style={{ background:"#1E293B", padding:"4px 12px", borderRadius:"6px", fontSize:"12px", fontWeight:"700", color:"#94A3B8" }}>{currentCatData.name}</div>
         </div>
         
-        <div style={{ display:"flex", alignItems:"center", gap:"24px" }}>
-          <div style={{ background:timeLeft < 120 ? "#FEF2F2" : "#F8FAFC", border:`2px solid ${timeLeft < 120 ? "#FCA5A5" : "#E2E8F0"}`, padding:"8px 16px", borderRadius:"10px", display:"flex", alignItems:"center", gap:"8px", transition:"all 0.3s" }}>
-            <span style={{ fontSize:"16px" }}>⏱️</span>
-            <span style={{ fontWeight:"800", fontSize:"16px", color:timeLeft < 120 ? "#DC2626" : "#0F172A", fontVariantNumeric:"tabular-nums" }}>{formatTime(timeLeft)}</span>
+        <div style={{ display:"flex", alignItems:"center", gap:"32px" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:"16px" }}>
+            <div style={{ fontSize:"13px", color:"#94A3B8", fontWeight:"700" }}>Question {currentQIndex+1}/20</div>
+            <div style={{ background:"#334155", color:"#F8FAFC", padding:"4px 10px", borderRadius:"6px", fontSize:"12px", fontWeight:"700" }}>{difficulty}</div>
+            
+            <div style={{ background:timeLeft < 120 ? "#7F1D1D" : "#1E293B", padding:"6px 16px", borderRadius:"8px", display:"flex", alignItems:"center", gap:"8px", transition:"all 0.3s" }}>
+              <span style={{ fontSize:"14px" }}>⌛</span>
+              <span style={{ fontWeight:"800", fontSize:"14px", color:timeLeft < 120 ? "#FCA5A5" : "#F8FAFC", fontVariantNumeric:"tabular-nums" }}>{formatTime(timeLeft)}</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", padding:"40px 20px" }}>
-        <div style={{ maxWidth:"900px", width:"100%" }}>
-          {loading || !question ? (
-            <div style={{ background:"#fff", borderRadius:"24px", padding:"80px 40px", border:"1px solid #E2E8F0", textAlign:"center", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
+      <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
+        {loading || !question ? (
+          <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <div style={{ background:"#fff", borderRadius:"24px", padding:"80px 40px", border:"1px solid #E2E8F0", textAlign:"center", boxShadow:"0 4px 12px rgba(0,0,0,0.02)", maxWidth:"500px", width:"100%" }}>
               <div style={{ width:"48px", height:"48px", border:"4px solid #F1F5F9", borderTop:"4px solid #2563EB", borderRadius:"50%", animation:"spin 1s linear infinite", margin:"0 auto 24px" }}></div>
-              <h2 style={{ fontSize:"20px", fontWeight:"800", color:"#0F172A", marginBottom:"8px" }}>Generating {difficulty} Adaptive Question...</h2>
-              <p style={{ color:"#64748B", fontSize:"14px" }}>The AI is analyzing your performance and generating a bespoke challenge.</p>
+              <h2 style={{ fontSize:"20px", fontWeight:"800", color:"#0F172A", marginBottom:"8px" }}>Generating {difficulty} Question...</h2>
+              <p style={{ color:"#64748B", fontSize:"14px" }}>The AI is analyzing your performance and scaling the difficulty.</p>
             </div>
-          ) : (
-            <div style={{ background:"#fff", borderRadius:"24px", border:"1px solid #E2E8F0", boxShadow:"0 10px 25px rgba(0,0,0,0.03)", overflow:"hidden" }}>
-              
+          </div>
+        ) : (
+          <>
+            {/* Left Pane - Question Info */}
+            <div style={{ width:"45%", background:"#fff", borderRight:"1px solid #E2E8F0", padding:"48px", overflowY:"auto", display:"flex", flexDirection:"column" }}>
               {question.type === "mcq" ? (
-                <div style={{ padding:"48px" }}>
-                  <h2 style={{ fontSize:"22px", fontWeight:"800", color:"#0F172A", marginBottom:"32px", lineHeight:"1.6" }}>{question.question}</h2>
-                  <div style={{ display:"flex", flexDirection:"column", gap:"16px", marginBottom:"40px" }}>
+                <>
+                  <div style={{ fontSize:"13px", fontWeight:"900", color:"#2563EB", textTransform:"uppercase", letterSpacing:"1px", background:"#EFF6FF", padding:"6px 12px", borderRadius:"8px", alignSelf:"flex-start", marginBottom:"24px" }}>Aptitude Question</div>
+                  <p style={{ fontSize:"24px", fontWeight:"800", color:"#0F172A", margin:0, lineHeight:"1.6" }}>{question.question}</p>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize:"13px", fontWeight:"900", color:"#16A34A", textTransform:"uppercase", letterSpacing:"1px", background:"#F0FDF4", padding:"6px 12px", borderRadius:"8px", alignSelf:"flex-start", marginBottom:"24px" }}>Coding Challenge</div>
+                  <h2 style={{ fontSize:"28px", fontWeight:"800", color:"#0F172A", marginBottom:"16px" }}>{question.title}</h2>
+                  <p style={{ fontSize:"16px", color:"#475569", lineHeight:"1.7", margin:0 }}>{question.description}</p>
+                </>
+              )}
+            </div>
+
+            {/* Right Pane - Interactive Area */}
+            <div style={{ flex:1, background:"#F8FAFC", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+              <div style={{ flex:1, padding:"48px", overflowY:"auto" }}>
+                {question.type === "mcq" ? (
+                  <div style={{ display:"flex", flexDirection:"column", gap:"16px", maxWidth:"700px", margin:"0 auto" }}>
                     {question.options.map((opt, i) => (
                       <div 
                         key={i} 
                         onClick={() => setSelectedOption(i)} 
-                        style={{ padding:"20px 24px", border:`2px solid ${selectedOption===i?"#2563EB":"#E2E8F0"}`, borderRadius:"16px", cursor:"pointer", background:selectedOption===i?"#EFF6FF":"#fff", fontSize:"16px", fontWeight:"600", color:"#334155", display:"flex", alignItems:"center", gap:"16px", transition:"all 0.2s" }}
+                        style={{ padding:"24px", border:`2px solid ${selectedOption===i?"#2563EB":"#E2E8F0"}`, borderRadius:"16px", cursor:"pointer", background:selectedOption===i?"#EFF6FF":"#fff", fontSize:"16px", fontWeight:"600", color:"#334155", display:"flex", alignItems:"center", gap:"20px", transition:"all 0.2s", boxShadow:selectedOption===i?"0 4px 12px rgba(37,99,235,0.1)":"0 2px 4px rgba(0,0,0,0.02)" }}
                       >
-                        <div style={{ width:"24px", height:"24px", borderRadius:"50%", border:`2px solid ${selectedOption===i?"#2563EB":"#CBD5E1"}`, background:selectedOption===i?"#2563EB":"transparent", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                        <div style={{ width:"24px", height:"24px", borderRadius:"50%", border:`2px solid ${selectedOption===i?"#2563EB":"#CBD5E1"}`, background:selectedOption===i?"#2563EB":"transparent", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                           {selectedOption===i && <div style={{ width:"10px", height:"10px", borderRadius:"50%", background:"#fff" }}/>}
                         </div>
-                        {opt}
+                        <div style={{ lineHeight:"1.5" }}>{opt}</div>
                       </div>
                     ))}
                   </div>
-                </div>
-              ) : (
-                <div style={{ padding:"48px", display:"flex", flexDirection:"column", gap:"24px" }}>
-                  <div>
-                    <h2 style={{ fontSize:"24px", fontWeight:"800", color:"#0F172A", marginBottom:"12px" }}>{question.title}</h2>
-                    <p style={{ fontSize:"15px", color:"#475569", lineHeight:"1.6", margin:0 }}>{question.description}</p>
-                  </div>
-                  <div style={{ background:"#0F172A", borderRadius:"16px", padding:"20px", display:"flex", flexDirection:"column", gap:"12px" }}>
-                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                      <span style={{ color:"#94A3B8", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", letterSpacing:"1px" }}>AMCAT Integrated IDE</span>
-                      <span style={{ color:"#38BDF8", fontSize:"12px", fontWeight:"700", background:"#0C4A6E", padding:"4px 10px", borderRadius:"6px" }}>{question.language}</span>
+                ) : (
+                  <div style={{ display:"flex", flexDirection:"column", height:"100%" }}>
+                    <div style={{ background:"#0F172A", borderRadius:"16px", display:"flex", flexDirection:"column", flex:1, overflow:"hidden", border:"1px solid #334155", boxShadow:"0 10px 25px rgba(0,0,0,0.1)" }}>
+                      <div style={{ padding:"12px 20px", borderBottom:"1px solid #1E293B", display:"flex", justifyContent:"space-between", alignItems:"center", background:"#0B1120" }}>
+                        <span style={{ color:"#94A3B8", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", letterSpacing:"1px" }}>GenuAI IDE</span>
+                        <span style={{ color:"#38BDF8", fontSize:"12px", fontWeight:"700", background:"#0C4A6E", padding:"4px 10px", borderRadius:"6px" }}>{question.language}</span>
+                      </div>
+                      <textarea 
+                        value={userCode} 
+                        onChange={e => setUserCode(e.target.value)} 
+                        spellCheck={false}
+                        style={{ flex:1, width:"100%", background:"transparent", color:"#F8FAFC", border:"none", padding:"24px", fontFamily:"'Fira Code', monospace", fontSize:"15px", lineHeight:"1.6", resize:"none", outline:"none" }} 
+                      />
                     </div>
-                    <textarea 
-                      value={userCode} 
-                      onChange={e => setUserCode(e.target.value)} 
-                      spellCheck={false}
-                      style={{ width:"100%", minHeight:"300px", background:"#1E293B", color:"#F8FAFC", border:"1px solid #334155", borderRadius:"12px", padding:"16px", fontFamily:"'Fira Code', monospace", fontSize:"14px", lineHeight:"1.6", resize:"vertical", outline:"none", boxSizing:"border-box" }} 
-                    />
                   </div>
+                )}
+              </div>
+              
+              <div style={{ background:"#fff", padding:"24px 48px", borderTop:"1px solid #E2E8F0", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <div style={{ color:"#64748B", fontSize:"14px", fontWeight:"600", display:"flex", alignItems:"center", gap:"8px" }}>
+                  <span style={{ fontSize:"18px" }}>⚠️</span> You cannot return to this question after submitting.
                 </div>
-              )}
-
-              <div style={{ background:"#F8FAFC", padding:"24px 48px", borderTop:"1px solid #E2E8F0", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <div style={{ color:"#64748B", fontSize:"13px", fontWeight:"600" }}>Note: You cannot return to this question after submitting.</div>
-                <button onClick={submitAnswer} style={{ padding:"16px 32px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"15px", cursor:"pointer", boxShadow:"0 4px 12px rgba(15,23,42,0.2)" }}>
+                <button onClick={submitAnswer} style={{ padding:"16px 32px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"15px", cursor:"pointer", boxShadow:"0 4px 12px rgba(15,23,42,0.2)", transition:"transform 0.2s" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.02)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
                   Submit & Next →
                 </button>
               </div>
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
 
       <style>{`

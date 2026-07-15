@@ -80,7 +80,7 @@ Instructions:
   const sectionHeader: any = { fontSize:"15px", fontWeight:"800", color:"#0F172A", margin:"24px 0 16px", paddingBottom:"8px", borderBottom:"2px solid #E2E8F0" };
 
   return (
-    <div className="cover-gen-page" style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", padding:"40px 20px" }}>
+    <div className="cover-gen-page" style={{ height:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
       <style>{`
         @media print {
           body * { visibility: hidden; }
@@ -91,23 +91,24 @@ Instructions:
         textarea:focus, input:focus { border-color: #059669 !important; background: #fff !important; }
       `}</style>
 
-      <div style={{ maxWidth:"1400px", margin:"0 auto" }}>
-        
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"32px" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:"16px" }}>
-            <div style={{ width:"56px", height:"56px", borderRadius:"16px", background:"#ECFDF5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"26px", border:"1px solid #D1FAE5" }}>✉️</div>
-            <div>
-              <h1 style={{ fontSize:"24px", fontWeight:"900", color:"#0F172A", margin:"0 0 4px" }}>Pro Cover Letter Generator</h1>
-              <p style={{ color:"#64748B", fontSize:"14px", margin:0 }}>Construct a highly tailored, persuasive cover letter structured for success.</p>
-            </div>
+      {/* Header */}
+      <div style={{ background:'#0F172A', color:'#fff', padding:'0 32px', height:"64px", display:'flex', justifyContent:'space-between', alignItems:'center', flexShrink:0 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
+          <div style={{ fontWeight:"900", fontSize:"18px", letterSpacing:"0.5px", display:"flex", alignItems:"center", gap:"12px" }}>
+            <span>✉️</span> Pro Cover Letter Generator
           </div>
-          <button onClick={onBack} style={{ padding:"10px 16px", background:"#fff", border:"1.5px solid #E2E8F0", borderRadius:"10px", fontWeight:"700", fontSize:"14px", color:"#64748B", cursor:"pointer", boxShadow:"0 2px 4px rgba(0,0,0,0.02)" }}>← Back to Hub</button>
+          <div style={{ background:"#1E293B", padding:"4px 12px", borderRadius:"6px", fontSize:"12px", fontWeight:"700", color:"#94A3B8" }}>AI Drafting Engine</div>
         </div>
+        <button onClick={onBack} style={{ background:'transparent', border:'1px solid #334155', color:'#94A3B8', padding:'6px 16px', borderRadius:'8px', cursor:'pointer', fontWeight:'600', fontSize:"13px", transition:"all 0.2s" }}>
+          Exit to Hub
+        </button>
+      </div>
 
-        <div style={{ display:"grid", gridTemplateColumns:"480px 1fr", gap:"24px" }}>
-          
-          {/* Form */}
-          <div style={{ background:"#fff", borderRadius:"20px", padding:"28px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)", height:"calc(100vh - 180px)", overflowY:"auto" }}>
+      <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
+        
+        {/* Left Pane - Form */}
+        <div style={{ width:"35%", minWidth:"400px", maxWidth:"550px", background:"#fff", borderRight:"1px solid #E2E8F0", display:"flex", flexDirection:"column", overflow:"hidden", boxShadow:"4px 0 24px rgba(0,0,0,0.02)" }}>
+          <div style={{ flex:1, overflowY:"auto", padding:"32px" }}>
             
             <h2 style={{...sectionHeader, marginTop: 0}}>1. Headers & Details</h2>
             <label style={lbl}>Applicant Information</label>
@@ -150,39 +151,41 @@ Instructions:
 
             <label style={lbl}>Sign-Off / Signature</label>
             <textarea value={signOff} onChange={e=>setSignOff(e.target.value)} placeholder="Sincerely,\nJohn Doe" rows={2} style={{...inp, resize:"vertical"}} />
+          </div>
+          
+          <div style={{ background:"#F8FAFC", padding:"24px 32px", borderTop:"1px solid #E2E8F0" }}>
+            <button onClick={generate} disabled={loading} style={{ width:"100%", padding:"16px", background:loading?"#E2E8F0":"linear-gradient(135deg,#059669,#10B981)", color:loading?"#94A3B8":"#fff", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"15px", cursor:loading?"not-allowed":"pointer", boxShadow:loading?"none":"0 8px 24px rgba(5,150,105,0.3)", transition:"transform 0.2s" }} onMouseEnter={e=>!loading && (e.currentTarget.style.transform="scale(1.02)")} onMouseLeave={e=>!loading && (e.currentTarget.style.transform="scale(1)")}>
+              {loading ? "Drafting Letter..." : "✨ Generate Cover Letter"}
+            </button>
+          </div>
+        </div>
 
-            <div style={{ position:"sticky", bottom:"-28px", background:"#fff", padding:"20px 0", borderTop:"1px solid #E2E8F0", marginTop:"32px" }}>
-              <button onClick={generate} disabled={loading} style={{ width:"100%", padding:"16px", background:loading?"#E2E8F0":"linear-gradient(135deg,#059669,#10B981)", color:loading?"#94A3B8":"#fff", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"15px", cursor:loading?"not-allowed":"pointer", boxShadow:loading?"none":"0 8px 24px rgba(5,150,105,0.3)", transition:"transform 0.2s" }} onMouseEnter={e=>!loading && (e.currentTarget.style.transform="scale(1.02)")} onMouseLeave={e=>!loading && (e.currentTarget.style.transform="scale(1)")}>
-                {loading ? "Drafting Letter..." : "✨ Generate Cover Letter"}
-              </button>
+        {/* Right Pane - Result Preview */}
+        <div style={{ flex:1, background:"#F8FAFC", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+          <div style={{ padding:"24px 48px", borderBottom:"1px solid #E2E8F0", background:"#fff", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <h2 style={{ fontSize:"16px", fontWeight:"800", color:"#0F172A", margin:0 }}>Live Preview</h2>
+            <div style={{ display:"flex", gap:"12px" }}>
+              {result && (
+                <>
+                  <button onClick={() => navigator.clipboard.writeText(result)} style={{ padding:"10px 16px", background:"#F1F5F9", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:"700", color:"#0F172A", cursor:"pointer", transition:"background 0.2s" }} onMouseEnter={e=>e.currentTarget.style.background="#E2E8F0"} onMouseLeave={e=>e.currentTarget.style.background="#F1F5F9"}>📋 Copy Text</button>
+                  <button onClick={downloadPDF} style={{ padding:"10px 16px", background:"#0F172A", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:"700", color:"#fff", cursor:"pointer", boxShadow:"0 4px 12px rgba(15,23,42,0.2)" }}>🖨️ Save as PDF</button>
+                </>
+              )}
             </div>
           </div>
 
-          {/* Result Preview */}
-          <div style={{ background:"#fff", borderRadius:"20px", padding:"32px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)", display:"flex", flexDirection:"column", height:"calc(100vh - 180px)" }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"24px" }}>
-              <h2 style={{ fontSize:"16px", fontWeight:"800", color:"#0F172A", margin:0 }}>Live Preview</h2>
-              <div style={{ display:"flex", gap:"10px" }}>
-                {result && (
-                  <>
-                    <button onClick={() => navigator.clipboard.writeText(result)} style={{ padding:"8px 14px", background:"#F1F5F9", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:"700", color:"#0F172A", cursor:"pointer", transition:"background 0.2s" }} onMouseEnter={e=>e.currentTarget.style.background="#E2E8F0"} onMouseLeave={e=>e.currentTarget.style.background="#F1F5F9"}>📋 Copy Text</button>
-                    <button onClick={downloadPDF} style={{ padding:"8px 16px", background:"#0F172A", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:"700", color:"#fff", cursor:"pointer", boxShadow:"0 4px 12px rgba(15,23,42,0.2)" }}>🖨️ Save as PDF</button>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div id="printable-cover" style={{ flex:1, background:"#fff", borderRadius:"12px", padding:"40px 50px", border:"1px solid #E2E8F0", overflowY:"auto", boxShadow:"0 10px 25px rgba(0, 0, 0, 0.03) inset", whiteSpace:"pre-wrap", color:"#1E293B", fontSize:"15px", lineHeight:"1.7", fontFamily:"'Georgia', serif" }}>
+          <div style={{ flex:1, padding:"48px", overflowY:"auto", display:"flex", justifyContent:"center" }}>
+            <div id="printable-cover" style={{ width:"100%", maxWidth:"850px", background:"#fff", borderRadius:"12px", padding:"60px 80px", border:"1px solid #E2E8F0", boxShadow:"0 20px 40px rgba(0, 0, 0, 0.04)", whiteSpace:"pre-wrap", color:"#1E293B", fontSize:"15px", lineHeight:"1.7", fontFamily:"'Georgia', serif" }}>
               {result ? result : (
-                <div style={{ color:"#94A3B8", textAlign:"center", marginTop:"200px", fontSize:"15px", fontFamily:"'Inter', sans-serif" }}>
-                  <div style={{ fontSize:"48px", marginBottom:"16px", opacity:0.5 }}>✉️</div>
+                <div style={{ color:"#94A3B8", textAlign:"center", marginTop:"150px", fontSize:"16px", fontFamily:"'Inter', sans-serif", fontWeight:"500" }}>
+                  <div style={{ fontSize:"64px", marginBottom:"24px", opacity:0.3 }}>✉️</div>
                   Fill in your details on the left and click generate.<br/>Your tailored cover letter will appear here.
                 </div>
               )}
             </div>
           </div>
-
         </div>
+
       </div>
     </div>
   );

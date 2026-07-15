@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+﻿import { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 
 const API = import.meta.env.VITE_API_URL;
@@ -167,7 +167,7 @@ export default function AMCATTest({ user, role, assessmentId, onComplete, onTerm
 
   if (loading) return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', background:'#F8FAFC', color:'#0F172A', flexDirection:'column', gap:'16px' }}>
-      <p>Loading AMCAT Test...</p>
+      <p>Loading GenuAI Skill Test...</p>
     </div>
   );
 
@@ -176,7 +176,7 @@ export default function AMCATTest({ user, role, assessmentId, onComplete, onTerm
       <div style={{ maxWidth:'600px', width:'100%', background:'#fff', borderRadius:'20px', padding:'40px', border:'1px solid #E2E8F0', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
         <div style={{ textAlign:'center', marginBottom:'32px' }}>
           <div style={{ fontSize:'48px', marginBottom:'12px' }}>🎯</div>
-          <h1 style={{ color:'#0F172A', fontSize:'24px', margin:'0 0 8px' }}>AMCAT-Style Skill Assessment</h1>
+          <h1 style={{ color:'#0F172A', fontSize:'24px', margin:'0 0 8px' }}>GenuAI Skill Assessment</h1>
           <p style={{ color:'#64748B', fontSize:'14px' }}>Role: {role}</p>
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'28px' }}>
@@ -226,7 +226,7 @@ export default function AMCATTest({ user, role, assessmentId, onComplete, onTerm
     <div style={{ minHeight:'100vh', background:'#F8FAFC', display:'flex', alignItems:'center', justifyContent:'center', padding:'20px' }}>
       <div style={{ maxWidth:'600px', width:'100%', background:'#fff', borderRadius:'20px', padding:'40px', border:'1px solid #E2E8F0', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
         <div style={{ textAlign:'center', marginBottom:'24px' }}>
-          <div style={{ fontSize:'48px' }}>{terminated ? '🚫' : '📊'}</div>
+          <div style={{ fontSize:'48px' }}>{terminated ? 'ðŸš«' : 'ðŸ“Š'}</div>
           <h2 style={{ color: terminated ? '#EF4444' : '#0F172A', margin:'8px 0' }}>{terminated ? 'Test Terminated' : 'Test Complete!'}</h2>
           {terminated && <p style={{ color:'#64748B' }}>Maximum violations reached. Your result has been reported.</p>}
         </div>
@@ -347,7 +347,7 @@ export default function AMCATTest({ user, role, assessmentId, onComplete, onTerm
             <video ref={videoRef} autoPlay muted playsInline style={{ width:'100%', display:'block' }} />
             {!cameraAllowed && (
               <div style={{ padding:'20px', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'8px' }}>
-                <div style={{ fontSize:'24px' }}>📷</div>
+                <div style={{ fontSize:'24px' }}>ðŸ“·</div>
                 <div style={{ color:'#EF4444', fontSize:'11px', textAlign:'center' }}>Camera required</div>
               </div>
             )}
