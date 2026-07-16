@@ -218,6 +218,7 @@ export default function Auth({ onLogin }: Props) {
                 </span>
               </div>
             </div>
+          </div>
 
           {/* Headline */}
           <h1 className="text-display-lg-mobile hero-title-weight text-on-surface mb-sm leading-[1.05]">
