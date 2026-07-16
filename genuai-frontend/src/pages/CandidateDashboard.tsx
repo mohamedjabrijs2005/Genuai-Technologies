@@ -1554,6 +1554,5 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
     </div>
 
     </div>
-  </>
   );
 };

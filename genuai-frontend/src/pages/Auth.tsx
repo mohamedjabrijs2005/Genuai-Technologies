@@ -177,7 +177,7 @@ export default function Auth({ onLogin }: Props) {
     { val: "Zero", label: "Human Bias" },
   ];
 
-  const TESTIMONIALS = [
+  const TESTIMONIALS: { quote: any; name: string; role: string; initial: string; photo?: string }[] = [
     {
       quote: <>GenuAI helped us reduce hiring time by <span style={{ color: "#FFD700", fontWeight: "700" }}>60%</span>. The AI evaluation is incredibly accurate — we found our best engineers through this platform.</>,
       name: "Rahul Mehta", role: "HR Director · TechCorp India", initial: "R"
