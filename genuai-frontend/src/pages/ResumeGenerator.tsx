@@ -33,6 +33,11 @@ export default function ResumeGenerator({ user, onBack }: Props) {
   // Editable Name and Email - intentionally blank by default
   const [candidateName, setCandidateName] = useState("");
   const [candidateEmail, setCandidateEmail] = useState("");
+  
+  // ATS Checker States
+  const [atsChecking, setAtsChecking] = useState(false);
+  const [atsResult, setAtsResult] = useState("");
+  const [showAtsModal, setShowAtsModal] = useState(false);
 
   const generate = async () => {
     if (!role || !skills || !experience || !education) {
@@ -89,6 +94,35 @@ Instructions:
     setLoading(false);
   };
 
+  const checkATS = async () => {
+    if (!result) return;
+    setAtsChecking(true);
+    setShowAtsModal(true);
+    try {
+      const prompt = `You are an expert ATS (Applicant Tracking System) software. Analyze the following resume against the target role: "${role}" and target skills: "${skills}".
+      
+Resume text:
+${result}
+
+Please provide a short analysis formatted in Markdown containing:
+1. **ATS Match Score**: X/100 (e.g. 85/100)
+2. **Missing Keywords**: List 3-5 important keywords missing from the resume based on the target role.
+3. **Suggestions**: 2 brief actionable tips to improve the score.`;
+
+      const res = await axios.post("https://api.groq.com/openai/v1/chat/completions", {
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.3, max_tokens: 1000
+      }, { headers: { Authorization: `Bearer ${GROQ_KEY}`, "Content-Type": "application/json" } });
+      
+      setAtsResult(res.data.choices[0].message.content.trim());
+    } catch (e) {
+      console.error(e);
+      setAtsResult("Failed to check ATS score. Please try again.");
+    }
+    setAtsChecking(false);
+  };
+
   const downloadPDF = () => {
     window.print();
   };
@@ -117,6 +151,23 @@ Instructions:
         .markdown-body em { font-style: normal; color: #64748B; font-size: 12px; }
         textarea:focus, input:focus { border-color: #0891B2 !important; background: #fff !important; }
       `}</style>
+
+      {/* ATS Modal */}
+      {showAtsModal && (
+        <div style={{ position:"fixed", top:0, left:0, right:0, bottom:0, background:"rgba(15,23,42,0.6)", zIndex:9999, display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <div style={{ background:"#fff", borderRadius:"16px", width:"500px", maxWidth:"90%", padding:"32px", boxShadow:"0 24px 48px rgba(0,0,0,0.2)", position:"relative" }}>
+            <button onClick={() => setShowAtsModal(false)} style={{ position:"absolute", top:"16px", right:"16px", background:"none", border:"none", fontSize:"20px", cursor:"pointer", color:"#64748B" }}>✖</button>
+            <h2 style={{ margin:"0 0 16px", fontSize:"20px", fontWeight:"800", color:"#0F172A", display:"flex", alignItems:"center", gap:"8px", borderBottom:"none" }}><span>🎯</span> AI ATS Analysis</h2>
+            {atsChecking ? (
+              <div style={{ textAlign:"center", padding:"40px 0", color:"#64748B", fontWeight:"600" }}>Analyzing against Applicant Tracking Systems...</div>
+            ) : (
+              <div className="markdown-body" style={{ maxHeight:"400px", overflowY:"auto", paddingRight:"8px" }}>
+                <ReactMarkdown>{atsResult || ""}</ReactMarkdown>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Header */}
       <div style={{ background:'#0F172A', color:'#fff', padding:'0 32px', height:"64px", display:'flex', justifyContent:'space-between', alignItems:'center', flexShrink:0 }}>
@@ -208,6 +259,7 @@ Instructions:
             <div style={{ display:"flex", gap:"12px" }}>
               {result && (
                 <>
+                  <button onClick={checkATS} style={{ padding:"10px 16px", background:"linear-gradient(135deg,#10B981,#059669)", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:"800", color:"#fff", cursor:"pointer", boxShadow:"0 4px 12px rgba(16,185,129,0.3)" }}>🎯 Check ATS Score</button>
                   <button onClick={() => navigator.clipboard.writeText(result)} style={{ padding:"10px 16px", background:"#F1F5F9", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:"700", color:"#0F172A", cursor:"pointer", transition:"background 0.2s" }} onMouseEnter={e=>e.currentTarget.style.background="#E2E8F0"} onMouseLeave={e=>e.currentTarget.style.background="#F1F5F9"}>📋 Copy Markdown</button>
                   <button onClick={downloadPDF} style={{ padding:"10px 16px", background:"#0F172A", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:"700", color:"#fff", cursor:"pointer", boxShadow:"0 4px 12px rgba(15,23,42,0.2)" }}>🖨️ Save as PDF</button>
                 </>

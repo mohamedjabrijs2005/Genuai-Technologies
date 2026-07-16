@@ -7,6 +7,7 @@ import CompanyOverview    from "./pages/CompanyOverview";
 import PracticeDashboard  from "./pages/PracticeDashboard";
 import CandidatePipeline  from "./pages/CandidatePipeline";
 import SearchDashboard      from "./pages/SearchDashboard";
+import CareerProfileDashboard from "./pages/CareerProfileDashboard";
 import AdminDashboard     from "./pages/AdminDashboard";
 import CompanyDashboard   from "./pages/CompanyDashboard";
 import MobileCam          from "./pages/MobileCam";
@@ -20,6 +21,7 @@ type Page =
   | "path-select"    // Practice vs Test
   | "practice"       // Practice hub
   | "search"         // Search jobs hub
+  | "career-profile" // Career profile hub
   | "company-overview" // Rules / about page before test
   | "pipeline"       // 6-module assessment
   | "amcat"          // AMCAT test (launched from pipeline)
@@ -231,6 +233,7 @@ export default function App() {
         onSelect={(path) => {
           if (path === "practice") setPage("practice");
           else if (path === "search") setPage("search");
+          else if (path === "career-profile") setPage("career-profile");
           else setPage("company-overview");
         }}
       />
@@ -251,6 +254,16 @@ export default function App() {
   if (page === "search") {
     return (
       <SearchDashboard
+        user={user}
+        onBack={() => setPage("path-select")}
+      />
+    );
+  }
+
+  // 10.6 Career Profile hub
+  if (page === "career-profile") {
+    return (
+      <CareerProfileDashboard
         user={user}
         onBack={() => setPage("path-select")}
       />

@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 
-interface Props { user: any; onSelect: (path: 'practice' | 'search' | 'test') => void; onLogout: () => void; }
+interface Props { user: any; onSelect: (path: 'practice' | 'search' | 'test' | 'career-profile') => void; onLogout: () => void; }
 
 export default function PathSelection({ user, onSelect, onLogout }: Props) {
   const [hovered, setHovered] = useState<string | null>(null);
@@ -36,8 +36,8 @@ export default function PathSelection({ user, onSelect, onLogout }: Props) {
           <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '480px', margin: '0 auto', lineHeight: '1.7' }}>Select how you'd like to use the GenuAI platform today</p>
         </div>
 
-        {/* Cards — 3 columns */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
+        {/* Cards — 2x2 Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
 
           {/* 1. Practice Path */}
           <div
@@ -132,6 +132,36 @@ export default function PathSelection({ user, onSelect, onLogout }: Props) {
             <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{ flex: 1, height: '2px', background: hovered === 'test' ? 'rgba(255,255,255,0.3)' : '#E5E7EB' }} />
               <span style={{ fontSize: '13px', fontWeight: '700', color: hovered === 'test' ? '#fff' : '#059669' }}>Begin Assessment →</span>
+            </div>
+          </div>
+
+          {/* 4. Career Profile Hub */}
+          <div
+            onMouseEnter={() => setHovered('career')}
+            onMouseLeave={() => setHovered(null)}
+            onClick={() => onSelect('career-profile')}
+            style={{ background: hovered === 'career' ? 'linear-gradient(135deg,#0F172A,#334155)' : '#fff', border: hovered === 'career' ? '2px solid transparent' : '2px solid #E5E7EB', borderRadius: '24px', padding: '32px 28px', cursor: 'pointer', transition: 'all 0.25s ease', boxShadow: hovered === 'career' ? '0 20px 60px rgba(15,23,42,0.25)' : '0 2px 12px rgba(0,0,0,0.06)', transform: hovered === 'career' ? 'translateY(-4px)' : 'none' }}
+          >
+            <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: hovered === 'career' ? 'rgba(255,255,255,0.2)' : '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', overflow: 'hidden' }}>
+              <img src="/icons/resume_gen.png" alt="Career" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode: hovered === 'career' ? 'normal' : 'multiply', opacity: hovered === 'career' ? 0.9 : 1 }} />
+            </div>
+            <h2 style={{ fontSize: '20px', fontWeight: '800', color: hovered === 'career' ? '#fff' : '#0F172A', margin: '0 0 10px', letterSpacing: '-0.4px' }}>Career Profile Hub</h2>
+            <p style={{ fontSize: '13px', color: hovered === 'career' ? 'rgba(255,255,255,0.8)' : '#64748B', lineHeight: '1.7', margin: '0 0 20px' }}>Build and manage your professional identity with AI-optimized resumes and cover letters.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {[
+                {text: 'AI Resume Builder', icon: '/icons/resume_gen.png'},
+                {text: 'Cover Letter Generator', icon: '/icons/cover_letter.png'},
+                {text: 'Portfolio Manager', icon: '/icons/cat_logical.png'},
+                {text: 'ATS Optimization', icon: '/icons/learning_brain.png'}
+              ].map((item, i) => (
+                <div key={i} style={{ background: hovered === 'career' ? 'rgba(255,255,255,0.15)' : '#F8FAFC', borderRadius: '8px', padding: '7px 12px', fontSize: '12px', fontWeight: '600', color: hovered === 'career' ? '#fff' : '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <img src={item.icon} alt="" style={{width:"14px", height:"14px", borderRadius:"2px"}} />{item.text}
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ flex: 1, height: '2px', background: hovered === 'career' ? 'rgba(255,255,255,0.3)' : '#E5E7EB' }} />
+              <span style={{ fontSize: '13px', fontWeight: '700', color: hovered === 'career' ? '#fff' : '#475569' }}>Manage Profile →</span>
             </div>
           </div>
         </div>
