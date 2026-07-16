@@ -213,7 +213,6 @@ export default function Auth({ onLogin }: Props) {
               </h2>
               <div className="inline-flex items-center px-sm py-1.5 glass rounded-lg border-surface-container self-start shadow-sm bg-surface-bright/50">
                 <span className="text-[11px] font-black text-[#F59E0B] flex items-center gap-1.5 uppercase tracking-[0.2em]" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  <span className="material-symbols-outlined text-[13px]">auto_awesome</span>
                   AI-Powered Recruitment Intelligence Platform
                 </span>
               </div>
@@ -280,10 +279,10 @@ export default function Auth({ onLogin }: Props) {
         <div className="w-full max-w-[440px] glass p-lg rounded-xxl relative">
           
           <div className="mb-lg">
-            <h2 className="text-headline-md font-headline-md text-on-surface mb-xs">
+            <h2 className="text-3xl md:text-4xl font-black text-on-surface mb-sm tracking-tight drop-shadow-sm">
               {isForgotPassword ? "Reset Password" : isLogin ? "Welcome back! 👋" : "Create account"}
             </h2>
-            <p className="text-body-base text-on-surface-variant/80">
+            <p className="text-lg text-on-surface-variant/90 font-medium leading-relaxed">
               {isForgotPassword ? "Follow the steps below to reset your password" : isLogin ? "Sign in to continue to your dashboard" : "Join GenuAI and get discovered by top companies"}
             </p>
           </div>
@@ -446,20 +445,18 @@ export default function Auth({ onLogin }: Props) {
               </div>
 
               <div className="flex flex-col gap-sm">
-                <button onClick={() => handleOAuth("google")} disabled={oauthLoading !== null} className="w-full bg-surface border border-surface-container flex items-center justify-center gap-sm py-xs rounded-xl font-bold text-sm text-on-surface hover:border-indigo-brand/50 hover:shadow-[0_0_15px_rgba(102,126,234,0.15)] transition-all disabled:opacity-50 group">
-                  <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                <button onClick={() => handleOAuth("google")} disabled={oauthLoading !== null} className="w-full bg-surface border border-surface-container flex items-center justify-center gap-sm py-sm rounded-xl font-bold text-base text-on-surface hover:border-indigo-brand/50 hover:shadow-[0_0_15px_rgba(102,126,234,0.15)] transition-all disabled:opacity-50 group">
+                  <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   Continue with Google
                 </button>
-                <div className="flex gap-sm">
-                  <button onClick={() => handleOAuth("github")} disabled={oauthLoading !== null} className="flex-1 bg-surface border border-surface-container flex items-center justify-center gap-sm py-xs rounded-xl font-bold text-sm text-on-surface hover:border-on-surface hover:shadow-[0_0_15px_rgba(15,23,42,0.1)] transition-all disabled:opacity-50 group">
-                    <img src="https://www.svgrepo.com/show/512317/github-142.svg" alt="GitHub" className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                    GitHub
-                  </button>
-                  <button onClick={() => handleOAuth("linkedin")} disabled={oauthLoading !== null} className="flex-1 bg-surface border border-surface-container flex items-center justify-center gap-sm py-xs rounded-xl font-bold text-sm text-on-surface hover:border-[#0A66C2] hover:shadow-[0_0_15px_rgba(10,102,194,0.15)] transition-all disabled:opacity-50 group">
-                    <img src="https://www.svgrepo.com/show/448234/linkedin.svg" alt="LinkedIn" className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                    LinkedIn
-                  </button>
-                </div>
+                <button onClick={() => handleOAuth("github")} disabled={oauthLoading !== null} className="w-full bg-surface border border-surface-container flex items-center justify-center gap-sm py-sm rounded-xl font-bold text-base text-on-surface hover:border-on-surface hover:shadow-[0_0_15px_rgba(15,23,42,0.1)] transition-all disabled:opacity-50 group">
+                  <img src="https://www.svgrepo.com/show/512317/github-142.svg" alt="GitHub" className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                  Continue with GitHub
+                </button>
+                <button onClick={() => handleOAuth("linkedin")} disabled={oauthLoading !== null} className="w-full bg-surface border border-surface-container flex items-center justify-center gap-sm py-sm rounded-xl font-bold text-base text-on-surface hover:border-[#0A66C2] hover:shadow-[0_0_15px_rgba(10,102,194,0.15)] transition-all disabled:opacity-50 group">
+                  <img src="https://www.svgrepo.com/show/448234/linkedin.svg" alt="LinkedIn" className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                  Continue with LinkedIn
+                </button>
               </div>
             </>
           )}
