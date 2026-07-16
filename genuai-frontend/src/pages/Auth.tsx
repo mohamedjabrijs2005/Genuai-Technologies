@@ -207,13 +207,17 @@ export default function Auth({ onLogin }: Props) {
               <div className="absolute -inset-4 bg-accent-gold/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
               <img src="/logo.png" alt="GenuAI Shield" className="relative w-24 h-24 object-contain gold-glow-subtle transition-transform duration-700 group-hover:scale-105" />
             </div>
-            <div className="inline-block px-sm py-xs glass rounded-full border-surface-container">
-              <span className="text-label-caps font-label-caps text-accent-gold flex items-center gap-xs">
-                <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
-                Quantum Recruitment Intelligence
-              </span>
+            <div className="flex flex-col gap-2 mb-md mt-sm">
+              <h2 className="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#667EEA] via-[#764BA2] to-[#0891B2] tracking-tighter drop-shadow-sm" style={{ fontFamily: "'Outfit', 'Inter', sans-serif" }}>
+                GenuAI Technologies
+              </h2>
+              <div className="inline-flex items-center px-sm py-1.5 glass rounded-lg border-surface-container self-start shadow-sm bg-surface-bright/50">
+                <span className="text-[11px] font-black text-[#F59E0B] flex items-center gap-1.5 uppercase tracking-[0.2em]" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  <span className="material-symbols-outlined text-[13px]">auto_awesome</span>
+                  AI-Powered Recruitment Intelligence Platform
+                </span>
+              </div>
             </div>
-          </div>
 
           {/* Headline */}
           <h1 className="text-display-lg-mobile hero-title-weight text-on-surface mb-sm leading-[1.05]">
