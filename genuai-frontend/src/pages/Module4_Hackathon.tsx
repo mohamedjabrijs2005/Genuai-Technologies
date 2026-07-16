@@ -18,71 +18,131 @@ export default function Module4_Hackathon({ user, role, onComplete }: Props) {
   const [description, setDescription] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const inp: any = { width:'100%', background:'#F8FAFC', border:'1px solid #E2E8F0', borderRadius:'12px', padding:'12px 16px', color:'#1E293B', fontSize:'14px', outline:'none', boxSizing:'border-box', marginBottom:'16px' };
-  const lbl: any = { color:'#64748B', fontSize:'12px', fontWeight:'700', textTransform:'uppercase', marginBottom:'6px', display:'block' };
-  const diffColor = (d:string) => d==='Hard'?'#EF4444':d==='Medium'?'#F59E0B':'#00B87C';
+  const inp = "w-full bg-surface-bright border border-surface-container rounded-xl px-4 py-3 text-on-surface text-sm focus:outline-none focus:border-indigo-brand focus:ring-2 focus:ring-indigo-brand/20 transition-all mb-md";
+  const lbl = "text-on-surface-variant text-xs font-bold uppercase tracking-wider mb-2 block";
+  const diffColor = (d:string) => d==='Hard'?'text-error bg-error/10 border-error/20':d==='Medium'?'text-warning-dark bg-warning/10 border-warning/20':'text-success-dark bg-success/10 border-success/20';
+  
   const handleSubmit = async () => {
     if(!githubLink) { setError('GitHub link is required'); return; }
     setSubmitting(true); setError('');
     try { await axios.post(API+'/hackathon/submit', { user_id:user?.user?.id||user?.id, problem_id:selected.id, role, ppt_link:pptLink, github_link:githubLink, web_link:webLink, video_link:videoLink, description }); } catch {}
     setSubmitting(false); setPhase('done'); onComplete({ problem:selected, githubLink, webLink, videoLink, pptLink });
   };
+
   if(phase==='intro') return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', padding:'32px' }}>
-      <div style={{ maxWidth:'800px', margin:'0 auto', background:'#fff', borderRadius:'24px', border:'1px solid #E2E8F0', overflow:'hidden', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
-        <div style={{ background:'linear-gradient(135deg,#00B87C,#00D4AA)', padding:'28px 36px' }}>
-          <div style={{ display:'flex', alignItems:'center', gap:'16px' }}><span style={{ fontSize:'36px' }}>🏆</span><div><div style={{ color:'#fff', fontSize:'20px', fontWeight:'800' }}>Module 4: Hackathon Challenge</div><div style={{ color:'rgba(255,255,255,0.9)', fontSize:'13px', marginTop:'4px' }}>Solve a real-world problem. Showcase your skills.</div></div></div>
-          <div style={{ display:'flex', gap:'8px', marginTop:'16px' }}>{['Profile','Skill Test','SVAR','Hackathon','Interview','Results'].map((m,i)=><div key={i} style={{ flex:1, height:'4px', borderRadius:'4px', background:i<=3?'#fff':'rgba(255,255,255,0.2)' }}/>)}</div>
+    <div className="min-h-screen bg-background quantum-gradient p-margin-mobile md:p-margin-desktop relative overflow-hidden flex items-center justify-center">
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-success/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="glass max-w-4xl w-full mx-auto rounded-xxxl overflow-hidden shadow-sm border border-surface-container animate-[slideUp_0.4s_ease]">
+        <div className="bg-gradient-to-r from-success to-success-dark p-xl">
+          <div className="flex items-center gap-md">
+            <span className="text-4xl drop-shadow-md">🏆</span>
+            <div>
+              <div className="text-white text-xl font-black drop-shadow-sm">Module 4: Hackathon Challenge</div>
+              <div className="text-white/80 text-sm font-semibold mt-1">Solve a real-world problem. Showcase your skills.</div>
+            </div>
+          </div>
+          <div className="flex gap-xs mt-lg">{['Profile','Skill Test','SVAR','Hackathon','Interview','Results'].map((m,i)=><div key={i} className={`flex-1 h-1.5 rounded-full ${i<=3?'bg-white':'bg-white/20'}`}/>)}</div>
         </div>
-        <div style={{ padding:'36px' }}>
-          <div style={{ color:'#0F172A', fontSize:'16px', fontWeight:'800', marginBottom:'20px' }}>Choose Your Problem Statement</div>
-          <div style={{ display:'grid', gap:'16px', marginBottom:'28px' }}>
+        <div className="p-xl md:p-xxl bg-white/50 backdrop-blur-sm">
+          <div className="text-on-surface text-lg font-black mb-lg">Choose Your Problem Statement</div>
+          <div className="grid gap-md mb-xl">
             {problems.map((p,i)=>(
-              <div key={i} onClick={()=>setSelected(p)} style={{ background:selected?.id===p.id?'#00B87C11':'#F8FAFC', borderRadius:'16px', padding:'24px', border:selected?.id===p.id?'2px solid #00B87C':'1px solid #E2E8F0', cursor:'pointer' }}>
-                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'12px' }}>
-                  <div style={{ color:'#0F172A', fontWeight:'700', fontSize:'16px' }}>{p.title}</div>
-                  <div style={{ display:'flex', gap:'8px' }}><span style={{ background:diffColor(p.difficulty)+'22', color:diffColor(p.difficulty), padding:'4px 12px', borderRadius:'20px', fontSize:'12px', fontWeight:'700' }}>{p.difficulty}</span><span style={{ background:'#667EEA22', color:'#667EEA', padding:'4px 12px', borderRadius:'20px', fontSize:'12px', fontWeight:'700' }}>{p.points}pts</span></div>
+              <div key={i} onClick={()=>setSelected(p)} className={`rounded-2xl p-xl border-2 transition-all cursor-pointer hover:scale-[1.01] ${selected?.id===p.id?'bg-success/5 border-success shadow-sm':'bg-surface-bright border-surface-container hover:border-surface-container-high'}`}>
+                <div className="flex justify-between items-start mb-md">
+                  <div className="text-on-surface font-bold text-lg">{p.title}</div>
+                  <div className="flex gap-xs">
+                    <span className={`border px-sm py-1 rounded-full text-xs font-bold ${diffColor(p.difficulty)}`}>{p.difficulty}</span>
+                    <span className="bg-indigo-brand/10 border border-indigo-brand/20 text-indigo-brand px-sm py-1 rounded-full text-xs font-bold">{p.points}pts</span>
+                  </div>
                 </div>
-                <div style={{ color:'#64748B', fontSize:'13px', lineHeight:'1.7', marginBottom:'12px' }}>{p.description}</div>
-                <div style={{ display:'flex', gap:'8px' }}>{p.tags.map((t:string,j:number)=><span key={j} style={{ background:'#E2E8F0', color:'#64748B', padding:'4px 10px', borderRadius:'8px', fontSize:'12px', fontWeight:'600' }}>{t}</span>)}</div>
+                <div className="text-on-surface-variant text-sm font-medium leading-relaxed mb-md">{p.description}</div>
+                <div className="flex flex-wrap gap-xs">
+                  {p.tags.map((t:string,j:number)=><span key={j} className="bg-surface-container/50 text-on-surface-variant border border-surface-container px-3 py-1 rounded-lg text-xs font-bold">{t}</span>)}
+                </div>
               </div>
             ))}
           </div>
-          <div style={{ background:'#00B87C11', borderRadius:'12px', padding:'16px', marginBottom:'24px', border:'1px solid #00B87C33' }}><div style={{ color:'#00B87C', fontWeight:'700', fontSize:'13px', marginBottom:'8px' }}>Submission Requirements</div><div style={{ color:'#64748B', fontSize:'13px', lineHeight:'1.8' }}>Project Pitch PPT link required. GitHub repository link required. Live demo link optional. Demo video link optional.</div></div>
-          <button onClick={()=>{ if(!selected){setError('Please select a problem');return;} setError(''); setPhase('submit'); }} style={{ width:'100%', padding:'16px', background:'linear-gradient(135deg,#00B87C,#00D4AA)', color:'#fff', border:'none', borderRadius:'14px', fontWeight:'800', fontSize:'16px', cursor:'pointer', boxShadow:'0 4px 12px rgba(0,184,124,0.2)' }}>Accept Challenge</button>
-          {error && <div style={{ color:'#EF4444', fontSize:'13px', marginTop:'12px', textAlign:'center' }}>{error}</div>}
+          <div className="bg-success/5 rounded-2xl p-md mb-xl border border-success/20 flex gap-md items-start">
+            <span className="material-symbols-outlined text-success mt-1">info</span>
+            <div>
+              <div className="text-success-dark font-black text-sm mb-1 uppercase tracking-wide">Submission Requirements</div>
+              <div className="text-on-surface-variant text-sm font-medium leading-relaxed">
+                Project Pitch PPT link required. GitHub repository link required. Live demo link optional. Demo video link optional.
+              </div>
+            </div>
+          </div>
+          <button onClick={()=>{ if(!selected){setError('Please select a problem');return;} setError(''); setPhase('submit'); }} className="w-full py-md bg-gradient-to-r from-success to-success-dark text-white rounded-xl font-bold text-body-base hover:shadow-[0_4px_15px_rgba(0,184,124,0.4)] hover:scale-[1.01] transition-all">Accept Challenge →</button>
+          {error && <div className="text-error bg-error/10 border border-error/30 rounded-xl p-sm text-sm font-bold mt-md text-center animate-[shake_0.5s_ease-in-out]">{error}</div>}
         </div>
       </div>
     </div>
   );
+
   if(phase==='submit') return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', padding:'32px' }}>
-      <div style={{ maxWidth:'700px', margin:'0 auto', background:'#fff', borderRadius:'24px', border:'1px solid #E2E8F0', overflow:'hidden', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
-        <div style={{ background:'linear-gradient(135deg,#00B87C,#00D4AA)', padding:'28px 36px' }}><div style={{ color:'#fff', fontSize:'20px', fontWeight:'800' }}>Submit Your Solution</div><div style={{ color:'rgba(255,255,255,0.9)', fontSize:'14px', marginTop:'4px' }}>{selected?.title}</div></div>
-        <div style={{ padding:'36px' }}>
-          <label style={lbl}>Project Pitch PPT Link</label><input style={inp} placeholder='https://docs.google.com/presentation/...' value={pptLink} onChange={e=>setPptLink(e.target.value)}/>
-          <label style={lbl}>GitHub Repository Link (required)</label><input style={inp} placeholder='https://github.com/username/project' value={githubLink} onChange={e=>setGithubLink(e.target.value)}/>
-          <label style={lbl}>Live Demo or Web Link</label><input style={inp} placeholder='https://yourproject.vercel.app' value={webLink} onChange={e=>setWebLink(e.target.value)}/>
-          <label style={lbl}>Demo Video Link</label><input style={inp} placeholder='https://youtube.com/watch?v=...' value={videoLink} onChange={e=>setVideoLink(e.target.value)}/>
-          <label style={lbl}>Project Description</label>
-          <textarea style={{ ...inp, height:'100px', resize:'vertical' as any }} placeholder='Briefly describe your solution, architecture, and key features...' value={description} onChange={e=>setDescription(e.target.value)}/>
-          {error && <div style={{ color:'#EF4444', fontSize:'13px', marginBottom:'12px' }}>{error}</div>}
-          <button onClick={handleSubmit} disabled={submitting} style={{ width:'100%', padding:'16px', background:'linear-gradient(135deg,#00B87C,#00D4AA)', color:'#fff', border:'none', borderRadius:'14px', fontWeight:'800', fontSize:'16px', cursor:submitting?'not-allowed':'pointer', boxShadow:'0 4px 12px rgba(0,184,124,0.2)' }}>{submitting?'Submitting...':'Submit Solution'}</button>
+    <div className="min-h-screen bg-background quantum-gradient p-margin-mobile md:p-margin-desktop relative overflow-hidden flex items-center justify-center">
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-success/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="glass max-w-3xl w-full mx-auto rounded-xxxl overflow-hidden shadow-sm border border-surface-container animate-[slideUp_0.4s_ease]">
+        <div className="bg-gradient-to-r from-success to-success-dark p-xl">
+          <div className="text-white text-xl font-black drop-shadow-sm">Submit Your Solution</div>
+          <div className="text-white/80 text-sm font-semibold mt-1">{selected?.title}</div>
+        </div>
+        <div className="p-xl md:p-xxl bg-white/50 backdrop-blur-sm">
+          <label className={lbl}>Project Pitch PPT Link</label>
+          <input className={inp} placeholder='https://docs.google.com/presentation/...' value={pptLink} onChange={e=>setPptLink(e.target.value)}/>
+          
+          <label className={lbl}>GitHub Repository Link <span className="text-error">*</span></label>
+          <input className={inp} placeholder='https://github.com/username/project' value={githubLink} onChange={e=>setGithubLink(e.target.value)}/>
+          
+          <label className={lbl}>Live Demo or Web Link</label>
+          <input className={inp} placeholder='https://yourproject.vercel.app' value={webLink} onChange={e=>setWebLink(e.target.value)}/>
+          
+          <label className={lbl}>Demo Video Link</label>
+          <input className={inp} placeholder='https://youtube.com/watch?v=...' value={videoLink} onChange={e=>setVideoLink(e.target.value)}/>
+          
+          <label className={lbl}>Project Description</label>
+          <textarea className={`${inp} h-32 resize-y`} placeholder='Briefly describe your solution, architecture, and key features...' value={description} onChange={e=>setDescription(e.target.value)}/>
+          
+          {error && <div className="text-error bg-error/10 border border-error/30 rounded-xl p-sm text-sm font-bold mb-md text-center">{error}</div>}
+          
+          <button onClick={handleSubmit} disabled={submitting} className={`w-full py-md text-white rounded-xl font-bold text-body-base transition-all ${submitting ? 'bg-surface-container text-on-surface-variant cursor-not-allowed' : 'bg-gradient-to-r from-success to-success-dark hover:shadow-[0_4px_15px_rgba(0,184,124,0.4)] hover:scale-[1.01]'}`}>
+            {submitting ? 'Submitting...' : 'Submit Solution ✓'}
+          </button>
         </div>
       </div>
     </div>
   );
+
   return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', display:'flex', alignItems:'center', justifyContent:'center', padding:'32px' }}>
-      <div style={{ maxWidth:'500px', width:'100%', background:'#fff', borderRadius:'24px', border:'1px solid #E2E8F0', padding:'48px', textAlign:'center', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
-        <div style={{ fontSize:'64px', marginBottom:'16px' }}>🎉</div>
-        <div style={{ color:'#0F172A', fontSize:'24px', fontWeight:'800', marginBottom:'8px' }}>Solution Submitted!</div>
-        <div style={{ color:'#64748B', fontSize:'14px', marginBottom:'32px' }}>Your project has been submitted for evaluation. Proceeding to the interview stage.</div>
-        <div style={{ background:'#F8FAFC', borderRadius:'14px', padding:'20px', marginBottom:'28px', border:'1px solid #E2E8F0', textAlign:'left' }}>
-          <div style={{ color:'#00B87C', fontWeight:'700', marginBottom:'12px' }}>Submitted</div>
-          {githubLink && <div style={{ color:'#64748B', fontSize:'13px', marginBottom:'6px', wordBreak:'break-all' }}>GitHub: {githubLink}</div>}
-          {webLink && <div style={{ color:'#64748B', fontSize:'13px', marginBottom:'6px', wordBreak:'break-all' }}>Demo: {webLink}</div>}
-          {videoLink && <div style={{ color:'#64748B', fontSize:'13px', marginBottom:'6px', wordBreak:'break-all' }}>Video: {videoLink}</div>}
+    <div className="min-h-screen bg-background quantum-gradient p-margin-mobile md:p-margin-desktop relative overflow-hidden flex items-center justify-center">
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-success/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="glass max-w-xl w-full mx-auto rounded-xxxl p-xl md:p-xxl border border-surface-container shadow-sm text-center animate-[slideUp_0.4s_ease] relative z-10">
+        <div className="text-6xl mb-md drop-shadow-sm">🎉</div>
+        <div className="text-headline-sm font-headline-sm text-on-surface m-0 mb-xs">Solution Submitted!</div>
+        <div className="text-on-surface-variant font-medium mb-xl">Your project has been submitted for evaluation. Proceeding to the interview stage.</div>
+        
+        <div className="bg-surface-bright rounded-2xl p-lg border border-surface-container text-left mb-xl">
+          <div className="text-success-dark font-black text-xs uppercase tracking-wide mb-md flex items-center gap-xs"><span className="material-symbols-outlined text-sm">check_circle</span> Submitted Details</div>
+          
+          <div className="space-y-sm">
+            {githubLink && (
+              <div className="flex flex-col">
+                <span className="text-on-surface-variant text-xs font-bold uppercase tracking-wider mb-1">GitHub</span>
+                <span className="text-indigo-brand font-medium text-sm break-all">{githubLink}</span>
+              </div>
+            )}
+            {webLink && (
+              <div className="flex flex-col">
+                <span className="text-on-surface-variant text-xs font-bold uppercase tracking-wider mb-1">Demo</span>
+                <span className="text-indigo-brand font-medium text-sm break-all">{webLink}</span>
+              </div>
+            )}
+            {videoLink && (
+              <div className="flex flex-col">
+                <span className="text-on-surface-variant text-xs font-bold uppercase tracking-wider mb-1">Video</span>
+                <span className="text-indigo-brand font-medium text-sm break-all">{videoLink}</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

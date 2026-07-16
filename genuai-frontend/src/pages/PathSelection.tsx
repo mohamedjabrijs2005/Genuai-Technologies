@@ -8,98 +8,107 @@ export default function PathSelection({ user, onSelect, onLogout }: Props) {
   const name = user?.user?.name || user?.name || 'Candidate';
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', fontFamily: "'Inter','Segoe UI',sans-serif" }}>
+    <div className="min-h-screen bg-background quantum-gradient font-body-base text-on-background relative overflow-hidden">
+      
+      {/* Decorative background orbs */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent-gold/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-brand/10 blur-[120px] rounded-full pointer-events-none" />
+
       {/* Navbar */}
-      <nav style={{ background: '#fff', borderBottom: '1px solid #E5E7EB', padding: '0 40px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <img src="/logo.png" alt="GenuAI" style={{ width: '44px', height: '44px', objectFit: 'contain', flexShrink: 0, filter: 'drop-shadow(0 2px 6px rgba(212,175,55,0.4))' }} />
-          <div>
-            <div style={{ fontWeight: '800', fontSize: '16px', color: '#0F172A', letterSpacing: '-0.3px' }}>GenuAI Technologies</div>
-            <div style={{ fontSize: '11px', color: '#64748B', fontWeight: '500' }}>AI-Powered Recruitment Intelligence Platform</div>
+      <nav className="h-16 border-b border-surface-container/50 bg-surface/80 backdrop-blur-xl px-margin-mobile md:px-margin-desktop flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-sm">
+          <img src="/logo.png" alt="GenuAI" className="w-11 h-11 object-contain gold-glow-subtle" />
+          <div className="hidden sm:block">
+            <div className="font-headline-md text-on-surface text-[16px] leading-tight">GenuAI Technologies</div>
+            <div className="text-[10px] font-bold text-on-surface-variant/80 uppercase tracking-widest">Recruitment Intelligence</div>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'linear-gradient(135deg,#2563EB,#7C3AED)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: '700', fontSize: '14px' }}>{name[0]?.toUpperCase()}</div>
-          <div style={{ fontSize: '14px', color: '#374151', fontWeight: '600' }}>{name}</div>
-          <button onClick={onLogout} style={{ padding: '7px 16px', background: 'transparent', border: '1.5px solid #EF4444', color: '#EF4444', borderRadius: '8px', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>Logout</button>
+        <div className="flex items-center gap-sm">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-brand to-indigo-brand-dark flex items-center justify-center text-white font-bold text-sm shadow-sm">{name[0]?.toUpperCase()}</div>
+          <div className="text-sm font-bold text-on-surface hidden sm:block">{name}</div>
+          <button onClick={onLogout} className="px-sm py-[6px] border border-error-crimson/30 text-error-crimson rounded-lg font-bold text-xs hover:bg-error-crimson/10 transition-colors ml-sm">Logout</button>
         </div>
       </nav>
 
       {/* Hero */}
-      <div style={{ maxWidth: '960px', margin: '0 auto', padding: '72px 24px 40px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '56px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: '20px', padding: '6px 16px', marginBottom: '24px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2563EB', display: 'inline-block' }} />
-            <span style={{ color: '#2563EB', fontSize: '13px', fontWeight: '600' }}>Welcome, {name}</span>
+      <div className="max-w-[960px] mx-auto px-margin-mobile md:px-margin-desktop py-xl relative z-10">
+        <div className="text-center mb-xl animate-[fadeIn_0.5s_ease]">
+          <div className="inline-flex items-center gap-2 bg-indigo-brand/10 border border-indigo-brand/20 rounded-full px-sm py-[6px] mb-md shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-indigo-brand animate-pulse"></span>
+            <span className="text-[11px] font-bold text-indigo-brand uppercase tracking-wider">Welcome, {name}</span>
           </div>
-          <h1 style={{ fontSize: '40px', fontWeight: '900', color: '#0F172A', margin: '0 0 16px', letterSpacing: '-1px', lineHeight: '1.15' }}>Choose Your Path</h1>
-          <p style={{ fontSize: '16px', color: '#64748B', maxWidth: '480px', margin: '0 auto', lineHeight: '1.7' }}>Select how you'd like to use the GenuAI platform today</p>
+          <h1 className="text-display-md font-display-md text-on-surface mb-xs hero-title-weight">Choose Your Path</h1>
+          <p className="text-body-lg text-on-surface-variant max-w-lg mx-auto leading-relaxed">Select how you'd like to use the GenuAI platform today.</p>
         </div>
 
         {/* Cards — 2x2 Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-lg">
 
           {/* 1. Practice Path */}
           <div
             onMouseEnter={() => setHovered('practice')}
             onMouseLeave={() => setHovered(null)}
             onClick={() => onSelect('practice')}
-            style={{ background: hovered === 'practice' ? 'linear-gradient(135deg,#2563EB,#7C3AED)' : '#fff', border: hovered === 'practice' ? '2px solid transparent' : '2px solid #E5E7EB', borderRadius: '24px', padding: '32px 28px', cursor: 'pointer', transition: 'all 0.25s ease', boxShadow: hovered === 'practice' ? '0 20px 60px rgba(37,99,235,0.25)' : '0 2px 12px rgba(0,0,0,0.06)', transform: hovered === 'practice' ? 'translateY(-4px)' : 'none' }}
+            className={`glass p-lg rounded-[24px] cursor-pointer transition-all duration-300 transform ${hovered === 'practice' ? '-translate-y-2 ring-2 ring-indigo-brand/50 shadow-2xl bg-indigo-brand/5' : 'hover:shadow-xl border border-surface-container'}`}
           >
-            <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: hovered === 'practice' ? 'rgba(255,255,255,0.2)' : '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', overflow: 'hidden' }}>
-              <img src="/icons/cat_english.png" alt="Practice" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode: hovered === 'practice' ? 'normal' : 'multiply', opacity: hovered === 'practice' ? 0.9 : 1 }} />
+            <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-md transition-colors ${hovered === 'practice' ? 'bg-indigo-brand text-white shadow-lg shadow-indigo-brand/30' : 'bg-surface-bright text-indigo-brand border border-surface-container'}`}>
+              <span className="material-symbols-outlined text-3xl">psychology</span>
             </div>
-            <h2 style={{ fontSize: '20px', fontWeight: '800', color: hovered === 'practice' ? '#fff' : '#0F172A', margin: '0 0 10px', letterSpacing: '-0.4px' }}>Practice Path</h2>
-            <p style={{ fontSize: '13px', color: hovered === 'practice' ? 'rgba(255,255,255,0.8)' : '#64748B', lineHeight: '1.7', margin: '0 0 20px' }}>Build skills at your own pace with AI-powered tools, mock interviews, and resume builders.</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <h2 className="text-headline-sm font-headline-sm text-on-surface mb-xs">Practice Path</h2>
+            <p className="text-body-base text-on-surface-variant mb-md leading-relaxed min-h-[48px]">Build skills at your own pace with AI-powered tools, mock interviews, and inclusive learning.</p>
+            
+            <div className="flex flex-col gap-xs mb-lg">
               {[
-                {text: 'AI Mock Interview', icon: '/icons/ai_mock_interview.png'},
-                {text: 'Skill Practice', icon: '/icons/skill_test.png'},
-                {text: 'Resume Builder', icon: '/icons/resume_gen.png'},
-                {text: 'Cover Letter', icon: '/icons/cover_letter.png'},
-                {text: 'Inclusive Learning', icon: '/icons/learning_brain.png'},
-                {text: 'Progress Tracker', icon: '/icons/cat_logical.png'}
+                {text: 'AI Mock Interview', icon: 'smart_toy'},
+                {text: 'Skill Practice', icon: 'code'},
+                {text: 'Resume Builder', icon: 'description'},
+                {text: 'Progress Tracker', icon: 'monitoring'}
               ].map((item, i) => (
-                <div key={i} style={{ background: hovered === 'practice' ? 'rgba(255,255,255,0.15)' : '#F8FAFC', borderRadius: '8px', padding: '7px 12px', fontSize: '12px', fontWeight: '600', color: hovered === 'practice' ? '#fff' : '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <img src={item.icon} alt="" style={{width:"14px", height:"14px", borderRadius:"2px"}} />{item.text}
+                <div key={i} className={`rounded-lg px-sm py-2 text-sm font-bold flex items-center gap-sm transition-colors ${hovered === 'practice' ? 'bg-white/60 text-indigo-brand' : 'bg-surface-bright text-on-surface-variant border border-surface-container/50'}`}>
+                  <span className="material-symbols-outlined text-[18px]">{item.icon}</span>{item.text}
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ flex: 1, height: '2px', background: hovered === 'practice' ? 'rgba(255,255,255,0.3)' : '#E5E7EB' }} />
-              <span style={{ fontSize: '13px', fontWeight: '700', color: hovered === 'practice' ? '#fff' : '#2563EB' }}>Start Learning →</span>
+            
+            <div className="flex items-center gap-sm mt-auto">
+              <div className={`flex-1 h-[2px] transition-colors ${hovered === 'practice' ? 'bg-indigo-brand/30' : 'bg-surface-container'}`} />
+              <span className={`text-sm font-bold flex items-center gap-1 transition-colors ${hovered === 'practice' ? 'text-indigo-brand' : 'text-on-surface-variant'}`}>
+                Start Learning <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </span>
             </div>
           </div>
 
-          {/* 2. Search Path (middle) */}
+          {/* 2. Search Path */}
           <div
             onMouseEnter={() => setHovered('search')}
             onMouseLeave={() => setHovered(null)}
             onClick={() => onSelect('search')}
-            style={{ background: hovered === 'search' ? 'linear-gradient(135deg,#F59E0B,#EF4444)' : '#fff', border: hovered === 'search' ? '2px solid transparent' : '2px solid #E5E7EB', borderRadius: '24px', padding: '32px 28px', cursor: 'pointer', transition: 'all 0.25s ease', boxShadow: hovered === 'search' ? '0 20px 60px rgba(245,158,11,0.3)' : '0 2px 12px rgba(0,0,0,0.06)', transform: hovered === 'search' ? 'translateY(-4px)' : 'none' }}
+            className={`glass p-lg rounded-[24px] cursor-pointer transition-all duration-300 transform ${hovered === 'search' ? '-translate-y-2 ring-2 ring-accent-gold/50 shadow-2xl bg-accent-gold/5' : 'hover:shadow-xl border border-surface-container'}`}
           >
-            <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: hovered === 'search' ? 'rgba(255,255,255,0.2)' : '#FFFBEB', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', overflow: 'hidden' }}>
-              <img src="/icons/icon_globe.png" alt="Search" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode: hovered === 'search' ? 'normal' : 'multiply', opacity: hovered === 'search' ? 0.9 : 1 }} />
+            <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-md transition-colors ${hovered === 'search' ? 'bg-accent-gold text-on-tertiary shadow-lg shadow-accent-gold/30' : 'bg-surface-bright text-accent-gold border border-surface-container'}`}>
+              <span className="material-symbols-outlined text-3xl">public</span>
             </div>
-            <h2 style={{ fontSize: '20px', fontWeight: '800', color: hovered === 'search' ? '#fff' : '#0F172A', margin: '0 0 10px', letterSpacing: '-0.4px' }}>Search Hub</h2>
-            <p style={{ fontSize: '13px', color: hovered === 'search' ? 'rgba(255,255,255,0.8)' : '#64748B', lineHeight: '1.7', margin: '0 0 20px' }}>Explore jobs, connect with professionals, participate in hackathons, and stay updated with the latest news.</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <h2 className="text-headline-sm font-headline-sm text-on-surface mb-xs">Search Hub</h2>
+            <p className="text-body-base text-on-surface-variant mb-md leading-relaxed min-h-[48px]">Explore jobs, connect with professionals, participate in hackathons, and follow tech news.</p>
+            
+            <div className="flex flex-col gap-xs mb-lg">
               {[
-                {text: 'Professional Network', icon: '/icons/cat_english.png'},
-                {text: 'Global Job Board', icon: '/icons/icon_globe.png'},
-                {text: 'Competitions & Events', icon: '/icons/icon_hackathon.png'},
-                {text: 'PM Internships', icon: '/icons/learning_brain.png'},
-                {text: 'Tech & Company News', icon: '/icons/cat_logical.png'},
-                {text: 'Instant Connect', icon: '/icons/svar_mic.png'}
+                {text: 'Professional Network', icon: 'hub'},
+                {text: 'Global Job Board', icon: 'work'},
+                {text: 'Competitions & Events', icon: 'emoji_events'},
+                {text: 'Instant Connect', icon: 'forum'}
               ].map((item, i) => (
-                <div key={i} style={{ background: hovered === 'search' ? 'rgba(255,255,255,0.15)' : '#FFF7ED', borderRadius: '8px', padding: '7px 12px', fontSize: '12px', fontWeight: '600', color: hovered === 'search' ? '#fff' : '#92400E', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <img src={item.icon} alt="" style={{width:"14px", height:"14px", borderRadius:"2px"}} />{item.text}
+                <div key={i} className={`rounded-lg px-sm py-2 text-sm font-bold flex items-center gap-sm transition-colors ${hovered === 'search' ? 'bg-white/60 text-accent-gold' : 'bg-surface-bright text-on-surface-variant border border-surface-container/50'}`}>
+                  <span className="material-symbols-outlined text-[18px]">{item.icon}</span>{item.text}
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ flex: 1, height: '2px', background: hovered === 'search' ? 'rgba(255,255,255,0.3)' : '#E5E7EB' }} />
-              <span style={{ fontSize: '13px', fontWeight: '700', color: hovered === 'search' ? '#fff' : '#F59E0B' }}>Enter Search Hub →</span>
+            
+            <div className="flex items-center gap-sm mt-auto">
+              <div className={`flex-1 h-[2px] transition-colors ${hovered === 'search' ? 'bg-accent-gold/30' : 'bg-surface-container'}`} />
+              <span className={`text-sm font-bold flex items-center gap-1 transition-colors ${hovered === 'search' ? 'text-accent-gold' : 'text-on-surface-variant'}`}>
+                Enter Search Hub <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </span>
             </div>
           </div>
 
@@ -108,30 +117,32 @@ export default function PathSelection({ user, onSelect, onLogout }: Props) {
             onMouseEnter={() => setHovered('test')}
             onMouseLeave={() => setHovered(null)}
             onClick={() => onSelect('test')}
-            style={{ background: hovered === 'test' ? 'linear-gradient(135deg,#059669,#0891B2)' : '#fff', border: hovered === 'test' ? '2px solid transparent' : '2px solid #E5E7EB', borderRadius: '24px', padding: '32px 28px', cursor: 'pointer', transition: 'all 0.25s ease', boxShadow: hovered === 'test' ? '0 20px 60px rgba(5,150,105,0.25)' : '0 2px 12px rgba(0,0,0,0.06)', transform: hovered === 'test' ? 'translateY(-4px)' : 'none' }}
+            className={`glass p-lg rounded-[24px] cursor-pointer transition-all duration-300 transform ${hovered === 'test' ? '-translate-y-2 ring-2 ring-success-emerald/50 shadow-2xl bg-success-emerald/5' : 'hover:shadow-xl border border-surface-container'}`}
           >
-            <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: hovered === 'test' ? 'rgba(255,255,255,0.2)' : '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', overflow: 'hidden' }}>
-              <img src="/icons/icon_stopwatch.png" alt="Test" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode: hovered === 'test' ? 'normal' : 'multiply', opacity: hovered === 'test' ? 0.9 : 1 }} />
+            <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-md transition-colors ${hovered === 'test' ? 'bg-success-emerald text-white shadow-lg shadow-success-emerald/30' : 'bg-surface-bright text-success-emerald border border-surface-container'}`}>
+              <span className="material-symbols-outlined text-3xl">timer</span>
             </div>
-            <h2 style={{ fontSize: '20px', fontWeight: '800', color: hovered === 'test' ? '#fff' : '#0F172A', margin: '0 0 10px', letterSpacing: '-0.4px' }}>Assessment Test</h2>
-            <p style={{ fontSize: '13px', color: hovered === 'test' ? 'rgba(255,255,255,0.8)' : '#64748B', lineHeight: '1.7', margin: '0 0 20px' }}>Take the official GenuAI recruitment assessment — timed, proctored, and fully evaluated by AI.</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <h2 className="text-headline-sm font-headline-sm text-on-surface mb-xs">Assessment Test</h2>
+            <p className="text-body-base text-on-surface-variant mb-md leading-relaxed min-h-[48px]">Take the official GenuAI recruitment assessment — timed, proctored, and evaluated by AI.</p>
+            
+            <div className="flex flex-col gap-xs mb-lg">
               {[
-                {text: 'Verified Identity', icon: '/icons/icon_globe.png'},
-                {text: 'Profile & Resume', icon: '/icons/resume_gen.png'},
-                {text: 'GenuAI Skill Test', icon: '/icons/skill_test.png'},
-                {text: 'SVAR Verbal', icon: '/icons/svar_mic.png'},
-                {text: 'Hackathon', icon: '/icons/icon_hackathon.png'},
-                {text: 'AI Interview', icon: '/icons/ai_mock_interview.png'}
+                {text: 'Verified Identity', icon: 'verified_user'},
+                {text: 'GenuAI Skill Test', icon: 'quiz'},
+                {text: 'SVAR Verbal', icon: 'record_voice_over'},
+                {text: 'AI Interview', icon: 'videocam'}
               ].map((item, i) => (
-                <div key={i} style={{ background: hovered === 'test' ? 'rgba(255,255,255,0.15)' : '#F8FAFC', borderRadius: '8px', padding: '7px 12px', fontSize: '12px', fontWeight: '600', color: hovered === 'test' ? '#fff' : '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <img src={item.icon} alt="" style={{width:"14px", height:"14px", borderRadius:"2px"}} />{item.text}
+                <div key={i} className={`rounded-lg px-sm py-2 text-sm font-bold flex items-center gap-sm transition-colors ${hovered === 'test' ? 'bg-white/60 text-success-emerald' : 'bg-surface-bright text-on-surface-variant border border-surface-container/50'}`}>
+                  <span className="material-symbols-outlined text-[18px]">{item.icon}</span>{item.text}
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ flex: 1, height: '2px', background: hovered === 'test' ? 'rgba(255,255,255,0.3)' : '#E5E7EB' }} />
-              <span style={{ fontSize: '13px', fontWeight: '700', color: hovered === 'test' ? '#fff' : '#059669' }}>Begin Assessment →</span>
+            
+            <div className="flex items-center gap-sm mt-auto">
+              <div className={`flex-1 h-[2px] transition-colors ${hovered === 'test' ? 'bg-success-emerald/30' : 'bg-surface-container'}`} />
+              <span className={`text-sm font-bold flex items-center gap-1 transition-colors ${hovered === 'test' ? 'text-success-emerald' : 'text-on-surface-variant'}`}>
+                Begin Assessment <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </span>
             </div>
           </div>
 
@@ -140,34 +151,41 @@ export default function PathSelection({ user, onSelect, onLogout }: Props) {
             onMouseEnter={() => setHovered('career')}
             onMouseLeave={() => setHovered(null)}
             onClick={() => onSelect('career-profile')}
-            style={{ background: hovered === 'career' ? 'linear-gradient(135deg,#0F172A,#334155)' : '#fff', border: hovered === 'career' ? '2px solid transparent' : '2px solid #E5E7EB', borderRadius: '24px', padding: '32px 28px', cursor: 'pointer', transition: 'all 0.25s ease', boxShadow: hovered === 'career' ? '0 20px 60px rgba(15,23,42,0.25)' : '0 2px 12px rgba(0,0,0,0.06)', transform: hovered === 'career' ? 'translateY(-4px)' : 'none' }}
+            className={`glass p-lg rounded-[24px] cursor-pointer transition-all duration-300 transform ${hovered === 'career' ? '-translate-y-2 ring-2 ring-indigo-brand-dark/50 shadow-2xl bg-indigo-brand-dark/5' : 'hover:shadow-xl border border-surface-container'}`}
           >
-            <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: hovered === 'career' ? 'rgba(255,255,255,0.2)' : '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', overflow: 'hidden' }}>
-              <img src="/icons/resume_gen.png" alt="Career" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode: hovered === 'career' ? 'normal' : 'multiply', opacity: hovered === 'career' ? 0.9 : 1 }} />
+            <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-md transition-colors ${hovered === 'career' ? 'bg-indigo-brand-dark text-white shadow-lg shadow-indigo-brand-dark/30' : 'bg-surface-bright text-indigo-brand-dark border border-surface-container'}`}>
+              <span className="material-symbols-outlined text-3xl">badge</span>
             </div>
-            <h2 style={{ fontSize: '20px', fontWeight: '800', color: hovered === 'career' ? '#fff' : '#0F172A', margin: '0 0 10px', letterSpacing: '-0.4px' }}>Career Profile Hub</h2>
-            <p style={{ fontSize: '13px', color: hovered === 'career' ? 'rgba(255,255,255,0.8)' : '#64748B', lineHeight: '1.7', margin: '0 0 20px' }}>Build and manage your professional identity with AI-optimized resumes and cover letters.</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <h2 className="text-headline-sm font-headline-sm text-on-surface mb-xs">Career Profile Hub</h2>
+            <p className="text-body-base text-on-surface-variant mb-md leading-relaxed min-h-[48px]">Build and manage your professional identity with AI-optimized resumes and portfolio manager.</p>
+            
+            <div className="flex flex-col gap-xs mb-lg">
               {[
-                {text: 'AI Resume Builder', icon: '/icons/resume_gen.png'},
-                {text: 'Cover Letter Generator', icon: '/icons/cover_letter.png'},
-                {text: 'Portfolio Manager', icon: '/icons/cat_logical.png'},
-                {text: 'ATS Optimization', icon: '/icons/learning_brain.png'}
+                {text: 'AI Resume Builder', icon: 'document_scanner'},
+                {text: 'Cover Letter Gen', icon: 'edit_document'},
+                {text: 'Portfolio Manager', icon: 'folder_special'},
+                {text: 'ATS Optimization', icon: 'query_stats'}
               ].map((item, i) => (
-                <div key={i} style={{ background: hovered === 'career' ? 'rgba(255,255,255,0.15)' : '#F8FAFC', borderRadius: '8px', padding: '7px 12px', fontSize: '12px', fontWeight: '600', color: hovered === 'career' ? '#fff' : '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <img src={item.icon} alt="" style={{width:"14px", height:"14px", borderRadius:"2px"}} />{item.text}
+                <div key={i} className={`rounded-lg px-sm py-2 text-sm font-bold flex items-center gap-sm transition-colors ${hovered === 'career' ? 'bg-white/60 text-indigo-brand-dark' : 'bg-surface-bright text-on-surface-variant border border-surface-container/50'}`}>
+                  <span className="material-symbols-outlined text-[18px]">{item.icon}</span>{item.text}
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ flex: 1, height: '2px', background: hovered === 'career' ? 'rgba(255,255,255,0.3)' : '#E5E7EB' }} />
-              <span style={{ fontSize: '13px', fontWeight: '700', color: hovered === 'career' ? '#fff' : '#475569' }}>Manage Profile →</span>
+            
+            <div className="flex items-center gap-sm mt-auto">
+              <div className={`flex-1 h-[2px] transition-colors ${hovered === 'career' ? 'bg-indigo-brand-dark/30' : 'bg-surface-container'}`} />
+              <span className={`text-sm font-bold flex items-center gap-1 transition-colors ${hovered === 'career' ? 'text-indigo-brand-dark' : 'text-on-surface-variant'}`}>
+                Manage Profile <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </span>
             </div>
           </div>
+
         </div>
 
         {/* Footer note */}
-        <p style={{ textAlign: 'center', color: '#94A3B8', fontSize: '13px', marginTop: '40px' }}>© 2025 GenuAI Technologies · AI-Powered Recruitment Intelligence Platform</p>
+        <p className="text-center text-[11px] font-bold text-on-surface-variant/60 uppercase tracking-widest mt-xl">
+          © 2025 GenuAI Technologies · AI-Powered Recruitment Intelligence
+        </p>
       </div>
     </div>
   );

@@ -49,52 +49,170 @@ export default function Module3_SVARTest({ user, role, onComplete, onTerminate }
   };
   const startTest = async () => { await startCamera(); setPhase('test'); };
   if(phase==='intro') return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', padding:'32px' }}>
-      <div style={{ maxWidth:'700px', margin:'0 auto', background:'#fff', borderRadius:'24px', border:'1px solid #E2E8F0', overflow:'hidden', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
-        <div style={{ background:'linear-gradient(135deg,#F59E0B,#EF4444)', padding:'28px 36px' }}>
-          <div style={{ display:'flex', alignItems:'center', gap:'16px' }}><span style={{ fontSize:'36px' }}>🎙️</span><div><div style={{ color:'#fff', fontSize:'20px', fontWeight:'800' }}>Module 3: SVAR Verbal Assessment</div><div style={{ color:'rgba(255,255,255,0.9)', fontSize:'13px', marginTop:'4px' }}>Speaking, Listening and Language Fluency Test</div></div></div>
-          <div style={{ display:'flex', gap:'8px', marginTop:'16px' }}>{['Profile','Skill Test','SVAR','Hackathon','Interview','Results'].map((m,i)=><div key={i} style={{ flex:1, height:'4px', borderRadius:'4px', background:i<=2?'#fff':'rgba(255,255,255,0.2)' }}/>)}</div>
+    <div className="min-h-screen bg-background quantum-gradient p-margin-mobile md:p-margin-desktop relative overflow-hidden flex items-center justify-center">
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-warning/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="glass max-w-3xl w-full mx-auto rounded-xxxl overflow-hidden shadow-sm border border-surface-container animate-[slideUp_0.4s_ease]">
+        <div className="bg-gradient-to-r from-warning to-error p-xl">
+          <div className="flex items-center gap-md">
+            <span className="text-4xl drop-shadow-md">🎙️</span>
+            <div>
+              <div className="text-white text-xl font-black drop-shadow-sm">Module 3: SVAR Verbal Assessment</div>
+              <div className="text-white/80 text-sm font-semibold mt-1">Speaking, Listening and Language Fluency Test</div>
+            </div>
+          </div>
+          <div className="flex gap-xs mt-lg">{['Profile','Skill Test','SVAR','Hackathon','Interview','Results'].map((m,i)=><div key={i} className={`flex-1 h-1.5 rounded-full ${i<=2?'bg-white':'bg-white/20'}`}/>)}</div>
         </div>
-        <div style={{ padding:'36px' }}>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'24px' }}>{TASKS.map((t,i)=><div key={i} style={{ background:'#F8FAFC', borderRadius:'12px', padding:'16px', border:'1px solid #E2E8F0' }}><div style={{ color:'#F59E0B', fontWeight:'700', fontSize:'12px', marginBottom:'4px' }}>Task {i+1} — {t.type.toUpperCase()}</div><div style={{ color:'#0F172A', fontSize:'13px', fontWeight:'600' }}>{t.title}</div><div style={{ color:'#64748B', fontSize:'12px', marginTop:'4px' }}>{t.duration}s</div></div>)}</div>
-          <div style={{ background:'#F59E0B11', borderRadius:'12px', padding:'16px', marginBottom:'24px', border:'1px solid #F59E0B33' }}><div style={{ color:'#F59E0B', fontWeight:'700', fontSize:'13px', marginBottom:'8px' }}>Rules</div><div style={{ color:'#64748B', fontSize:'13px', lineHeight:'1.8' }}>Microphone and camera must be ON. Speak clearly at natural pace. Do not switch tabs. 3 violations means auto termination.</div></div>
-          <button onClick={startTest} style={{ width:'100%', padding:'16px', background:'linear-gradient(135deg,#F59E0B,#EF4444)', color:'#fff', border:'none', borderRadius:'14px', fontWeight:'800', fontSize:'16px', cursor:'pointer', boxShadow:'0 4px 12px rgba(245,158,11,0.2)' }}>Start SVAR Test</button>
+        <div className="p-xl md:p-xxl bg-white/50 backdrop-blur-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-sm mb-xl">
+            {TASKS.map((t,i)=>(
+              <div key={i} className="bg-surface-bright rounded-2xl p-md border border-surface-container">
+                <div className="text-warning-dark font-black text-xs uppercase tracking-wide mb-1">Task {i+1} — {t.type}</div>
+                <div className="text-on-surface text-sm font-bold">{t.title}</div>
+                <div className="text-on-surface-variant text-xs mt-1 font-medium flex items-center gap-xs"><span className="material-symbols-outlined" style={{fontSize:'14px'}}>timer</span> {t.duration}s</div>
+              </div>
+            ))}
+          </div>
+          <div className="bg-warning/5 rounded-2xl p-md mb-xl border border-warning/20">
+            <p className="text-warning-dark font-black text-sm mb-xs flex items-center gap-xs"><span className="material-symbols-outlined">warning</span> Rules</p>
+            <div className="text-on-surface-variant text-sm font-medium leading-relaxed">
+              Microphone and camera must be ON. Speak clearly at natural pace. Do not switch tabs. <span className="text-error font-bold">3 violations</span> means auto termination.
+            </div>
+          </div>
+          <button onClick={startTest} className="w-full py-md bg-gradient-to-r from-warning to-error text-white rounded-xl font-bold text-body-base hover:shadow-[0_4px_15px_rgba(245,158,11,0.4)] hover:scale-[1.01] transition-all">Start SVAR Test →</button>
         </div>
       </div>
     </div>
   );
   if(phase==='result') return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', padding:'32px' }}>
-      <div style={{ maxWidth:'600px', margin:'0 auto', background:'#fff', borderRadius:'24px', border:'1px solid #E2E8F0', padding:'40px', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
-        <div style={{ textAlign:'center', marginBottom:'28px' }}><div style={{ fontSize:'56px' }}>📊</div><div style={{ color:'#0F172A', fontSize:'24px', fontWeight:'800', marginTop:'12px' }}>SVAR Test Complete!</div></div>
-        <div style={{ display:'grid', gap:'12px' }}>{scores.map((sc,i)=><div key={i} style={{ background:'#F8FAFC', borderRadius:'12px', padding:'16px', display:'flex', justifyContent:'space-between', alignItems:'center', border:'1px solid #E2E8F0' }}><div><div style={{ color:'#0F172A', fontWeight:'600', fontSize:'14px' }}>{sc.task}</div><div style={{ color:'#64748B', fontSize:'12px' }}>{sc.type}</div></div><div style={{ fontSize:'22px', fontWeight:'900', color:sc.score>=70?'#00B87C':sc.score>=50?'#F59E0B':'#EF4444' }}>{sc.score}%</div></div>)}</div>
-        <div style={{ background:'#F8FAFC', borderRadius:'14px', padding:'24px', marginTop:'20px', textAlign:'center', border:'1px solid #E2E8F0' }}><div style={{ color:'#64748B', fontSize:'13px' }}>Overall SVAR Score</div><div style={{ color:'#F59E0B', fontSize:'48px', fontWeight:'900' }}>{Math.round(scores.reduce((a,s)=>a+s.score,0)/Math.max(scores.length,1))}%</div></div>
+    <div className="min-h-screen bg-background quantum-gradient p-margin-mobile md:p-margin-desktop relative overflow-hidden flex items-center justify-center">
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-warning/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="glass max-w-2xl w-full mx-auto rounded-xxxl p-xl md:p-xxl border border-surface-container shadow-sm animate-[slideUp_0.4s_ease] relative z-10">
+        <div className="text-center mb-xl">
+          <div className="text-6xl drop-shadow-sm mb-sm">📊</div>
+          <h2 className="text-headline-sm font-headline-sm m-0 text-on-surface">SVAR Test Complete!</h2>
+        </div>
+        <div className="grid gap-sm">
+          {scores.map((sc,i)=>(
+            <div key={i} className="bg-surface-bright rounded-2xl p-md border border-surface-container flex justify-between items-center transition-all hover:border-surface-container-high">
+              <div>
+                <div className="text-on-surface font-bold text-sm">{sc.task}</div>
+                <div className="text-on-surface-variant text-xs font-medium uppercase tracking-wider">{sc.type}</div>
+              </div>
+              <div className={`text-2xl font-black ${sc.score>=70?'text-success':sc.score>=50?'text-warning':'text-error'}`}>{sc.score}%</div>
+            </div>
+          ))}
+        </div>
+        <div className="bg-surface-bright rounded-2xl p-xl mt-lg text-center border border-surface-container">
+          <div className="text-on-surface-variant text-xs font-bold uppercase tracking-wider mb-1">Overall SVAR Score</div>
+          <div className="text-warning-dark text-5xl font-black drop-shadow-sm">
+            {Math.round(scores.reduce((a,s)=>a+s.score,0)/Math.max(scores.length,1))}%
+          </div>
+        </div>
       </div>
     </div>
   );
   return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', display:'flex', flexDirection:'column' }}>
-      <div style={{ background:'#fff', borderBottom:'1px solid #E2E8F0', padding:'12px 24px', display:'flex', justifyContent:'space-between', alignItems:'center', boxShadow:'0 1px 4px rgba(0,0,0,0.02)' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'12px' }}><span style={{ fontSize:'20px' }}>🎙️</span><div><div style={{ color:'#0F172A', fontWeight:'700', fontSize:'14px' }}>SVAR Task {taskIdx+1}/{TASKS.length}: {task.title}</div><div style={{ color:'#64748B', fontSize:'12px' }}>{task.type} task</div></div></div>
-        <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>{violations>0&&<div style={{ color:'#EF4444', fontSize:'12px', fontWeight:'700' }}>{violations}/3 violations</div>}<div style={{ background:'#F8FAFC', borderRadius:'10px', padding:'8px 16px', border:'2px solid '+timerColor }}><span style={{ color:timerColor, fontWeight:'800', fontSize:'20px', fontFamily:'monospace' }}>{fmt(timeLeft)}</span></div></div>
-      </div>
-      <div style={{ display:'flex', flex:1 }}>
-        <div style={{ flex:1, padding:'28px' }}>
-          <div style={{ background:'#fff', borderRadius:'20px', padding:'32px', border:'1px solid #E2E8F0', boxShadow:'0 4px 12px rgba(0,0,0,0.02)' }}>
-            <div style={{ background:'#F59E0B22', borderRadius:'10px', padding:'12px 16px', marginBottom:'20px', border:'1px solid #F59E0B44' }}><div style={{ color:'#F59E0B', fontSize:'13px', fontWeight:'700' }}>{task.instruction}</div></div>
-            {task.audioText && <div style={{ marginBottom:'20px' }}><button onClick={()=>playAudio(task.audioText)} disabled={isPlaying} style={{ display:'flex', alignItems:'center', gap:'10px', background:isPlaying?'#E2E8F0':'linear-gradient(135deg,#667EEA,#764BA2)', color:isPlaying?'#64748B':'#fff', border:'none', borderRadius:'12px', padding:'12px 20px', cursor:isPlaying?'not-allowed':'pointer', fontWeight:'700', fontSize:'14px' }}>{isPlaying?'Playing...':'Play Audio'}</button></div>}
-            {task.passage && <div style={{ background:'#F8FAFC', borderRadius:'12px', padding:'20px', marginBottom:'20px', border:'1px solid #E2E8F0' }}><div style={{ color:'#0F172A', fontSize:'15px', lineHeight:'1.8' }}>{task.passage}</div></div>}
-            <div style={{ color:'#0F172A', fontSize:'16px', fontWeight:'600', marginBottom:'20px' }}>{task.question}</div>
-            {task.type==='listening' && task.options.length>0 && <div style={{ display:'grid', gap:'10px' }}>{task.options.map((opt,i)=>{ const letter=String.fromCharCode(65+i); const sel=selected===letter; return <button key={i} onClick={()=>setSelected(letter)} style={{ background:sel?'#667EEA22':'#F8FAFC', border:sel?'2px solid #667EEA':'1px solid #E2E8F0', borderRadius:'12px', padding:'14px 18px', color:sel?'#667EEA':'#1E293B', textAlign:'left', cursor:'pointer', fontSize:'14px', fontWeight:sel?'700':'500', display:'flex', alignItems:'center', gap:'12px' }}><span style={{ width:'28px', height:'28px', borderRadius:'8px', background:sel?'#667EEA':'#E2E8F0', color:sel?'#fff':'#64748B', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'700', fontSize:'13px', flexShrink:0 }}>{letter}</span>{opt}</button>; })}</div>}
-            {(task.type==='repeat'||task.type==='speaking'||task.type==='fluency') && <div style={{ marginTop:'16px' }}>{!isRecording&&!recorded&&<button onClick={startRecording} style={{ padding:'12px 24px', background:'linear-gradient(135deg,#EF4444,#DC2626)', color:'#fff', border:'none', borderRadius:'12px', fontWeight:'700', cursor:'pointer', fontSize:'15px' }}>Start Recording</button>}{isRecording&&<button onClick={stopRecording} style={{ padding:'12px 24px', background:'#FEE2E2', color:'#EF4444', border:'2px solid #EF4444', borderRadius:'12px', fontWeight:'700', cursor:'pointer', fontSize:'15px' }}>Stop Recording</button>}{recorded&&<div style={{ color:'#00B87C', fontWeight:'700', fontSize:'14px' }}>Recording saved</div>}</div>}
-            <button onClick={handleNext} style={{ marginTop:'24px', padding:'12px 28px', background:'linear-gradient(135deg,#F59E0B,#EF4444)', color:'#fff', border:'none', borderRadius:'12px', fontWeight:'700', cursor:'pointer', fontSize:'14px' }}>{taskIdx<TASKS.length-1?'Next Task':'Submit Test'}</button>
+    <div className="h-screen bg-background quantum-gradient flex flex-col relative overflow-hidden">
+      <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-warning/5 blur-[120px] rounded-full pointer-events-none" />
+
+      {/* Header */}
+      <div className="glass border-b border-surface-container flex justify-between items-center p-sm px-lg shadow-sm z-10 shrink-0">
+        <div className="flex items-center gap-sm">
+          <span className="text-3xl drop-shadow-md">🎙️</span>
+          <div>
+            <div className="text-on-surface font-bold text-sm">SVAR Task {taskIdx+1}/{TASKS.length}: <span className="text-warning-dark">{task.title}</span></div>
+            <div className="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">{task.type} task</div>
           </div>
         </div>
-        <div style={{ width:'170px', background:'#fff', borderLeft:'1px solid #E2E8F0', padding:'16px', display:'flex', flexDirection:'column', gap:'12px' }}>
-          <div style={{ fontSize:'11px', color:'#64748B', fontWeight:'700', textAlign:'center' }}>PROCTORING</div>
-          <div style={{ borderRadius:'12px', overflow:'hidden', background:'#F8FAFC', position:'relative' }}><video ref={videoRef} autoPlay muted playsInline style={{ width:'100%', objectFit:'cover' }}/>{!cameraOn&&<div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}><span style={{ fontSize:'24px' }}>📷</span></div>}</div>
-          <div style={{ background:'#F8FAFC', borderRadius:'8px', padding:'10px', border:'1px solid #E2E8F0' }}><div style={{ color:'#64748B', fontSize:'11px' }}>Violations</div><div style={{ color:violations===0?'#00B87C':'#EF4444', fontWeight:'800', fontSize:'20px' }}>{violations}/3</div></div>
-          <div style={{ background:'#F8FAFC', borderRadius:'8px', padding:'10px', border:'1px solid #E2E8F0' }}><div style={{ color:'#64748B', fontSize:'11px' }}>Task</div><div style={{ color:'#F59E0B', fontWeight:'700', fontSize:'13px' }}>{taskIdx+1}/{TASKS.length}</div></div>
+        <div className="flex items-center gap-md">
+          {violations>0 && (
+            <div className="bg-error/10 border border-error/30 text-error px-sm py-1 rounded-lg text-xs font-bold animate-[pulse_2s_ease-in-out_infinite]">
+              {violations}/3 Violations
+            </div>
+          )}
+          <div className="bg-surface-bright rounded-xl px-md py-xs border-2" style={{ borderColor: timerColor }}>
+            <span className="font-mono font-black text-xl" style={{ color: timerColor }}>{fmt(timeLeft)}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Layout */}
+      <div className="flex flex-1 overflow-hidden z-10">
+        <div className="flex-1 p-lg md:p-xl overflow-y-auto custom-scrollbar">
+          <div className="glass rounded-3xl p-xl border border-surface-container shadow-sm animate-[fadeIn_0.3s_ease]">
+            <div className="bg-warning/10 border border-warning/20 rounded-xl p-md mb-xl flex items-center gap-sm">
+              <span className="material-symbols-outlined text-warning-dark">info</span>
+              <div className="text-warning-dark font-bold text-sm">{task.instruction}</div>
+            </div>
+
+            {task.audioText && (
+              <div className="mb-xl">
+                <button onClick={()=>playAudio(task.audioText)} disabled={isPlaying} className={`flex items-center gap-sm px-lg py-sm rounded-xl font-bold text-sm transition-all ${isPlaying ? 'bg-surface-container/50 text-on-surface-variant cursor-not-allowed' : 'bg-gradient-to-r from-indigo-brand to-[#7C3AED] text-white hover:scale-105 shadow-sm hover:shadow-[0_4px_15px_rgba(102,126,234,0.4)]'}`}>
+                  <span className="material-symbols-outlined">{isPlaying ? 'graphic_eq' : 'play_arrow'}</span> {isPlaying ? 'Playing...' : 'Play Audio'}
+                </button>
+              </div>
+            )}
+            
+            {task.passage && (
+              <div className="bg-surface-bright border border-surface-container rounded-2xl p-xl mb-xl relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-2 h-full bg-warning-dark" />
+                <div className="text-on-surface text-lg font-medium leading-relaxed font-serif pl-sm">{task.passage}</div>
+              </div>
+            )}
+            
+            <div className="text-on-surface text-lg font-bold mb-xl">{task.question}</div>
+            
+            {task.type==='listening' && task.options.length>0 && (
+              <div className="grid gap-sm mb-xl">
+                {task.options.map((opt,i)=>{
+                  const letter=String.fromCharCode(65+i);
+                  const sel=selected===letter;
+                  return (
+                    <button key={i} onClick={()=>setSelected(letter)} className={`text-left p-md rounded-2xl border-2 transition-all flex items-center gap-md hover:scale-[1.01] ${sel ? 'bg-indigo-brand/5 border-indigo-brand text-indigo-brand shadow-sm' : 'bg-surface-bright border-surface-container text-on-surface hover:border-surface-container-high'}`}>
+                      <span className={`w-8 h-8 shrink-0 rounded-xl flex items-center justify-center font-black text-sm transition-colors ${sel ? 'bg-indigo-brand text-white' : 'bg-surface-container/50 text-on-surface-variant'}`}>{letter}</span>
+                      <span className={`text-sm ${sel ? 'font-bold' : 'font-medium'}`}>{opt}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+            
+            {(task.type==='repeat'||task.type==='speaking'||task.type==='fluency') && (
+              <div className="mt-md mb-xl flex items-center gap-md bg-surface-bright p-md rounded-2xl border border-surface-container">
+                {!isRecording&&!recorded&&<button onClick={startRecording} className="flex items-center gap-xs px-lg py-sm bg-error text-white rounded-xl font-bold text-sm hover:bg-error/90 hover:scale-105 transition-all shadow-sm"><span className="material-symbols-outlined">mic</span> Start Recording</button>}
+                {isRecording&&<button onClick={stopRecording} className="flex items-center gap-xs px-lg py-sm bg-error/10 text-error border-2 border-error/50 rounded-xl font-bold text-sm hover:bg-error/20 transition-all animate-pulse"><span className="material-symbols-outlined">stop_circle</span> Stop Recording</button>}
+                {recorded&&<div className="flex items-center gap-xs text-success font-bold bg-success/10 px-md py-sm rounded-xl border border-success/30"><span className="material-symbols-outlined">check_circle</span> Recording saved</div>}
+              </div>
+            )}
+            
+            <div className="border-t border-surface-container/50 pt-lg mt-md flex justify-end">
+              <button onClick={handleNext} className="px-xl py-sm bg-gradient-to-r from-warning to-error text-white rounded-xl font-bold text-sm hover:shadow-[0_4px_15px_rgba(245,158,11,0.3)] hover:scale-[1.02] transition-all">
+                {taskIdx<TASKS.length-1 ? 'Next Task →' : 'Submit Test ✓'}
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Proctoring Sidebar */}
+        <div className="w-[220px] glass border-l border-surface-container p-md flex flex-col gap-md shrink-0">
+          <div className="text-on-surface-variant text-[10px] font-black uppercase tracking-widest text-center">Proctoring Active</div>
+          <div className="relative rounded-2xl overflow-hidden bg-black/5 border border-surface-container shadow-inner aspect-[4/3] flex items-center justify-center">
+            <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-cover" />
+            {!cameraOn && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface-bright/90 backdrop-blur-sm p-sm">
+                <div className="text-3xl mb-1">📷</div>
+                <div className="text-error font-bold text-xs text-center">Camera required</div>
+              </div>
+            )}
+          </div>
+          <div className="bg-surface-bright rounded-xl p-sm border border-surface-container text-center">
+            <div className="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-1">Violations</div>
+            <div className={`font-black text-2xl ${violations===0?'text-success':violations===1?'text-warning':'text-error'}`}>{violations}/3</div>
+          </div>
+          <div className="bg-surface-bright rounded-xl p-sm border border-surface-container text-center">
+            <div className="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-1">Task</div>
+            <div className="text-warning-dark font-black text-2xl">{taskIdx+1}<span className="text-on-surface-variant/50 text-sm">/{TASKS.length}</span></div>
+          </div>
         </div>
       </div>
     </div>

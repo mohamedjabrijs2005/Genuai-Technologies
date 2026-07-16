@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 
 const API = import.meta.env.VITE_API_URL;
@@ -166,86 +166,94 @@ export default function AMCATTest({ user, role, assessmentId, onComplete, onTerm
   const timerColor = timeLeft < 60 ? '#EF4444' : timeLeft < 300 ? '#F59E0B' : '#00B87C';
 
   if (loading) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', background:'#F8FAFC', color:'#0F172A', flexDirection:'column', gap:'16px' }}>
-      <p>Loading GenuAI Skill Test...</p>
+    <div className="min-h-screen bg-background quantum-gradient flex flex-col items-center justify-center gap-md">
+      <div className="text-4xl animate-spin">⚙️</div>
+      <p className="text-on-surface font-bold">Loading GenuAI Skill Test...</p>
     </div>
   );
 
   if (phase === 'intro') return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', display:'flex', alignItems:'center', justifyContent:'center', padding:'20px' }}>
-      <div style={{ maxWidth:'600px', width:'100%', background:'#fff', borderRadius:'20px', padding:'40px', border:'1px solid #E2E8F0', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
-        <div style={{ textAlign:'center', marginBottom:'32px' }}>
-          <div style={{ fontSize:'48px', marginBottom:'12px' }}>🎯</div>
-          <h1 style={{ color:'#0F172A', fontSize:'24px', margin:'0 0 8px' }}>GenuAI Skill Assessment</h1>
-          <p style={{ color:'#64748B', fontSize:'14px' }}>Role: {role}</p>
+    <div className="min-h-screen bg-background quantum-gradient p-margin-mobile md:p-margin-desktop relative overflow-hidden flex items-center justify-center">
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent-gold/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-brand/10 blur-[100px] rounded-full pointer-events-none" />
+      
+      <div className="glass max-w-2xl w-full mx-auto rounded-xxxl p-xl md:p-xxl border border-surface-container shadow-sm animate-[slideUp_0.4s_ease] relative z-10">
+        <div className="text-center mb-xl">
+          <div className="text-5xl mb-md drop-shadow-sm">🎯</div>
+          <h1 className="text-headline-sm font-headline-sm text-on-surface m-0 mb-xs">GenuAI Skill Assessment</h1>
+          <p className="text-on-surface-variant text-sm font-semibold uppercase tracking-wider">Role: <span className="text-indigo-brand">{role}</span></p>
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'28px' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-sm mb-xl">
           {SECTIONS_CONFIG.map((s, i) => (
-            <div key={i} style={{ background:'#F8FAFC', borderRadius:'12px', padding:'16px', border:'1px solid #E2E8F0' }}>
-              <div style={{ color:'#667EEA', fontWeight:'700', fontSize:'13px', marginBottom:'4px' }}>Section {i+1}</div>
-              <div style={{ color:'#0F172A', fontSize:'14px', fontWeight:'600' }}>{s.name}</div>
-              <div style={{ color:'#64748B', fontSize:'12px', marginTop:'4px' }}>Timer: {s.duration/60} min</div>
+            <div key={i} className="bg-surface-bright rounded-2xl p-md border border-surface-container flex flex-col justify-center">
+              <div className="text-indigo-brand font-black text-xs uppercase tracking-wide mb-1">Section {i+1}</div>
+              <div className="text-on-surface text-sm font-bold">{s.name}</div>
+              <div className="text-on-surface-variant text-xs mt-1 font-medium flex items-center gap-xs"><span className="material-symbols-outlined" style={{fontSize:'14px'}}>timer</span> {s.duration/60} min</div>
             </div>
           ))}
         </div>
-        <div style={{ background:'#F59E0B11', borderRadius:'12px', padding:'16px', marginBottom:'28px', border:'1px solid rgba(245,158,11,0.2)' }}>
-          <p style={{ color:'#F59E0B', fontWeight:'700', fontSize:'13px', margin:'0 0 8px' }}>Important Rules</p>
-          <div style={{ color:'#64748B', fontSize:'13px', lineHeight:'1.8' }}>
-            Camera must be ON throughout the test<br/>
-            Do NOT switch tabs or windows<br/>
-            Do NOT right-click or copy/paste<br/>
-            3 violations = automatic termination<br/>
-            Each section has its own timer
+        <div className="bg-warning/5 rounded-2xl p-md mb-xl border border-warning/20">
+          <p className="text-warning-dark font-black text-sm mb-xs flex items-center gap-xs"><span className="material-symbols-outlined">warning</span> Important Rules</p>
+          <div className="text-on-surface-variant text-sm font-medium leading-relaxed">
+            <ul className="list-disc pl-5 m-0 space-y-1">
+              <li>Camera must be ON throughout the test</li>
+              <li>Do NOT switch tabs or windows</li>
+              <li>Do NOT right-click or copy/paste</li>
+              <li><span className="text-error font-bold">3 violations</span> = automatic termination</li>
+              <li>Each section has its own timer</li>
+            </ul>
           </div>
         </div>
-        <button onClick={startTest} style={{ width:'100%', padding:'16px', background:'linear-gradient(135deg,#667EEA,#764BA2)', color:'#fff', border:'none', borderRadius:'12px', fontWeight:'700', fontSize:'16px', cursor:'pointer', boxShadow:'0 4px 12px rgba(102,126,234,0.2)' }}>
-          Start Test
+        <button onClick={startTest} className="w-full py-md bg-gradient-to-r from-indigo-brand to-[#7C3AED] text-white rounded-xl font-bold text-body-base hover:shadow-[0_4px_15px_rgba(102,126,234,0.4)] hover:scale-[1.01] transition-all">
+          Start Test →
         </button>
       </div>
     </div>
   );
 
   if (phase === 'break') return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', display:'flex', alignItems:'center', justifyContent:'center', padding:'20px' }}>
-      <div style={{ maxWidth:'500px', width:'100%', background:'#fff', borderRadius:'20px', padding:'40px', border:'1px solid #E2E8F0', textAlign:'center', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
-        <div style={{ fontSize:'48px', marginBottom:'16px' }}>✅</div>
-        <h2 style={{ color:'#0F172A', margin:'0 0 8px' }}>Section {currentSection + 1} Complete!</h2>
-        <p style={{ color:'#64748B', marginBottom:'24px' }}>Score: {sectionScores[sectionScores.length-1]?.percentage || 0}%</p>
-        <div style={{ background:'#F8FAFC', borderRadius:'12px', padding:'16px', marginBottom:'24px', border:'1px solid #E2E8F0' }}>
-          <p style={{ color:'#667EEA', fontWeight:'700', margin:'0 0 8px' }}>Next: {sections[currentSection+1]?.name}</p>
-          <p style={{ color:'#64748B', fontSize:'13px', margin:0 }}>Duration: {SECTIONS_CONFIG[currentSection+1]?.duration/60} minutes</p>
+    <div className="min-h-screen bg-background quantum-gradient p-margin-mobile md:p-margin-desktop relative overflow-hidden flex items-center justify-center">
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-success/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="glass max-w-lg w-full mx-auto rounded-xxxl p-xl md:p-xxl border border-surface-container shadow-sm text-center animate-[slideUp_0.4s_ease] relative z-10">
+        <div className="text-6xl mb-md drop-shadow-sm">✅</div>
+        <h2 className="text-headline-sm font-headline-sm text-on-surface m-0 mb-xs">Section {currentSection + 1} Complete!</h2>
+        <p className="text-on-surface-variant font-bold mb-xl">Score: <span className="text-success">{sectionScores[sectionScores.length-1]?.percentage || 0}%</span></p>
+        <div className="bg-surface-bright rounded-2xl p-md mb-xl border border-surface-container">
+          <p className="text-indigo-brand font-black text-sm uppercase tracking-wide m-0 mb-1">Next: {sections[currentSection+1]?.name}</p>
+          <p className="text-on-surface-variant text-sm font-medium m-0 flex justify-center items-center gap-xs"><span className="material-symbols-outlined" style={{fontSize:'14px'}}>timer</span> {SECTIONS_CONFIG[currentSection+1]?.duration/60} minutes</p>
         </div>
-        <button onClick={nextSection} style={{ width:'100%', padding:'14px', background:'linear-gradient(135deg,#00B87C,#00D4AA)', color:'#fff', border:'none', borderRadius:'12px', fontWeight:'700', fontSize:'15px', cursor:'pointer', boxShadow:'0 4px 12px rgba(0,184,124,0.2)' }}>
-          Continue to Next Section
+        <button onClick={nextSection} className="w-full py-md bg-gradient-to-r from-success to-success-dark text-white rounded-xl font-bold text-body-base hover:shadow-[0_4px_15px_rgba(0,184,124,0.3)] hover:scale-[1.01] transition-all">
+          Continue to Next Section →
         </button>
       </div>
     </div>
   );
 
   if (phase === 'result') return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', display:'flex', alignItems:'center', justifyContent:'center', padding:'20px' }}>
-      <div style={{ maxWidth:'600px', width:'100%', background:'#fff', borderRadius:'20px', padding:'40px', border:'1px solid #E2E8F0', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
-        <div style={{ textAlign:'center', marginBottom:'24px' }}>
-          <div style={{ fontSize:'48px' }}>{terminated ? 'ðŸš«' : 'ðŸ“Š'}</div>
-          <h2 style={{ color: terminated ? '#EF4444' : '#0F172A', margin:'8px 0' }}>{terminated ? 'Test Terminated' : 'Test Complete!'}</h2>
-          {terminated && <p style={{ color:'#64748B' }}>Maximum violations reached. Your result has been reported.</p>}
+    <div className="min-h-screen bg-background quantum-gradient p-margin-mobile md:p-margin-desktop relative overflow-hidden flex items-center justify-center">
+      <div className={`absolute top-[-10%] ${terminated ? 'left-[-10%] bg-error/10' : 'right-[-10%] bg-indigo-brand/10'} w-[500px] h-[500px] blur-[100px] rounded-full pointer-events-none`} />
+      <div className="glass max-w-2xl w-full mx-auto rounded-xxxl p-xl md:p-xxl border border-surface-container shadow-sm animate-[slideUp_0.4s_ease] relative z-10">
+        <div className="text-center mb-xl">
+          <div className="text-6xl drop-shadow-sm mb-sm">{terminated ? '🚫' : '📊'}</div>
+          <h2 className={`text-headline-sm font-headline-sm m-0 ${terminated ? 'text-error' : 'text-on-surface'}`}>{terminated ? 'Test Terminated' : 'Test Complete!'}</h2>
+          {terminated && <p className="text-on-surface-variant text-sm font-semibold mt-xs bg-error/10 text-error p-xs rounded-lg inline-block">Maximum violations reached. Your result has been reported.</p>}
         </div>
         {!terminated && (
           <>
-            <div style={{ display:'grid', gap:'12px' }}>
+            <div className="grid gap-sm">
               {sectionScores.map((s, i) => (
-                <div key={i} style={{ background:'#F8FAFC', borderRadius:'12px', padding:'16px', display:'flex', justifyContent:'space-between', alignItems:'center', border:'1px solid #E2E8F0' }}>
+                <div key={i} className="bg-surface-bright rounded-2xl p-md border border-surface-container flex justify-between items-center transition-all hover:border-surface-container-high">
                   <div>
-                    <div style={{ color:'#0F172A', fontWeight:'600', fontSize:'14px' }}>{s.name}</div>
-                    <div style={{ color:'#64748B', fontSize:'12px' }}>{s.score}/{s.total} marks</div>
+                    <div className="text-on-surface font-bold text-sm">{s.name}</div>
+                    <div className="text-on-surface-variant text-xs font-medium">{s.score}/{s.total} marks</div>
                   </div>
-                  <div style={{ fontSize:'20px', fontWeight:'800', color: s.percentage >= 70 ? '#00B87C' : s.percentage >= 50 ? '#F59E0B' : '#EF4444' }}>{s.percentage}%</div>
+                  <div className={`text-2xl font-black ${s.percentage >= 70 ? 'text-success' : s.percentage >= 50 ? 'text-warning' : 'text-error'}`}>{s.percentage}%</div>
                 </div>
               ))}
             </div>
-            <div style={{ background:'#F8FAFC', borderRadius:'12px', padding:'20px', marginTop:'20px', textAlign:'center', border:'1px solid #E2E8F0' }}>
-              <div style={{ color:'#64748B', fontSize:'13px' }}>Overall Score</div>
-              <div style={{ color:'#667EEA', fontSize:'40px', fontWeight:'900' }}>
+            <div className="bg-surface-bright rounded-2xl p-xl mt-lg text-center border border-surface-container">
+              <div className="text-on-surface-variant text-xs font-bold uppercase tracking-wider mb-1">Overall Score</div>
+              <div className="text-indigo-brand text-5xl font-black drop-shadow-sm">
                 {Math.round(sectionScores.reduce((a,s) => a+s.percentage,0)/Math.max(sectionScores.length,1))}%
               </div>
             </div>
@@ -259,81 +267,87 @@ export default function AMCATTest({ user, role, assessmentId, onComplete, onTerm
   const q = sec?.questions[currentQ];
 
   return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', display:'flex', flexDirection:'column' }}>
-      <div style={{ background:'#fff', borderBottom:'1px solid #E2E8F0', padding:'12px 20px', display:'flex', justifyContent:'space-between', alignItems:'center', boxShadow:'0 1px 4px rgba(0,0,0,0.02)' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <img src='/logo.png' style={{ width:'36px', height:'36px', objectFit:'contain', filter:'drop-shadow(0 2px 6px rgba(212,175,55,0.4))' }} alt='logo' />
+    <div className="h-screen bg-background quantum-gradient flex flex-col relative overflow-hidden">
+      {/* Decorative Background */}
+      <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-indigo-brand/5 blur-[120px] rounded-full pointer-events-none" />
+
+      {/* Header */}
+      <div className="glass border-b border-surface-container flex justify-between items-center p-sm px-lg shadow-sm z-10 shrink-0">
+        <div className="flex items-center gap-sm">
+          <img src='/logo.png' className="w-10 h-10 object-contain gold-glow-subtle" alt='logo' />
           <div>
-            <div style={{ color:'#0F172A', fontWeight:'700', fontSize:'14px' }}>Section {currentSection+1}/4: {sec?.name}</div>
-            <div style={{ color:'#64748B', fontSize:'12px' }}>Q{currentQ+1} of {sec?.questions.length} - {role}</div>
+            <div className="text-on-surface font-bold text-sm">Section {currentSection+1}/4: <span className="text-indigo-brand">{sec?.name}</span></div>
+            <div className="text-on-surface-variant text-xs font-semibold">Q{currentQ+1} of {sec?.questions.length} — {role}</div>
           </div>
         </div>
-        <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
+        <div className="flex items-center gap-md">
           {violations > 0 && (
-            <div style={{ background:'rgba(239,68,68,0.13)', border:'1px solid #EF4444', borderRadius:'8px', padding:'4px 12px', color:'#EF4444', fontSize:'12px', fontWeight:'700' }}>
+            <div className="bg-error/10 border border-error/30 text-error px-sm py-1 rounded-lg text-xs font-bold animate-[pulse_2s_ease-in-out_infinite]">
               {violations}/3 Violations
             </div>
           )}
-          <div style={{ background:'#F8FAFC', borderRadius:'10px', padding:'8px 16px', border:'2px solid ' + timerColor }}>
-            <span style={{ color:timerColor, fontWeight:'800', fontSize:'20px', fontFamily:'monospace' }}>{fmt(timeLeft)}</span>
+          <div className="bg-surface-bright rounded-xl px-md py-xs border-2" style={{ borderColor: timerColor }}>
+            <span className="font-mono font-black text-xl" style={{ color: timerColor }}>{fmt(timeLeft)}</span>
           </div>
         </div>
       </div>
 
       {violationMsg && (
-        <div style={{ background:'rgba(239,68,68,0.13)', border:'1px solid #EF4444', padding:'12px 20px', color:'#EF4444', fontWeight:'700', textAlign:'center', fontSize:'14px' }}>
+        <div className="bg-error text-white font-bold text-center text-sm py-xs shrink-0 shadow-sm z-20 animate-[slideDown_0.3s_ease]">
           {violationMsg}
         </div>
       )}
 
-      <div style={{ display:'flex', flex:1 }}>
-        <div style={{ flex:1, padding:'24px', overflowY:'auto' }}>
-          <div style={{ display:'flex', gap:'6px', marginBottom:'20px', flexWrap:'wrap' }}>
+      {/* Main Layout */}
+      <div className="flex flex-1 overflow-hidden z-10">
+        {/* Question Area */}
+        <div className="flex-1 p-lg md:p-xl overflow-y-auto custom-scrollbar">
+          {/* Question Navigator */}
+          <div className="flex gap-xs mb-xl flex-wrap">
             {sec?.questions.map((_qq, i) => (
-              <div key={i} onClick={() => setCurrentQ(i)} style={{
-                width:'32px', height:'32px', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center',
-                background: answers[sec.questions[i]?.id] ? '#00B87C' : i === currentQ ? '#667EEA' : '#F8FAFC',
-                color: (answers[sec.questions[i]?.id] || i === currentQ) ? '#fff' : '#64748B', fontSize:'12px', fontWeight:'700', cursor:'pointer',
-                border: i === currentQ ? '2px solid #667EEA' : answers[sec.questions[i]?.id] ? '2px solid #00B87C' : '1px solid #E2E8F0'
-              }}>{i+1}</div>
+              <div key={i} onClick={() => setCurrentQ(i)} className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm cursor-pointer transition-all hover:scale-105 ${answers[sec.questions[i]?.id] ? 'bg-success text-white border-2 border-success shadow-sm' : i === currentQ ? 'bg-indigo-brand text-white border-2 border-indigo-brand shadow-sm scale-110' : 'bg-surface-bright text-on-surface-variant border border-surface-container hover:border-surface-container-high'}`}>
+                {i+1}
+              </div>
             ))}
           </div>
 
           {q && (
-            <div style={{ background:'#fff', borderRadius:'16px', padding:'28px', border:'1px solid #E2E8F0', boxShadow:'0 4px 12px rgba(0,0,0,0.02)' }}>
-              <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'16px' }}>
-                <span style={{ background:'rgba(102,126,234,0.13)', color:'#667EEA', padding:'4px 12px', borderRadius:'20px', fontSize:'12px', fontWeight:'700' }}>K-Level {q.k_level}</span>
-                <span style={{ background:'rgba(245,158,11,0.13)', color:'#F59E0B', padding:'4px 12px', borderRadius:'20px', fontSize:'12px', fontWeight:'700' }}>{q.marks} mark{q.marks > 1 ? 's' : ''}</span>
+            <div className="glass rounded-3xl p-xl border border-surface-container shadow-sm animate-[fadeIn_0.3s_ease]">
+              <div className="flex justify-between items-center mb-lg">
+                <span className="bg-indigo-brand/10 text-indigo-brand border border-indigo-brand/20 px-sm py-1 rounded-full text-xs font-bold">K-Level {q.k_level}</span>
+                <span className="bg-warning/10 text-warning-dark border border-warning/20 px-sm py-1 rounded-full text-xs font-bold">{q.marks} mark{q.marks > 1 ? 's' : ''}</span>
               </div>
-              <p style={{ color:'#1E293B', fontSize:'16px', lineHeight:'1.7', marginBottom:'24px', fontWeight:'500' }}>{q.question_text}</p>
-              <div style={{ display:'grid', gap:'12px' }}>
+              <p className="text-on-surface text-lg font-bold leading-relaxed mb-xl">{q.question_text}</p>
+              
+              <div className="grid gap-sm mb-xl">
                 {(['A','B','C','D'] as const).map(opt => {
                   const key = ('option_' + opt.toLowerCase()) as keyof Question;
                   const val = q[key] as string;
                   const selected = answers[q.id] === opt;
                   return (
                     <button key={opt} onClick={() => setAnswers(a => ({ ...a, [q.id]: opt }))}
-                      style={{ background: selected ? 'rgba(102,126,234,0.13)' : '#F8FAFC', border: selected ? '2px solid #667EEA' : '1px solid #E2E8F0', borderRadius:'12px', padding:'14px 18px', color: selected ? '#667EEA' : '#1E293B', textAlign:'left', cursor:'pointer', fontSize:'14px', fontWeight: selected ? '700' : '400', display:'flex', alignItems:'center', gap:'12px' }}>
-                      <span style={{ width:'28px', height:'28px', borderRadius:'8px', background: selected ? '#667EEA' : '#E2E8F0', color: selected ? '#fff' : '#64748B', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'700', fontSize:'13px', flexShrink:0 }}>{opt}</span>
-                      {val}
+                      className={`text-left p-md rounded-2xl border-2 transition-all flex items-center gap-md hover:scale-[1.01] ${selected ? 'bg-indigo-brand/5 border-indigo-brand text-indigo-brand shadow-sm' : 'bg-surface-bright border-surface-container text-on-surface hover:border-surface-container-high'}`}>
+                      <span className={`w-8 h-8 shrink-0 rounded-xl flex items-center justify-center font-black text-sm transition-colors ${selected ? 'bg-indigo-brand text-white' : 'bg-surface-container/50 text-on-surface-variant'}`}>{opt}</span>
+                      <span className={`text-sm ${selected ? 'font-bold' : 'font-medium'}`}>{val}</span>
                     </button>
                   );
                 })}
               </div>
-              <div style={{ display:'flex', justifyContent:'space-between', marginTop:'24px' }}>
+              
+              <div className="flex justify-between mt-xl border-t border-surface-container/50 pt-lg">
                 <button onClick={() => setCurrentQ(q => Math.max(0, q-1))} disabled={currentQ === 0}
-                  style={{ padding:'10px 20px', background:'#F8FAFC', color:'#64748B', border:'1px solid #E2E8F0', borderRadius:'10px', cursor: currentQ === 0 ? 'not-allowed' : 'pointer', fontWeight:'600' }}>
-                  Previous
+                  className={`px-lg py-sm rounded-xl font-bold text-sm transition-all ${currentQ === 0 ? 'bg-surface-container/30 text-on-surface-variant/50 cursor-not-allowed' : 'bg-surface-container/50 text-on-surface-variant hover:bg-surface-container'}`}>
+                  ← Previous
                 </button>
                 {currentQ < sec.questions.length - 1 ? (
                   <button onClick={() => setCurrentQ(q => q+1)}
-                    style={{ padding:'10px 24px', background:'linear-gradient(135deg,#667EEA,#764BA2)', color:'#fff', border:'none', borderRadius:'10px', cursor:'pointer', fontWeight:'700' }}>
-                    Next
+                    className="px-xl py-sm bg-gradient-to-r from-indigo-brand to-[#7C3AED] text-white rounded-xl font-bold text-sm hover:shadow-[0_4px_15px_rgba(102,126,234,0.3)] hover:scale-[1.02] transition-all">
+                    Next →
                   </button>
                 ) : (
                   <button onClick={handleSectionEnd}
-                    style={{ padding:'10px 24px', background:'linear-gradient(135deg,#00B87C,#00D4AA)', color:'#fff', border:'none', borderRadius:'10px', cursor:'pointer', fontWeight:'700' }}>
-                    Submit Section
+                    className="px-xl py-sm bg-gradient-to-r from-success to-success-dark text-white rounded-xl font-bold text-sm hover:shadow-[0_4px_15px_rgba(0,184,124,0.3)] hover:scale-[1.02] transition-all">
+                    Submit Section ✓
                   </button>
                 )}
               </div>
@@ -341,24 +355,28 @@ export default function AMCATTest({ user, role, assessmentId, onComplete, onTerm
           )}
         </div>
 
-        <div style={{ width:'180px', background:'#fff', borderLeft:'1px solid #E2E8F0', padding:'16px', display:'flex', flexDirection:'column', gap:'12px' }}>
-          <div style={{ fontSize:'12px', color:'#64748B', fontWeight:'700', textAlign:'center' }}>PROCTORING</div>
-          <div style={{ position:'relative', borderRadius:'12px', overflow:'hidden', background:'#F8FAFC' }}>
-            <video ref={videoRef} autoPlay muted playsInline style={{ width:'100%', display:'block' }} />
+        {/* Proctoring Sidebar */}
+        <div className="w-[220px] glass border-l border-surface-container p-md flex flex-col gap-md shrink-0">
+          <div className="text-on-surface-variant text-[10px] font-black uppercase tracking-widest text-center">Proctoring Active</div>
+          
+          <div className="relative rounded-2xl overflow-hidden bg-black/5 border border-surface-container shadow-inner aspect-[4/3] flex items-center justify-center">
+            <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-cover" />
             {!cameraAllowed && (
-              <div style={{ padding:'20px', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'8px' }}>
-                <div style={{ fontSize:'24px' }}>ðŸ“·</div>
-                <div style={{ color:'#EF4444', fontSize:'11px', textAlign:'center' }}>Camera required</div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface-bright/90 backdrop-blur-sm p-sm">
+                <div className="text-3xl mb-1">📷</div>
+                <div className="text-error font-bold text-xs text-center">Camera required</div>
               </div>
             )}
           </div>
-          <div style={{ background:'#F8FAFC', borderRadius:'8px', padding:'10px', border:'1px solid #E2E8F0' }}>
-            <div style={{ color:'#64748B', fontSize:'11px', marginBottom:'4px' }}>Violations</div>
-            <div style={{ color: violations === 0 ? '#00B87C' : violations === 1 ? '#F59E0B' : '#EF4444', fontWeight:'800', fontSize:'20px' }}>{violations}/3</div>
+          
+          <div className="bg-surface-bright rounded-xl p-sm border border-surface-container text-center">
+            <div className="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-1">Violations</div>
+            <div className={`font-black text-2xl ${violations === 0 ? 'text-success' : violations === 1 ? 'text-warning' : 'text-error'}`}>{violations}/3</div>
           </div>
-          <div style={{ background:'#F8FAFC', borderRadius:'8px', padding:'10px', border:'1px solid #E2E8F0' }}>
-            <div style={{ color:'#64748B', fontSize:'11px', marginBottom:'4px' }}>Answered</div>
-            <div style={{ color:'#667EEA', fontWeight:'700', fontSize:'13px' }}>{Object.keys(answers).length}/{sec?.questions.length || 0}</div>
+          
+          <div className="bg-surface-bright rounded-xl p-sm border border-surface-container text-center">
+            <div className="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-1">Answered</div>
+            <div className="text-indigo-brand font-black text-2xl">{Object.keys(answers).length}<span className="text-on-surface-variant/50 text-sm">/{sec?.questions.length || 0}</span></div>
           </div>
         </div>
       </div>

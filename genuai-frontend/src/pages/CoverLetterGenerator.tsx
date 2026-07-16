@@ -75,12 +75,8 @@ Instructions:
     window.print();
   };
 
-  const inp: any = { width:"100%", padding:"12px 14px", border:"1.5px solid #E2E8F0", borderRadius:"10px", fontSize:"14px", color:"#1E293B", background:"#F8FAFC", boxSizing:"border-box", outline:"none", marginBottom:"16px", transition:"border 0.2s" };
-  const lbl: any = { color:"#64748B", fontSize:"12px", fontWeight:"700", display:"block", marginBottom:"6px", textTransform:"uppercase", letterSpacing:"0.05em" };
-  const sectionHeader: any = { fontSize:"15px", fontWeight:"800", color:"#0F172A", margin:"24px 0 16px", paddingBottom:"8px", borderBottom:"2px solid #E2E8F0" };
-
   return (
-    <div className="cover-gen-page" style={{ height:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+    <div className="cover-gen-page h-screen bg-background quantum-gradient flex flex-col overflow-hidden">
       <style>{`
         @media print {
           body * { visibility: hidden; }
@@ -88,97 +84,125 @@ Instructions:
           #printable-cover { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none !important; border: none !important; padding: 0 !important; }
           .cover-gen-page { padding: 0 !important; background: white !important; }
         }
-        textarea:focus, input:focus { border-color: #059669 !important; background: #fff !important; }
       `}</style>
 
       {/* Header */}
-      <div style={{ background:'#0F172A', color:'#fff', padding:'0 32px', height:"64px", display:'flex', justifyContent:'space-between', alignItems:'center', flexShrink:0 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-          <div style={{ fontWeight:"900", fontSize:"18px", letterSpacing:"0.5px", display:"flex", alignItems:"center", gap:"12px" }}>
+      <div className="glass border-b border-surface-container px-lg md:px-xl h-16 flex items-center justify-between shrink-0 sticky top-0 z-40">
+        <div className="flex items-center gap-md">
+          <div className="font-black text-title-sm text-on-surface flex items-center gap-sm">
             <span>✉️</span> Pro Cover Letter Generator
           </div>
-          <div style={{ background:"#1E293B", padding:"4px 12px", borderRadius:"6px", fontSize:"12px", fontWeight:"700", color:"#94A3B8" }}>AI Drafting Engine</div>
+          <div className="bg-surface-container text-on-surface-variant px-sm py-0.5 rounded-md text-[10px] font-bold uppercase tracking-widest hidden sm:block">AI Drafting Engine</div>
         </div>
-        <button onClick={onBack} style={{ background:'transparent', border:'1px solid #334155', color:'#94A3B8', padding:'6px 16px', borderRadius:'8px', cursor:'pointer', fontWeight:'600', fontSize:"13px", transition:"all 0.2s" }}>
+        <button onClick={onBack} className="bg-surface-bright border border-surface-container text-on-surface-variant px-md py-xs rounded-lg font-bold text-xs hover:text-on-surface hover:border-surface-container-high transition-colors">
           Exit to Hub
         </button>
       </div>
 
-      <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
+      <div className="flex-1 flex overflow-hidden flex-col md:flex-row">
         
         {/* Left Pane - Form */}
-        <div style={{ width:"35%", minWidth:"400px", maxWidth:"550px", background:"#fff", borderRight:"1px solid #E2E8F0", display:"flex", flexDirection:"column", overflow:"hidden", boxShadow:"4px 0 24px rgba(0,0,0,0.02)" }}>
-          <div style={{ flex:1, overflowY:"auto", padding:"32px" }}>
+        <div className="w-full md:w-[35%] md:min-w-[400px] md:max-w-[550px] glass border-r border-surface-container flex flex-col overflow-hidden shadow-md z-10">
+          <div className="flex-1 overflow-y-auto p-lg md:p-xl space-y-md">
             
-            <h2 style={{...sectionHeader, marginTop: 0}}>1. Headers & Details</h2>
-            <label style={lbl}>Applicant Information</label>
-            <textarea value={applicantInfo} onChange={e=>setApplicantInfo(e.target.value)} placeholder="Name, Phone, Email, LinkedIn..." rows={2} style={{...inp, resize:"vertical"}} />
+            <h2 className="text-title-sm font-black text-on-surface border-b border-surface-container pb-xs mb-sm">1. Headers & Details</h2>
+            
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Applicant Information</label>
+              <textarea value={applicantInfo} onChange={e=>setApplicantInfo(e.target.value)} placeholder="Name, Phone, Email, LinkedIn..." rows={2} className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
 
-            <label style={lbl}>Recipient / Company Information</label>
-            <textarea value={companyInfo} onChange={e=>setCompanyInfo(e.target.value)} placeholder="Hiring Manager Name, Title, Company Name, Address..." rows={2} style={{...inp, resize:"vertical"}} />
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Recipient / Company Information</label>
+              <textarea value={companyInfo} onChange={e=>setCompanyInfo(e.target.value)} placeholder="Hiring Manager Name, Title, Company Name, Address..." rows={2} className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
 
-            <label style={lbl}>Job Details *</label>
-            <input value={jobDetails} onChange={e=>setJobDetails(e.target.value)} placeholder="e.g. Senior Frontend Engineer at TechCorp" style={inp} />
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Job Details *</label>
+              <input value={jobDetails} onChange={e=>setJobDetails(e.target.value)} placeholder="e.g. Senior Frontend Engineer at TechCorp" className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
 
-            <label style={lbl}>Salutation</label>
-            <input value={salutation} onChange={e=>setSalutation(e.target.value)} placeholder="Dear Hiring Manager," style={inp} />
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Salutation</label>
+              <input value={salutation} onChange={e=>setSalutation(e.target.value)} placeholder="Dear Hiring Manager," className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
 
-            <h2 style={sectionHeader}>2. Body & Content</h2>
-            <label style={lbl}>Opening / Introduction</label>
-            <textarea value={opening} onChange={e=>setOpening(e.target.value)} placeholder="Hook the reader. State what role you are applying for and why you are excited." rows={2} style={{...inp, resize:"vertical"}} />
+            <h2 className="text-title-sm font-black text-on-surface border-b border-surface-container pb-xs mt-xl mb-sm">2. Body & Content</h2>
+            
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Opening / Introduction</label>
+              <textarea value={opening} onChange={e=>setOpening(e.target.value)} placeholder="Hook the reader. State what role you are applying for and why you are excited." rows={2} className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
 
-            <label style={lbl}>Skills & Qualifications *</label>
-            <textarea value={skills} onChange={e=>setSkills(e.target.value)} placeholder="React, TypeScript, System Design, Team Leadership..." rows={2} style={{...inp, resize:"vertical"}} />
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Skills & Qualifications *</label>
+              <textarea value={skills} onChange={e=>setSkills(e.target.value)} placeholder="React, TypeScript, System Design, Team Leadership..." rows={2} className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
 
-            <label style={lbl}>Relevant Experience *</label>
-            <textarea value={experience} onChange={e=>setExperience(e.target.value)} placeholder="3 years at XYZ building scalable web apps..." rows={3} style={{...inp, resize:"vertical"}} />
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Relevant Experience *</label>
+              <textarea value={experience} onChange={e=>setExperience(e.target.value)} placeholder="3 years at XYZ building scalable web apps..." rows={3} className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
 
-            <label style={lbl}>Key Achievements</label>
-            <textarea value={achievements} onChange={e=>setAchievements(e.target.value)} placeholder="Increased conversion by 20%, won Employee of the Year..." rows={2} style={{...inp, resize:"vertical"}} />
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Key Achievements</label>
+              <textarea value={achievements} onChange={e=>setAchievements(e.target.value)} placeholder="Increased conversion by 20%, won Employee of the Year..." rows={2} className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
 
-            <label style={lbl}>Motivation / Why This Company</label>
-            <textarea value={motivation} onChange={e=>setMotivation(e.target.value)} placeholder="I admire your commitment to open-source and sustainability..." rows={2} style={{...inp, resize:"vertical"}} />
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Motivation / Why This Company</label>
+              <textarea value={motivation} onChange={e=>setMotivation(e.target.value)} placeholder="I admire your commitment to open-source and sustainability..." rows={2} className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
 
-            <label style={lbl}>Value Proposition</label>
-            <textarea value={valueProp} onChange={e=>setValueProp(e.target.value)} placeholder="My blend of design and engineering will help your team ship faster..." rows={2} style={{...inp, resize:"vertical"}} />
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Value Proposition</label>
+              <textarea value={valueProp} onChange={e=>setValueProp(e.target.value)} placeholder="My blend of design and engineering will help your team ship faster..." rows={2} className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
 
-            <h2 style={sectionHeader}>3. Conclusion</h2>
-            <label style={lbl}>Closing Statement</label>
-            <textarea value={closing} onChange={e=>setClosing(e.target.value)} placeholder="Thank you for considering my application." rows={2} style={{...inp, resize:"vertical"}} />
+            <h2 className="text-title-sm font-black text-on-surface border-b border-surface-container pb-xs mt-xl mb-sm">3. Conclusion</h2>
+            
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Closing Statement</label>
+              <textarea value={closing} onChange={e=>setClosing(e.target.value)} placeholder="Thank you for considering my application." rows={2} className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
 
-            <label style={lbl}>Call to Action</label>
-            <textarea value={cta} onChange={e=>setCta(e.target.value)} placeholder="I would welcome the opportunity to discuss this further..." rows={2} style={{...inp, resize:"vertical"}} />
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Call to Action</label>
+              <textarea value={cta} onChange={e=>setCta(e.target.value)} placeholder="I would welcome the opportunity to discuss this further..." rows={2} className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
 
-            <label style={lbl}>Sign-Off / Signature</label>
-            <textarea value={signOff} onChange={e=>setSignOff(e.target.value)} placeholder="Sincerely,\nJohn Doe" rows={2} style={{...inp, resize:"vertical"}} />
+            <div>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Sign-Off / Signature</label>
+              <textarea value={signOff} onChange={e=>setSignOff(e.target.value)} placeholder="Sincerely,\nJohn Doe" rows={2} className="w-full p-sm bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+            </div>
           </div>
           
-          <div style={{ background:"#F8FAFC", padding:"24px 32px", borderTop:"1px solid #E2E8F0" }}>
-            <button onClick={generate} disabled={loading} style={{ width:"100%", padding:"16px", background:loading?"#E2E8F0":"linear-gradient(135deg,#059669,#10B981)", color:loading?"#94A3B8":"#fff", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"15px", cursor:loading?"not-allowed":"pointer", boxShadow:loading?"none":"0 8px 24px rgba(5,150,105,0.3)", transition:"transform 0.2s" }} onMouseEnter={e=>!loading && (e.currentTarget.style.transform="scale(1.02)")} onMouseLeave={e=>!loading && (e.currentTarget.style.transform="scale(1)")}>
+          <div className="p-lg md:p-xl border-t border-surface-container bg-surface-bright/30">
+            <button onClick={generate} disabled={loading} className={`w-full p-md rounded-xl font-black text-sm transition-all ${loading ? 'bg-surface-container text-on-surface-variant cursor-not-allowed' : 'bg-gradient-to-r from-success to-[#10B981] text-white shadow-md hover:shadow-lg hover:shadow-success/20 hover:scale-[1.02] cursor-pointer'}`}>
               {loading ? "Drafting Letter..." : "✨ Generate Cover Letter"}
             </button>
           </div>
         </div>
 
         {/* Right Pane - Result Preview */}
-        <div style={{ flex:1, background:"#F8FAFC", display:"flex", flexDirection:"column", overflow:"hidden" }}>
-          <div style={{ padding:"24px 48px", borderBottom:"1px solid #E2E8F0", background:"#fff", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <h2 style={{ fontSize:"16px", fontWeight:"800", color:"#0F172A", margin:0 }}>Live Preview</h2>
-            <div style={{ display:"flex", gap:"12px" }}>
+        <div className="flex-1 flex flex-col overflow-hidden relative z-0">
+          <div className="p-lg md:px-xl border-b border-surface-container glass flex justify-between items-center shrink-0">
+            <h2 className="text-sm font-black text-on-surface m-0">Live Preview</h2>
+            <div className="flex gap-md">
               {result && (
                 <>
-                  <button onClick={() => navigator.clipboard.writeText(result)} style={{ padding:"10px 16px", background:"#F1F5F9", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:"700", color:"#0F172A", cursor:"pointer", transition:"background 0.2s" }} onMouseEnter={e=>e.currentTarget.style.background="#E2E8F0"} onMouseLeave={e=>e.currentTarget.style.background="#F1F5F9"}>📋 Copy Text</button>
-                  <button onClick={downloadPDF} style={{ padding:"10px 16px", background:"#0F172A", border:"none", borderRadius:"8px", fontSize:"13px", fontWeight:"700", color:"#fff", cursor:"pointer", boxShadow:"0 4px 12px rgba(15,23,42,0.2)" }}>🖨️ Save as PDF</button>
+                  <button onClick={() => navigator.clipboard.writeText(result)} className="bg-surface-bright border border-surface-container text-on-surface px-md py-xs rounded-lg font-bold text-xs hover:bg-surface-bright/80 transition-colors shadow-sm">📋 Copy Text</button>
+                  <button onClick={downloadPDF} className="bg-on-surface text-background px-md py-xs rounded-lg font-bold text-xs hover:bg-on-surface/90 transition-colors shadow-sm">🖨️ Save as PDF</button>
                 </>
               )}
             </div>
           </div>
 
-          <div style={{ flex:1, padding:"48px", overflowY:"auto", display:"flex", justifyContent:"center" }}>
-            <div id="printable-cover" style={{ width:"100%", maxWidth:"850px", background:"#fff", borderRadius:"12px", padding:"60px 80px", border:"1px solid #E2E8F0", boxShadow:"0 20px 40px rgba(0, 0, 0, 0.04)", whiteSpace:"pre-wrap", color:"#1E293B", fontSize:"15px", lineHeight:"1.7", fontFamily:"'Georgia', serif" }}>
+          <div className="flex-1 p-xl md:p-xxl overflow-y-auto flex justify-center pb-xxl">
+            <div id="printable-cover" className={`w-full max-w-[850px] bg-white rounded-3xl px-xl py-[60px] md:px-[80px] md:py-[80px] shadow-lg border border-surface-container whitespace-pre-wrap text-on-surface text-[15px] leading-relaxed font-serif ${!result ? 'flex items-center justify-center bg-transparent border-none shadow-none' : ''}`}>
               {result ? result : (
-                <div style={{ color:"#94A3B8", textAlign:"center", marginTop:"150px", fontSize:"16px", fontFamily:"'Inter', sans-serif", fontWeight:"500" }}>
-                  <div style={{ fontSize:"64px", marginBottom:"24px", opacity:0.3 }}>✉️</div>
+                <div className="text-on-surface-variant/70 text-center font-sans font-medium">
+                  <div className="text-[64px] mb-lg opacity-30">✉️</div>
                   Fill in your details on the left and click generate.<br/>Your tailored cover letter will appear here.
                 </div>
               )}

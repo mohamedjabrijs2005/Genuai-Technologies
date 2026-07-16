@@ -119,8 +119,25 @@ export default function CandidateDashboard({ user, onLogout, onInterview, onResu
   const userId = user?.user?.id || user?.id || 1;
 
   useEffect(() => {
-    axios.get(API + "/admin/companies").then(res => setAvailableCompanies(res.data)).catch(() => { });
-    axios.get(API + "/jobs/list").then(res => setAvailableJobsList(res.data.jobs || [])).catch(() => { });
+    Promise.all([
+      axios.get(API + "/admin/companies").catch(() => ({ data: [] })),
+      axios.get(API + "/jobs/list").catch(() => ({ data: { jobs: [] } }))
+    ]).then(([compsRes, jobsRes]) => {
+      const comps = compsRes.data || [];
+      const dbJobs = jobsRes.data?.jobs || [];
+      setAvailableCompanies(comps);
+      
+      const defaultJobs: any[] = [];
+      comps.forEach((comp: any) => {
+        const hasJobs = dbJobs.some((j: any) => j.company_id === comp.id);
+        if (!hasJobs) {
+          defaultJobs.push({ id: comp.id * 1000 + 1, company_id: comp.id, company_name: comp.name, title: 'Software Engineer' });
+          defaultJobs.push({ id: comp.id * 1000 + 2, company_id: comp.id, company_name: comp.name, title: 'AI Engineer' });
+          defaultJobs.push({ id: comp.id * 1000 + 3, company_id: comp.id, company_name: comp.name, title: 'Data Scientist' });
+        }
+      });
+      setAvailableJobsList([...dbJobs, ...defaultJobs]);
+    });
   }, []);
 
   useEffect(() => {
@@ -546,183 +563,188 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
   const inp: any = { width: "100%", padding: "12px", marginBottom: "16px", background: "#F1F5F9", border: "1.5px solid #E2E8F0", borderRadius: "10px", color: "#1E293B", fontSize: "14px", boxSizing: "border-box" };
   const btn: any = { width: "100%", padding: "14px", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", color: "#fff", border: "none", borderRadius: "16px", fontWeight: "700", fontSize: "16px", cursor: "pointer", marginTop: "8px", boxShadow: "0 4px 15px rgba(102,126,234,0.3)" };
 
-  return (<>
-    <div style={{ minHeight: "100vh", background: "#F8FAFC", color: "#1E293B", padding: "20px", fontFamily: "sans-serif" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", background: "#fff", borderRadius: "16px", padding: "12px 20px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #E2E8F0" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <img src="/logo.png" alt="GenuAI" style={{ width: "44px", height: "44px", objectFit: "contain", filter: "drop-shadow(0 2px 8px rgba(0,184,124,0.4))" }} />
-          <div>
-            <div style={{ fontWeight: "800", fontSize: "17px", color: "#1E293B", lineHeight: "1.1" }}>Genu<span style={{ color: "#00D4FF" }}>AI</span></div>
-            <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "600", letterSpacing: "0.08em" }}>TECHNOLOGIES</div>
+  return (
+    <div className="min-h-screen bg-background quantum-gradient font-body-base text-on-background p-margin-mobile md:p-margin-desktop relative overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent-gold/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-brand/10 blur-[100px] rounded-full pointer-events-none" />
+      
+      <div className="relative z-10 max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-xl glass p-sm rounded-xl">
+          <div className="flex items-center gap-sm px-sm">
+            <img src="/logo.png" alt="GenuAI" className="w-11 h-11 object-contain gold-glow-subtle" />
+            <div>
+              <div className="font-bold text-lg text-on-surface leading-tight">Genu<span className="text-accent-gold">AI</span></div>
+              <div className="text-[10px] text-on-surface-variant font-semibold tracking-widest uppercase">TECHNOLOGIES</div>
+            </div>
+          </div>
+          <div className="flex gap-xs items-center px-sm">
+            {onResume && <button onClick={onResume} className="px-sm py-xs bg-surface-bright text-indigo-brand rounded-lg font-bold text-xs hover:bg-surface transition-colors border border-surface-container">📄 Resume</button>}
+            <button onClick={fetchHistory} disabled={historyLoading} className="px-sm py-xs bg-surface-bright text-[#F97316] rounded-lg font-bold text-xs hover:bg-surface transition-colors border border-surface-container">📊 History</button>
+            <button onClick={fetchJobs} disabled={jobsLoading} className="px-sm py-xs bg-surface-bright text-accent-gold rounded-lg font-bold text-xs hover:bg-surface transition-colors border border-surface-container">💼 Jobs</button>
+            <button onClick={() => setShowSearchHub(true)} className="px-sm py-xs bg-surface-bright text-[#2563EB] rounded-lg font-bold text-xs hover:bg-surface transition-colors border border-surface-container">🌐 Search Hub</button>
+            <button onClick={() => { setShowPractice(true); setPracticeStarted(false); setPracticeFeedback(null); setPracticeSelected(""); }} className="px-sm py-xs bg-surface-bright text-[#7C3AED] rounded-lg font-bold text-xs hover:bg-surface transition-colors border border-surface-container">🎯 Practice</button>
+            {onMock && <button onClick={onMock} className="px-sm py-xs bg-surface-bright text-[#7C3AED] rounded-lg font-bold text-xs hover:bg-surface transition-colors border border-surface-container">🎓 Mock</button>}
+            {onInterview && <button onClick={onInterview} className="px-sm py-xs bg-surface-bright text-[#0891B2] rounded-lg font-bold text-xs hover:bg-surface transition-colors border border-surface-container">🎥 Room</button>}
+            <div className="w-[1px] h-6 bg-surface-container mx-xs" />
+            <div className="w-9 h-9 rounded-full bg-surface-bright flex items-center justify-center font-black text-accent-gold text-sm ring-2 ring-accent-gold/20 overflow-hidden shrink-0">
+              {profilePhoto ? <img src={profilePhoto} alt="avatar" className="w-full h-full object-cover" /> : userName.charAt(0).toUpperCase()}
+            </div>
+            <button onClick={onLogout} className="px-sm py-xs bg-transparent border border-error text-error rounded-lg text-xs font-bold hover:bg-error/10 transition-colors">Logout</button>
           </div>
         </div>
-        <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-          {onResume && <button onClick={onResume} style={{ padding: "7px 11px", background: "#EEF2FF", color: "#667EEA", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>📄 Resume</button>}
-          <button onClick={fetchHistory} disabled={historyLoading} style={{ padding: "7px 11px", background: "#FFF7ED", color: "#F97316", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>📊 History</button>
-          <button onClick={fetchJobs} disabled={jobsLoading} style={{ padding: "7px 11px", background: "#F0FDF4", color: "#00B87C", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>💼 Jobs</button>
-          <button onClick={() => setShowSearchHub(true)} style={{ padding: "7px 11px", background: "#EFF6FF", color: "#2563EB", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>🌐 Search Hub</button>
-          <button onClick={() => { setShowPractice(true); setPracticeStarted(false); setPracticeFeedback(null); setPracticeSelected(""); }} style={{ padding: "7px 11px", background: "#F5F3FF", color: "#7C3AED", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>🎯 Practice</button>
-          {onMock && <button onClick={onMock} style={{ padding: "7px 11px", background: "#F5F3FF", color: "#7C3AED", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>🎓 Mock</button>}
-          {onInterview && <button onClick={onInterview} style={{ padding: "7px 11px", background: "#E0F9FF", color: "#0891B2", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", fontSize: "12px" }}>🎥 Room</button>}
-          <div style={{ width: "1px", height: "24px", background: "#E2E8F0", margin: "0 2px" }} />
-          <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: profilePhoto ? "transparent" : "linear-gradient(135deg,#667eea,#764ba2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800", color: "#fff", fontSize: "14px", overflow: "hidden", border: "2px solid #E2E8F0", flexShrink: 0 }}>
-            {profilePhoto ? <img src={profilePhoto} alt="avatar" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : userName.charAt(0).toUpperCase()}
+
+        {step > 0 && (
+          <div className="flex gap-sm mb-xl">
+            {["Profile and Resume", "Skill Test", "Voice Pitch", "Results"].map((s, i) => (
+              <div key={i} className={`flex-1 p-sm text-center rounded-xl text-sm font-bold transition-all ${step === i + 1 ? 'glass-gold text-accent-gold ring-1 ring-accent-gold/50 shadow-[0_0_15px_rgba(233,196,0,0.15)]' : step > i + 1 ? 'bg-surface-bright text-on-surface' : 'bg-surface-container/50 text-on-surface-variant'}`}>
+                {i + 1}. {s}
+              </div>
+            ))}
           </div>
-          <button onClick={onLogout} style={{ padding: "7px 11px", background: "transparent", border: "1px solid #FF4444", color: "#FF4444", borderRadius: "8px", cursor: "pointer", fontSize: "12px", fontWeight: "600" }}>Logout</button>
-        </div>
-      </div>
+        )}
 
-      {step > 0 && (
-        <div style={{ display: "flex", gap: "8px", marginBottom: "28px" }}>
-          {["Profile and Resume", "Skill Test", "Voice Pitch", "Results"].map((s, i) => (
-            <div key={i} style={{ flex: 1, padding: "10px", textAlign: "center", borderRadius: "10px", background: step === i + 1 ? "linear-gradient(135deg, #667eea, #764ba2)" : step > i + 1 ? "#DCFCE7" : "#F1F5F9", color: step === i + 1 ? "#fff" : step > i + 1 ? "#16A34A" : "#94A3B8", fontSize: "13px", fontWeight: "bold" }}>
-              {i + 1}. {s}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {step === 0 && (
-        <div style={{ maxWidth: "800px", margin: "40px auto" }}>
-          <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "40px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", textAlign: "center" }}>
-            <div style={{ fontSize: "48px", marginBottom: "16px" }}>🎯</div>
-            <h2 style={{ color: "#1E293B", margin: "0 0 12px", fontSize: "28px", fontWeight: "800" }}>Which companies are you interested in?</h2>
-            <p style={{ color: "#64748B", fontSize: "15px", margin: "0 0 32px" }}>Select one or more companies to view their open roles.</p>
-            
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "32px", textAlign: "left" }}>
-              {availableCompanies.length === 0 ? (
-                <div style={{ gridColumn: "span 2", fontSize: "14px", color: "#64748B", fontStyle: "italic", padding: "16px", background: "#F8FAFC", borderRadius: "12px", textAlign: "center" }}>Loading companies...</div>
-              ) : (
-                availableCompanies.map(c => (
-                  <div key={c.id} onClick={() => setSelectedCompanies(prev => prev.includes(c.id) ? prev.filter(id => id !== c.id) : [...prev, c.id])}
-                    style={{ padding: "16px", border: "2px solid " + (selectedCompanies.includes(c.id) ? "#667EEA" : "#E2E8F0"), borderRadius: "12px", background: selectedCompanies.includes(c.id) ? "#EEF2FF" : "#fff", cursor: "pointer", display: "flex", alignItems: "center", gap: "12px", transition: "all 0.2s" }}>
-                    <div style={{ width: "20px", height: "20px", borderRadius: "6px", border: "2px solid " + (selectedCompanies.includes(c.id) ? "#667EEA" : "#CBD5E1"), background: selectedCompanies.includes(c.id) ? "#667EEA" : "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {selectedCompanies.includes(c.id) && <span style={{ color: "#fff", fontSize: "12px", fontWeight: "bold" }}>✓</span>}
-                    </div>
-                    <span style={{ fontSize: "15px", color: selectedCompanies.includes(c.id) ? "#4338CA" : "#1E293B", fontWeight: selectedCompanies.includes(c.id) ? "700" : "600" }}>{c.name}</span>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {selectedCompanies.length > 0 && (
-              <div style={{ textAlign: "left", marginBottom: "32px", padding: "24px", background: "#F8FAFC", borderRadius: "16px", border: "1.5px solid #E2E8F0" }}>
-                <h3 style={{ margin: "0 0 16px", color: "#1E293B", fontSize: "18px", fontWeight: "700" }}>Available Vacancies</h3>
-                {availableJobsList.filter(j => selectedCompanies.includes(j.company_id)).length === 0 ? (
-                  <div style={{ color: "#64748B", fontSize: "14px" }}>No active vacancies posted by the selected companies right now. You can still continue to the general assessment.</div>
+        {step === 0 && (
+          <div className="max-w-3xl mx-auto my-xxl">
+            <div className="glass p-xl rounded-xxl text-center relative overflow-hidden">
+              <div className="text-5xl mb-md">🎯</div>
+              <h2 className="text-headline-md font-headline-md text-on-surface mb-sm">Which companies are you interested in?</h2>
+              <p className="text-body-base text-on-surface-variant/80 mb-xl">Select one or more companies to view their open roles.</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-sm mb-xl text-left">
+                {availableCompanies.length === 0 ? (
+                  <div className="col-span-2 text-sm text-on-surface-variant/80 italic p-md bg-surface-container/50 rounded-xl text-center">Loading companies...</div>
                 ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                    {availableJobsList.filter(j => selectedCompanies.includes(j.company_id)).map(job => (
-                      <div key={job.id} onClick={() => setTargetJobs(prev => prev.includes(job.id) ? prev.filter(id => id !== job.id) : [...prev, job.id])}
-                        style={{ padding: "14px 16px", border: "2px solid " + (targetJobs.includes(job.id) ? "#00B87C" : "#E2E8F0"), borderRadius: "10px", background: targetJobs.includes(job.id) ? "#F0FDF4" : "#fff", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", transition: "all 0.2s" }}>
-                        <div>
-                          <div style={{ fontWeight: "700", color: targetJobs.includes(job.id) ? "#15803D" : "#1E293B", fontSize: "15px", marginBottom: "2px" }}>{job.title}</div>
-                          <div style={{ fontSize: "12px", color: "#64748B" }}>🏢 {job.company_name}</div>
-                        </div>
-                        <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: "2px solid " + (targetJobs.includes(job.id) ? "#00B87C" : "#CBD5E1"), background: targetJobs.includes(job.id) ? "#00B87C" : "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                           {targetJobs.includes(job.id) && <span style={{ color: "#fff", fontSize: "10px", fontWeight: "bold" }}>✓</span>}
-                        </div>
+                  availableCompanies.map(c => (
+                    <div key={c.id} onClick={() => setSelectedCompanies(prev => prev.includes(c.id) ? prev.filter(id => id !== c.id) : [...prev, c.id])}
+                      className={`p-md border-2 rounded-xl cursor-pointer flex items-center gap-sm transition-all hover:scale-[1.02] ${selectedCompanies.includes(c.id) ? 'border-accent-gold bg-accent-gold/10' : 'border-surface-container bg-surface-bright hover:border-surface-container-high'}`}>
+                      <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${selectedCompanies.includes(c.id) ? 'border-accent-gold bg-accent-gold' : 'border-surface-container bg-surface-bright'}`}>
+                        {selectedCompanies.includes(c.id) && <span className="text-on-tertiary text-xs font-bold material-symbols-outlined" style={{fontSize: "14px"}}>check</span>}
                       </div>
-                    ))}
-                  </div>
+                      <span className={`text-body-base font-bold ${selectedCompanies.includes(c.id) ? 'text-accent-gold' : 'text-on-surface'}`}>{c.name}</span>
+                    </div>
+                  ))
                 )}
               </div>
-            )}
 
-            <button onClick={() => setStep(1)} disabled={selectedCompanies.length === 0} 
-              style={{ padding: "16px 40px", background: selectedCompanies.length === 0 ? "#E2E8F0" : "linear-gradient(135deg,#667EEA,#764BA2)", color: selectedCompanies.length === 0 ? "#94A3B8" : "#fff", border: "none", borderRadius: "14px", fontWeight: "800", fontSize: "16px", cursor: selectedCompanies.length === 0 ? "not-allowed" : "pointer", boxShadow: selectedCompanies.length === 0 ? "none" : "0 8px 25px rgba(102,126,234,0.3)", transition: "all 0.2s" }}>
-              Continue to Assessment →
-            </button>
+              {selectedCompanies.length > 0 && (
+                <div className="text-left mb-xl p-lg bg-surface-container/30 rounded-xl border border-surface-container">
+                  <h3 className="mb-md text-on-surface text-lg font-bold">Available Vacancies</h3>
+                  {availableJobsList.filter(j => selectedCompanies.includes(j.company_id)).length === 0 ? (
+                    <div className="text-on-surface-variant/80 text-sm">No active vacancies posted by the selected companies right now. You can still continue to the general assessment.</div>
+                  ) : (
+                    <div className="flex flex-col gap-sm">
+                      {availableJobsList.filter(j => selectedCompanies.includes(j.company_id)).map(job => (
+                        <div key={job.id} onClick={() => setTargetJobs(prev => prev.includes(job.id) ? prev.filter(id => id !== job.id) : [...prev, job.id])}
+                          className={`p-md border-2 rounded-xl cursor-pointer flex justify-between items-center transition-all hover:scale-[1.01] ${targetJobs.includes(job.id) ? 'border-indigo-brand bg-indigo-brand/10' : 'border-surface-container bg-surface-bright hover:border-surface-container-high'}`}>
+                          <div>
+                            <div className={`font-bold text-body-base mb-xs ${targetJobs.includes(job.id) ? 'text-indigo-brand' : 'text-on-surface'}`}>{job.title}</div>
+                            <div className="text-xs text-on-surface-variant">🏢 {job.company_name}</div>
+                          </div>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${targetJobs.includes(job.id) ? 'border-indigo-brand bg-indigo-brand' : 'border-surface-container bg-surface-bright'}`}>
+                             {targetJobs.includes(job.id) && <span className="text-white text-xs font-bold material-symbols-outlined" style={{fontSize: "14px"}}>check</span>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <button onClick={() => setStep(1)} disabled={selectedCompanies.length === 0} 
+                className={`px-xl py-md border-none rounded-xl font-bold text-body-base transition-all ${selectedCompanies.length === 0 ? 'bg-surface-container text-on-surface-variant/50 cursor-not-allowed' : 'bg-accent-gold text-on-tertiary cursor-pointer hover:shadow-[0_0_20px_rgba(233,196,0,0.4)] hover:scale-105'}`}>
+                Continue to Assessment →
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* Practice Mode Modal */}
       {showPractice && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
-          <div style={{ background: "#fff", borderRadius: "20px", padding: "28px", maxWidth: "680px", width: "100%", maxHeight: "85vh", overflowY: "auto", boxShadow: "0 25px 50px rgba(0,0,0,0.3)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[2000] flex items-center justify-center p-margin-mobile md:p-margin-desktop">
+          <div className="glass p-xl rounded-xxl w-full max-w-3xl max-h-[85vh] overflow-y-auto relative animate-[fadeIn_0.3s_ease]">
+            <div className="flex justify-between items-center mb-xl sticky top-0 bg-white/50 backdrop-blur-md p-sm -mx-sm -mt-sm rounded-xl z-10 border border-surface-container/50">
               <div>
-                <h2 style={{ color: "#1E293B", margin: "0 0 4px" }}>🎯 Practice Mode</h2>
-                <div style={{ fontSize: "12px", color: "#94A3B8" }}>Unlimited practice — scores do NOT affect your assessment</div>
+                <h2 className="text-headline-sm font-headline-sm text-on-surface mb-0">🎯 Practice Mode</h2>
+                <div className="text-xs font-semibold text-on-surface-variant/80 uppercase tracking-wider mt-1">Unlimited practice — scores do NOT affect assessment</div>
               </div>
-              <button onClick={() => { setShowPractice(false); setPracticeStarted(false); }} style={{ padding: "8px 16px", background: "#F1F5F9", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", color: "#64748B" }}>✕ Close</button>
+              <button onClick={() => { setShowPractice(false); setPracticeStarted(false); }} className="px-sm py-xs bg-surface-container/50 text-on-surface-variant rounded-lg font-bold hover:bg-surface-container transition-colors">✕ Close</button>
             </div>
 
             {!practiceStarted ? (
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: "56px", marginBottom: "16px" }}>🧠</div>
-                <p style={{ color: "#64748B", fontSize: "14px", marginBottom: "24px" }}>Practice K-Level questions for any role. Get instant feedback with explanations. No pressure — this never affects your real score.</p>
-                <div style={{ marginBottom: "20px" }}>
-                  <label style={{ color: "#64748B", fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "8px" }}>Select Role to Practice</label>
-                  <select value={practiceRole} onChange={e => setPracticeRole(e.target.value)} style={{ width: "100%", padding: "12px", border: "1.5px solid #E2E8F0", borderRadius: "10px", fontSize: "14px", color: "#1E293B", background: "#F8FAFC" }}>
+              <div className="text-center py-xl">
+                <div className="text-6xl mb-md drop-shadow-md">🧠</div>
+                <p className="text-body-base text-on-surface-variant/80 mb-xl max-w-md mx-auto">Practice K-Level questions for any role. Get instant feedback with explanations. No pressure — this never affects your real score.</p>
+                <div className="mb-xl max-w-xs mx-auto text-left">
+                  <label className="text-sm font-bold text-on-surface-variant mb-xs block">Select Role to Practice</label>
+                  <select value={practiceRole} onChange={e => setPracticeRole(e.target.value)} className="w-full p-sm bg-surface-bright border border-surface-container rounded-xl text-body-base font-semibold text-on-surface focus:outline-none focus:border-indigo-brand focus:ring-2 focus:ring-indigo-brand/20 transition-all">
                     {["Software Engineer", "AI Engineer", "Data Scientist", "Frontend Developer", "Backend Developer", "Full Stack Developer", "DevOps Engineer", "Product Manager"].map(r => <option key={r}>{r}</option>)}
                   </select>
                 </div>
-                <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginBottom: "24px", flexWrap: "wrap" }}>
-                  {[["K1", "Easy", "#22C55E"], ["K2", "Medium", "#F59E0B"], ["K3", "Hard", "#F97316"], ["K4", "Advanced", "#EF4444"], ["K5", "Expert", "#8B5CF6"]].map(([k, l, c]) => (
-                    <div key={k} style={{ padding: "8px 14px", background: c + "15", border: "1.5px solid " + c + "44", borderRadius: "10px", fontSize: "12px", color: c, fontWeight: "700" }}>{k} {l}</div>
+                <div className="flex flex-wrap justify-center gap-xs mb-xl">
+                  {[["K1", "Easy", "text-success border-success/30 bg-success/10"], ["K2", "Medium", "text-warning border-warning/30 bg-warning/10"], ["K3", "Hard", "text-warning border-warning/30 bg-warning/10"], ["K4", "Advanced", "text-error border-error/30 bg-error/10"], ["K5", "Expert", "text-[#8B5CF6] border-[#8B5CF6]/30 bg-[#8B5CF6]/10"]].map(([k, l, classes]) => (
+                    <div key={k} className={`px-sm py-1 border rounded-lg text-xs font-bold ${classes}`}>{k} {l}</div>
                   ))}
                 </div>
-                <button onClick={startPractice} disabled={practiceLoading} style={{ padding: "14px 40px", background: "linear-gradient(135deg,#A78BFA,#7C3AED)", color: "#fff", border: "none", borderRadius: "12px", fontWeight: "700", fontSize: "16px", cursor: "pointer" }}>
+                <button onClick={startPractice} disabled={practiceLoading} className="px-xl py-md bg-indigo-brand text-white rounded-xl font-bold text-body-base hover:shadow-[0_0_20px_rgba(102,126,234,0.4)] hover:scale-105 transition-all">
                   {practiceLoading ? "Loading..." : "🚀 Start Practice"}
                 </button>
               </div>
             ) : (
-              <div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px", background: "#F8FAFC", borderRadius: "12px", padding: "12px 16px" }}>
-                  <div style={{ display: "flex", gap: "20px" }}>
-                    <div><div style={{ fontSize: "11px", color: "#94A3B8" }}>Attempted</div><div style={{ fontSize: "18px", fontWeight: "800", color: "#1E293B" }}>{practiceStats.attempted}</div></div>
-                    <div><div style={{ fontSize: "11px", color: "#94A3B8" }}>Correct</div><div style={{ fontSize: "18px", fontWeight: "800", color: "#22C55E" }}>{practiceStats.correct}</div></div>
-                    <div><div style={{ fontSize: "11px", color: "#94A3B8" }}>Accuracy</div><div style={{ fontSize: "18px", fontWeight: "800", color: "#667EEA" }}>{practiceStats.attempted > 0 ? Math.round((practiceStats.correct / practiceStats.attempted) * 100) : 0}%</div></div>
+              <div className="animate-[slideUp_0.4s_ease]">
+                <div className="flex justify-between items-center mb-xl bg-surface-bright border border-surface-container rounded-xl p-md shadow-sm">
+                  <div className="flex gap-lg">
+                    <div><div className="text-xs text-on-surface-variant font-semibold tracking-wider uppercase mb-1">Attempted</div><div className="text-headline-sm font-black text-on-surface">{practiceStats.attempted}</div></div>
+                    <div><div className="text-xs text-on-surface-variant font-semibold tracking-wider uppercase mb-1">Correct</div><div className="text-headline-sm font-black text-success">{practiceStats.correct}</div></div>
+                    <div><div className="text-xs text-on-surface-variant font-semibold tracking-wider uppercase mb-1">Accuracy</div><div className="text-headline-sm font-black text-indigo-brand">{practiceStats.attempted > 0 ? Math.round((practiceStats.correct / practiceStats.attempted) * 100) : 0}%</div></div>
                   </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: "11px", color: "#94A3B8" }}>Role</div>
-                    <div style={{ fontSize: "13px", fontWeight: "700", color: "#A78BFA" }}>{practiceRole}</div>
+                  <div className="text-right">
+                    <div className="text-xs text-on-surface-variant font-semibold tracking-wider uppercase mb-1">Role</div>
+                    <div className="text-sm font-bold text-[#8B5CF6]">{practiceRole}</div>
                   </div>
                 </div>
 
                 {practiceQuestion && (
                   <div>
-                    <div style={{ background: "linear-gradient(135deg,#A78BFA11,#7C3AED11)", border: "1.5px solid #A78BFA33", borderRadius: "14px", padding: "16px", marginBottom: "16px" }}>
-                      <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
-                        <span style={{ padding: "3px 10px", background: "#A78BFA", borderRadius: "20px", color: "#fff", fontSize: "11px", fontWeight: "700" }}>K{practiceQuestion.k_level} — {practiceQuestion.k_level === 1 ? "Easy" : practiceQuestion.k_level === 2 ? "Medium" : practiceQuestion.k_level === 3 ? "Hard" : practiceQuestion.k_level === 4 ? "Advanced" : "Expert"}</span>
-                        <span style={{ padding: "3px 10px", background: "#F1F5F9", borderRadius: "20px", color: "#64748B", fontSize: "11px" }}>{practiceQuestion.marks} mark{practiceQuestion.marks > 1 ? "s" : ""}</span>
-                        <span style={{ padding: "3px 10px", background: "#F0FDF4", borderRadius: "20px", color: "#16A34A", fontSize: "11px", fontWeight: "600" }}>Practice — No Penalty</span>
+                    <div className="bg-[#8B5CF6]/5 border border-[#8B5CF6]/20 rounded-xl p-lg mb-lg">
+                      <div className="flex gap-sm mb-md">
+                        <span className="px-xs py-1 bg-[#8B5CF6] text-white rounded-full text-xs font-bold">K{practiceQuestion.k_level} — {practiceQuestion.k_level === 1 ? "Easy" : practiceQuestion.k_level === 2 ? "Medium" : practiceQuestion.k_level === 3 ? "Hard" : practiceQuestion.k_level === 4 ? "Advanced" : "Expert"}</span>
+                        <span className="px-xs py-1 bg-surface-container/50 text-on-surface-variant rounded-full text-xs font-semibold">{practiceQuestion.marks} mark{practiceQuestion.marks > 1 ? "s" : ""}</span>
+                        <span className="px-xs py-1 bg-success/10 text-success rounded-full text-xs font-bold border border-success/20">Practice — No Penalty</span>
                       </div>
-                      <p style={{ color: "#1E293B", fontSize: "15px", fontWeight: "600", margin: 0, lineHeight: "1.6" }}>{practiceQuestion.question_text}</p>
+                      <p className="text-body-lg font-bold text-on-surface leading-relaxed">{practiceQuestion.question_text}</p>
                     </div>
 
                     {practiceFeedback ? (
-                      <div>
-                        <div style={{ padding: "14px", background: practiceFeedback.is_correct ? "#F0FDF4" : "#FEF2F2", border: "1.5px solid " + (practiceFeedback.is_correct ? "#BBF7D0" : "#FECACA"), borderRadius: "12px", marginBottom: "14px" }}>
-                          <div style={{ fontWeight: "700", color: practiceFeedback.is_correct ? "#16A34A" : "#DC2626", marginBottom: "6px", fontSize: "15px" }}>
+                      <div className="animate-[fadeIn_0.3s_ease]">
+                        <div className={`p-md rounded-xl border mb-md ${practiceFeedback.is_correct ? 'bg-success/10 border-success/30' : 'bg-error/10 border-error/30'}`}>
+                          <div className={`font-black text-body-base mb-xs ${practiceFeedback.is_correct ? 'text-success' : 'text-error'}`}>
                             {practiceFeedback.is_correct ? "✅ Correct! Well done!" : "❌ Incorrect! Correct answer: " + practiceFeedback.correct_answer}
                           </div>
-                          <div style={{ color: "#64748B", fontSize: "13px" }}>{practiceFeedback.explanation}</div>
+                          <div className="text-sm text-on-surface-variant/90 leading-relaxed font-medium">{practiceFeedback.explanation}</div>
                         </div>
-                        <div style={{ display: "flex", gap: "10px" }}>
-                          <button onClick={nextPracticeQuestion} disabled={practiceLoading} style={{ flex: 1, padding: "12px", background: "linear-gradient(135deg,#A78BFA,#7C3AED)", color: "#fff", border: "none", borderRadius: "12px", fontWeight: "700", cursor: "pointer" }}>
+                        <div className="flex gap-sm">
+                          <button onClick={nextPracticeQuestion} disabled={practiceLoading} className="flex-1 py-md bg-indigo-brand text-white rounded-xl font-bold hover:shadow-[0_0_15px_rgba(102,126,234,0.3)] transition-all">
                             {practiceLoading ? "Loading..." : "Next Question →"}
                           </button>
-                          <button onClick={() => { setPracticeStarted(false); setPracticeStats({ attempted: 0, correct: 0 }); }} style={{ padding: "12px 20px", background: "#F1F5F9", border: "none", borderRadius: "12px", fontWeight: "700", cursor: "pointer", color: "#64748B" }}>
+                          <button onClick={() => { setPracticeStarted(false); setPracticeStats({ attempted: 0, correct: 0 }); }} className="px-lg py-md bg-surface-container/30 text-on-surface-variant rounded-xl font-bold hover:bg-surface-container/50 transition-colors">
                             Change Role
                           </button>
                         </div>
                       </div>
                     ) : (
                       <div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "16px" }}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-sm mb-lg">
                           {["A", "B", "C", "D"].map(opt => (
                             <button key={opt} onClick={() => setPracticeSelected(opt)}
-                              style={{ padding: "13px 16px", borderRadius: "12px", border: "1.5px solid " + (practiceSelected === opt ? "#A78BFA" : "#E2E8F0"), background: practiceSelected === opt ? "#F5F3FF" : "#F8FAFC", color: practiceSelected === opt ? "#7C3AED" : "#1E293B", fontWeight: practiceSelected === opt ? "700" : "400", cursor: "pointer", textAlign: "left", fontSize: "14px" }}>
-                              <span style={{ fontWeight: "700", marginRight: "8px" }}>{opt}.</span>
+                              className={`p-md rounded-xl border-2 text-left text-sm transition-all hover:scale-[1.01] ${practiceSelected === opt ? 'border-[#8B5CF6] bg-[#8B5CF6]/10 text-[#8B5CF6] font-bold shadow-sm' : 'border-surface-container bg-surface-bright text-on-surface font-semibold hover:border-surface-container-high'}`}>
+                              <span className="font-black mr-sm text-lg">{opt}.</span>
                               {practiceQuestion["option_" + opt.toLowerCase()]}
                             </button>
                           ))}
                         </div>
                         <button onClick={submitPracticeAnswer} disabled={practiceLoading || !practiceSelected}
-                          style={{ width: "100%", padding: "14px", background: practiceSelected ? "linear-gradient(135deg,#A78BFA,#7C3AED)" : "#E2E8F0", color: practiceSelected ? "#fff" : "#94A3B8", border: "none", borderRadius: "12px", fontWeight: "700", fontSize: "15px", cursor: practiceSelected ? "pointer" : "not-allowed" }}>
+                          className={`w-full py-md rounded-xl font-bold text-body-base transition-all ${practiceSelected ? 'bg-[#8B5CF6] text-white hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:scale-[1.02]' : 'bg-surface-container/50 text-on-surface-variant/50 cursor-not-allowed'}`}>
                           {practiceLoading ? "Checking..." : practiceSelected ? "Submit Answer →" : "Select an option"}
                         </button>
                       </div>
@@ -737,106 +759,101 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
 
       {/* Search Hub Modal */}
       {showSearchHub && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(15,23,42,0.7)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", backdropFilter: "blur(4px)" }}>
-          <div style={{ background: "#fff", borderRadius: "20px", padding: "28px", maxWidth: activeHubModule && activeHubModule !== "Instant Connect" ? "800px" : "1000px", width: "100%", height: "85vh", overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: "0 25px 50px rgba(0,0,0,0.3)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexShrink: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[2000] flex items-center justify-center p-margin-mobile md:p-margin-desktop">
+          <div className={`glass p-xl rounded-xxl w-full ${activeHubModule && activeHubModule !== "Instant Connect" ? "max-w-4xl" : "max-w-5xl"} h-[85vh] overflow-hidden flex flex-col relative animate-[fadeIn_0.3s_ease]`}>
+            <div className="flex justify-between items-center mb-xl shrink-0 border-b border-surface-container/50 pb-sm">
+              <div className="flex items-center gap-sm">
                 {activeHubModule && (
-                  <button onClick={() => setActiveHubModule(null)} style={{ padding: "8px", background: "#F1F5F9", border: "none", borderRadius: "50%", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                  <button onClick={() => setActiveHubModule(null)} className="p-xs bg-surface-container/30 hover:bg-surface-container/60 rounded-full transition-colors flex items-center justify-center">
+                    <span className="material-symbols-outlined text-on-surface-variant">arrow_back</span>
                   </button>
                 )}
                 <div>
-                  <h2 style={{ color: "#1E293B", margin: "0 0 4px" }}>{activeHubModule ? activeHubModule : "🌐 GenuAI Search Hub"}</h2>
-                  <div style={{ fontSize: "12px", color: "#64748B" }}>{activeHubModule ? "Explore opportunities and connections" : "Your centralized platform for networking, jobs, and industry updates"}</div>
+                  <h2 className="text-headline-sm font-headline-sm text-on-surface mb-0">{activeHubModule ? activeHubModule : "🌐 GenuAI Search Hub"}</h2>
+                  <div className="text-xs font-semibold text-on-surface-variant/80 uppercase tracking-wider mt-1">{activeHubModule ? "Explore opportunities and connections" : "Your centralized platform for networking, jobs, and industry updates"}</div>
                 </div>
               </div>
-              <button onClick={() => { setShowSearchHub(false); setActiveHubModule(null); }} style={{ padding: "8px 16px", background: "#F1F5F9", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", color: "#64748B" }}>✕ Close</button>
+              <button onClick={() => { setShowSearchHub(false); setActiveHubModule(null); }} className="px-sm py-xs bg-surface-container/50 text-on-surface-variant rounded-lg font-bold hover:bg-surface-container transition-colors">✕ Close</button>
             </div>
 
-            <div style={{ flex: 1, overflowY: "auto", paddingRight: "4px" }}>
+            <div className="flex-1 overflow-y-auto pr-xs custom-scrollbar">
               {!activeHubModule ? (
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
                   {[
-                    { id: "Professional Network", icon: "🤝", color: "#0A66C2", desc: "Connect with professionals, share updates, and build your profile (LinkedIn Style)" },
-                    { id: "Global Job Board", icon: "🌍", color: "#2563EB", desc: "Search thousands of job listings across top platforms (Indeed/NaukriGulf Style)" },
-                    { id: "Competitions & Events", icon: "🏆", color: "#F59E0B", desc: "Participate in hackathons and case studies (Unstop Style)" },
-                    { id: "PM Internship Allocation", icon: "🧠", color: "#8B5CF6", desc: "AI-based matching scheme for Product Management roles" },
-                    { id: "Tech & Corporate News", icon: "📰", color: "#10B981", desc: "Stay updated with the latest in tech, business, and startups" },
-                    { id: "Instant Connect", icon: "💬", color: "#25D366", desc: "Real-time messenger to connect with recruiters and peers" },
+                    { id: "Professional Network", icon: "🤝", color: "text-[#0A66C2] bg-[#0A66C2]/10 border-[#0A66C2]/30", shadow: "hover:shadow-[0_10px_30px_rgba(10,102,194,0.15)] hover:border-[#0A66C2]", desc: "Connect with professionals, share updates, and build your profile (LinkedIn Style)" },
+                    { id: "Global Job Board", icon: "🌍", color: "text-[#2563EB] bg-[#2563EB]/10 border-[#2563EB]/30", shadow: "hover:shadow-[0_10px_30px_rgba(37,99,235,0.15)] hover:border-[#2563EB]", desc: "Search thousands of job listings across top platforms (Indeed/NaukriGulf Style)" },
+                    { id: "Competitions & Events", icon: "🏆", color: "text-warning bg-warning/10 border-warning/30", shadow: "hover:shadow-[0_10px_30px_rgba(245,158,11,0.15)] hover:border-warning", desc: "Participate in hackathons and case studies (Unstop Style)" },
+                    { id: "PM Internship Allocation", icon: "🧠", color: "text-[#8B5CF6] bg-[#8B5CF6]/10 border-[#8B5CF6]/30", shadow: "hover:shadow-[0_10px_30px_rgba(139,92,246,0.15)] hover:border-[#8B5CF6]", desc: "AI-based matching scheme for Product Management roles" },
+                    { id: "Tech & Corporate News", icon: "📰", color: "text-success bg-success/10 border-success/30", shadow: "hover:shadow-[0_10px_30px_rgba(16,185,129,0.15)] hover:border-success", desc: "Stay updated with the latest in tech, business, and startups" },
+                    { id: "Instant Connect", icon: "💬", color: "text-[#25D366] bg-[#25D366]/10 border-[#25D366]/30", shadow: "hover:shadow-[0_10px_30px_rgba(37,211,102,0.15)] hover:border-[#25D366]", desc: "Real-time messenger to connect with recruiters and peers" },
                   ].map(mod => (
                     <div key={mod.id} onClick={() => setActiveHubModule(mod.id)}
-                      style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: "16px", padding: "24px", cursor: "pointer", transition: "all 0.2s", display: "flex", flexDirection: "column", gap: "12px" }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = mod.color; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = `0 10px 20px ${mod.color}22`; }}
-                      onMouseLeave={e => { e.currentTarget.style.borderColor = "#E2E8F0"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
-                    >
-                      <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: `${mod.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px" }}>
+                      className={`bg-surface-bright border-2 border-surface-container rounded-xl p-lg cursor-pointer transition-all hover:-translate-y-1 flex flex-col gap-sm ${mod.shadow}`}>
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-3xl ${mod.color}`}>
                         {mod.icon}
                       </div>
-                      <h3 style={{ margin: 0, color: "#1E293B", fontSize: "16px" }}>{mod.id}</h3>
-                      <p style={{ margin: 0, color: "#64748B", fontSize: "13px", lineHeight: "1.5" }}>{mod.desc}</p>
+                      <h3 className="text-body-lg font-bold text-on-surface m-0">{mod.id}</h3>
+                      <p className="text-sm font-medium text-on-surface-variant/80 m-0 leading-relaxed">{mod.desc}</p>
                     </div>
                   ))}
                 </div>
               ) : activeHubModule === "Tech & Corporate News" ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div className="flex flex-col gap-sm animate-[slideUp_0.4s_ease]">
                   {[
                     { tag: "AI Trends", title: "OpenAI Announces New Advanced Reasoning Models", src: "TechCrunch", time: "2 hours ago" },
                     { tag: "Hiring", title: "Top 10 Tech Companies Actively Hiring Remote Product Managers", src: "Forbes", time: "5 hours ago" },
                     { tag: "Startups", title: "GenuAI Technologies Secures Funding to Revolutionize AI Recruitment", src: "Tech Radar", time: "1 day ago" },
                     { tag: "Development", title: "React 19 Release: What Frontend Engineers Need to Know", src: "Dev.to", time: "2 days ago" },
                   ].map((news, i) => (
-                    <div key={i} style={{ padding: "16px", background: "#fff", border: "1px solid #E2E8F0", borderRadius: "12px", display: "flex", flexDirection: "column", gap: "8px", transition: "transform 0.2s, box-shadow 0.2s", cursor: "pointer" }}
-                      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.05)"; }}
-                      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
-                      <span style={{ fontSize: "11px", fontWeight: "700", color: "#10B981", background: "#10B98115", padding: "4px 8px", borderRadius: "6px", alignSelf: "flex-start" }}>{news.tag}</span>
-                      <h4 style={{ margin: 0, color: "#1E293B", fontSize: "16px" }}>{news.title}</h4>
-                      <div style={{ fontSize: "12px", color: "#94A3B8" }}>{news.src} • {news.time}</div>
+                    <div key={i} className="p-md bg-surface-bright border border-surface-container rounded-xl flex flex-col gap-xs transition-all hover:-translate-y-0.5 hover:shadow-sm hover:border-surface-container-high cursor-pointer">
+                      <span className="text-xs font-bold text-success bg-success/10 px-xs py-1 rounded-md self-start">{news.tag}</span>
+                      <h4 className="m-0 text-body-lg font-bold text-on-surface">{news.title}</h4>
+                      <div className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">{news.src} • {news.time}</div>
                     </div>
                   ))}
                 </div>
               ) : activeHubModule === "Instant Connect" ? (
-                <div style={{ display: "flex", height: "100%", border: "1.5px solid #E2E8F0", borderRadius: "12px", overflow: "hidden" }}>
-                  <div style={{ width: "250px", background: "#F8FAFC", borderRight: "1.5px solid #E2E8F0", display: "flex", flexDirection: "column" }}>
-                    <div style={{ padding: "16px", borderBottom: "1.5px solid #E2E8F0", fontWeight: "800", color: "#1E293B", fontSize: "15px" }}>Recent Chats</div>
-                    <div style={{ padding: "12px 16px", background: "#E2E8F055", display: "flex", alignItems: "center", gap: "12px", borderBottom: "1px solid #E2E8F0", cursor: "pointer" }}>
-                      <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg,#10B981,#059669)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: "800", fontSize: "13px" }}>HR</div>
-                      <div style={{ flex: 1, overflow: "hidden" }}>
-                        <div style={{ fontSize: "13px", fontWeight: "700", color: "#1E293B" }}>HR Tech Solutions</div>
-                        <div style={{ fontSize: "11px", color: "#64748B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Are you available for an...</div>
+                <div className="flex h-full border border-surface-container rounded-xl overflow-hidden animate-[fadeIn_0.4s_ease]">
+                  <div className="w-64 bg-surface-bright border-r border-surface-container flex flex-col">
+                    <div className="p-md border-b border-surface-container font-black text-on-surface text-body-base">Recent Chats</div>
+                    <div className="p-sm bg-surface-container/30 flex items-center gap-sm border-b border-surface-container cursor-pointer hover:bg-surface-container/50 transition-colors">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-success to-[#059669] flex items-center justify-center text-white font-black text-sm shrink-0">HR</div>
+                      <div className="flex-1 overflow-hidden">
+                        <div className="text-sm font-bold text-on-surface truncate">HR Tech Solutions</div>
+                        <div className="text-xs font-medium text-on-surface-variant truncate">Are you available for an...</div>
                       </div>
                     </div>
                   </div>
-                  <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#F1F5F9" }}>
-                    <div style={{ padding: "16px", background: "#fff", borderBottom: "1.5px solid #E2E8F0", display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg,#10B981,#059669)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: "800", fontSize: "13px" }}>HR</div>
+                  <div className="flex-1 flex flex-col bg-background/50 relative">
+                    <div className="p-md bg-surface-bright border-b border-surface-container flex items-center gap-sm sticky top-0 z-10 shadow-sm">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-success to-[#059669] flex items-center justify-center text-white font-black text-sm">HR</div>
                       <div>
-                        <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "14px" }}>HR Tech Solutions</div>
-                        <div style={{ fontSize: "11px", color: "#10B981", fontWeight: "600" }}>Online</div>
+                        <div className="font-bold text-on-surface text-sm">HR Tech Solutions</div>
+                        <div className="text-xs font-bold text-success flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-success"></div>Online</div>
                       </div>
                     </div>
-                    <div style={{ flex: 1, padding: "20px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "16px" }}>
-                      <div style={{ alignSelf: "center", background: "#E2E8F0", color: "#64748B", padding: "4px 12px", borderRadius: "12px", fontSize: "10px", fontWeight: "600" }}>Today</div>
-                      <div style={{ alignSelf: "flex-start", background: "#fff", padding: "12px 16px", borderRadius: "12px 12px 12px 0", maxWidth: "70%", boxShadow: "0 2px 4px rgba(0,0,0,0.02)", border: "1px solid #E2E8F0" }}>
-                        <div style={{ fontSize: "14px", color: "#1E293B", lineHeight: "1.5" }}>Hi {userName}! We reviewed your impressive assessment score and would love to schedule a technical interview. Are you available sometime tomorrow?</div>
-                        <div style={{ fontSize: "10px", color: "#94A3B8", marginTop: "6px", textAlign: "right" }}>10:42 AM</div>
+                    <div className="flex-1 p-lg overflow-y-auto flex flex-col gap-md">
+                      <div className="self-center bg-surface-container text-on-surface-variant px-sm py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Today</div>
+                      <div className="self-start bg-surface-bright p-sm rounded-2xl rounded-tl-sm max-w-[75%] border border-surface-container shadow-sm relative group">
+                        <div className="text-sm text-on-surface font-medium leading-relaxed">Hi {userName}! We reviewed your impressive assessment score and would love to schedule a technical interview. Are you available sometime tomorrow?</div>
+                        <div className="text-[10px] text-on-surface-variant mt-xs text-right font-semibold">10:42 AM</div>
                       </div>
                     </div>
-                    <div style={{ padding: "16px", background: "#fff", borderTop: "1.5px solid #E2E8F0", display: "flex", gap: "12px", alignItems: "center" }}>
-                      <button style={{ background: "transparent", border: "none", fontSize: "20px", cursor: "pointer", opacity: 0.6 }}>📎</button>
-                      <input placeholder="Type your message..." style={{ flex: 1, padding: "12px 16px", border: "1.5px solid #E2E8F0", borderRadius: "24px", outline: "none", fontSize: "14px", background: "#F8FAFC" }} />
-                      <button style={{ background: "#25D366", color: "#fff", border: "none", borderRadius: "50%", width: "42px", height: "42px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 2px 8px rgba(37,211,102,0.3)" }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    <div className="p-md bg-surface-bright border-t border-surface-container flex gap-sm items-center">
+                      <button className="bg-transparent border-none text-xl cursor-pointer opacity-60 hover:opacity-100 transition-opacity">📎</button>
+                      <input placeholder="Type your message..." className="flex-1 px-md py-sm border border-surface-container rounded-full outline-none text-sm bg-background font-medium text-on-surface focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
+                      <button className="bg-[#25D366] text-white border-none rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-[0_4px_12px_rgba(37,211,102,0.3)] hover:scale-105 transition-transform">
+                        <span className="material-symbols-outlined text-[20px]" style={{fontVariationSettings: "'FILL' 1"}}>send</span>
                       </button>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", color: "#64748B", background: "#F8FAFC", borderRadius: "16px", border: "2px dashed #E2E8F0" }}>
-                  <div style={{ fontSize: "56px", marginBottom: "16px", opacity: 0.8 }}>🚀</div>
-                  <h3 style={{ margin: "0 0 8px", color: "#1E293B", fontSize: "22px", fontWeight: "800" }}>Coming Soon</h3>
-                  <p style={{ margin: 0, textAlign: "center", maxWidth: "400px", fontSize: "14px", lineHeight: "1.6" }}>The <strong>{activeHubModule}</strong> module is currently in development by the GenuAI team. Stay tuned for the next update!</p>
-                  <button onClick={() => setActiveHubModule(null)} style={{ marginTop: "24px", padding: "10px 20px", background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "10px", color: "#1E293B", fontWeight: "700", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>← Back to Hub</button>
+                <div className="flex flex-col items-center justify-center h-full text-on-surface-variant bg-surface-bright/50 rounded-xl border-2 border-dashed border-surface-container animate-[fadeIn_0.3s_ease]">
+                  <div className="text-6xl mb-md opacity-80 drop-shadow-sm">🚀</div>
+                  <h3 className="m-0 mb-xs text-on-surface text-headline-sm font-black">Coming Soon</h3>
+                  <p className="m-0 text-center max-w-sm text-sm font-medium leading-relaxed">The <strong className="text-on-surface">{activeHubModule}</strong> module is currently in development by the GenuAI team. Stay tuned for the next update!</p>
+                  <button onClick={() => setActiveHubModule(null)} className="mt-xl px-md py-sm bg-surface-bright border border-surface-container rounded-xl text-on-surface font-bold cursor-pointer shadow-sm hover:bg-surface-container/30 transition-colors">← Back to Hub</button>
                 </div>
               )}
             </div>
@@ -846,27 +863,27 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
 
       {/* ── STEP 1: Profile and Resume ── */}
       {step === 1 && (
-        <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
+        <div className="flex flex-col lg:flex-row gap-lg items-start animate-[fadeIn_0.4s_ease]">
 
           {/* LEFT 60% — Resume Form */}
-          <div style={{ flex: "0 0 59%", background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "28px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
-            <div style={{ marginBottom: "20px" }}>
-              <h2 style={{ color: "#1E293B", margin: "0 0 4px", fontSize: "19px" }}>📋 Profile &amp; Resume</h2>
-              <p style={{ color: "#64748B", fontSize: "13px", margin: 0 }}>Fill in your details to begin your assessment.</p>
+          <div className="flex-[0_0_100%] lg:flex-[0_0_59%] glass p-xl rounded-xxl">
+            <div className="mb-lg">
+              <h2 className="text-headline-sm font-headline-sm text-on-surface m-0 mb-xs">📋 Profile &amp; Resume</h2>
+              <p className="text-sm font-medium text-on-surface-variant m-0">Fill in your details to begin your assessment.</p>
             </div>
 
-            <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>Target Role</label>
-            <select value={role} onChange={e => setRole(e.target.value)} style={{ ...inp, marginBottom: "14px" }}>
+            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Target Role</label>
+            <select value={role} onChange={e => setRole(e.target.value)} className="w-full p-md bg-surface-bright border border-surface-container rounded-xl text-body-base font-semibold text-on-surface mb-md focus:outline-none focus:border-indigo-brand focus:ring-2 focus:ring-indigo-brand/20 transition-all">
               {ROLES.map(r => <option key={r}>{r}</option>)}
             </select>
 
-            <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>GitHub Profile URL</label>
-            <input value={github} onChange={e => setGithub(e.target.value)} placeholder="https://github.com/yourusername" style={{ ...inp, marginBottom: "14px" }} />
+            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">GitHub Profile URL</label>
+            <input value={github} onChange={e => setGithub(e.target.value)} placeholder="https://github.com/yourusername" className="w-full p-md bg-surface-bright border border-surface-container rounded-xl text-body-base font-medium text-on-surface mb-md focus:outline-none focus:border-indigo-brand focus:ring-2 focus:ring-indigo-brand/20 transition-all placeholder:text-on-surface-variant/40" />
 
-            <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>LinkedIn Profile URL</label>
-            <input value={linkedin} onChange={e => setLinkedin(e.target.value)} placeholder="https://linkedin.com/in/yourprofile" style={{ ...inp, marginBottom: "14px" }} />
+            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">LinkedIn Profile URL</label>
+            <input value={linkedin} onChange={e => setLinkedin(e.target.value)} placeholder="https://linkedin.com/in/yourprofile" className="w-full p-md bg-surface-bright border border-surface-container rounded-xl text-body-base font-medium text-on-surface mb-md focus:outline-none focus:border-indigo-brand focus:ring-2 focus:ring-indigo-brand/20 transition-all placeholder:text-on-surface-variant/40" />
 
-            <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>Upload Resume (PDF)</label>
+            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Upload Resume (PDF)</label>
             <input type="file" accept=".pdf" onChange={async e => {
               const f = e.target.files?.[0];
               if (!f) return;
@@ -876,101 +893,101 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                 const res = await axios.post(API + "/upload-resume", fd);
                 setResumeText(res.data.text || "");
               } catch { setResumeText("Resume uploaded"); }
-            }} style={{ ...inp, padding: "10px", marginBottom: "14px" }} />
-            {resumeText && <div style={{ padding: "8px 12px", background: "#DCFCE7", borderRadius: "6px", color: "#00B87C", fontSize: "12px", marginBottom: "12px" }}>✅ PDF loaded — ready for analysis</div>}
+            }} className="w-full p-sm bg-surface-bright border border-surface-container rounded-xl text-sm font-medium text-on-surface mb-md file:mr-md file:py-sm file:px-md file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-indigo-brand/10 file:text-indigo-brand hover:file:bg-indigo-brand/20 transition-all" />
+            {resumeText && <div className="px-md py-sm bg-success/10 border border-success/20 rounded-lg text-success text-xs font-bold mb-md animate-[fadeIn_0.3s_ease]">✅ PDF loaded — ready for analysis</div>}
 
-            <label style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "600", display: "block", marginBottom: "5px" }}>Your Skills (comma separated)</label>
-            <input value={skills} onChange={e => setSkills(e.target.value)} placeholder="Python, React, SQL, Machine Learning..." style={{ ...inp, marginBottom: "14px" }} />
+            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-xs block">Your Skills (comma separated)</label>
+            <input value={skills} onChange={e => setSkills(e.target.value)} placeholder="Python, React, SQL, Machine Learning..." className="w-full p-md bg-surface-bright border border-surface-container rounded-xl text-body-base font-medium text-on-surface mb-md focus:outline-none focus:border-indigo-brand focus:ring-2 focus:ring-indigo-brand/20 transition-all placeholder:text-on-surface-variant/40" />
 
             {/* Company selection has been moved to Step 0 */}
 
-            {atsScore > 0 && <div style={{ padding: "10px 14px", background: "#DCFCE7", borderRadius: "10px", color: "#00B87C", marginBottom: "12px", fontWeight: "700", fontSize: "14px" }}>🎯 ATS Score: {atsScore}%</div>}
+            {atsScore > 0 && <div className="px-md py-sm bg-success/10 border border-success/30 rounded-xl text-success font-black text-body-base mb-md animate-[fadeIn_0.3s_ease] shadow-sm">🎯 ATS Score: {atsScore}%</div>}
 
-            <button onClick={handleStep1} disabled={loading || !resumeText} style={{ ...btn, opacity: loading || !resumeText ? 0.6 : 1 }}>
+            <button onClick={handleStep1} disabled={loading || !resumeText} className={`w-full py-md rounded-xl font-bold text-body-base mt-sm transition-all ${loading || !resumeText ? 'bg-surface-container text-on-surface-variant/50 cursor-not-allowed' : 'bg-indigo-brand text-white hover:shadow-[0_4px_20px_rgba(102,126,234,0.4)] hover:scale-[1.01]'}`}>
               {loading ? "Analyzing Resume..." : "Analyze and Continue →"}
             </button>
           </div>
 
           {/* RIGHT 40% — Candidate Profile */}
-          <div style={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div className="flex-1 flex flex-col gap-lg w-full">
 
             {/* Profile Photo + Personal Info */}
-            <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "22px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
-              <div style={{ fontSize: "13px", fontWeight: "700", color: "#1E293B", marginBottom: "16px" }}>🪪 Candidate Profile</div>
+            <div className="glass p-lg rounded-xxl">
+              <div className="text-sm font-black text-on-surface mb-md uppercase tracking-wide">🪪 Candidate Profile</div>
 
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "16px" }}>
+              <div className="flex flex-col items-center mb-md">
                 <div
                   onClick={() => (document.getElementById("profile-photo-input") as HTMLInputElement)?.click()}
-                  style={{ width: "96px", height: "122px", borderRadius: "12px", overflow: "hidden", border: profilePhoto ? "2px solid #00B87C" : "2px dashed #CBD5E1", background: "#F8FAFC", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "6px", marginBottom: "10px", transition: "border-color 0.2s" }}>
+                  className={`w-24 h-32 rounded-xl overflow-hidden flex flex-col items-center justify-center gap-1 mb-sm cursor-pointer transition-all ${profilePhoto ? 'border-2 border-success bg-background' : 'border-2 border-dashed border-surface-container bg-surface-bright hover:border-surface-container-high'}`}>
                   {profilePhoto ? (
-                    <img src={profilePhoto} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
                     <>
-                      <div style={{ fontSize: "26px" }}>📷</div>
-                      <div style={{ fontSize: "10px", color: "#94A3B8", textAlign: "center", lineHeight: "1.4", padding: "0 6px" }}>Passport size photo</div>
+                      <div className="text-3xl opacity-80">📷</div>
+                      <div className="text-[10px] text-on-surface-variant text-center leading-tight px-1 font-semibold">Passport size photo</div>
                     </>
                   )}
                 </div>
-                <input id="profile-photo-input" type="file" accept="image/*" style={{ display: "none" }} onChange={e => {
+                <input id="profile-photo-input" type="file" accept="image/*" className="hidden" onChange={e => {
                   const f = e.target.files?.[0];
                   if (!f) return;
                   setProfilePhoto(URL.createObjectURL(f));
                 }} />
                 <button
                   onClick={() => (document.getElementById("profile-photo-input") as HTMLInputElement)?.click()}
-                  style={{ padding: "6px 16px", background: profilePhoto ? "#F0FDF4" : "linear-gradient(135deg,#667eea,#764ba2)", color: profilePhoto ? "#16A34A" : "#fff", border: profilePhoto ? "1.5px solid #BBF7D0" : "none", borderRadius: "8px", fontSize: "12px", fontWeight: "700", cursor: "pointer" }}>
+                  className={`px-md py-1.5 rounded-lg text-xs font-bold transition-colors ${profilePhoto ? 'bg-success/10 text-success border border-success/30' : 'bg-indigo-brand text-white'}`}>
                   {profilePhoto ? "✅ Uploaded" : "Upload Photo"}
                 </button>
               </div>
 
-              <div style={{ borderTop: "1px solid #F1F5F9", paddingTop: "14px", display: "flex", flexDirection: "column", gap: "11px" }}>
+              <div className="border-t border-surface-container pt-md flex flex-col gap-md">
                 <div>
-                  <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "3px" }}>Full Name</div>
-                  <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "15px" }}>{userName}</div>
+                  <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Full Name</div>
+                  <div className="font-black text-on-surface text-body-lg">{userName}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "3px" }}>Email</div>
-                  <div style={{ color: "#475569", fontSize: "12px", wordBreak: "break-all" }}>{userEmail || "—"}</div>
+                  <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Email</div>
+                  <div className="font-medium text-on-surface-variant text-sm break-all">{userEmail || "—"}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "5px" }}>Target Role</div>
-                  <span style={{ padding: "4px 12px", background: "#EEF2FF", borderRadius: "20px", color: "#667EEA", fontSize: "12px", fontWeight: "700" }}>{role}</span>
+                  <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Target Role</div>
+                  <span className="px-sm py-1 bg-indigo-brand/10 border border-indigo-brand/20 text-indigo-brand rounded-full text-xs font-black inline-block mt-1">{role}</span>
                 </div>
                 {github && <div>
-                  <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "3px" }}>GitHub</div>
-                  <div style={{ color: "#475569", fontSize: "11px", wordBreak: "break-all" }}>{github}</div>
+                  <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">GitHub</div>
+                  <div className="font-medium text-on-surface-variant text-xs break-all">{github}</div>
                 </div>}
                 {linkedin && <div>
-                  <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "3px" }}>LinkedIn</div>
-                  <div style={{ color: "#475569", fontSize: "11px", wordBreak: "break-all" }}>{linkedin}</div>
+                  <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">LinkedIn</div>
+                  <div className="font-medium text-on-surface-variant text-xs break-all">{linkedin}</div>
                 </div>}
               </div>
             </div>
 
             {/* Resume Analysis Card */}
-            <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "20px", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
-              <div style={{ fontSize: "13px", fontWeight: "700", color: "#1E293B", marginBottom: "14px" }}>📊 Resume Analysis</div>
+            <div className="glass p-lg rounded-xxl">
+              <div className="text-sm font-black text-on-surface mb-md uppercase tracking-wide">📊 Resume Analysis</div>
               {atsScore > 0 ? (
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                    <span style={{ fontSize: "12px", color: "#64748B", fontWeight: "600" }}>ATS Match Score</span>
-                    <span style={{ fontSize: "16px", fontWeight: "800", color: atsScore >= 70 ? "#00B87C" : atsScore >= 50 ? "#F59E0B" : "#EF4444" }}>{atsScore}%</span>
+                <div className="animate-[fadeIn_0.4s_ease]">
+                  <div className="flex justify-between items-end mb-xs">
+                    <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">ATS Match Score</span>
+                    <span className={`text-xl font-black leading-none ${atsScore >= 70 ? 'text-success' : atsScore >= 50 ? 'text-warning' : 'text-error'}`}>{atsScore}%</span>
                   </div>
-                  <div style={{ height: "8px", background: "#F1F5F9", borderRadius: "4px", marginBottom: "10px" }}>
-                    <div style={{ height: "100%", width: atsScore + "%", background: atsScore >= 70 ? "linear-gradient(90deg,#00B87C,#00D4AA)" : atsScore >= 50 ? "linear-gradient(90deg,#F59E0B,#FBBF24)" : "linear-gradient(90deg,#EF4444,#F87171)", borderRadius: "4px", transition: "width 0.6s ease" }} />
+                  <div className="h-2 bg-surface-container rounded-full mb-sm overflow-hidden">
+                    <div className={`h-full rounded-full transition-all duration-700 ease-out ${atsScore >= 70 ? 'bg-gradient-to-r from-success to-[#00D4AA]' : atsScore >= 50 ? 'bg-gradient-to-r from-warning to-[#FBBF24]' : 'bg-gradient-to-r from-error to-[#F87171]'}`} style={{ width: `${atsScore}%` }} />
                   </div>
-                  <div style={{ fontSize: "11px", color: "#64748B" }}>{atsScore >= 70 ? "✅ Strong match for the role" : atsScore >= 50 ? "⚠️ Moderate — consider improving resume" : "❌ Low match — update your resume"}</div>
+                  <div className="text-xs font-semibold text-on-surface-variant/90">{atsScore >= 70 ? "✅ Strong match for the role" : atsScore >= 50 ? "⚠️ Moderate — consider improving resume" : "❌ Low match — update your resume"}</div>
                 </div>
               ) : (
-                <div style={{ textAlign: "center", padding: "16px 0" }}>
-                  <div style={{ fontSize: "28px", marginBottom: "8px" }}>📄</div>
-                  <div style={{ fontSize: "12px", color: "#94A3B8" }}>Upload your resume to see ATS score</div>
+                <div className="text-center py-md opacity-70">
+                  <div className="text-4xl mb-xs drop-shadow-sm">📄</div>
+                  <div className="text-xs font-semibold text-on-surface-variant">Upload your resume to see ATS score</div>
                 </div>
               )}
               {resumeText && (
-                <div style={{ marginTop: "12px", padding: "10px 12px", background: "#F8FAFC", borderRadius: "10px", border: "1px solid #E2E8F0" }}>
-                  <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", marginBottom: "4px", textTransform: "uppercase" }}>Resume Preview</div>
-                  <div style={{ fontSize: "11px", color: "#475569", lineHeight: "1.6", maxHeight: "72px", overflow: "hidden" }}>{resumeText.substring(0, 220)}...</div>
+                <div className="mt-md p-sm bg-surface-bright border border-surface-container rounded-xl">
+                  <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Resume Preview</div>
+                  <div className="text-[11px] font-medium text-on-surface-variant/80 leading-relaxed max-h-[72px] overflow-hidden">{resumeText.substring(0, 220)}...</div>
                 </div>
               )}
             </div>
@@ -982,46 +999,48 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
 
       {/* Job Board Modal */}
       {showJobs && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
-          <div style={{ background: "#fff", borderRadius: "20px", padding: "28px", maxWidth: "860px", width: "100%", maxHeight: "85vh", overflowY: "auto", boxShadow: "0 25px 50px rgba(0,0,0,0.3)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h2 style={{ color: "#1E293B", margin: 0 }}>💼 Job Board</h2>
-              <button onClick={() => setShowJobs(false)} style={{ padding: "8px 16px", background: "#F1F5F9", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", color: "#64748B" }}>✕ Close</button>
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[2000] flex items-center justify-center p-margin-mobile md:p-margin-desktop">
+          <div className="glass p-xl rounded-xxl w-full max-w-4xl max-h-[85vh] overflow-y-auto relative animate-[fadeIn_0.3s_ease]">
+            <div className="flex justify-between items-center mb-xl sticky top-0 bg-white/50 backdrop-blur-md p-sm -mx-sm -mt-sm rounded-xl z-10 border border-surface-container/50">
+              <h2 className="text-headline-sm font-headline-sm text-on-surface m-0">💼 Job Board</h2>
+              <button onClick={() => setShowJobs(false)} className="px-sm py-xs bg-surface-container/50 text-on-surface-variant rounded-lg font-bold hover:bg-surface-container transition-colors">✕ Close</button>
             </div>
-            <input value={jobSearch} onChange={e => setJobSearch(e.target.value)} placeholder="🔍 Search jobs by title or skills..." style={{ width: "100%", padding: "12px 16px", border: "1.5px solid #E2E8F0", borderRadius: "12px", fontSize: "14px", marginBottom: "20px", boxSizing: "border-box", outline: "none" }} />
+            <input value={jobSearch} onChange={e => setJobSearch(e.target.value)} placeholder="🔍 Search jobs by title or skills..." className="w-full p-md bg-surface-bright border border-surface-container rounded-xl text-sm font-medium text-on-surface mb-xl outline-none focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all shadow-sm" />
             {jobs.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "40px", color: "#94A3B8" }}>
-                <div style={{ fontSize: "48px", marginBottom: "12px" }}>📭</div>
-                <div>No jobs posted yet. Check back soon!</div>
+              <div className="text-center py-xxxl text-on-surface-variant opacity-80">
+                <div className="text-5xl mb-sm drop-shadow-sm">📭</div>
+                <div className="font-semibold text-body-base">No jobs posted yet. Check back soon!</div>
               </div>
             ) : (
               <div>
-                <div style={{ fontSize: "13px", color: "#64748B", marginBottom: "12px", fontWeight: "600" }}>{jobs.filter(j => !jobSearch || j.title?.toLowerCase().includes(jobSearch.toLowerCase()) || j.skills?.toLowerCase().includes(jobSearch.toLowerCase())).length} jobs available</div>
-                {jobs.filter(j => !jobSearch || j.title?.toLowerCase().includes(jobSearch.toLowerCase()) || j.skills?.toLowerCase().includes(jobSearch.toLowerCase())).map((job) => (
-                  <div key={job.id} style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: "16px", padding: "20px", marginBottom: "12px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
-                      <div>
-                        <h3 style={{ color: "#1E293B", margin: "0 0 4px", fontSize: "16px" }}>{job.title}</h3>
-                        <div style={{ fontSize: "13px", color: "#64748B" }}>{job.company_name || "Company"} {job.location ? "· " + job.location : ""}</div>
+                <div className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-sm">{jobs.filter(j => !jobSearch || j.title?.toLowerCase().includes(jobSearch.toLowerCase()) || j.skills?.toLowerCase().includes(jobSearch.toLowerCase())).length} jobs available</div>
+                <div className="flex flex-col gap-sm">
+                  {jobs.filter(j => !jobSearch || j.title?.toLowerCase().includes(jobSearch.toLowerCase()) || j.skills?.toLowerCase().includes(jobSearch.toLowerCase())).map((job) => (
+                    <div key={job.id} className="bg-surface-bright border border-surface-container rounded-xl p-md transition-all hover:border-surface-container-high hover:shadow-sm">
+                      <div className="flex justify-between items-start mb-sm">
+                        <div>
+                          <h3 className="m-0 text-body-lg font-bold text-on-surface mb-1">{job.title}</h3>
+                          <div className="text-xs font-semibold text-on-surface-variant">{job.company_name || "Company"} {job.location ? "· " + job.location : ""}</div>
+                        </div>
+                        <div className="text-right">
+                          {job.salary_min > 0 && <div className="text-sm font-black text-success">₹{job.salary_min}L – ₹{job.salary_max}L/yr</div>}
+                          <div className="text-[11px] font-semibold text-on-surface-variant mt-1 uppercase">{new Date(job.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</div>
+                        </div>
                       </div>
-                      <div style={{ textAlign: "right" }}>
-                        {job.salary_min > 0 && <div style={{ fontSize: "13px", fontWeight: "700", color: "#00B87C" }}>₹{job.salary_min}L – ₹{job.salary_max}L/yr</div>}
-                        <div style={{ fontSize: "11px", color: "#94A3B8" }}>{new Date(job.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</div>
-                      </div>
+                      {job.description && <p className="m-0 mb-md text-sm font-medium text-on-surface-variant/90 leading-relaxed">{job.description.substring(0, 150)}{job.description.length > 150 ? "..." : ""}</p>}
+                      {job.skills && (
+                        <div className="flex flex-wrap gap-xs mb-md">
+                          {job.skills.split(",").map((s: string) => s.trim()).filter(Boolean).map((skill: string, i: number) => (
+                            <span key={i} className="px-sm py-1 bg-indigo-brand/10 text-indigo-brand rounded-full text-[11px] font-bold border border-indigo-brand/20">{skill}</span>
+                          ))}
+                        </div>
+                      )}
+                      <button onClick={() => applyJob(job.id)} className={`px-lg py-sm rounded-xl font-bold text-xs transition-all ${appliedJobs.includes(job.id) ? 'bg-success/10 text-success border border-success/30 cursor-default' : 'bg-success text-white hover:shadow-[0_4px_15px_rgba(0,184,124,0.3)] hover:-translate-y-0.5 cursor-pointer'}`}>
+                        {appliedJobs.includes(job.id) ? "✅ Applied!" : "Apply Now →"}
+                      </button>
                     </div>
-                    {job.description && <p style={{ color: "#475569", fontSize: "13px", margin: "0 0 10px", lineHeight: "1.5" }}>{job.description.substring(0, 150)}{job.description.length > 150 ? "..." : ""}</p>}
-                    {job.skills && (
-                      <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "12px" }}>
-                        {job.skills.split(",").map((s: string) => s.trim()).filter(Boolean).map((skill: string, i: number) => (
-                          <span key={i} style={{ padding: "3px 10px", background: "#EEF2FF", borderRadius: "20px", color: "#667EEA", fontSize: "11px", fontWeight: "600" }}>{skill}</span>
-                        ))}
-                      </div>
-                    )}
-                    <button onClick={() => applyJob(job.id)} style={{ padding: "9px 24px", background: appliedJobs.includes(job.id) ? "#F0FDF4" : "linear-gradient(135deg,#00B87C,#00D4AA)", color: appliedJobs.includes(job.id) ? "#16A34A" : "#fff", border: appliedJobs.includes(job.id) ? "1.5px solid #BBF7D0" : "none", borderRadius: "10px", fontWeight: "700", cursor: appliedJobs.includes(job.id) ? "default" : "pointer", fontSize: "13px" }}>
-                      {appliedJobs.includes(job.id) ? "✅ Applied!" : "Apply Now →"}
-                    </button>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -1030,45 +1049,45 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
 
       {/* Score History Modal */}
       {showHistory && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
-          <div style={{ background: "#fff", borderRadius: "20px", padding: "28px", maxWidth: "800px", width: "100%", maxHeight: "85vh", overflowY: "auto", boxShadow: "0 25px 50px rgba(0,0,0,0.3)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h2 style={{ color: "#1E293B", margin: 0 }}>📊 My Score History</h2>
-              <button onClick={() => setShowHistory(false)} style={{ padding: "8px 16px", background: "#F1F5F9", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "700", color: "#64748B" }}>✕ Close</button>
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[2000] flex items-center justify-center p-margin-mobile md:p-margin-desktop">
+          <div className="glass p-xl rounded-xxl w-full max-w-4xl max-h-[85vh] overflow-y-auto relative animate-[fadeIn_0.3s_ease]">
+            <div className="flex justify-between items-center mb-xl sticky top-0 bg-white/50 backdrop-blur-md p-sm -mx-sm -mt-sm rounded-xl z-10 border border-surface-container/50">
+              <h2 className="text-headline-sm font-headline-sm text-on-surface m-0">📊 My Score History</h2>
+              <button onClick={() => setShowHistory(false)} className="px-sm py-xs bg-surface-container/50 text-on-surface-variant rounded-lg font-bold hover:bg-surface-container transition-colors">✕ Close</button>
             </div>
             {bestScore && (
-              <div style={{ background: "linear-gradient(135deg,#667EEA11,#764BA211)", border: "1.5px solid #667EEA33", borderRadius: "16px", padding: "20px", marginBottom: "20px", display: "flex", gap: "20px", flexWrap: "wrap" }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "12px", color: "#94A3B8", marginBottom: "4px" }}>🏆 Personal Best</div>
-                  <div style={{ fontSize: "36px", fontWeight: "800", color: "#667EEA" }}>{bestScore.overall_score}%</div>
-                  <div style={{ fontSize: "13px", color: "#64748B" }}>{new Date(bestScore.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+              <div className="bg-indigo-brand/5 border border-indigo-brand/20 rounded-xl p-lg mb-xl flex flex-wrap gap-lg">
+                <div className="flex-1 min-w-[150px]">
+                  <div className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">🏆 Personal Best</div>
+                  <div className="text-5xl font-black text-indigo-brand mb-1 leading-none">{bestScore.overall_score}%</div>
+                  <div className="text-xs font-semibold text-on-surface-variant uppercase">{new Date(bestScore.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
                 </div>
-                {([["ATS", bestScore.ats_score, "#00B87C"], ["Test", bestScore.test_score, "#F59E0B"], ["Interview", bestScore.interview_score, "#A78BFA"], ["Authenticity", bestScore.authenticity_score, "#00D4FF"]] as [string, number, string][]).map(([l, v, c]) => (
-                  <div key={l} style={{ textAlign: "center", minWidth: "70px" }}>
-                    <div style={{ fontSize: "11px", color: "#94A3B8", marginBottom: "4px" }}>{l}</div>
-                    <div style={{ fontSize: "24px", fontWeight: "800", color: c }}>{v ?? "—"}%</div>
+                {([["ATS", bestScore.ats_score, "text-success"], ["Test", bestScore.test_score, "text-warning"], ["Interview", bestScore.interview_score, "text-[#8B5CF6]"], ["Authenticity", bestScore.authenticity_score, "text-[#00D4FF]"]] as [string, number, string][]).map(([l, v, colorClass]) => (
+                  <div key={l} className="text-center min-w-[80px]">
+                    <div className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">{l}</div>
+                    <div className={`text-3xl font-black ${colorClass}`}>{v ?? "—"}%</div>
                   </div>
                 ))}
               </div>
             )}
             {history.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "40px", color: "#94A3B8" }}>
-                <div style={{ fontSize: "48px", marginBottom: "12px" }}>📭</div>
-                <div>No test history yet. Complete your first assessment!</div>
+              <div className="text-center py-xxxl text-on-surface-variant opacity-80">
+                <div className="text-5xl mb-sm drop-shadow-sm">📭</div>
+                <div className="font-semibold text-body-base">No test history yet. Complete your first assessment!</div>
               </div>
             ) : (
-              <div>
+              <div className="flex flex-col gap-sm">
                 {history.map((h: any, i: number) => (
-                  <div key={i} style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: "12px", padding: "16px", marginBottom: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+                  <div key={i} className="bg-surface-bright border border-surface-container rounded-xl p-md flex justify-between items-center flex-wrap gap-md transition-all hover:border-surface-container-high hover:shadow-sm">
                     <div>
-                      <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "15px" }}>{h.overall_score}% Overall</div>
-                      <div style={{ fontSize: "12px", color: "#64748B", marginTop: "2px" }}>{new Date(h.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                      <div className="font-black text-on-surface text-body-lg mb-0.5">{h.overall_score}% Overall</div>
+                      <div className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">{new Date(h.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
                     </div>
-                    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                      {([["ATS", h.ats_score, "#00B87C"], ["Test", h.test_score, "#F59E0B"], ["Interview", h.interview_score, "#A78BFA"]] as [string, number, string][]).map(([l, v, c]) => (
-                        <div key={l} style={{ textAlign: "center" }}>
-                          <div style={{ fontSize: "10px", color: "#94A3B8" }}>{l}</div>
-                          <div style={{ fontSize: "15px", fontWeight: "700", color: c }}>{v ?? "—"}%</div>
+                    <div className="flex gap-md flex-wrap">
+                      {([["ATS", h.ats_score, "text-success"], ["Test", h.test_score, "text-warning"], ["Interview", h.interview_score, "text-[#8B5CF6]"]] as [string, number, string][]).map(([l, v, colorClass]) => (
+                        <div key={l} className="text-center">
+                          <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">{l}</div>
+                          <div className={`text-lg font-black ${colorClass}`}>{v ?? "—"}%</div>
                         </div>
                       ))}
                     </div>
@@ -1082,71 +1101,71 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
 
       {/* ── K-LEVEL MODAL (single render, no duplicate) ── */}
       {klevelMode && klevelQuestion && !klevelResult && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "#fff", zIndex: 1000, display: "flex", overflow: "hidden" }}>
+        <div className="fixed inset-0 bg-white z-[1000] flex overflow-hidden">
 
           {/* LEFT SIDE - LIVE CAMERA (takes 35% of screen) */}
-          <div style={{ width: "35%", height: "100%", position: "relative", background: "#0f172a", borderRight: "1px solid #E2E8F0" }}>
-            <video id="klevel-active-marker" ref={klevelVideoRef} autoPlay muted playsInline style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scaleX(-1)", filter: klevelFaceStatus === "missing" ? "sepia(1) hue-rotate(-50deg) saturate(3)" : "none", transition: "filter 0.3s" }} />
-            <canvas ref={klevelCanvasRef} style={{ display: "none" }} width={320} height={240} />
+          <div className="w-[35%] h-full relative bg-[#0f172a] border-r border-surface-container">
+            <video id="klevel-active-marker" ref={klevelVideoRef} autoPlay muted playsInline className={`w-full h-full object-cover -scale-x-100 transition-all duration-300 ${klevelFaceStatus === "missing" ? 'sepia hue-rotate-[-50deg] saturate-[3]' : ''}`} />
+            <canvas ref={klevelCanvasRef} className="hidden" width={320} height={240} />
 
             {/* Red flash for violations */}
-            <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(220, 38, 38, 0.3)", opacity: klevelFaceStatus === "missing" || klevelMotionAlert ? 1 : 0, transition: "opacity 0.2s", zIndex: 1, pointerEvents: "none" }} />
+            <div className={`absolute inset-0 bg-error/30 transition-opacity duration-200 z-[1] pointer-events-none ${klevelFaceStatus === "missing" || klevelMotionAlert ? 'opacity-100' : 'opacity-0'}`} />
 
-            <div style={{ position: "absolute", bottom: "24px", left: "24px", right: "24px", background: klevelFaceStatus === "missing" ? "#FEF2F2" : klevelMotionAlert ? "#FFF7ED" : "rgba(15,23,42,0.8)", border: "1.5px solid " + (klevelFaceStatus === "missing" ? "#FECACA" : klevelMotionAlert ? "#FED7AA" : "rgba(255,255,255,0.2)"), borderRadius: "14px", padding: "16px", display: "flex", flexDirection: "column", gap: "6px", backdropFilter: "blur(10px)", zIndex: 2 }}>
-              {klevelFaceStatus === "missing" ? <div style={{ color: "#DC2626", fontWeight: "800", fontSize: "15px", textAlign: "center" }}>⚠️ Face Not Detected</div> :
-                klevelMotionAlert ? <div style={{ color: "#EA580C", fontWeight: "800", fontSize: "15px", textAlign: "center" }}>⚠️ Suspicious Movement</div> :
-                  <div style={{ color: "#38bdf8", fontSize: "15px", fontWeight: "800", textAlign: "center" }}>🔒 Proctoring Camera Active</div>}
-              <div style={{ color: klevelFaceStatus === "missing" ? "#DC2626" : "#cbd5e1", fontSize: "13px", textAlign: "center", fontWeight: "600" }}>Violations: {violations}/3 · 3 strikes = Auto-Terminate</div>
+            <div className={`absolute bottom-6 left-6 right-6 rounded-2xl p-md flex flex-col gap-1.5 backdrop-blur-md z-[2] transition-colors border-2 ${klevelFaceStatus === "missing" ? 'bg-error/10 border-error/30' : klevelMotionAlert ? 'bg-warning/10 border-warning/30' : 'bg-[#0f172a]/80 border-white/20'}`}>
+              {klevelFaceStatus === "missing" ? <div className="text-error font-black text-sm text-center tracking-wide uppercase">⚠️ Face Not Detected</div> :
+                klevelMotionAlert ? <div className="text-[#ea580c] font-black text-sm text-center tracking-wide uppercase">⚠️ Suspicious Movement</div> :
+                  <div className="text-[#38bdf8] text-sm font-black text-center tracking-wide uppercase">🔒 Proctoring Camera Active</div>}
+              <div className={`text-xs text-center font-bold tracking-wide ${klevelFaceStatus === "missing" ? 'text-error' : 'text-slate-300'}`}>Violations: {violations}/3 · 3 strikes = Auto-Terminate</div>
             </div>
           </div>
 
           {/* RIGHT SIDE - FULL WHITE COMPLETE QUESTION SCREEN (65% of screen) */}
-          <div style={{ width: "65%", height: "100%", overflowY: "auto", padding: "60px 80px", background: "#ffffff", display: "flex", flexDirection: "column" }}>
-            <div style={{ maxWidth: "800px", margin: "0 auto", width: "100%" }}>
+          <div className="w-[65%] h-full overflow-y-auto px-xxl py-[60px] bg-white flex flex-col custom-scrollbar">
+            <div className="max-w-4xl mx-auto w-full">
               {/* Progress header */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "40px" }}>
+              <div className="flex justify-between items-end mb-xxl">
                 <div>
-                  <div style={{ fontSize: "14px", color: "#64748B", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: "800" }}>Adaptive K-Level Skill Test</div>
-                  <div style={{ display: "flex", gap: "8px" }}>
+                  <div className="text-sm text-on-surface-variant uppercase tracking-[0.1em] font-black mb-sm">Adaptive K-Level Skill Test</div>
+                  <div className="flex gap-sm">
                     {[1, 2, 3, 4, 5].map(l => (
-                      <div key={l} style={{ width: "48px", height: "8px", borderRadius: "4px", background: l < klevelLevel ? "#00B87C" : l === klevelLevel ? "#667EEA" : "#F1F5F9", transition: "background 0.3s" }} />
+                      <div key={l} className={`w-12 h-2 rounded-full transition-colors duration-300 ${l < klevelLevel ? 'bg-success' : l === klevelLevel ? 'bg-indigo-brand' : 'bg-surface-container'}`} />
                     ))}
                   </div>
                 </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: "42px", fontWeight: "900", color: "#667EEA", lineHeight: "1" }}>K{klevelLevel}</div>
-                  <div style={{ fontSize: "14px", color: "#64748B", fontWeight: "700", marginTop: "6px" }}>Score: {klevelScore}/15</div>
+                <div className="text-right">
+                  <div className="text-5xl font-black text-indigo-brand leading-none">K{klevelLevel}</div>
+                  <div className="text-sm text-on-surface-variant font-bold mt-1">Score: {klevelScore}/15</div>
                 </div>
               </div>
 
               {/* Question Box */}
-              <div style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "30px", marginBottom: "30px" }}>
-                <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
-                  <span style={{ padding: "8px 16px", background: "#667EEA", borderRadius: "20px", color: "#fff", fontSize: "13px", fontWeight: "800" }}>
+              <div className="bg-surface-bright border-2 border-surface-container rounded-3xl p-xl mb-xl shadow-sm">
+                <div className="flex flex-wrap gap-sm mb-lg">
+                  <span className="px-md py-sm bg-indigo-brand rounded-full text-white text-xs font-black uppercase tracking-wider">
                     K{klevelLevel} — {klevelLevel === 1 ? "Easy" : klevelLevel === 2 ? "Medium" : klevelLevel === 3 ? "Hard" : klevelLevel === 4 ? "Advanced" : "Expert"}
                   </span>
-                  <span style={{ padding: "8px 16px", background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", color: "#475569", fontSize: "13px", fontWeight: "700" }}>{klevelQuestion.marks} Mark{klevelQuestion.marks > 1 ? "s" : ""}</span>
+                  <span className="px-md py-sm bg-white border-2 border-surface-container rounded-full text-on-surface-variant text-xs font-bold uppercase tracking-wider">{klevelQuestion.marks} Mark{klevelQuestion.marks > 1 ? "s" : ""}</span>
                 </div>
-                <p style={{ color: "#0F172A", fontSize: "20px", fontWeight: "700", margin: 0, lineHeight: "1.6" }}>{klevelQuestion.question_text}</p>
+                <p className="text-on-surface text-xl font-bold m-0 leading-relaxed">{klevelQuestion.question_text}</p>
               </div>
 
               {/* Feedback or options */}
               {klevelFeedback ? (
-                <div style={{ padding: "24px", background: klevelFeedback.is_correct ? "#F0FDF4" : "#FEF2F2", border: "2px solid " + (klevelFeedback.is_correct ? "#22C55E" : "#EF4444"), borderRadius: "20px", marginBottom: "30px" }}>
-                  <div style={{ fontWeight: "800", color: klevelFeedback.is_correct ? "#16A34A" : "#DC2626", marginBottom: "12px", fontSize: "20px" }}>
+                <div className={`p-xl rounded-3xl border-2 mb-xl animate-[fadeIn_0.3s_ease] ${klevelFeedback.is_correct ? 'bg-success/10 border-success' : 'bg-error/10 border-error'}`}>
+                  <div className={`font-black mb-sm text-xl ${klevelFeedback.is_correct ? 'text-success' : 'text-error'}`}>
                     {klevelFeedback.is_correct
                       ? "✅ Outstanding! +" + klevelFeedback.marks_earned + " marks"
                       : "❌ Incorrect!"}
                   </div>
-                  {!klevelFeedback.is_correct && <div style={{ color: "#1E293B", fontWeight: "800", marginBottom: "8px", fontSize: "15px" }}>Correct answer: {klevelFeedback.correct_answer}</div>}
-                  <div style={{ color: "#475569", fontSize: "15px", lineHeight: "1.6", fontWeight: "500" }}>{klevelFeedback.explanation}</div>
+                  {!klevelFeedback.is_correct && <div className="text-on-surface font-black mb-xs text-body-lg">Correct answer: {klevelFeedback.correct_answer}</div>}
+                  <div className="text-on-surface-variant/90 text-body-base leading-relaxed font-semibold">{klevelFeedback.explanation}</div>
                 </div>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "30px" }}>
+                <div className="flex flex-col gap-md mb-xl">
                   {(["A", "B", "C", "D"] as const).map(opt => (
                     <button key={opt} onClick={() => setKlevelSelected(opt)}
-                      style={{ padding: "20px 24px", borderRadius: "16px", border: "2px solid " + (klevelSelected === opt ? "#667EEA" : "#E2E8F0"), background: klevelSelected === opt ? "#EEF2FF" : "#fff", color: klevelSelected === opt ? "#4338CA" : "#1E293B", fontWeight: klevelSelected === opt ? "800" : "600", cursor: "pointer", textAlign: "left", fontSize: "16px", transition: "all 0.2s" }}>
-                      <span style={{ display: "inline-block", width: "28px", height: "28px", background: klevelSelected === opt ? "#667EEA" : "#F1F5F9", color: klevelSelected === opt ? "#fff" : "#64748B", borderRadius: "50%", textAlign: "center", lineHeight: "28px", marginRight: "14px", fontSize: "13px", fontWeight: "800" }}>{opt}</span>
+                      className={`p-lg rounded-2xl border-2 text-left text-body-base transition-all hover:-translate-y-0.5 flex items-center ${klevelSelected === opt ? 'border-indigo-brand bg-indigo-brand/5 text-indigo-brand font-black shadow-sm' : 'border-surface-container bg-white text-on-surface font-bold hover:border-surface-container-high'}`}>
+                      <span className={`inline-block w-8 h-8 rounded-full text-center leading-8 mr-md text-sm font-black shrink-0 transition-colors ${klevelSelected === opt ? 'bg-indigo-brand text-white' : 'bg-surface-container/50 text-on-surface-variant'}`}>{opt}</span>
                       {klevelQuestion["option_" + opt.toLowerCase()]}
                     </button>
                   ))}
@@ -1155,7 +1174,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
 
               {!klevelFeedback && (
                 <button onClick={submitKlevelAnswer} disabled={klevelLoading || !klevelSelected}
-                  style={{ width: "100%", padding: "22px", background: klevelLoading || !klevelSelected ? "#E2E8F0" : "#667EEA", color: klevelLoading || !klevelSelected ? "#94A3B8" : "#fff", border: "none", borderRadius: "16px", fontWeight: "800", fontSize: "18px", cursor: klevelLoading || !klevelSelected ? "not-allowed" : "pointer", transition: "all 0.2s", boxShadow: klevelLoading || !klevelSelected ? "none" : "0 8px 25px rgba(102,126,234,0.4)" }}>
+                  className={`w-full py-xl rounded-2xl font-black text-lg transition-all ${klevelLoading || !klevelSelected ? 'bg-surface-container text-on-surface-variant/50 cursor-not-allowed' : 'bg-indigo-brand text-white hover:shadow-[0_8px_30px_rgba(102,126,234,0.4)] hover:-translate-y-1 cursor-pointer'}`}>
                   {klevelLoading ? "Evaluating Answer..." : "Submit Answer →"}
                 </button>
               )}
@@ -1165,34 +1184,34 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
       )}
 
       {step === 2 && klevelResult && (
-        <div style={{ maxWidth: "680px", margin: "0 auto" }}>
-          <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "32px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", textAlign: "center" }}>
-            <div style={{ fontSize: "52px", marginBottom: "12px" }}>🧠</div>
-            <h3 style={{ color: "#1E293B", margin: "0 0 8px", fontSize: "22px" }}>K-Level Test Complete!</h3>
-            <div style={{ fontSize: "44px", fontWeight: "800", color: klevelResult.tier_color || "#667EEA", margin: "12px 0" }}>{klevelResult.total_score}/15</div>
-            <span style={{ padding: "6px 22px", borderRadius: "20px", background: (klevelResult.tier_color || "#667EEA") + "22", color: klevelResult.tier_color || "#667EEA", fontWeight: "700", fontSize: "16px" }}>{klevelResult.tier}</span>
+        <div className="max-w-3xl mx-auto w-full animate-[fadeIn_0.5s_ease]">
+          <div className="glass p-xxxl rounded-xxxl text-center shadow-xl">
+            <div className="text-6xl mb-md drop-shadow-sm">🧠</div>
+            <h3 className="text-headline-sm font-headline-sm text-on-surface m-0 mb-sm">K-Level Test Complete!</h3>
+            <div className="text-7xl font-black m-0 my-md" style={{ color: klevelResult.tier_color || "#667EEA" }}>{klevelResult.total_score}/15</div>
+            <span className="px-lg py-sm rounded-full font-black text-lg inline-block border" style={{ backgroundColor: `${klevelResult.tier_color || "#667EEA"}15`, color: klevelResult.tier_color || "#667EEA", borderColor: `${klevelResult.tier_color || "#667EEA"}30` }}>{klevelResult.tier}</span>
             {klevelResult.status === "terminated" && (
-              <div style={{ color: "#DC2626", fontWeight: "700", marginTop: "10px" }}>❌ Terminated due to malpractice violations.</div>
+              <div className="text-error font-black mt-md bg-error/10 p-sm rounded-lg inline-block border border-error/20">❌ Terminated due to malpractice violations.</div>
             )}
-            <div style={{ color: "#64748B", fontSize: "14px", marginTop: "12px", marginBottom: "20px" }}>{klevelResult.message}</div>
-            <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginBottom: "24px" }}>
+            <div className="text-on-surface-variant font-medium text-body-base mt-lg mb-xl max-w-lg mx-auto leading-relaxed">{klevelResult.message}</div>
+            <div className="flex gap-sm justify-center mb-xl">
               {[1, 2, 3, 4, 5].map(l => (
-                <div key={l} style={{ textAlign: "center" }}>
-                  <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: l < klevelLevel ? "#00B87C" : l === klevelLevel ? "#667EEA" : "#E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: "700", fontSize: "13px", margin: "0 auto 4px" }}>K{l}</div>
-                  <div style={{ fontSize: "10px", color: "#94A3B8" }}>{["", "Easy", "Mid", "Hard", "Adv", "Expert"][l]}</div>
+                <div key={l} className="text-center">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-black text-sm mx-auto mb-xs shadow-sm transition-colors ${l < klevelLevel ? 'bg-success' : l === klevelLevel ? 'bg-indigo-brand' : 'bg-surface-container text-on-surface-variant/50 shadow-none'}`}>K{l}</div>
+                  <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{["", "Easy", "Mid", "Hard", "Adv", "Expert"][l]}</div>
                 </div>
               ))}
             </div>
-            <div style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: "12px", padding: "14px", marginBottom: "24px", fontSize: "13px", color: "#64748B" }}>
-              🎯 Skill score of <strong style={{ color: "#667EEA" }}>{Math.round((klevelResult.total_score / 15) * 100)}%</strong> will be included in your final results.
+            <div className="bg-surface-bright border border-surface-container rounded-xl p-md mb-xl text-sm font-semibold text-on-surface-variant">
+              🎯 Skill score of <strong className="text-indigo-brand text-body-base font-black">{Math.round((klevelResult.total_score / 15) * 100)}%</strong> will be included in your final results.
             </div>
-            <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+            <div className="flex flex-col sm:flex-row gap-md justify-center">
               <button onClick={startKlevel}
-                style={{ padding: "12px 24px", background: "#F1F5F9", color: "#64748B", border: "none", borderRadius: "12px", fontWeight: "700", cursor: "pointer", fontSize: "14px" }}>
+                className="px-xl py-md bg-surface-container/50 text-on-surface-variant border border-surface-container rounded-xl font-bold text-sm cursor-pointer hover:bg-surface-container transition-colors">
                 🔄 Retry Test
               </button>
               <button onClick={() => setStep(3)}
-                style={{ padding: "12px 28px", background: "linear-gradient(135deg,#00B87C,#00D4AA)", color: "#fff", border: "none", borderRadius: "12px", fontWeight: "700", cursor: "pointer", fontSize: "15px", boxShadow: "0 4px 15px rgba(0,184,124,0.4)" }}>
+                className="px-xxl py-md bg-gradient-to-r from-success to-[#00D4AA] text-white border-none rounded-xl font-black text-body-base cursor-pointer hover:shadow-[0_8px_25px_rgba(0,184,124,0.4)] hover:-translate-y-0.5 transition-all">
                 Continue to Voice Pitch →
               </button>
             </div>
@@ -1202,65 +1221,67 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
 
       {/* ── STEP 2: K-Level Start Screen ── */}
       {step === 2 && !klevelMode && !klevelResult && (
-        <div style={{ maxWidth: "680px", margin: "0 auto" }}>
-          <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "32px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", textAlign: "center" }}>
-            <div style={{ fontSize: "48px", marginBottom: "12px" }}>🧠</div>
-            <h2 style={{ color: "#1E293B", margin: "0 0 8px" }}>Adaptive K-Level Skill Test</h2>
-            <p style={{ color: "#64748B", fontSize: "14px", margin: "0 0 24px" }}>Questions get progressively harder. Answer correctly to advance levels.</p>
-            <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "28px", flexWrap: "wrap" }}>
-              {([["K1", "Easy", "#22C55E", "1"], ["K2", "Medium", "#F59E0B", "2"], ["K3", "Hard", "#F97316", "3"], ["K4", "Advanced", "#EF4444", "4"], ["K5", "Expert", "#8B5CF6", "5"]] as string[][]).map(([k, label, color, marks]) => (
-                <div key={k} style={{ background: color + "15", border: "1.5px solid " + color + "44", borderRadius: "12px", padding: "10px 16px", minWidth: "80px" }}>
-                  <div style={{ fontWeight: "800", color: color, fontSize: "16px" }}>{k}</div>
-                  <div style={{ color: "#64748B", fontSize: "11px" }}>{label}</div>
-                  <div style={{ color: color, fontSize: "12px", fontWeight: "600" }}>{marks} mark{Number(marks) > 1 ? "s" : ""}</div>
+        <div className="max-w-3xl mx-auto w-full animate-[slideUp_0.4s_ease]">
+          <div className="glass p-xxxl rounded-xxxl text-center shadow-lg border border-surface-container/50">
+            <div className="text-6xl mb-md drop-shadow-sm">🧠</div>
+            <h2 className="text-headline-md font-headline-md text-on-surface m-0 mb-sm">Adaptive K-Level Skill Test</h2>
+            <p className="text-on-surface-variant font-medium text-body-base m-0 mb-xl max-w-lg mx-auto">Questions get progressively harder. Answer correctly to advance levels.</p>
+            <div className="flex justify-center gap-sm mb-xxl flex-wrap">
+              {([["K1", "Easy", "text-success bg-success/10 border-success/30", "1"], ["K2", "Medium", "text-warning bg-warning/10 border-warning/30", "2"], ["K3", "Hard", "text-[#f97316] bg-[#f97316]/10 border-[#f97316]/30", "3"], ["K4", "Advanced", "text-error bg-error/10 border-error/30", "4"], ["K5", "Expert", "text-[#8B5CF6] bg-[#8B5CF6]/10 border-[#8B5CF6]/30", "5"]] as string[][]).map(([k, label, classNames, marks]) => (
+                <div key={k} className={`border rounded-2xl p-sm min-w-[90px] flex flex-col items-center justify-center transition-transform hover:-translate-y-1 ${classNames.split(' ').slice(1).join(' ')}`}>
+                  <div className={`font-black text-xl leading-none mb-1 ${classNames.split(' ')[0]}`}>{k}</div>
+                  <div className="text-on-surface-variant/80 text-[10px] font-bold uppercase tracking-widest mb-1">{label}</div>
+                  <div className={`text-xs font-black ${classNames.split(' ')[0]}`}>{marks} mark{Number(marks) > 1 ? "s" : ""}</div>
                 </div>
               ))}
             </div>
-            <div style={{ background: "#FFF7ED", border: "1.5px solid #FED7AA", borderRadius: "12px", padding: "14px", marginBottom: "20px" }}>
-              <div style={{ color: "#92400E", fontSize: "13px", fontWeight: "600" }}>🔒 High-Security Mode: Camera + face detection active. Tab switching = violation. 3 strikes = auto-terminate.</div>
+            <div className="bg-warning/10 border border-warning/30 rounded-xl p-md mb-md text-left inline-block">
+              <div className="text-[#92400E] text-xs font-bold leading-relaxed">🔒 <strong className="uppercase tracking-wider">High-Security Mode:</strong> Camera + face detection active. Tab switching = violation. 3 strikes = auto-terminate.</div>
             </div>
-            <div style={{ background: "#F8FAFC", borderRadius: "12px", padding: "12px", marginBottom: "24px" }}>
-              <div style={{ color: "#64748B", fontSize: "13px" }}>✅ Correct → advance level &nbsp;|&nbsp; ❌ Wrong → test stops &nbsp;|&nbsp; 🏆 Max: 15 marks &nbsp;|&nbsp; ⚠️ 3 violations = terminated</div>
+            <div className="bg-surface-bright border border-surface-container rounded-xl p-sm mb-xl text-xs font-semibold text-on-surface-variant inline-block">
+              ✅ Correct → advance level &nbsp;|&nbsp; ❌ Wrong → test stops &nbsp;|&nbsp; 🏆 Max: 15 marks &nbsp;|&nbsp; ⚠️ 3 violations = terminated
             </div>
-            <button onClick={startKlevel} disabled={klevelLoading}
-              style={{ padding: "16px 40px", background: "linear-gradient(135deg,#667EEA,#764BA2)", color: "#fff", border: "none", borderRadius: "14px", fontWeight: "700", cursor: "pointer", fontSize: "16px", boxShadow: "0 4px 15px rgba(102,126,234,0.4)", opacity: klevelLoading ? 0.7 : 1 }}>
-              {klevelLoading ? "⏳ Loading question..." : "🚀 Start K-Level Test"}
-            </button>
+            <div className="block">
+              <button onClick={startKlevel} disabled={klevelLoading}
+                className={`px-xxl py-lg text-white border-none rounded-2xl font-black text-lg cursor-pointer transition-all ${klevelLoading ? 'bg-surface-container opacity-70 cursor-not-allowed' : 'bg-gradient-to-r from-indigo-brand to-[#764BA2] hover:shadow-[0_8px_30px_rgba(102,126,234,0.4)] hover:-translate-y-1'}`}>
+                {klevelLoading ? "⏳ Loading question..." : "🚀 Start K-Level Test"}
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* ── STEP 3: Voice Pitch ── */}
       {step === 3 && (
-        <div style={{ maxWidth: "680px", margin: "0 auto" }}>
-          <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "32px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}>
-            <div style={{ textAlign: "center", marginBottom: "24px" }}>
-              <div style={{ fontSize: "48px", marginBottom: "8px" }}>🎤</div>
-              <h2 style={{ color: "#1E293B", margin: "0 0 8px" }}>Voice Pitch</h2>
-              <p style={{ color: "#64748B", fontSize: "14px", margin: 0 }}>Record your 60-second pitch. Tell us why you're the right candidate.</p>
+        <div className="max-w-3xl mx-auto w-full animate-[slideUp_0.4s_ease]">
+          <div className="glass p-xxxl rounded-xxxl shadow-lg border border-surface-container/50">
+            <div className="text-center mb-xl">
+              <div className="text-6xl mb-sm drop-shadow-sm">🎤</div>
+              <h2 className="text-headline-md font-headline-md text-on-surface m-0 mb-xs">Voice Pitch</h2>
+              <p className="text-on-surface-variant font-medium text-body-base m-0 max-w-md mx-auto">Record your 60-second pitch. Tell us why you're the right candidate.</p>
             </div>
             {klevelResult && (
-              <div style={{ background: "linear-gradient(135deg,#667EEA11,#764BA211)", border: "1.5px solid #667EEA33", borderRadius: "12px", padding: "12px 16px", marginBottom: "20px", display: "flex", alignItems: "center", gap: "12px" }}>
-                <div style={{ fontSize: "28px" }}>🧠</div>
+              <div className="bg-indigo-brand/5 border border-indigo-brand/20 rounded-2xl p-md mb-xl flex items-center gap-md">
+                <div className="text-4xl">🧠</div>
                 <div>
-                  <div style={{ fontSize: "12px", color: "#94A3B8" }}>K-Level Score (carried forward)</div>
-                  <div style={{ fontWeight: "800", color: "#667EEA", fontSize: "18px" }}>{klevelResult.total_score}/15 — {klevelResult.tier}</div>
+                  <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-0.5">K-Level Score (carried forward)</div>
+                  <div className="font-black text-indigo-brand text-xl">{klevelResult.total_score}/15 — {klevelResult.tier}</div>
                 </div>
               </div>
             )}
-            <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
+            <div className="flex flex-col sm:flex-row gap-sm mb-xl bg-surface-bright p-xs rounded-xl border border-surface-container shadow-sm">
               {(["video", "audio", "text"] as const).map(m => (
                 <button key={m} onClick={() => setPitchMode(m)}
-                  style={{ flex: 1, padding: "10px", borderRadius: "10px", border: "1.5px solid " + (pitchMode === m ? "#667EEA" : "#E2E8F0"), background: pitchMode === m ? "#EEF2FF" : "#F8FAFC", color: pitchMode === m ? "#667EEA" : "#64748B", fontWeight: pitchMode === m ? "700" : "400", cursor: "pointer", fontSize: "13px" }}>
+                  className={`flex-1 py-sm rounded-lg font-bold text-sm transition-all ${pitchMode === m ? 'bg-white shadow-sm text-indigo-brand border border-surface-container' : 'bg-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 border border-transparent'}`}>
                   {m === "video" ? "📹 Video" : m === "audio" ? "🎙️ Audio" : "✍️ Text"}
                 </button>
               ))}
             </div>
             {pitchMode === "video" && (
-              <div style={{ marginBottom: "20px" }}>
-                <video ref={videoPreviewRef} autoPlay muted playsInline style={{ width: "100%", borderRadius: "12px", background: "#000", maxHeight: "240px", objectFit: "cover", marginBottom: "12px" }} />
-                <video ref={videoRef} style={{ display: "none" }} />
-                <div style={{ display: "flex", gap: "10px" }}>
+              <div className="mb-xl animate-[fadeIn_0.3s_ease]">
+                <video ref={videoPreviewRef} autoPlay muted playsInline className="w-full rounded-2xl bg-black max-h-[300px] object-cover mb-md shadow-md border border-surface-container" />
+                <video ref={videoRef} className="hidden" />
+                <div className="flex gap-sm">
                   {videoMode === "idle" && (
                     <button onClick={async () => {
                       try {
@@ -1275,57 +1296,60 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                         setVideoMode("recording");
                         timerRef.current = setInterval(() => setRecTimer(t => t + 1), 1000);
                       } catch { alert("Camera/mic access required"); }
-                    }} style={{ flex: 1, padding: "12px", background: "linear-gradient(135deg,#EF4444,#DC2626)", color: "#fff", border: "none", borderRadius: "10px", fontWeight: "700", cursor: "pointer" }}>
+                    }} className="flex-1 py-md bg-gradient-to-r from-error to-[#DC2626] text-white border-none rounded-xl font-black text-body-base cursor-pointer hover:shadow-[0_4px_15px_rgba(239,68,68,0.4)] hover:-translate-y-0.5 transition-all">
                       🔴 Start Recording
                     </button>
                   )}
                   {videoMode === "recording" && (
                     <button onClick={() => { mediaRef.current?.stop(); clearInterval(timerRef.current); setVideoMode("recorded"); }}
-                      style={{ flex: 1, padding: "12px", background: "#F1F5F9", color: "#1E293B", border: "none", borderRadius: "10px", fontWeight: "700", cursor: "pointer" }}>
+                      className="flex-1 py-md bg-surface-container/50 text-error border border-error/30 rounded-xl font-black text-body-base cursor-pointer hover:bg-error/10 transition-colors animate-pulse">
                       ⏹ Stop ({recTimer}s)
                     </button>
                   )}
                   {videoMode === "recorded" && (
                     <button onClick={() => { setVideoMode("idle"); setVideoBlob(null); setRecTimer(0); }}
-                      style={{ flex: 1, padding: "12px", background: "#F1F5F9", color: "#64748B", border: "none", borderRadius: "10px", fontWeight: "700", cursor: "pointer" }}>
+                      className="flex-1 py-md bg-surface-container/50 text-on-surface border border-surface-container rounded-xl font-bold text-sm cursor-pointer hover:bg-surface-container transition-colors">
                       🔄 Re-record
                     </button>
                   )}
                 </div>
-                {videoMode === "recorded" && <div style={{ color: "#16A34A", fontSize: "13px", marginTop: "8px", fontWeight: "600" }}>✅ Video recorded ({recTimer}s)</div>}
+                {videoMode === "recorded" && <div className="text-success text-sm mt-sm font-bold text-center bg-success/10 p-xs rounded-lg inline-block border border-success/20">✅ Video recorded ({recTimer}s)</div>}
               </div>
             )}
             {pitchMode === "audio" && (
-              <div style={{ marginBottom: "20px" }}>
-                <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
+              <div className="mb-xl animate-[fadeIn_0.3s_ease]">
+                <div className="flex gap-sm mb-md">
                   {!isRecording
-                    ? <button onClick={startRec} style={{ flex: 1, padding: "12px", background: "linear-gradient(135deg,#EF4444,#DC2626)", color: "#fff", border: "none", borderRadius: "10px", fontWeight: "700", cursor: "pointer" }}>🎙️ Start Recording</button>
-                    : <button onClick={stopRec} style={{ flex: 1, padding: "12px", background: "#F1F5F9", color: "#1E293B", border: "none", borderRadius: "10px", fontWeight: "700", cursor: "pointer" }}>⏹ Stop ({recTimer}s)</button>
+                    ? <button onClick={startRec} className="flex-1 py-md bg-gradient-to-r from-error to-[#DC2626] text-white border-none rounded-xl font-black text-body-base cursor-pointer hover:shadow-[0_4px_15px_rgba(239,68,68,0.4)] hover:-translate-y-0.5 transition-all">🎙️ Start Recording</button>
+                    : <button onClick={stopRec} className="flex-1 py-md bg-surface-container/50 text-error border border-error/30 rounded-xl font-black text-body-base cursor-pointer hover:bg-error/10 transition-colors animate-pulse">⏹ Stop ({recTimer}s)</button>
                   }
                 </div>
-                {audioBlob && <div style={{ color: "#16A34A", fontSize: "13px", fontWeight: "600" }}>✅ Audio recorded ({recTimer}s)</div>}
+                {audioBlob && <div className="text-success text-sm font-bold text-center bg-success/10 p-xs rounded-lg inline-block border border-success/20 mb-md">✅ Audio recorded ({recTimer}s)</div>}
                 {stressLevel > 0 && (
-                  <div style={{ marginTop: "12px", background: "#F8FAFC", borderRadius: "10px", padding: "12px" }}>
-                    <div style={{ fontSize: "12px", color: "#94A3B8", marginBottom: "6px" }}>Stress Analysis</div>
-                    <div style={{ background: "#E2E8F0", borderRadius: "99px", height: "8px", overflow: "hidden" }}>
-                      <div style={{ width: stressLevel + "%", height: "100%", background: stressLevel > 70 ? "#EF4444" : stressLevel > 40 ? "#F59E0B" : "#00B87C", borderRadius: "99px", transition: "width 0.5s" }} />
+                  <div className="mt-md bg-surface-bright rounded-2xl p-md border border-surface-container shadow-sm animate-[fadeIn_0.4s_ease]">
+                    <div className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-sm flex justify-between">
+                      <span>Stress Analysis</span>
+                      <span className={stressLevel > 70 ? 'text-error' : stressLevel > 40 ? 'text-warning' : 'text-success'}>{stressLevel}%</span>
                     </div>
-                    <div style={{ fontSize: "12px", color: "#64748B", marginTop: "6px" }}>{stressStatus}</div>
+                    <div className="bg-surface-container rounded-full h-2 mb-sm overflow-hidden">
+                      <div className={`h-full rounded-full transition-all duration-700 ease-out ${stressLevel > 70 ? 'bg-error' : stressLevel > 40 ? 'bg-warning' : 'bg-success'}`} style={{ width: `${stressLevel}%` }} />
+                    </div>
+                    <div className="text-xs font-semibold text-on-surface-variant">{stressStatus}</div>
                   </div>
                 )}
               </div>
             )}
             {pitchMode === "text" && (
-              <div style={{ marginBottom: "20px" }}>
+              <div className="mb-xl animate-[fadeIn_0.3s_ease]">
                 <textarea value={pitch} onChange={e => { setPitch(e.target.value); analyzeKeystroke(); }}
                   placeholder="Tell us about yourself, your experience, and why you're a great fit..."
-                  style={{ width: "100%", minHeight: "160px", padding: "14px", border: "1.5px solid #E2E8F0", borderRadius: "12px", fontSize: "14px", lineHeight: "1.6", resize: "vertical", boxSizing: "border-box", outline: "none", color: "#1E293B", background: "#F8FAFC" }} />
-                {keystrokeAlert && <div style={{ color: "#F59E0B", fontSize: "12px", marginTop: "6px", fontWeight: "600" }}>⚠️ {keystrokeAlert}</div>}
-                <div style={{ fontSize: "12px", color: "#94A3B8", marginTop: "4px" }}>{pitch.length} characters</div>
+                  className="w-full min-h-[160px] p-md border-2 border-surface-container rounded-2xl text-body-base leading-relaxed resize-y outline-none text-on-surface bg-surface-bright focus:border-indigo-brand focus:ring-4 focus:ring-indigo-brand/10 transition-all font-medium placeholder:text-on-surface-variant/40" />
+                {keystrokeAlert && <div className="text-warning text-xs mt-sm font-bold bg-warning/10 p-sm rounded-lg border border-warning/20">⚠️ {keystrokeAlert}</div>}
+                <div className="text-[11px] font-semibold text-on-surface-variant mt-sm uppercase tracking-wider text-right">{pitch.length} characters</div>
               </div>
             )}
             <button onClick={handleSubmit} disabled={loading || (!pitch && !audioBlob && !videoBlob)}
-              style={{ width: "100%", padding: "16px", background: loading || (!pitch && !audioBlob && !videoBlob) ? "#E2E8F0" : "linear-gradient(135deg,#667eea,#764ba2)", color: loading || (!pitch && !audioBlob && !videoBlob) ? "#94A3B8" : "#fff", border: "none", borderRadius: "14px", fontWeight: "700", fontSize: "16px", cursor: loading || (!pitch && !audioBlob && !videoBlob) ? "not-allowed" : "pointer", transition: "all 0.2s" }}>
+              className={`w-full py-lg rounded-2xl font-black text-lg transition-all ${loading || (!pitch && !audioBlob && !videoBlob) ? 'bg-surface-container text-on-surface-variant/50 cursor-not-allowed' : 'bg-gradient-to-r from-indigo-brand to-[#764ba2] text-white hover:shadow-[0_8px_30px_rgba(102,126,234,0.4)] hover:-translate-y-1 cursor-pointer'}`}>
               {loading ? "⏳ Analyzing your assessment..." : "Submit and Get Results →"}
             </button>
           </div>
@@ -1334,27 +1358,32 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
 
       {/* ── STEP 4: Results ── */}
       {step === 4 && result && (
-        <div style={{ maxWidth: "720px", margin: "0 auto" }}>
+        <div className="max-w-4xl mx-auto w-full animate-[slideUp_0.5s_ease]">
 
           {/* ── Hero: Overall Score + Verdict ── */}
-          <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "32px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", textAlign: "center", marginBottom: "16px" }}>
-            <div style={{ fontSize: "56px", marginBottom: "8px" }}>🏆</div>
-            <h2 style={{ color: "#1E293B", margin: "0 0 8px" }}>Assessment Complete!</h2>
-            <div style={{ fontSize: "64px", fontWeight: "800", color: vc, margin: "8px 0", lineHeight: 1 }}>{result.overall_score}%</div>
-            <span style={{ display: "inline-block", padding: "8px 28px", borderRadius: "20px", background: vc + "22", color: vc, fontWeight: "800", fontSize: "22px", marginBottom: "12px" }}>{result.verdict}</span>
-            <div style={{ color: "#64748B", fontSize: "14px" }}>{result.triangle_status}</div>
+          <div className="glass p-xxxl rounded-xxxl text-center shadow-lg border border-surface-container/50 mb-lg relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-2" style={{ backgroundColor: vc }} />
+            <div className="text-7xl mb-sm drop-shadow-md">🏆</div>
+            <h2 className="text-headline-md font-headline-md text-on-surface m-0 mb-sm">Assessment Complete!</h2>
+            <div className="text-[80px] font-black my-md leading-none drop-shadow-sm" style={{ color: vc }}>{result.overall_score}%</div>
+            <span className="inline-block px-xxl py-sm rounded-full font-black text-2xl mb-md border" style={{ backgroundColor: `${vc}15`, color: vc, borderColor: `${vc}30` }}>{result.verdict}</span>
+            <div className="text-on-surface-variant font-bold text-body-base uppercase tracking-wider">{result.triangle_status}</div>
+            
             {result.cheat_count > 0 && (
-              <div style={{ marginTop: "10px", padding: "8px 16px", background: "#FEF2F2", border: "1.5px solid #FECACA", borderRadius: "10px", color: "#DC2626", fontSize: "13px", fontWeight: "600" }}>
+              <div className="mt-md px-md py-sm bg-error/10 border border-error/30 rounded-xl text-error text-sm font-black inline-block">
                 ⚠️ {result.cheat_count} cheat event{result.cheat_count > 1 ? "s" : ""} detected — score adjusted
               </div>
             )}
+            
             {selectedCompanies.length > 0 && (
-              <div style={{ marginTop: "16px", padding: "16px", background: "#F0FDF4", border: "1.5px solid #BBF7D0", borderRadius: "16px", textAlign: "left" }}>
-                <div style={{ fontWeight: "700", color: "#16A34A", fontSize: "14px", marginBottom: "8px" }}>✅ Report Automatically Shared</div>
-                <div style={{ fontSize: "13px", color: "#15803D" }}>Your assessment results have been directly sent to:</div>
-                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "10px" }}>
+              <div className="mt-xl p-lg bg-success/5 border border-success/20 rounded-2xl text-left max-w-lg mx-auto">
+                <div className="font-black text-success text-body-base mb-xs flex items-center gap-xs">
+                  <span className="text-xl">✅</span> Report Automatically Shared
+                </div>
+                <div className="text-sm text-success/80 font-semibold mb-md">Your assessment results have been directly sent to:</div>
+                <div className="flex gap-sm flex-wrap">
                   {availableCompanies.filter(c => selectedCompanies.includes(c.id)).map(c => (
-                    <span key={c.id} style={{ padding: "6px 12px", background: "#fff", border: "1px solid #22C55E", borderRadius: "8px", color: "#16A34A", fontSize: "12px", fontWeight: "700", boxShadow: "0 2px 4px rgba(34,197,94,0.1)" }}>🏢 {c.name}</span>
+                    <span key={c.id} className="px-sm py-xs bg-white border border-success/30 rounded-lg text-success text-xs font-bold shadow-sm">🏢 {c.name}</span>
                   ))}
                 </div>
               </div>
@@ -1362,21 +1391,21 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
           </div>
 
           {/* ── Score Breakdown Grid ── */}
-          <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
-            <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "16px", marginBottom: "16px" }}>📊 Score Breakdown</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+          <div className="glass p-xxl rounded-xxxl shadow-sm border border-surface-container/50 mb-lg">
+            <div className="font-black text-on-surface text-title-md mb-xl flex items-center gap-xs"><span className="text-2xl">📊</span> Score Breakdown</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md">
               {([
-                ["📄 ATS / Resume", result.ats_score, "#00B87C"],
-                ["🧠 Skill Test (K-Level)", result.test_score, "#667EEA"],
-                ["🎤 Interview / Pitch", result.interview_score, "#A78BFA"],
-                ["✅ Authenticity", result.authenticity_score, "#00D4FF"],
-                ["🔁 Consistency", result.consistency_score, "#F59E0B"],
-              ] as [string, number, string][]).map(([label, val, color]) => (
-                <div key={label} style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: "12px", padding: "14px" }}>
-                  <div style={{ fontSize: "12px", color: "#94A3B8", marginBottom: "6px" }}>{label}</div>
-                  <div style={{ fontSize: "26px", fontWeight: "800", color }}>{val ?? "—"}%</div>
-                  <div style={{ background: "#E2E8F0", borderRadius: "99px", height: "5px", marginTop: "8px", overflow: "hidden" }}>
-                    <div style={{ width: (val ?? 0) + "%", height: "100%", background: color, borderRadius: "99px", transition: "width 1s" }} />
+                ["📄 ATS / Resume", result.ats_score, "text-success", "bg-success"],
+                ["🧠 Skill Test (K-Level)", result.test_score, "text-indigo-brand", "bg-indigo-brand"],
+                ["🎤 Interview / Pitch", result.interview_score, "text-[#8B5CF6]", "bg-[#8B5CF6]"],
+                ["✅ Authenticity", result.authenticity_score, "text-[#00D4FF]", "bg-[#00D4FF]"],
+                ["🔁 Consistency", result.consistency_score, "text-warning", "bg-warning"],
+              ] as [string, number, string, string][]).map(([label, val, textColor, bgColor]) => (
+                <div key={label} className="bg-surface-bright border border-surface-container rounded-2xl p-md hover:border-surface-container-high transition-colors hover:shadow-sm">
+                  <div className="text-xs font-bold text-on-surface-variant mb-xs">{label}</div>
+                  <div className={`text-3xl font-black ${textColor}`}>{val ?? "—"}%</div>
+                  <div className="bg-surface-container rounded-full h-1.5 mt-sm overflow-hidden">
+                    <div className={`h-full rounded-full transition-all duration-1000 ease-out ${bgColor}`} style={{ width: `${val ?? 0}%` }} />
                   </div>
                 </div>
               ))}
@@ -1384,126 +1413,145 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
           </div>
 
           {/* ── Lie Detector / Authenticity Analysis ── */}
-          <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
-            <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "16px", marginBottom: "16px" }}>🔍 Lie Detector Analysis</div>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "12px" }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                  <span style={{ fontSize: "13px", color: "#64748B" }}>Authenticity Score</span>
-                  <span style={{ fontSize: "13px", fontWeight: "700", color: result.authenticity_score >= 70 ? "#00B87C" : result.authenticity_score >= 50 ? "#F59E0B" : "#EF4444" }}>{result.authenticity_score}%</span>
+          <div className="glass p-xxl rounded-xxxl shadow-sm border border-surface-container/50 mb-lg">
+            <div className="font-black text-on-surface text-title-md mb-xl flex items-center gap-xs"><span className="text-2xl">🔍</span> Lie Detector Analysis</div>
+            
+            <div className="flex items-center gap-xl mb-lg bg-surface-bright p-lg rounded-2xl border border-surface-container">
+              <div className="flex-1">
+                <div className="flex justify-between mb-sm">
+                  <span className="text-sm font-bold text-on-surface-variant uppercase tracking-wider">Authenticity Score</span>
+                  <span className={`text-lg font-black ${result.authenticity_score >= 70 ? 'text-success' : result.authenticity_score >= 50 ? 'text-warning' : 'text-error'}`}>{result.authenticity_score}%</span>
                 </div>
-                <div style={{ background: "#E2E8F0", borderRadius: "99px", height: "10px", overflow: "hidden" }}>
-                  <div style={{ width: result.authenticity_score + "%", height: "100%", background: result.authenticity_score >= 70 ? "#00B87C" : result.authenticity_score >= 50 ? "#F59E0B" : "#EF4444", borderRadius: "99px", transition: "width 1s" }} />
+                <div className="bg-surface-container rounded-full h-2.5 overflow-hidden">
+                  <div className={`h-full rounded-full transition-all duration-1000 ease-out ${result.authenticity_score >= 70 ? 'bg-success' : result.authenticity_score >= 50 ? 'bg-warning' : 'bg-error'}`} style={{ width: `${result.authenticity_score}%` }} />
                 </div>
               </div>
-              <div style={{ fontSize: "32px" }}>{result.authenticity_score >= 70 ? "✅" : result.authenticity_score >= 50 ? "⚠️" : "❌"}</div>
+              <div className="text-5xl drop-shadow-sm">{result.authenticity_score >= 70 ? "✅" : result.authenticity_score >= 50 ? "⚠️" : "❌"}</div>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 14px", background: "#F8FAFC", borderRadius: "10px", fontSize: "13px" }}>
-              <span style={{ color: "#64748B" }}>Consistency Score</span>
-              <span style={{ fontWeight: "700", color: result.consistency_score >= 70 ? "#00B87C" : "#F59E0B" }}>{result.consistency_score ?? "—"}%</span>
+            
+            <div className="flex justify-between items-center p-md bg-surface-bright rounded-xl mb-md border border-surface-container">
+              <span className="text-sm font-bold text-on-surface-variant uppercase tracking-wider">Consistency Score</span>
+              <span className={`font-black text-lg ${result.consistency_score >= 70 ? 'text-success' : 'text-warning'}`}>{result.consistency_score ?? "—"}%</span>
             </div>
+            
             {result.cheat_count > 0 && (
-              <div style={{ marginTop: "10px", padding: "10px 14px", background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: "10px", fontSize: "13px", color: "#DC2626", fontWeight: "600" }}>
-                🚨 {result.cheat_count} suspicious event{result.cheat_count > 1 ? "s" : ""} flagged during test
+              <div className="mt-md p-md bg-error/10 border border-error/30 rounded-xl text-sm text-error font-black flex items-center gap-sm">
+                <span className="text-xl">🚨</span> {result.cheat_count} suspicious event{result.cheat_count > 1 ? "s" : ""} flagged during test
               </div>
             )}
-            <div style={{ marginTop: "10px", padding: "10px 14px", background: result.authenticity_score >= 70 ? "#F0FDF4" : "#FFF7ED", borderRadius: "10px", fontSize: "13px", color: result.authenticity_score >= 70 ? "#16A34A" : "#92400E", fontWeight: "600" }}>
-              {result.authenticity_score >= 70 ? "✅ Profile appears genuine and consistent" : result.authenticity_score >= 50 ? "⚠️ Some inconsistencies detected — review recommended" : "❌ Significant discrepancies found — further verification needed"}
+            
+            <div className={`mt-sm p-md rounded-xl text-sm font-bold flex items-start gap-sm border ${result.authenticity_score >= 70 ? 'bg-success/10 text-success border-success/20' : result.authenticity_score >= 50 ? 'bg-warning/10 text-warning border-warning/20' : 'bg-error/10 text-error border-error/20'}`}>
+              <span className="text-lg leading-none">{result.authenticity_score >= 70 ? "✅" : result.authenticity_score >= 50 ? "⚠️" : "❌"}</span>
+              <span>{result.authenticity_score >= 70 ? "Profile appears genuine and consistent. No significant anomalies detected." : result.authenticity_score >= 50 ? "Some inconsistencies detected. A manual review is recommended." : "Significant discrepancies found. High likelihood of misrepresentation."}</span>
             </div>
           </div>
 
-          {/* ── Skill Radar Map ── */}
-          <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
-            <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "16px", marginBottom: "4px" }}>🕸️ Skill Radar Map</div>
-            <div style={{ fontSize: "12px", color: "#94A3B8", marginBottom: "16px" }}>Multi-dimensional performance overview</div>
-            <ResponsiveContainer width="100%" height={260}>
-              <RadarChart data={radarData} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
-                <PolarGrid stroke="#E2E8F0" />
-                <PolarAngleAxis dataKey="s" tick={{ fontSize: 12, fill: "#64748B", fontWeight: "600" }} />
-                <Radar name="Score" dataKey="v" stroke="#667EEA" fill="#667EEA" fillOpacity={0.3} strokeWidth={2} />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* ── Triangle Analysis ── */}
-          <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
-            <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "16px", marginBottom: "12px" }}>🔺 Triangle Analysis</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "14px" }}>
-              {([
-                ["Resume", result.ats_score, "#00B87C"],
-                ["Test", result.test_score, "#667EEA"],
-                ["Interview", result.interview_score, "#A78BFA"],
-              ] as [string, number, string][]).map(([l, v, c]) => (
-                <div key={l} style={{ textAlign: "center", background: "#F8FAFC", borderRadius: "12px", padding: "14px", border: "1.5px solid #E2E8F0" }}>
-                  <div style={{ fontSize: "11px", color: "#94A3B8", marginBottom: "4px" }}>{l}</div>
-                  <div style={{ fontSize: "26px", fontWeight: "800", color: c }}>{v ?? "—"}%</div>
-                </div>
-              ))}
-            </div>
-            <div style={{ padding: "12px 16px", background: vc + "11", border: "1.5px solid " + vc + "44", borderRadius: "12px", textAlign: "center" }}>
-              <div style={{ fontSize: "13px", color: "#64748B", marginBottom: "4px" }}>Triangle Verdict</div>
-              <div style={{ fontWeight: "800", color: vc, fontSize: "16px" }}>{result.triangle_status || result.verdict}</div>
-            </div>
-          </div>
-
-          {/* ── Salary Prediction ── */}
-          {result.salary_min > 0 && (
-            <div style={{ background: "linear-gradient(135deg,#00B87C11,#00D4AA11)", border: "1.5px solid #00B87C44", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", marginBottom: "16px", textAlign: "center" }}>
-              <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "16px", marginBottom: "8px" }}>💰 Estimated Salary Range</div>
-              <div style={{ fontSize: "32px", fontWeight: "800", color: "#00B87C", marginBottom: "4px" }}>₹{result.salary_min}L – ₹{result.salary_max}L/yr</div>
-              <div style={{ fontSize: "13px", color: "#64748B" }}>Based on your overall score, role, and market data</div>
-            </div>
-          )}
-
-          {/* ── Key Strengths ── */}
-          {result.key_strengths?.length > 0 && (
-            <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
-              <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "16px", marginBottom: "14px" }}>💪 Key Strengths</div>
-              {result.key_strengths.map((s: string, i: number) => (
-                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "10px", padding: "10px 14px", background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: "10px", marginBottom: "8px" }}>
-                  <span style={{ color: "#16A34A", fontWeight: "700", flexShrink: 0 }}>✅</span>
-                  <span style={{ color: "#15803D", fontSize: "13px", lineHeight: "1.5" }}>{s}</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* ── Improvement Plan ── */}
-          {result.improvement_plan?.length > 0 && (
-            <div style={{ background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
-              <div style={{ fontWeight: "700", color: "#1E293B", fontSize: "16px", marginBottom: "14px" }}>🎯 Improvement Plan</div>
-              {result.improvement_plan.map((s: string, i: number) => (
-                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "10px", padding: "10px 14px", background: "#FFF7ED", border: "1px solid #FED7AA", borderRadius: "10px", marginBottom: "8px" }}>
-                  <span style={{ color: "#F59E0B", fontWeight: "700", flexShrink: 0 }}>📌</span>
-                  <span style={{ color: "#92400E", fontSize: "13px", lineHeight: "1.5" }}>{s}</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* ── K-Level Badge in Results ── */}
-          {klevelResult && (
-            <div style={{ background: "linear-gradient(135deg,#667EEA11,#764BA211)", border: "1.5px solid #667EEA33", borderRadius: "20px", padding: "20px 24px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", marginBottom: "16px", display: "flex", alignItems: "center", gap: "16px" }}>
-              <div style={{ fontSize: "40px" }}>🧠</div>
-              <div>
-                <div style={{ fontSize: "12px", color: "#94A3B8", marginBottom: "2px" }}>K-Level Skill Test Result</div>
-                <div style={{ fontWeight: "800", color: "#667EEA", fontSize: "20px" }}>{klevelResult.total_score}/15 — {klevelResult.tier}</div>
-                <div style={{ fontSize: "12px", color: "#64748B", marginTop: "2px" }}>Contributed {Math.round((klevelResult.total_score / 15) * 100)}% to your Skill Test score</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
+            {/* ── Skill Radar Map ── */}
+            <div className="glass p-xxl rounded-xxxl shadow-sm border border-surface-container/50">
+              <div className="font-black text-on-surface text-title-md mb-xs flex items-center gap-xs"><span className="text-2xl">🕸️</span> Skill Radar Map</div>
+              <div className="text-xs font-semibold text-on-surface-variant mb-lg uppercase tracking-wider">Multi-dimensional performance overview</div>
+              <div className="bg-surface-bright rounded-2xl p-sm border border-surface-container flex items-center justify-center">
+                <ResponsiveContainer width="100%" height={260}>
+                  <RadarChart data={radarData} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
+                    <PolarGrid stroke="#E2E8F0" />
+                    <PolarAngleAxis dataKey="s" tick={{ fontSize: 11, fill: "#64748B", fontWeight: "700" }} />
+                    <Radar name="Score" dataKey="v" stroke="#667EEA" fill="#667EEA" fillOpacity={0.35} strokeWidth={3} />
+                  </RadarChart>
+                </ResponsiveContainer>
               </div>
             </div>
-          )}
+
+            {/* ── Triangle Analysis ── */}
+            <div className="glass p-xxl rounded-xxxl shadow-sm border border-surface-container/50 flex flex-col">
+              <div className="font-black text-on-surface text-title-md mb-lg flex items-center gap-xs"><span className="text-2xl">🔺</span> Triangle Analysis</div>
+              <div className="grid grid-cols-3 gap-sm mb-auto">
+                {([
+                  ["Resume", result.ats_score, "text-success"],
+                  ["Test", result.test_score, "text-indigo-brand"],
+                  ["Interview", result.interview_score, "text-[#A78BFA]"],
+                ] as [string, number, string][]).map(([l, v, c]) => (
+                  <div key={l} className="text-center bg-surface-bright rounded-xl p-md border border-surface-container hover:border-surface-container-high transition-colors">
+                    <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs">{l}</div>
+                    <div className={`text-2xl font-black ${c}`}>{v ?? "—"}%</div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-lg p-md rounded-2xl text-center border-2" style={{ backgroundColor: `${vc}10`, borderColor: `${vc}30` }}>
+                <div className="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Triangle Verdict</div>
+                <div className="font-black text-xl" style={{ color: vc }}>{result.triangle_status || result.verdict}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
+            {/* ── Key Strengths ── */}
+            {result.key_strengths?.length > 0 && (
+              <div className="glass p-xxl rounded-xxxl shadow-sm border border-surface-container/50">
+                <div className="font-black text-on-surface text-title-md mb-lg flex items-center gap-xs"><span className="text-2xl">💪</span> Key Strengths</div>
+                <div className="flex flex-col gap-sm">
+                  {result.key_strengths.map((s: string, i: number) => (
+                    <div key={i} className="flex items-start gap-sm p-sm bg-success/5 border border-success/20 rounded-xl">
+                      <span className="text-success font-black shrink-0 text-lg leading-none">✅</span>
+                      <span className="text-success-dark text-sm font-semibold leading-relaxed">{s}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ── Improvement Plan ── */}
+            {result.improvement_plan?.length > 0 && (
+              <div className="glass p-xxl rounded-xxxl shadow-sm border border-surface-container/50">
+                <div className="font-black text-on-surface text-title-md mb-lg flex items-center gap-xs"><span className="text-2xl">🎯</span> Improvement Plan</div>
+                <div className="flex flex-col gap-sm">
+                  {result.improvement_plan.map((s: string, i: number) => (
+                    <div key={i} className="flex items-start gap-sm p-sm bg-warning/5 border border-warning/20 rounded-xl">
+                      <span className="text-warning font-black shrink-0 text-lg leading-none">📌</span>
+                      <span className="text-warning-dark text-sm font-semibold leading-relaxed">{s}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ── Bottom Section: Salary & K-Level ── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
+            {/* ── Salary Prediction ── */}
+            {result.salary_min > 0 && (
+              <div className="glass p-xl rounded-xxxl shadow-sm border border-success/30 bg-success/5 text-center flex flex-col justify-center">
+                <div className="font-black text-success text-title-md mb-xs">💰 Estimated Salary Range</div>
+                <div className="text-4xl font-black text-success drop-shadow-sm my-xs">₹{result.salary_min}L – ₹{result.salary_max}L/yr</div>
+                <div className="text-xs font-semibold text-success/80 uppercase tracking-wider">Based on your overall score, role, and market data</div>
+              </div>
+            )}
+
+            {/* ── K-Level Badge in Results ── */}
+            {klevelResult && (
+              <div className="glass p-xl rounded-xxxl shadow-sm border border-indigo-brand/30 bg-indigo-brand/5 flex items-center gap-lg">
+                <div className="text-5xl drop-shadow-sm">🧠</div>
+                <div>
+                  <div className="text-[10px] font-bold text-indigo-brand/70 uppercase tracking-wider mb-0.5">K-Level Skill Test Result</div>
+                  <div className="font-black text-indigo-brand text-2xl leading-none mb-1">{klevelResult.total_score}/15 — {klevelResult.tier}</div>
+                  <div className="text-[11px] font-bold text-indigo-brand/80">Contributed {Math.round((klevelResult.total_score / 15) * 100)}% to your Skill Test score</div>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* ── Action Buttons ── */}
-          <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", padding: "20px 0" }}>
-            <button onClick={downloadPDF} style={{ padding: "13px 28px", background: "linear-gradient(135deg,#667EEA,#764BA2)", color: "#fff", border: "none", borderRadius: "12px", fontWeight: "700", fontSize: "15px", cursor: "pointer" }}>
-              📄 Download PDF Report
+          <div className="flex flex-col sm:flex-row gap-md justify-center py-lg border-t border-surface-container">
+            <button onClick={downloadPDF} className="px-xxl py-md bg-gradient-to-r from-indigo-brand to-[#764BA2] text-white border-none rounded-xl font-black text-body-base cursor-pointer hover:shadow-[0_8px_25px_rgba(102,126,234,0.4)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-sm">
+              <span className="text-xl">📄</span> Download PDF Report
             </button>
-            <button onClick={() => { setStep(1); setResult(null); setKlevelResult(null); setKlevelMode(false); setKlevelScore(0); setKlevelLevel(1); setPitch(""); setAudioBlob(null); setVideoBlob(null); setVideoMode("idle"); setResumeText(""); setSkills(""); setAtsScore(0); }} style={{ padding: "13px 28px", background: "linear-gradient(135deg,#22C55E,#16A34A)", color: "#fff", border: "none", borderRadius: "12px", fontWeight: "700", fontSize: "15px", cursor: "pointer" }}>
-              🔄 Start New Assessment
+            <button onClick={() => { setStep(1); setResult(null); setKlevelResult(null); setKlevelMode(false); setKlevelScore(0); setKlevelLevel(1); setPitch(""); setAudioBlob(null); setVideoBlob(null); setVideoMode("idle"); setResumeText(""); setSkills(""); setAtsScore(0); }} className="px-xxl py-md bg-surface-bright text-on-surface border-2 border-surface-container rounded-xl font-black text-body-base cursor-pointer hover:border-surface-container-high hover:bg-surface-container/50 transition-all flex items-center justify-center gap-sm">
+              <span className="text-xl">🔄</span> Start New Assessment
             </button>
           </div>
         </div>
       )}
+    </div>
 
     </div>
   </>

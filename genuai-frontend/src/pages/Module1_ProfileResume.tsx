@@ -16,9 +16,11 @@ export default function Module1_ProfileResume({ user, onComplete }: Props) {
   const [error, setError] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
   const photoRef = useRef<HTMLInputElement>(null);
-  const inp: any = { width:'100%', background:'#F8FAFC', border:'1px solid #E2E8F0', borderRadius:'12px', padding:'12px 16px', color:'#1E293B', fontSize:'14px', outline:'none', boxSizing:'border-box' };
-  const lbl: any = { color:'#64748B', fontSize:'12px', fontWeight:'700', textTransform:'uppercase', marginBottom:'8px', display:'block' };
+  const inp = "w-full bg-surface-bright border border-surface-container rounded-xl px-4 py-3 text-on-surface text-sm focus:outline-none focus:border-indigo-brand focus:ring-2 focus:ring-indigo-brand/20 transition-all";
+  const lbl = "text-on-surface-variant text-xs font-bold uppercase tracking-wider mb-2 block";
+  
   const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => { const f = e.target.files?.[0]; if(!f) return; const r = new FileReader(); r.onload = () => setPhoto(r.result as string); r.readAsDataURL(f); };
+  
   const handleAnalyze = async () => {
     if (!resumeFile) { setError('Please upload your resume'); return; }
     setStep('analyzing'); setError('');
@@ -27,52 +29,123 @@ export default function Module1_ProfileResume({ user, onComplete }: Props) {
       const res = await axios.post(API + '/resume/analyze', fd); setAnalysis(res.data); setStep('done');
     } catch { setAnalysis({ ats_score:72, skills:['React','TypeScript','Node.js','Python'], experience_years:2, strengths:['Strong technical skills','Good project experience'], improvements:['Add quantified achievements','Include more keywords'], match_percentage:78 }); setStep('done'); }
   };
-  if (step === 'analyzing') return <div style={{ minHeight:'100vh', background:'#F8FAFC', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'16px' }}><div style={{ fontSize:'56px' }}>⚙️</div><div style={{ color:'#0F172A', fontSize:'20px', fontWeight:'700' }}>Analyzing Your Resume...</div><div style={{ color:'#64748B' }}>Checking ATS compatibility, skills, experience</div></div>;
+
+  if (step === 'analyzing') return (
+    <div className="min-h-screen bg-background quantum-gradient flex flex-col items-center justify-center gap-md relative overflow-hidden">
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-brand/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-accent-gold/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="text-6xl animate-spin drop-shadow-sm">⚙️</div>
+      <div className="text-on-surface text-xl font-bold">Analyzing Your Resume...</div>
+      <div className="text-on-surface-variant font-medium">Checking ATS compatibility, skills, experience</div>
+    </div>
+  );
+
   if (step === 'done' && analysis) return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', padding:'32px' }}>
-      <div style={{ maxWidth:'800px', margin:'0 auto', background:'#fff', borderRadius:'24px', border:'1px solid #E2E8F0', overflow:'hidden', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
-        <div style={{ background:'linear-gradient(135deg,#667EEA,#764BA2)', padding:'28px 36px' }}>
-          <div style={{ color:'#fff', fontSize:'20px', fontWeight:'800' }}>Resume Analysis Complete</div>
-          <div style={{ display:'flex', gap:'8px', marginTop:'16px' }}>{['Profile','Skill Test','SVAR','Hackathon','Interview','Results'].map((m,i)=><div key={i} style={{ flex:1, height:'4px', borderRadius:'4px', background:i===0?'#fff':'rgba(255,255,255,0.2)' }}/>)}</div>
+    <div className="min-h-screen bg-background quantum-gradient p-margin-mobile md:p-margin-desktop relative overflow-hidden flex items-center justify-center">
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-success/10 blur-[100px] rounded-full pointer-events-none" />
+      
+      <div className="glass max-w-4xl w-full mx-auto rounded-xxxl overflow-hidden shadow-sm border border-surface-container animate-[slideUp_0.4s_ease]">
+        <div className="bg-gradient-to-r from-indigo-brand to-[#764BA2] p-xl text-center relative overflow-hidden">
+          <div className="text-white text-2xl font-black relative z-10 drop-shadow-sm">Resume Analysis Complete</div>
+          <div className="flex gap-xs mt-md relative z-10">{['Profile','Skill Test','SVAR','Hackathon','Interview','Results'].map((m,i)=><div key={i} className={`flex-1 h-1.5 rounded-full ${i===0 ? 'bg-white' : 'bg-white/20'}`} />)}</div>
         </div>
-        <div style={{ padding:'36px' }}>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'16px', marginBottom:'28px' }}>
-            {[{label:'ATS Score',value:analysis.ats_score+'%',color:'#667EEA'},{label:'Role Match',value:analysis.match_percentage+'%',color:'#00B87C'},{label:'Experience',value:analysis.experience_years+'y',color:'#F59E0B'}].map((s,i)=><div key={i} style={{ background:'#F8FAFC', borderRadius:'16px', padding:'20px', textAlign:'center', border:'1px solid #E2E8F0' }}><div style={{ color:s.color, fontSize:'32px', fontWeight:'900' }}>{s.value}</div><div style={{ color:'#64748B', fontSize:'12px', marginTop:'4px' }}>{s.label}</div></div>)}
+        <div className="p-xl md:p-xxl bg-white/50 backdrop-blur-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl">
+            {[{label:'ATS Score',value:analysis.ats_score+'%',color:'text-indigo-brand',bg:'bg-indigo-brand/10', border:'border-indigo-brand/20'},{label:'Role Match',value:analysis.match_percentage+'%',color:'text-success',bg:'bg-success/10', border:'border-success/20'},{label:'Experience',value:analysis.experience_years+'y',color:'text-warning',bg:'bg-warning/10', border:'border-warning/20'}].map((s,i)=>
+              <div key={i} className={`rounded-2xl p-lg text-center border ${s.bg} ${s.border}`}>
+                <div className={`${s.color} text-4xl font-black drop-shadow-sm`}>{s.value}</div>
+                <div className="text-on-surface-variant text-sm font-bold mt-2 uppercase tracking-wide">{s.label}</div>
+              </div>
+            )}
           </div>
-          <div style={{ marginBottom:'20px' }}><div style={{ color:'#0F172A', fontWeight:'700', marginBottom:'12px' }}>Detected Skills</div><div>{analysis.skills?.map((sk:string,i:number)=><span key={i} style={{ background:'#667EEA22', color:'#667EEA', padding:'6px 14px', borderRadius:'20px', fontSize:'13px', fontWeight:'700', display:'inline-block', margin:'4px' }}>{sk}</span>)}</div></div>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'16px', marginBottom:'28px' }}>
-            <div style={{ background:'#00B87C11', borderRadius:'14px', padding:'16px', border:'1px solid #00B87C33' }}><div style={{ color:'#00B87C', fontWeight:'700', marginBottom:'8px' }}>Strengths</div>{analysis.strengths?.map((s:string,i:number)=><div key={i} style={{ color:'#64748B', fontSize:'13px', marginBottom:'4px' }}>• {s}</div>)}</div>
-            <div style={{ background:'#F59E0B11', borderRadius:'14px', padding:'16px', border:'1px solid #F59E0B33' }}><div style={{ color:'#F59E0B', fontWeight:'700', marginBottom:'8px' }}>Improvements</div>{analysis.improvements?.map((s:string,i:number)=><div key={i} style={{ color:'#64748B', fontSize:'13px', marginBottom:'4px' }}>• {s}</div>)}</div>
+          <div className="mb-xl bg-surface-bright p-md rounded-2xl border border-surface-container">
+            <div className="text-on-surface font-bold mb-md uppercase tracking-wide text-sm">Detected Skills</div>
+            <div className="flex flex-wrap gap-xs">
+              {analysis.skills?.map((sk:string,i:number)=><span key={i} className="bg-indigo-brand/10 text-indigo-brand border border-indigo-brand/20 px-sm py-1 rounded-full text-xs font-bold">{sk}</span>)}
+            </div>
           </div>
-          <button onClick={() => onComplete({ role, github, linkedin, portfolio, photo, analysis })} style={{ width:'100%', padding:'16px', background:'linear-gradient(135deg,#667EEA,#764BA2)', color:'#fff', border:'none', borderRadius:'14px', fontWeight:'800', fontSize:'16px', cursor:'pointer' }}>Continue to Skill Test</button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-md mb-xxl">
+            <div className="bg-success/5 rounded-2xl p-lg border border-success/20">
+              <div className="text-success-dark font-black mb-md flex items-center gap-xs"><span className="material-symbols-outlined">trending_up</span> Strengths</div>
+              {analysis.strengths?.map((s:string,i:number)=><div key={i} className="text-on-surface-variant text-sm font-medium mb-xs flex items-start gap-xs"><span className="text-success mt-1">•</span> <span>{s}</span></div>)}
+            </div>
+            <div className="bg-warning/5 rounded-2xl p-lg border border-warning/20">
+              <div className="text-warning-dark font-black mb-md flex items-center gap-xs"><span className="material-symbols-outlined">lightbulb</span> Improvements</div>
+              {analysis.improvements?.map((s:string,i:number)=><div key={i} className="text-on-surface-variant text-sm font-medium mb-xs flex items-start gap-xs"><span className="text-warning mt-1">•</span> <span>{s}</span></div>)}
+            </div>
+          </div>
+          <button onClick={() => onComplete({ role, github, linkedin, portfolio, photo, analysis })} className="w-full py-md bg-gradient-to-r from-indigo-brand to-[#7C3AED] text-white rounded-xl font-bold text-body-base hover:shadow-[0_4px_15px_rgba(102,126,234,0.4)] hover:scale-[1.01] transition-all">
+            Continue to Skill Test →
+          </button>
         </div>
       </div>
     </div>
   );
+
   return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', padding:'32px' }}>
-      <div style={{ maxWidth:'800px', margin:'0 auto', background:'#fff', borderRadius:'24px', border:'1px solid #E2E8F0', overflow:'hidden', boxShadow:'0 4px 12px rgba(0,0,0,0.05)' }}>
-        <div style={{ background:'linear-gradient(135deg,#667EEA,#764BA2)', padding:'28px 36px' }}>
-          <div style={{ display:'flex', alignItems:'center', gap:'16px' }}><span style={{ fontSize:'36px' }}>📋</span><div><div style={{ color:'#fff', fontSize:'20px', fontWeight:'800' }}>Module 1: Profile and Resume</div><div style={{ color:'rgba(255,255,255,0.7)', fontSize:'13px', marginTop:'4px' }}>Upload your resume for AI-powered analysis</div></div></div>
-          <div style={{ display:'flex', gap:'8px', marginTop:'16px' }}>{['Profile','Skill Test','SVAR','Hackathon','Interview','Results'].map((m,i)=><div key={i} style={{ flex:1, height:'4px', borderRadius:'4px', background:i===0?'#fff':'rgba(255,255,255,0.2)' }}/>)}</div>
+    <div className="min-h-screen bg-background quantum-gradient p-margin-mobile md:p-margin-desktop relative overflow-hidden flex items-center justify-center">
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent-gold/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-brand/10 blur-[100px] rounded-full pointer-events-none" />
+      
+      <div className="glass max-w-3xl w-full mx-auto rounded-xxxl overflow-hidden shadow-sm border border-surface-container animate-[slideUp_0.4s_ease]">
+        <div className="bg-gradient-to-r from-indigo-brand to-[#764BA2] p-xl">
+          <div className="flex items-center gap-md">
+            <span className="text-4xl drop-shadow-md">📋</span>
+            <div>
+              <div className="text-white text-xl font-black drop-shadow-sm">Module 1: Profile and Resume</div>
+              <div className="text-white/80 text-sm font-semibold mt-1">Upload your resume for AI-powered analysis</div>
+            </div>
+          </div>
+          <div className="flex gap-xs mt-lg">{['Profile','Skill Test','SVAR','Hackathon','Interview','Results'].map((m,i)=><div key={i} className={`flex-1 h-1.5 rounded-full ${i===0 ? 'bg-white' : 'bg-white/20'}`} />)}</div>
         </div>
-        <div style={{ padding:'36px' }}>
-          <div style={{ textAlign:'center', marginBottom:'28px' }}>
-            <div onClick={() => photoRef.current?.click()} style={{ width:'100px', height:'100px', borderRadius:'50%', background:photo?'transparent':'#F8FAFC', border:'2px dashed #E2E8F0', margin:'0 auto', cursor:'pointer', overflow:'hidden', display:'flex', alignItems:'center', justifyContent:'center' }}>{photo?<img src={photo} style={{ width:'100%', height:'100%', objectFit:'cover' }}/>:<span style={{ fontSize:'32px' }}>📸</span>}</div>
-            <div style={{ color:'#64748B', fontSize:'13px', marginTop:'8px' }}>Click to upload profile photo</div>
-            <input ref={photoRef} type='file' accept='image/*' style={{ display:'none' }} onChange={handlePhoto}/>
+        
+        <div className="p-xl md:p-xxl bg-white/50 backdrop-blur-sm">
+          <div className="text-center mb-xl">
+            <div onClick={() => photoRef.current?.click()} className={`w-28 h-28 rounded-full mx-auto cursor-pointer overflow-hidden flex items-center justify-center transition-all hover:scale-105 hover:shadow-sm ${photo ? 'border-4 border-indigo-brand' : 'bg-surface-bright border-2 border-dashed border-surface-container-high'}`}>
+              {photo ? <img src={photo} className="w-full h-full object-cover" /> : <span className="text-4xl">📸</span>}
+            </div>
+            <div className="text-on-surface-variant text-sm font-medium mt-3">Click to upload profile photo</div>
+            <input ref={photoRef} type='file' accept='image/*' className="hidden" onChange={handlePhoto}/>
           </div>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px', marginBottom:'20px' }}>
-            <div><label style={lbl}>Target Role</label><select value={role} onChange={e=>setRole(e.target.value)} style={inp}>{ROLES.map(r=><option key={r} value={r}>{r}</option>)}</select></div>
-            <div><label style={lbl}>Resume PDF or DOC</label><div onClick={()=>fileRef.current?.click()} style={{ ...inp, cursor:'pointer', color:resumeFile?'#00B87C':'#64748B' }}>{resumeFile?'✅ '+resumeFile.name:'📄 Click to upload resume'}</div><input ref={fileRef} type='file' accept='.pdf,.doc,.docx' style={{ display:'none' }} onChange={e=>setResumeFile(e.target.files?.[0]||null)}/></div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-md mb-md">
+            <div>
+              <label className={lbl}>Target Role</label>
+              <select value={role} onChange={e=>setRole(e.target.value)} className={inp}>
+                {ROLES.map(r=><option key={r} value={r}>{r}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className={lbl}>Resume PDF or DOC</label>
+              <div onClick={()=>fileRef.current?.click()} className={`${inp} cursor-pointer flex items-center justify-between ${resumeFile ? 'border-success text-success-dark bg-success/5' : 'text-on-surface-variant hover:border-indigo-brand/50'}`}>
+                <span className="truncate">{resumeFile ? '✅ '+resumeFile.name : '📄 Click to upload resume'}</span>
+                {!resumeFile && <span className="material-symbols-outlined text-sm">upload</span>}
+              </div>
+              <input ref={fileRef} type='file' accept='.pdf,.doc,.docx' className="hidden" onChange={e=>setResumeFile(e.target.files?.[0]||null)}/>
+            </div>
           </div>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px', marginBottom:'20px' }}>
-            <div><label style={lbl}>GitHub</label><input style={inp} placeholder='https://github.com/username' value={github} onChange={e=>setGithub(e.target.value)}/></div>
-            <div><label style={lbl}>LinkedIn</label><input style={inp} placeholder='https://linkedin.com/in/username' value={linkedin} onChange={e=>setLinkedin(e.target.value)}/></div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-md mb-md">
+            <div>
+              <label className={lbl}>GitHub URL</label>
+              <input className={inp} placeholder='https://github.com/username' value={github} onChange={e=>setGithub(e.target.value)}/>
+            </div>
+            <div>
+              <label className={lbl}>LinkedIn URL</label>
+              <input className={inp} placeholder='https://linkedin.com/in/username' value={linkedin} onChange={e=>setLinkedin(e.target.value)}/>
+            </div>
           </div>
-          <div style={{ marginBottom:'24px' }}><label style={lbl}>Portfolio or Website</label><input style={inp} placeholder='https://yourportfolio.com' value={portfolio} onChange={e=>setPortfolio(e.target.value)}/></div>
-          {error && <div style={{ color:'#EF4444', fontSize:'13px', marginBottom:'16px', textAlign:'center' }}>{error}</div>}
-          <button onClick={handleAnalyze} style={{ width:'100%', padding:'16px', background:'linear-gradient(135deg,#667EEA,#764BA2)', color:'#fff', border:'none', borderRadius:'14px', fontWeight:'800', fontSize:'16px', cursor:'pointer' }}>Analyze Resume with AI</button>
+          
+          <div className="mb-xl">
+            <label className={lbl}>Portfolio or Website</label>
+            <input className={inp} placeholder='https://yourportfolio.com' value={portfolio} onChange={e=>setPortfolio(e.target.value)}/>
+          </div>
+          
+          {error && <div className="text-error bg-error/10 border border-error/30 rounded-xl p-md text-sm font-bold mb-md text-center">{error}</div>}
+          
+          <button onClick={handleAnalyze} className="w-full py-md bg-gradient-to-r from-indigo-brand to-[#7C3AED] text-white rounded-xl font-bold text-body-base hover:shadow-[0_4px_15px_rgba(102,126,234,0.4)] hover:scale-[1.01] transition-all">
+            Analyze Resume with AI
+          </button>
         </div>
       </div>
     </div>

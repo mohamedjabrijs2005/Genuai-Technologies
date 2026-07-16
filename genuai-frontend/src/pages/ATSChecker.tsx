@@ -96,47 +96,47 @@ ${jobDescription}
   };
 
   return (
-    <div style={{ height:'100vh', background:'#F8FAFC', display:'flex', flexDirection:'column', fontFamily:"'Inter', sans-serif" }}>
+    <div className="h-screen bg-background quantum-gradient flex flex-col overflow-hidden">
       <style>{`
-        .markdown-body { font-size: 14px; line-height: 1.6; color: #334155; }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3 { color: #0F172A; margin-top: 1.5em; margin-bottom: 0.5em; font-weight: 800; }
+        .markdown-body { font-size: 14px; line-height: 1.6; color: var(--color-on-surface); }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { color: var(--color-on-surface); margin-top: 1.5em; margin-bottom: 0.5em; font-weight: 800; }
         .markdown-body ul { padding-left: 20px; }
         .markdown-body li { margin-bottom: 8px; }
-        .markdown-body strong { color: #0F172A; }
+        .markdown-body strong { color: var(--color-on-surface); }
       `}</style>
       
       {/* Header */}
-      <div style={{ background:'#0F172A', color:'#fff', padding:'0 32px', height:"64px", display:'flex', justifyContent:'space-between', alignItems:'center', flexShrink:0 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-          <div style={{ fontWeight:"900", fontSize:"18px", display:"flex", alignItems:"center", gap:"12px" }}>
+      <div className="glass border-b border-surface-container px-lg md:px-xl h-16 flex items-center justify-between shrink-0 sticky top-0 z-40">
+        <div className="flex items-center gap-md">
+          <div className="font-black text-title-sm text-on-surface flex items-center gap-sm">
             <span>🎯</span> ATS Optimization Scanner
           </div>
         </div>
-        <button onClick={onBack} style={{ background:'transparent', border:'1px solid #334155', color:'#94A3B8', padding:'6px 16px', borderRadius:'8px', cursor:'pointer', fontWeight:'600', fontSize:"13px" }}>
+        <button onClick={onBack} className="bg-surface-bright border border-surface-container text-on-surface-variant px-md py-xs rounded-lg font-bold text-xs hover:text-on-surface hover:border-surface-container-high transition-colors">
           Exit to Hub
         </button>
       </div>
 
-      <div style={{ flex:1, display:'flex', overflow:'hidden' }}>
+      <div className="flex-1 flex overflow-hidden flex-col md:flex-row">
         
         {/* Left Side: Input */}
-        <div style={{ width:'45%', minWidth:'400px', background:'#fff', borderRight:'1px solid #E2E8F0', display:'flex', flexDirection:'column', padding:'32px', overflowY:'auto' }}>
-          <h2 style={{ fontSize:'20px', fontWeight:'800', color:'#0F172A', margin:'0 0 8px' }}>Input Details</h2>
-          <p style={{ fontSize:'14px', color:'#64748B', margin:'0 0 24px' }}>Paste your resume content and the target job description to see how an ATS will score you.</p>
+        <div className="w-full md:w-[45%] md:min-w-[400px] glass border-r border-surface-container flex flex-col p-lg md:p-xl overflow-y-auto">
+          <h2 className="text-title-md font-black text-on-surface mb-xs">Input Details</h2>
+          <p className="text-sm font-medium text-on-surface-variant mb-xl">Paste your resume content and the target job description to see how an ATS will score you.</p>
           
-          <label style={{ fontSize:'13px', fontWeight:'700', color:'#475569', marginBottom:'8px' }}>Target Job Description *</label>
+          <label className="text-xs font-bold text-on-surface-variant mb-xs">Target Job Description *</label>
           <textarea 
             value={jobDescription} 
             onChange={e => setJobDescription(e.target.value)} 
             placeholder="Paste the requirements and description from the job posting..."
-            style={{ width:'100%', minHeight:'180px', padding:'16px', border:'1px solid #E2E8F0', borderRadius:'12px', fontSize:'14px', fontFamily:'inherit', resize:'vertical', outline:'none', marginBottom:'24px', boxSizing:'border-box' }}
+            className="w-full min-h-[180px] p-md bg-background border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y mb-lg focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all"
           />
 
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'8px' }}>
-            <label style={{ fontSize:'13px', fontWeight:'700', color:'#475569' }}>Your Resume Content *</label>
+          <div className="flex justify-between items-center mb-xs">
+            <label className="text-xs font-bold text-on-surface-variant">Your Resume Content *</label>
             <div>
-              <input type="file" id="cv-upload" accept=".pdf" onChange={handleFileUpload} style={{ display:'none' }} />
-              <label htmlFor="cv-upload" style={{ background:'#EFF6FF', color:'#2563EB', padding:'6px 12px', borderRadius:'6px', fontSize:'12px', fontWeight:'700', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px' }}>
+              <input type="file" id="cv-upload" accept=".pdf" onChange={handleFileUpload} className="hidden" />
+              <label htmlFor="cv-upload" className="bg-info/10 text-info-dark px-sm py-1.5 rounded-lg text-xs font-bold cursor-pointer flex items-center gap-xs border border-info/20 hover:bg-info/20 transition-colors">
                 {parsingPdf ? 'Parsing...' : '📎 Upload PDF'}
               </label>
             </div>
@@ -146,41 +146,41 @@ ${jobDescription}
             value={resumeText} 
             onChange={e => setResumeText(e.target.value)} 
             placeholder="Upload your PDF CV above, or paste your plain-text resume here..."
-            style={{ width:'100%', minHeight:'300px', padding:'16px', border:'1px solid #E2E8F0', borderRadius:'12px', fontSize:'14px', fontFamily:'inherit', resize:'vertical', outline:'none', marginBottom:'24px', boxSizing:'border-box', background: parsingPdf ? '#F8FAFC' : '#fff' }}
+            className={`w-full min-h-[300px] p-md border border-surface-container rounded-xl text-sm font-medium text-on-surface outline-none resize-y mb-lg focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all ${parsingPdf ? 'bg-surface-bright/50' : 'bg-background'}`}
             disabled={parsingPdf}
           />
 
-          {error && <div style={{ color:'#EF4444', fontSize:'13px', fontWeight:'600', marginBottom:'16px', padding:'12px', background:'#FEF2F2', borderRadius:'8px' }}>{error}</div>}
+          {error && <div className="text-error-crimson text-xs font-bold mb-md p-sm bg-error-crimson/10 border border-error-crimson/20 rounded-lg">{error}</div>}
 
           <button 
             onClick={analyze}
             disabled={loading}
-            style={{ width:'100%', padding:'16px', background:loading ? '#E2E8F0' : 'linear-gradient(135deg,#059669,#10B981)', color:loading ? '#94A3B8' : '#fff', border:'none', borderRadius:'12px', fontWeight:'800', fontSize:'15px', cursor:loading ? 'not-allowed' : 'pointer', boxShadow:loading ? 'none' : '0 8px 24px rgba(5,150,105,0.2)' }}
+            className={`w-full p-md rounded-xl font-black text-sm transition-all ${loading ? 'bg-surface-container text-on-surface-variant cursor-not-allowed' : 'bg-gradient-to-r from-success to-[#10B981] text-white hover:shadow-lg hover:shadow-success/20 cursor-pointer'}`}
           >
             {loading ? 'Analyzing with GenuAI...' : 'Scan Resume Compatibility'}
           </button>
         </div>
 
         {/* Right Side: Results */}
-        <div style={{ flex:1, background:'#F8FAFC', padding:'40px', overflowY:'auto' }}>
+        <div className="flex-1 p-lg md:p-xl overflow-y-auto relative z-10">
           {loading ? (
-            <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', color:'#64748B' }}>
-              <div style={{ fontSize:'48px', animation:'pulse 2s infinite', marginBottom:'16px' }}>🤖</div>
-              <h2 style={{ fontSize:'20px', fontWeight:'800', color:'#0F172A', margin:'0 0 8px' }}>Scanning Resume...</h2>
-              <p>Simulating ATS parsing and semantic keyword matching.</p>
+            <div className="flex flex-col items-center justify-center h-full text-on-surface-variant">
+              <div className="text-display-sm animate-pulse mb-md">🤖</div>
+              <h2 className="text-title-md font-black text-on-surface mb-xs">Scanning Resume...</h2>
+              <p className="text-sm font-medium">Simulating ATS parsing and semantic keyword matching.</p>
             </div>
           ) : result ? (
-            <div style={{ background:'#fff', padding:'40px', borderRadius:'24px', boxShadow:'0 12px 32px rgba(0,0,0,0.05)' }}>
-              <h2 style={{ fontSize:'24px', fontWeight:'900', color:'#0F172A', margin:'0 0 24px', borderBottom:'1px solid #E2E8F0', paddingBottom:'16px' }}>ATS Analysis Results</h2>
+            <div className="glass p-xl rounded-3xl shadow-lg border border-surface-container">
+              <h2 className="text-headline-sm font-black text-on-surface mb-lg pb-md border-b border-surface-container">ATS Analysis Results</h2>
               <div className="markdown-body">
                 <ReactMarkdown>{result}</ReactMarkdown>
               </div>
             </div>
           ) : (
-            <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', color:'#94A3B8', textAlign:'center' }}>
-              <span style={{ fontSize:'48px', marginBottom:'16px', opacity:0.5 }}>📊</span>
-              <h2 style={{ fontSize:'20px', fontWeight:'800', color:'#475569', margin:'0 0 8px' }}>No Data Analyzed</h2>
-              <p style={{ maxWidth:'300px' }}>Provide your resume and a job description on the left to generate an ATS compatibility report.</p>
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <span className="text-display-sm mb-md opacity-50">📊</span>
+              <h2 className="text-title-md font-black text-on-surface-variant mb-xs">No Data Analyzed</h2>
+              <p className="text-sm font-medium text-on-surface-variant/70 max-w-[300px]">Provide your resume and a job description on the left to generate an ATS compatibility report.</p>
             </div>
           )}
         </div>

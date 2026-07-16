@@ -16,89 +16,119 @@ export default function CompanyOverview({ user, onStartTest }: Props) {
   const name = user?.user?.name || user?.name || 'Candidate';
 
   return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', fontFamily:"'Inter','Segoe UI',sans-serif" }}>
+    <div className="min-h-screen bg-background font-body-base text-on-background relative overflow-hidden">
+      
+      {/* Decorative background orbs */}
+      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-accent-gold/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[10%] right-[-10%] w-[600px] h-[600px] bg-indigo-brand/5 blur-[120px] rounded-full pointer-events-none" />
+
       {/* Navbar */}
-      <nav style={{ background:'#fff', borderBottom:'1px solid #E5E7EB', padding:'0 40px', height:'64px', display:'flex', alignItems:'center', justifyContent:'space-between', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <img src="/logo.png" alt="GenuAI" style={{ width:'44px', height:'44px', objectFit:'contain', filter:'drop-shadow(0 2px 6px rgba(212,175,55,0.4))' }} />
-          <div>
-            <div style={{ fontWeight:'800', fontSize:'16px', color:'#0F172A' }}>GenuAI Technologies</div>
-            <div style={{ fontSize:'11px', color:'#64748B' }}>AI-Powered Recruitment Intelligence Platform</div>
+      <nav className="h-16 border-b border-surface-container/50 bg-surface/80 backdrop-blur-xl px-margin-mobile md:px-margin-desktop flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-sm">
+          <img src="/logo.png" alt="GenuAI" className="w-11 h-11 object-contain gold-glow-subtle" />
+          <div className="hidden sm:block">
+            <div className="font-headline-md text-on-surface text-[16px] leading-tight">GenuAI Technologies</div>
+            <div className="text-[10px] font-bold text-on-surface-variant/80 uppercase tracking-widest">Recruitment Intelligence</div>
           </div>
         </div>
-        <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
-          <div style={{ width:'34px', height:'34px', borderRadius:'50%', background:'linear-gradient(135deg,#2563EB,#7C3AED)', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'700', fontSize:'14px' }}>{name[0]?.toUpperCase()}</div>
-          <span style={{ fontSize:'14px', color:'#374151', fontWeight:'600' }}>{name}</span>
+        <div className="flex items-center gap-sm">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-brand to-indigo-brand-dark flex items-center justify-center text-white font-bold text-sm shadow-sm">{name[0]?.toUpperCase()}</div>
+          <div className="text-sm font-bold text-on-surface hidden sm:block">{name}</div>
         </div>
       </nav>
 
       {/* Hero Banner */}
-      <div style={{ background:'linear-gradient(135deg,#1E3A8A,#2563EB,#7C3AED)', padding:'72px 40px', textAlign:'center' }}>
-        <div style={{ width:'80px', height:'80px', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 24px' }}>
-          <img src="/logo.png" alt="GenuAI" style={{ width:'80px', height:'80px', objectFit:'contain', filter:'drop-shadow(0 4px 16px rgba(212,175,55,0.6))' }} />
+      <div className="quantum-gradient py-xxl px-margin-mobile md:px-margin-desktop text-center relative z-10 border-b border-surface-container/50 shadow-sm">
+        <div className="w-24 h-24 mx-auto mb-md relative group">
+          <div className="absolute -inset-4 bg-accent-gold/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <img src="/logo.png" alt="GenuAI" className="relative w-full h-full object-contain gold-glow-subtle transition-transform duration-700 group-hover:scale-105" />
         </div>
-        <h1 style={{ fontSize:'42px', fontWeight:'900', color:'#fff', margin:'0 0 12px', letterSpacing:'-1px' }}>GenuAI Technologies</h1>
-        <p style={{ fontSize:'17px', color:'rgba(255,255,255,0.8)', margin:'0 0 8px' }}>AI-Powered Recruitment Intelligence Platform</p>
-        <p style={{ fontSize:'14px', color:'rgba(255,255,255,0.6)', maxWidth:'560px', margin:'0 auto' }}>
+        <h1 className="text-display-md font-display-md text-on-surface mb-xs hero-title-weight">GenuAI Technologies</h1>
+        <p className="text-headline-sm font-headline-sm text-accent-gold mb-sm drop-shadow-sm">AI-Powered Recruitment Intelligence Platform</p>
+        <p className="text-body-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
           We transform traditional hiring by evaluating candidates across seven dimensions — skills, communication, problem-solving, aptitude, collaboration, and personality — all powered by cutting-edge AI.
         </p>
-
       </div>
 
       {/* Assessment Modules */}
-      <div style={{ maxWidth:'1000px', margin:'0 auto', padding:'60px 24px' }}>
-        <div style={{ textAlign:'center', marginBottom:'40px' }}>
-          <span style={{ background:'#EFF6FF', color:'#2563EB', fontSize:'12px', fontWeight:'700', padding:'6px 16px', borderRadius:'20px', border:'1px solid #BFDBFE' }}>ASSESSMENT PIPELINE</span>
-          <h2 style={{ fontSize:'28px', fontWeight:'900', color:'#0F172A', margin:'16px 0 8px', letterSpacing:'-0.5px' }}>Your 7-Module Journey</h2>
-          <p style={{ color:'#64748B', fontSize:'14px' }}>Each module is carefully designed to evaluate a different competency</p>
+      <div className="max-w-[1000px] mx-auto px-margin-mobile md:px-margin-desktop py-xl relative z-10">
+        <div className="text-center mb-xl animate-[fadeIn_0.5s_ease]">
+          <div className="inline-flex items-center gap-2 bg-indigo-brand/10 border border-indigo-brand/20 rounded-full px-sm py-[6px] mb-md shadow-sm">
+            <span className="text-[11px] font-bold text-indigo-brand uppercase tracking-widest">ASSESSMENT PIPELINE</span>
+          </div>
+          <h2 className="text-display-sm font-display-sm text-on-surface mb-xs">Your 7-Module Journey</h2>
+          <p className="text-body-base text-on-surface-variant">Each module is carefully designed to evaluate a different competency.</p>
         </div>
 
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'16px', marginBottom:'40px' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md mb-xl">
           {MODULES.map((m,i)=>(
-            <div key={i} style={{ background:'#fff', borderRadius:'16px', padding:'24px', border:'1px solid #E5E7EB', display:'flex', gap:'16px', alignItems:'flex-start' }}>
-              <div style={{ width:'44px', height:'44px', borderRadius:'12px', background:m.color+'15', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden', border:`1px solid ${m.color}33` }}>
-                <img src={m.imgSrc} alt={m.title} style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+            <div key={i} className="glass p-md rounded-xl border border-surface-container flex gap-md items-start hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 border" style={{ backgroundColor: `${m.color}15`, borderColor: `${m.color}33`, color: m.color }}>
+                 <span className="material-symbols-outlined text-[24px]">
+                    {i === 0 ? 'document_scanner' : 
+                     i === 1 ? 'quiz' : 
+                     i === 2 ? 'record_voice_over' : 
+                     i === 3 ? 'terminal' : 
+                     i === 4 ? 'videocam' : 
+                     i === 5 ? 'groups' : 'military_tech'}
+                 </span>
               </div>
               <div>
-                <div style={{ display:'flex', alignItems:'center', gap:'8px', marginBottom:'4px' }}>
-                  <span style={{ background:m.color+'15', color:m.color, fontSize:'10px', fontWeight:'800', padding:'2px 8px', borderRadius:'10px' }}>Step {i+1}</span>
+                <div className="flex items-center gap-xs mb-xs">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: `${m.color}15`, color: m.color }}>Step {i+1}</span>
                 </div>
-                <div style={{ fontWeight:'800', color:'#0F172A', fontSize:'14px', marginBottom:'4px' }}>{m.title}</div>
-                <div style={{ color:'#64748B', fontSize:'12px', lineHeight:'1.5' }}>{m.desc}</div>
+                <div className="font-bold text-on-surface text-sm mb-1">{m.title}</div>
+                <div className="text-on-surface-variant text-xs leading-relaxed">{m.desc}</div>
               </div>
             </div>
           ))}
         </div>
 
         {/* Rules box */}
-        <div style={{ background:'#fff', borderRadius:'20px', border:'1px solid #E5E7EB', padding:'32px', marginBottom:'32px' }}>
-          <h3 style={{ fontSize:'18px', fontWeight:'800', color:'#0F172A', margin:'0 0 16px' }}>📋 Assessment Rules</h3>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px' }}>
+        <div className="glass-gold p-lg rounded-2xl border border-accent-gold/30 mb-xl relative overflow-hidden">
+          <div className="absolute -right-10 -top-10 text-accent-gold/10">
+            <span className="material-symbols-outlined text-[150px]">gavel</span>
+          </div>
+          <h3 className="text-headline-sm font-headline-sm text-on-surface mb-md relative z-10 flex items-center gap-2">
+            <span className="material-symbols-outlined text-accent-gold">rule</span>
+            Assessment Rules
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-sm relative z-10">
             {[
-              '✅ Stable internet connection required',
-              '✅ Laptop/desktop with camera and mic',
-              '✅ Quiet, well-lit environment',
-              '✅ Valid resume in PDF/DOC format',
-              '⛔ No tab switching during test',
-              '⛔ No mobile phone visible on camera',
-              '⛔ No additional persons in frame',
-              '⛔ Session auto-terminates on 3 violations',
+              { text: 'Stable internet connection required', pass: true },
+              { text: 'Laptop/desktop with camera and mic', pass: true },
+              { text: 'Quiet, well-lit environment', pass: true },
+              { text: 'Valid resume in PDF/DOC format', pass: true },
+              { text: 'No tab switching during test', pass: false },
+              { text: 'No mobile phone visible on camera', pass: false },
+              { text: 'No additional persons in frame', pass: false },
+              { text: 'Session auto-terminates on 3 violations', pass: false },
             ].map((r,i)=>(
-              <div key={i} style={{ background:'#F8FAFC', borderRadius:'8px', padding:'10px 14px', fontSize:'13px', color:'#374151', fontWeight:'500' }}>{r}</div>
+              <div key={i} className="bg-surface-bright rounded-lg p-sm text-sm font-bold flex items-center gap-sm border border-surface-container/50">
+                <span className={`material-symbols-outlined text-[18px] ${r.pass ? 'text-success-emerald' : 'text-error-crimson'}`}>
+                  {r.pass ? 'check_circle' : 'cancel'}
+                </span>
+                <span className="text-on-surface-variant">{r.text}</span>
+              </div>
             ))}
           </div>
         </div>
 
         {/* CTA */}
-        <div style={{ textAlign:'center' }}>
-          <div style={{ fontSize:'14px', color:'#64748B', marginBottom:'20px' }}>You have read and understood all the rules. Ready to begin?</div>
+        <div className="text-center animate-[fadeIn_0.5s_ease_0.2s_both]">
+          <div className="text-sm font-bold text-on-surface-variant mb-md">You have read and understood all the rules. Ready to begin?</div>
           <button
             onClick={onStartTest}
-            style={{ padding:'16px 56px', background:'linear-gradient(135deg,#2563EB,#7C3AED)', color:'#fff', border:'none', borderRadius:'14px', fontWeight:'800', fontSize:'16px', cursor:'pointer', boxShadow:'0 8px 24px rgba(37,99,235,0.3)', letterSpacing:'0.2px' }}
+            className="gradient-button px-xl py-md rounded-xl font-bold text-white shadow-xl shadow-indigo-brand/30 hover:-translate-y-1 transition-all"
           >
-            Begin Official Assessment →
+            <span className="flex items-center justify-center gap-2">
+               Begin Official Assessment
+               <span className="material-symbols-outlined">arrow_forward</span>
+            </span>
           </button>
-          <div style={{ fontSize:'12px', color:'#94A3B8', marginTop:'16px' }}>© 2025 GenuAI Technologies · All rights reserved</div>
+          <div className="text-[11px] font-bold text-on-surface-variant/60 uppercase tracking-widest mt-lg">
+            © 2025 GenuAI Technologies · All rights reserved
+          </div>
         </div>
       </div>
     </div>

@@ -25,54 +25,54 @@ function JobBoard({ user, onBack, initialFilter = 'All' }: { user: any, onBack: 
   });
 
   return (
-    <div style={{ maxWidth:'1100px', margin:'0 auto', padding:'40px 24px' }}>
-      <button onClick={onBack} style={{ background:"none", border:"none", color:"#64748B", fontSize:"14px", cursor:"pointer", marginBottom:"24px", fontWeight:"700" }}>← Back to Search Hub</button>
-      <div style={{ background:'linear-gradient(135deg,#F59E0B,#EF4444)', borderRadius:'24px', padding:'40px', color:'#fff', marginBottom:'32px', display:'flex', justifyContent:'space-between', alignItems:'center', boxShadow:'0 12px 30px rgba(245,158,11,0.2)' }}>
+    <div className="max-w-[1100px] mx-auto w-full p-lg md:p-xl">
+      <button onClick={onBack} className="text-on-surface-variant font-bold text-sm mb-lg hover:text-on-surface flex items-center gap-xs transition-colors">← Back to Search Hub</button>
+      <div className="bg-gradient-to-br from-warning to-error rounded-3xl p-xl text-white mb-xl flex justify-between items-center shadow-lg shadow-warning/20">
         <div>
-          <h1 style={{ fontSize:'32px', fontWeight:'900', margin:'0 0 12px', letterSpacing:'-0.5px' }}>Find Your Next Opportunity</h1>
-          <p style={{ fontSize:'15px', opacity:0.9, margin:0, maxWidth:'500px', lineHeight:'1.6' }}>Explore open roles at GenuAI Technologies and our partner network. Apply directly with your GenuAI profile.</p>
+          <h1 className="text-headline-sm font-headline-sm mb-xs">Find Your Next Opportunity</h1>
+          <p className="text-sm opacity-90 font-medium max-w-lg leading-relaxed">Explore open roles at GenuAI Technologies and our partner network. Apply directly with your GenuAI profile.</p>
         </div>
-        <div style={{ width: '80px', height: '80px', overflow: 'hidden', borderRadius: '16px', background: '#fff' }}>
-          <img src="/icons/resume_gen.png" alt="Jobs" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center overflow-hidden border border-white/30 shrink-0">
+          <img src="/icons/resume_gen.png" alt="Jobs" className="w-12 h-12 object-contain mix-blend-multiply" />
         </div>
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns:'280px 1fr', gap:'32px' }}>
+      <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-xl">
         <div>
-          <div style={{ background:'#fff', borderRadius:'16px', border:'1px solid #E2E8F0', padding:'24px' }}>
-            <div style={{ fontWeight:'800', fontSize:'16px', color:'#0F172A', marginBottom:'20px' }}>Filters</div>
-            <div style={{ marginBottom:'24px' }}>
-              <label style={{ fontSize:'13px', fontWeight:'700', color:'#64748B', display:'block', marginBottom:'8px' }}>Search Role or Skill</label>
-              <div style={{ position:'relative' }}>
-                <span style={{ position:'absolute', left:'12px', top:'10px', color:'#94A3B8' }}>🔍</span>
-                <input type="text" value={search} onChange={e=>setSearch(e.target.value)} placeholder="e.g. React" style={{ width:'100%', padding:'10px 12px 10px 36px', border:'1.5px solid #E2E8F0', borderRadius:'10px', fontSize:'14px', outline:'none', boxSizing:'border-box' }} />
+          <div className="glass rounded-2xl border border-surface-container p-lg mb-lg">
+            <div className="font-black text-title-sm text-on-surface mb-lg">Filters</div>
+            <div className="mb-lg">
+              <label className="text-xs font-bold text-on-surface-variant block mb-xs">Search Role or Skill</label>
+              <div className="relative">
+                <span className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+                <input type="text" value={search} onChange={e=>setSearch(e.target.value)} placeholder="e.g. React" className="w-full pl-[40px] pr-md py-sm bg-background border border-surface-container rounded-xl text-sm font-medium focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand outline-none transition-all" />
               </div>
             </div>
-            <div style={{ marginBottom:'24px' }}>
-              <label style={{ fontSize:'13px', fontWeight:'700', color:'#64748B', display:'block', marginBottom:'8px' }}>Work Mode</label>
-              <div style={{ display:'flex', flexDirection:'column', gap:'8px' }}>
+            <div className="mb-lg">
+              <label className="text-xs font-bold text-on-surface-variant block mb-xs">Work Mode</label>
+              <div className="flex flex-col gap-sm">
                 {['All', 'Remote', 'Hybrid', 'On-site', 'Internships'].map(mode => (
-                  <label key={mode} style={{ display:'flex', alignItems:'center', gap:'8px', fontSize:'14px', color:'#334155', cursor:'pointer' }}>
-                    <input type="radio" checked={filterMode === mode} onChange={() => setFilterMode(mode)} style={{ cursor:'pointer' }} />
+                  <label key={mode} className="flex items-center gap-sm text-sm font-medium text-on-surface cursor-pointer">
+                    <input type="radio" checked={filterMode === mode} onChange={() => setFilterMode(mode)} className="cursor-pointer accent-indigo-brand" />
                     {mode}
                   </label>
                 ))}
               </div>
             </div>
-            <div style={{ marginBottom:'24px' }}>
-              <label style={{ fontSize:'13px', fontWeight:'700', color:'#64748B', display:'block', marginBottom:'8px' }}>Experience Level</label>
-              <div style={{ display:'flex', flexDirection:'column', gap:'8px' }}>
+            <div className="mb-lg">
+              <label className="text-xs font-bold text-on-surface-variant block mb-xs">Experience Level</label>
+              <div className="flex flex-col gap-sm">
                 {['Any Experience', 'Entry-level (0-2 yrs)', 'Mid-level (3-5 yrs)', 'Senior (5+ yrs)', 'Leadership'].map((exp, i) => (
-                  <label key={exp} style={{ display:'flex', alignItems:'center', gap:'8px', fontSize:'14px', color:'#334155', cursor:'pointer' }}>
-                    <input type="radio" name="exp" defaultChecked={i === 0} style={{ cursor:'pointer' }} />
+                  <label key={exp} className="flex items-center gap-sm text-sm font-medium text-on-surface cursor-pointer">
+                    <input type="radio" name="exp" defaultChecked={i === 0} className="cursor-pointer accent-indigo-brand" />
                     {exp}
                   </label>
                 ))}
               </div>
             </div>
-            <div style={{ marginBottom:'8px' }}>
-              <label style={{ fontSize:'13px', fontWeight:'700', color:'#64748B', display:'block', marginBottom:'8px' }}>Expected Salary</label>
-              <select style={{ width:'100%', padding:'10px', borderRadius:'10px', border:'1.5px solid #E2E8F0', outline:'none', fontSize:'14px', color:'#334155', background:'#fff', cursor:'pointer' }}>
+            <div>
+              <label className="text-xs font-bold text-on-surface-variant block mb-xs">Expected Salary</label>
+              <select className="w-full px-md py-sm bg-background border border-surface-container rounded-xl text-sm font-medium focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand outline-none transition-all cursor-pointer">
                 <option>Any Salary</option>
                 <option>$50k - $100k</option>
                 <option>$100k - $150k</option>
@@ -80,63 +80,63 @@ function JobBoard({ user, onBack, initialFilter = 'All' }: { user: any, onBack: 
               </select>
             </div>
           </div>
-          <div style={{ background:'linear-gradient(135deg,#EFF6FF,#DBEAFE)', borderRadius:'16px', border:'1px solid #BFDBFE', padding:'24px', marginTop:'24px' }}>
-            <div style={{ fontSize:'24px', marginBottom:'12px' }}>💡</div>
-            <div style={{ fontWeight:'800', fontSize:'15px', color:'#1E3A8A', marginBottom:'8px' }}>AI Match Score</div>
-            <div style={{ fontSize:'13px', color:'#1E40AF', lineHeight:'1.6' }}>We analyze your resume and test scores to show you how well you match each role.</div>
+          <div className="bg-info/10 rounded-2xl border border-info/20 p-lg mb-lg">
+            <div className="text-2xl mb-xs text-info">💡</div>
+            <div className="font-black text-sm text-info-dark mb-xs">AI Match Score</div>
+            <div className="text-xs font-medium text-info-dark/80 leading-relaxed">We analyze your resume and test scores to show you how well you match each role.</div>
           </div>
-          <div style={{ background:'linear-gradient(135deg,#F5F3FF,#EDE9FE)', borderRadius:'16px', border:'1px solid #DDD6FE', padding:'24px', marginTop:'24px' }}>
-            <div style={{ fontSize:'24px', marginBottom:'12px' }}>🎯</div>
-            <div style={{ fontWeight:'800', fontSize:'15px', color:'#5B21B6', marginBottom:'8px' }}>AI Skill Gap Analyzer</div>
-            <div style={{ fontSize:'13px', color:'#4C1D95', lineHeight:'1.6', marginBottom:'16px' }}>See exactly which skills you need to learn to increase your match score for top roles.</div>
-            <button style={{ width:'100%', background:'#7C3AED', color:'#fff', border:'none', borderRadius:'8px', padding:'10px', fontWeight:'700', fontSize:'13px', cursor:'pointer', boxShadow:'0 4px 12px rgba(124,58,237,0.3)', transition:'transform 0.2s' }} onMouseEnter={e=>e.currentTarget.style.transform='translateY(-2px)'} onMouseLeave={e=>e.currentTarget.style.transform='none'}>Analyze My Gaps</button>
+          <div className="bg-[#7C3AED]/10 rounded-2xl border border-[#7C3AED]/20 p-lg">
+            <div className="text-2xl mb-xs text-[#7C3AED]">🎯</div>
+            <div className="font-black text-sm text-[#7C3AED] mb-xs">AI Skill Gap Analyzer</div>
+            <div className="text-xs font-medium text-[#7C3AED]/80 leading-relaxed mb-md">See exactly which skills you need to learn to increase your match score for top roles.</div>
+            <button className="w-full bg-[#7C3AED] text-white rounded-xl py-sm font-bold text-xs hover:bg-[#6D28D9] transition-all hover:shadow-md hover:-translate-y-0.5">Analyze My Gaps</button>
           </div>
         </div>
         <div>
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px' }}>
-            <div style={{ fontWeight:'700', color:'#475569', fontSize:'15px' }}>Showing {filteredJobs.length} open roles</div>
+          <div className="flex justify-between items-center mb-md">
+            <div className="font-bold text-sm text-on-surface-variant">Showing {filteredJobs.length} open roles</div>
           </div>
-          <div style={{ display:'flex', flexDirection:'column', gap:'16px' }}>
+          <div className="flex flex-col gap-lg">
             {filteredJobs.length === 0 ? (
-              <div style={{ background:'#fff', borderRadius:'16px', padding:'48px', textAlign:'center', border:'1px solid #E2E8F0' }}>
-                <div style={{ fontSize:'32px', marginBottom:'16px' }}>📭</div>
-                <div style={{ fontWeight:'700', fontSize:'16px', color:'#0F172A' }}>No jobs found</div>
-                <div style={{ fontSize:'14px', color:'#64748B', marginTop:'4px' }}>Try adjusting your filters</div>
+              <div className="glass rounded-2xl p-xxl text-center border border-surface-container">
+                <div className="text-4xl mb-md">📭</div>
+                <div className="font-bold text-title-sm text-on-surface">No jobs found</div>
+                <div className="text-sm font-medium text-on-surface-variant mt-xs">Try adjusting your filters</div>
               </div>
             ) : (
               filteredJobs.map(job => (
-                <div key={job.id} style={{ background:'#fff', borderRadius:'16px', border:'1px solid #E2E8F0', padding:'24px', transition:'all 0.2s', boxShadow: selectedJob === job.id ? '0 12px 24px rgba(0,0,0,0.06)' : 'none', transform: selectedJob === job.id ? 'translateY(-2px)' : 'none' }}>
-                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
-                    <div style={{ display:'flex', gap:'16px' }}>
-                      <div style={{ width:'48px', height:'48px', borderRadius:'12px', border:'1px solid #E2E8F0', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-                        <img src="/logo.png" alt="" style={{ width:'80%', height:'80%', objectFit:'contain' }} />
+                <div key={job.id} className={`glass rounded-2xl border ${selectedJob === job.id ? 'border-indigo-brand shadow-md scale-[1.01]' : 'border-surface-container hover:border-surface-container-high hover:-translate-y-0.5'} p-lg transition-all duration-300`}>
+                  <div className="flex justify-between items-start mb-md">
+                    <div className="flex gap-md">
+                      <div className="w-12 h-12 rounded-xl bg-surface-bright border border-surface-container flex items-center justify-center shrink-0">
+                        <img src="/logo.png" alt="" className="w-8 h-8 object-contain" />
                       </div>
                       <div>
-                        <h3 style={{ fontSize:'18px', fontWeight:'800', color:'#0F172A', margin:'0 0 4px' }}>{job.role}</h3>
-                        <div style={{ fontSize:'14px', color:'#64748B', display:'flex', alignItems:'center', gap:'6px' }}>
-                          <span style={{ fontWeight:'600' }}>{job.company}</span><span>•</span><span>📍 {job.location}</span>
+                        <h3 className="text-title-sm font-title-sm text-on-surface mb-xs">{job.role}</h3>
+                        <div className="text-xs font-medium text-on-surface-variant flex items-center gap-xs">
+                          <span className="font-bold text-on-surface">{job.company}</span><span>•</span><span>📍 {job.location}</span>
                         </div>
                       </div>
                     </div>
-                    <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end' }}>
-                      <div style={{ display:'flex', alignItems:'center', gap:'6px', background:'#ECFDF5', color:'#059669', padding:'4px 10px', borderRadius:'20px', fontSize:'12px', fontWeight:'800' }}>
+                    <div className="flex flex-col items-end gap-xs">
+                      <div className="bg-success/10 text-success-dark px-sm py-1 rounded-full text-xs font-black flex items-center gap-xs">
                         ✨ {job.matched}% Match
                       </div>
-                      <div style={{ fontSize:'12px', color:'#94A3B8', marginTop:'8px' }}>{job.posted}</div>
+                      <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{job.posted}</div>
                     </div>
                   </div>
-                  <div style={{ display:'flex', gap:'8px', marginTop:'20px', flexWrap:'wrap' }}>
-                    <span style={{ background:'#F1F5F9', color:'#475569', padding:'4px 12px', borderRadius:'6px', fontSize:'12px', fontWeight:'600' }}>{job.mode}</span>
-                    <span style={{ background:'#F1F5F9', color:'#475569', padding:'4px 12px', borderRadius:'6px', fontSize:'12px', fontWeight:'600' }}>{job.type}</span>
-                    {job.tags.map(t => <span key={t} style={{ background:'#EEF2FF', color:'#4F46E5', padding:'4px 12px', borderRadius:'6px', fontSize:'12px', fontWeight:'600' }}>{t}</span>)}
+                  <div className="flex flex-wrap gap-xs mb-lg">
+                    <span className="bg-surface-bright text-on-surface-variant px-sm py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-surface-container">{job.mode}</span>
+                    <span className="bg-surface-bright text-on-surface-variant px-sm py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-surface-container">{job.type}</span>
+                    {job.tags.map(t => <span key={t} className="bg-indigo-brand/10 text-indigo-brand px-sm py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-indigo-brand/20">{t}</span>)}
                   </div>
-                  <div style={{ marginTop:'24px', paddingTop:'20px', borderTop:'1px solid #F1F5F9', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                  <div className="pt-md border-t border-surface-container flex justify-between items-center">
                     {selectedJob === job.id ? (
-                      <div style={{ fontSize:'13px', color:'#059669', fontWeight:'700' }}>✅ Application submitted successfully!</div>
+                      <div className="text-xs font-bold text-success flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">check_circle</span> Application submitted successfully!</div>
                     ) : (
-                      <button onClick={() => setSelectedJob(job.id)} style={{ padding:'10px 24px', background:'linear-gradient(135deg,#F59E0B,#EF4444)', color:'#fff', border:'none', borderRadius:'8px', fontSize:'14px', fontWeight:'700', cursor:'pointer' }}>Apply Now →</button>
+                      <button onClick={() => setSelectedJob(job.id)} className="px-lg py-sm bg-gradient-to-br from-warning to-error text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">Apply Now →</button>
                     )}
-                    <button style={{ padding:'10px', background:'none', border:'none', color:'#94A3B8', cursor:'pointer', fontSize:'18px' }}>⭐</button>
+                    <button className="text-on-surface-variant hover:text-warning transition-colors"><span className="material-symbols-outlined text-[20px]">star</span></button>
                   </div>
                 </div>
               ))
@@ -154,177 +154,177 @@ function NetworkView({ user, onBack }: { user: any, onBack: () => void }) {
   const [newPost, setNewPost] = useState('');
   
   return (
-    <div style={{ maxWidth:'1200px', margin:'0 auto', padding:'24px', display:'grid', gridTemplateColumns:'280px 1fr 300px', gap:'24px' }}>
+    <div className="max-w-[1200px] mx-auto p-lg md:p-xl grid grid-cols-1 lg:grid-cols-[280px_1fr_300px] gap-xl">
       {/* Left Column: Profile Snapshot */}
-      <div style={{ display:'flex', flexDirection:'column', gap:'16px' }}>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#64748B", fontSize:"14px", cursor:"pointer", marginBottom:"8px", fontWeight:"700", display:'flex', alignItems:'center', gap:'8px' }}>← Back to Hub</button>
+      <div className="flex flex-col gap-lg">
+        <button onClick={onBack} className="text-on-surface-variant font-bold text-sm mb-xs hover:text-on-surface flex items-center gap-xs transition-colors self-start">← Back to Hub</button>
         
         {/* Profile Card */}
-        <div style={{ background:'#fff', borderRadius:'16px', border:'1px solid #E2E8F0', overflow:'hidden', boxShadow:'0 4px 12px rgba(0,0,0,0.02)' }}>
-          <div style={{ height:'80px', background:'linear-gradient(135deg,#0A66C2,#2563EB)' }}></div>
-          <div style={{ padding:'0 20px 20px', textAlign:'center', marginTop:'-40px' }}>
-            <div style={{ width:'80px', height:'80px', borderRadius:'50%', background:'#fff', border:'4px solid #fff', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 12px', boxShadow:'0 4px 8px rgba(0,0,0,0.1)', overflow:'hidden' }}>
-              <div style={{ width:'100%', height:'100%', borderRadius:'50%', background:'linear-gradient(135deg,#2563EB,#7C3AED)', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'800', fontSize:'32px' }}>{name[0]?.toUpperCase()}</div>
+        <div className="glass rounded-2xl border border-surface-container overflow-hidden shadow-sm">
+          <div className="h-20 bg-gradient-to-br from-info-dark to-indigo-brand"></div>
+          <div className="px-lg pb-lg text-center -mt-10">
+            <div className="w-20 h-20 rounded-full bg-white border-4 border-white flex items-center justify-center mx-auto mb-sm shadow-md overflow-hidden shrink-0">
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-indigo-brand to-primary flex items-center justify-center text-white font-black text-headline-sm">{name[0]?.toUpperCase()}</div>
             </div>
-            <h2 style={{ fontSize:'18px', fontWeight:'800', color:'#0F172A', margin:'0 0 4px' }}>{name}</h2>
-            <div style={{ fontSize:'13px', color:'#64748B', marginBottom:'16px' }}>AI-Assessed Tech Professional</div>
-            <div style={{ background:'#EFF6FF', color:'#1E3A8A', padding:'8px', borderRadius:'8px', fontSize:'12px', fontWeight:'700', marginBottom:'16px' }}>GenuAI Readiness Score: 92/100</div>
-            <div style={{ display:'flex', justifyContent:'space-between', fontSize:'13px', color:'#64748B', borderTop:'1px solid #F1F5F9', paddingTop:'12px', paddingBottom:'12px', cursor:'pointer' }} onMouseEnter={e=>e.currentTarget.style.background='#F8FAFC'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
-              <span>Profile Viewers</span>
-              <span style={{ color:'#0A66C2', fontWeight:'700' }}>34</span>
+            <h2 className="text-title-sm font-black text-on-surface mb-xs">{name}</h2>
+            <div className="text-xs font-medium text-on-surface-variant mb-md">AI-Assessed Tech Professional</div>
+            <div className="bg-info/10 text-info-dark px-sm py-1.5 rounded-lg text-xs font-bold mb-md">GenuAI Readiness Score: 92/100</div>
+            <div className="flex justify-between items-center text-xs text-on-surface-variant border-t border-surface-container pt-sm pb-sm cursor-pointer hover:bg-surface-bright/50 transition-colors">
+              <span className="font-medium">Profile Viewers</span>
+              <span className="text-info-dark font-black">34</span>
             </div>
-            <div style={{ display:'flex', justifyContent:'space-between', fontSize:'13px', color:'#64748B', cursor:'pointer', paddingBottom:'4px' }} onMouseEnter={e=>e.currentTarget.style.background='#F8FAFC'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
-              <span>Network Connections</span>
-              <span style={{ color:'#0A66C2', fontWeight:'700' }}>142</span>
+            <div className="flex justify-between items-center text-xs text-on-surface-variant cursor-pointer hover:bg-surface-bright/50 transition-colors pb-xs">
+              <span className="font-medium">Network Connections</span>
+              <span className="text-info-dark font-black">142</span>
             </div>
           </div>
         </div>
 
         {/* My Items Card */}
-        <div style={{ background:'#fff', borderRadius:'16px', border:'1px solid #E2E8F0', overflow:'hidden', boxShadow:'0 4px 12px rgba(0,0,0,0.02)' }}>
-           <div style={{ padding:'16px', borderBottom:'1px solid #F1F5F9', fontWeight:'700', fontSize:'14px', color:'#0F172A' }}>My GenuAI Dashboard</div>
-           <div style={{ display:'flex', flexDirection:'column' }}>
-             <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', gap:'12px', cursor:'pointer', color:'#475569', fontSize:'13px', fontWeight:'600', transition:'background 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background='#F8FAFC'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
-               <span style={{ fontSize:'16px' }}>🔖</span> Saved Jobs (4)
+        <div className="glass rounded-2xl border border-surface-container overflow-hidden shadow-sm">
+           <div className="p-md border-b border-surface-container font-black text-sm text-on-surface">My GenuAI Dashboard</div>
+           <div className="flex flex-col">
+             <div className="px-md py-sm flex items-center gap-sm cursor-pointer text-on-surface-variant text-xs font-bold hover:bg-surface-bright/50 transition-colors">
+               <span className="text-lg">🔖</span> Saved Jobs (4)
              </div>
-             <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', gap:'12px', cursor:'pointer', color:'#475569', fontSize:'13px', fontWeight:'600', transition:'background 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background='#F8FAFC'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
-               <span style={{ fontSize:'16px' }}>📝</span> Active Assessments
+             <div className="px-md py-sm flex items-center gap-sm cursor-pointer text-on-surface-variant text-xs font-bold hover:bg-surface-bright/50 transition-colors">
+               <span className="text-lg">📝</span> Active Assessments
              </div>
-             <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', gap:'12px', cursor:'pointer', color:'#475569', fontSize:'13px', fontWeight:'600', transition:'background 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background='#F8FAFC'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
-               <span style={{ fontSize:'16px' }}>🏅</span> Skill Badges (3)
+             <div className="px-md py-sm flex items-center gap-sm cursor-pointer text-on-surface-variant text-xs font-bold hover:bg-surface-bright/50 transition-colors">
+               <span className="text-lg">🏅</span> Skill Badges (3)
              </div>
            </div>
         </div>
 
         {/* Communities Card */}
-        <div style={{ background:'#fff', borderRadius:'16px', border:'1px solid #E2E8F0', overflow:'hidden', boxShadow:'0 4px 12px rgba(0,0,0,0.02)' }}>
-           <div style={{ padding:'16px', borderBottom:'1px solid #F1F5F9', fontWeight:'700', fontSize:'14px', color:'#0F172A' }}>Communities & Tags</div>
-           <div style={{ padding:'12px 16px', display:'flex', flexDirection:'column', gap:'10px' }}>
-             <div style={{ color:'#0A66C2', fontSize:'13px', fontWeight:'600', cursor:'pointer' }}>Groups</div>
-             <div style={{ display:'flex', alignItems:'center', gap:'8px', color:'#475569', fontSize:'13px', cursor:'pointer' }}><span>👥</span> GenuAI Frontend Devs</div>
-             <div style={{ display:'flex', alignItems:'center', gap:'8px', color:'#475569', fontSize:'13px', cursor:'pointer' }}><span>👥</span> AI Engineers Hub</div>
-             <div style={{ color:'#0A66C2', fontSize:'13px', fontWeight:'600', cursor:'pointer', marginTop:'8px' }}>Followed Tags</div>
-             <div style={{ display:'flex', flexWrap:'wrap', gap:'6px' }}>
-               <span style={{ fontSize:'12px', color:'#64748B', background:'#F1F5F9', padding:'4px 8px', borderRadius:'12px' }}>#ReactJS</span>
-               <span style={{ fontSize:'12px', color:'#64748B', background:'#F1F5F9', padding:'4px 8px', borderRadius:'12px' }}>#SystemDesign</span>
+        <div className="glass rounded-2xl border border-surface-container overflow-hidden shadow-sm">
+           <div className="p-md border-b border-surface-container font-black text-sm text-on-surface">Communities & Tags</div>
+           <div className="p-md flex flex-col gap-sm">
+             <div className="text-info-dark text-xs font-bold cursor-pointer hover:underline">Groups</div>
+             <div className="flex items-center gap-xs text-on-surface-variant text-xs font-medium cursor-pointer hover:text-info-dark transition-colors"><span className="text-sm">👥</span> GenuAI Frontend Devs</div>
+             <div className="flex items-center gap-xs text-on-surface-variant text-xs font-medium cursor-pointer hover:text-info-dark transition-colors"><span className="text-sm">👥</span> AI Engineers Hub</div>
+             <div className="text-info-dark text-xs font-bold cursor-pointer mt-xs hover:underline">Followed Tags</div>
+             <div className="flex flex-wrap gap-xs">
+               <span className="text-[10px] font-bold text-on-surface-variant bg-surface-bright px-xs py-1 rounded-full border border-surface-container cursor-pointer hover:border-surface-container-high transition-colors">#ReactJS</span>
+               <span className="text-[10px] font-bold text-on-surface-variant bg-surface-bright px-xs py-1 rounded-full border border-surface-container cursor-pointer hover:border-surface-container-high transition-colors">#SystemDesign</span>
              </div>
            </div>
-           <div style={{ padding:'12px 16px', borderTop:'1px solid #F1F5F9', textAlign:'center', color:'#64748B', fontSize:'13px', fontWeight:'700', cursor:'pointer', transition:'background 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background='#F8FAFC'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+           <div className="p-sm border-t border-surface-container text-center text-on-surface-variant text-xs font-bold cursor-pointer hover:bg-surface-bright/50 transition-colors">
              Discover More
            </div>
         </div>
       </div>
 
       {/* Middle Column: Feed */}
-      <div style={{ display:'flex', flexDirection:'column', gap:'24px', marginTop:'40px' }}>
-        <div style={{ background:'#fff', borderRadius:'16px', border:'1px solid #E2E8F0', padding:'20px', boxShadow:'0 4px 12px rgba(0,0,0,0.02)' }}>
-          <div style={{ display:'flex', gap:'12px', marginBottom:'16px' }}>
-            <div style={{ width:'48px', height:'48px', borderRadius:'50%', background:'linear-gradient(135deg,#2563EB,#7C3AED)', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'700', fontSize:'18px', flexShrink:0 }}>{name[0]?.toUpperCase()}</div>
-            <textarea value={newPost} onChange={e=>setNewPost(e.target.value)} placeholder="Share your latest GenuAI achievement or technical project..." style={{ flex:1, border:'1px solid #E2E8F0', borderRadius:'24px', padding:'14px 20px', fontSize:'14px', outline:'none', resize:'none', fontFamily:'inherit', minHeight:'60px' }}></textarea>
+      <div className="flex flex-col gap-xl mt-xl lg:mt-10">
+        <div className="glass rounded-2xl border border-surface-container p-lg shadow-sm">
+          <div className="flex gap-md mb-md">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-brand to-primary flex items-center justify-center text-white font-black text-title-sm shrink-0 shadow-sm">{name[0]?.toUpperCase()}</div>
+            <textarea value={newPost} onChange={e=>setNewPost(e.target.value)} placeholder="Share your latest GenuAI achievement or technical project..." className="flex-1 bg-background border border-surface-container rounded-3xl px-lg py-sm text-sm font-medium outline-none resize-none min-h-[60px] focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all"></textarea>
           </div>
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'0 8px' }}>
-            <div style={{ display:'flex', gap:'16px' }}>
-              <button style={{ background:'none', border:'none', color:'#64748B', fontWeight:'600', fontSize:'14px', display:'flex', alignItems:'center', gap:'8px', cursor:'pointer' }}><span>📷</span> Media</button>
-              <button style={{ background:'none', border:'none', color:'#64748B', fontWeight:'600', fontSize:'14px', display:'flex', alignItems:'center', gap:'8px', cursor:'pointer' }}><span>💼</span> Job Update</button>
+          <div className="flex justify-between items-center px-sm">
+            <div className="flex gap-md">
+              <button className="text-on-surface-variant font-bold text-xs flex items-center gap-xs cursor-pointer hover:text-info-dark transition-colors"><span className="material-symbols-outlined text-[18px]">image</span> Media</button>
+              <button className="text-on-surface-variant font-bold text-xs flex items-center gap-xs cursor-pointer hover:text-info-dark transition-colors"><span className="material-symbols-outlined text-[18px]">work</span> Job Update</button>
             </div>
-            <button style={{ background:'#0A66C2', color:'#fff', border:'none', borderRadius:'24px', padding:'8px 24px', fontWeight:'700', fontSize:'14px', cursor:'pointer' }}>Post</button>
+            <button className="bg-info-dark hover:bg-info text-white rounded-full px-lg py-xs font-bold text-xs transition-colors shadow-sm">Post</button>
           </div>
         </div>
         
         {/* Post 1: GenuAI Insight */}
-        <div style={{ background:'#fff', borderRadius:'16px', border:'1px solid #E2E8F0', padding:'24px', boxShadow:'0 4px 12px rgba(0,0,0,0.02)' }}>
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'16px' }}>
-            <div style={{ display:'flex', gap:'12px' }}>
-              <div style={{ width:'48px', height:'48px', borderRadius:'12px', background:'#EFF6FF', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-                <img src="/icons/learning_brain.png" alt="AI" style={{ width:'100%', height:'100%', objectFit:'cover', mixBlendMode:'multiply' }} />
+        <div className="glass rounded-2xl border border-surface-container p-lg shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex justify-between items-start mb-md">
+            <div className="flex gap-md">
+              <div className="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center overflow-hidden shrink-0 border border-info/20">
+                <img src="/icons/learning_brain.png" alt="AI" className="w-8 h-8 object-contain mix-blend-multiply" />
               </div>
               <div>
-                <div style={{ fontWeight:'800', color:'#0F172A', fontSize:'15px' }}>GenuAI Insights Engine <span style={{ color:'#059669', fontSize:'12px', marginLeft:'4px' }}>✓ Verified</span></div>
-                <div style={{ fontSize:'12px', color:'#64748B' }}>System Analytics • 2h ago</div>
+                <div className="font-black text-on-surface text-sm flex items-center">GenuAI Insights Engine <span className="text-[10px] bg-success/10 text-success-dark px-xs py-0.5 rounded-full ml-xs uppercase tracking-wider font-bold border border-success/20">Verified</span></div>
+                <div className="text-xs font-medium text-on-surface-variant">System Analytics • 2h ago</div>
               </div>
             </div>
-            <button style={{ background:'none', border:'none', color:'#94A3B8', cursor:'pointer', fontWeight:'800' }}>...</button>
+            <button className="text-on-surface-variant hover:text-on-surface cursor-pointer font-black px-xs"><span className="material-symbols-outlined">more_horiz</span></button>
           </div>
-          <p style={{ color:'#334155', fontSize:'15px', lineHeight:'1.6', margin:'0 0 16px' }}>
+          <p className="text-on-surface text-sm font-medium leading-relaxed mb-md">
             Based on our platform-wide data, candidates who complete at least 3 SVAR speaking simulations on the GenuAI platform increase their technical round pass rate by 42%. Have you tested your communication skills today?
           </p>
-          <div style={{ background:'#F8FAFC', padding:'16px', borderRadius:'12px', border:'1px solid #E2E8F0', marginBottom:'16px', display:'flex', alignItems:'center', gap:'16px' }}>
-             <div style={{ fontSize:'32px' }}>🎙️</div>
+          <div className="bg-surface-bright/50 p-md rounded-xl border border-surface-container mb-md flex items-center gap-md">
+             <div className="text-3xl">🎙️</div>
              <div>
-               <div style={{ fontWeight:'700', color:'#0F172A', fontSize:'14px' }}>SVAR Communication Simulator</div>
-               <div style={{ color:'#64748B', fontSize:'12px' }}>GenuAI Practice Hub • 15 min module</div>
+               <div className="font-black text-on-surface text-xs">SVAR Communication Simulator</div>
+               <div className="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">GenuAI Practice Hub • 15 min module</div>
              </div>
           </div>
-          <div style={{ display:'flex', gap:'24px', borderTop:'1px solid #F1F5F9', paddingTop:'16px' }}>
-             <button style={{ background:'none', border:'none', color:'#64748B', fontWeight:'600', fontSize:'13px', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px' }}><span>👍</span> 1,204 Likes</button>
-             <button style={{ background:'none', border:'none', color:'#64748B', fontWeight:'600', fontSize:'13px', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px' }}><span>💬</span> 89 Comments</button>
+          <div className="flex gap-xl border-t border-surface-container pt-md">
+             <button className="text-on-surface-variant font-bold text-xs cursor-pointer flex items-center gap-xs hover:text-info-dark transition-colors"><span className="material-symbols-outlined text-[18px]">thumb_up</span> 1,204 Likes</button>
+             <button className="text-on-surface-variant font-bold text-xs cursor-pointer flex items-center gap-xs hover:text-info-dark transition-colors"><span className="material-symbols-outlined text-[18px]">chat_bubble</span> 89 Comments</button>
           </div>
         </div>
 
         {/* Post 2: User Post */}
-        <div style={{ background:'#fff', borderRadius:'16px', border:'1px solid #E2E8F0', padding:'24px', boxShadow:'0 4px 12px rgba(0,0,0,0.02)' }}>
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'16px' }}>
-            <div style={{ display:'flex', gap:'12px' }}>
-              <div style={{ width:'48px', height:'48px', borderRadius:'50%', background:'#10B981', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'800', fontSize:'18px' }}>R</div>
+        <div className="glass rounded-2xl border border-surface-container p-lg shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex justify-between items-start mb-md">
+            <div className="flex gap-md">
+              <div className="w-12 h-12 rounded-full bg-success flex items-center justify-center text-white font-black text-title-sm shrink-0 shadow-sm">R</div>
               <div>
-                <div style={{ fontWeight:'800', color:'#0F172A', fontSize:'15px' }}>Rahul S.</div>
-                <div style={{ fontSize:'12px', color:'#64748B' }}>Frontend Developer at TechNova • 4h ago</div>
+                <div className="font-black text-on-surface text-sm">Rahul S.</div>
+                <div className="text-xs font-medium text-on-surface-variant">Frontend Developer at TechNova • 4h ago</div>
               </div>
             </div>
-            <button style={{ color:'#0A66C2', background:'none', border:'none', fontWeight:'700', fontSize:'14px', cursor:'pointer' }}>+ Follow</button>
+            <button className="text-info-dark font-bold text-xs cursor-pointer hover:underline flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">add</span> Follow</button>
           </div>
-          <p style={{ color:'#334155', fontSize:'15px', lineHeight:'1.6', margin:'0 0 16px' }}>
+          <p className="text-on-surface text-sm font-medium leading-relaxed mb-md">
             Thrilled to announce that I just cleared the GenuAI Automata Pro coding assessment with a perfect score! The realistic environment in the Practice Hub completely eliminated my interview anxiety. Next stop: The HR round! 🚀💻
           </p>
-          <div style={{ display:'flex', gap:'24px', borderTop:'1px solid #F1F5F9', paddingTop:'16px' }}>
-             <button style={{ background:'none', border:'none', color:'#64748B', fontWeight:'600', fontSize:'13px', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px' }}><span>👍</span> 342 Likes</button>
-             <button style={{ background:'none', border:'none', color:'#64748B', fontWeight:'600', fontSize:'13px', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px' }}><span>💬</span> 12 Comments</button>
+          <div className="flex gap-xl border-t border-surface-container pt-md">
+             <button className="text-on-surface-variant font-bold text-xs cursor-pointer flex items-center gap-xs hover:text-info-dark transition-colors"><span className="material-symbols-outlined text-[18px]">thumb_up</span> 342 Likes</button>
+             <button className="text-on-surface-variant font-bold text-xs cursor-pointer flex items-center gap-xs hover:text-info-dark transition-colors"><span className="material-symbols-outlined text-[18px]">chat_bubble</span> 12 Comments</button>
           </div>
         </div>
       </div>
 
       {/* Right Column: AI Connections & Trending */}
-      <div style={{ marginTop:'40px', display:'flex', flexDirection:'column', gap:'24px' }}>
-        <div style={{ background:'#fff', borderRadius:'16px', border:'1px solid #E2E8F0', padding:'24px', boxShadow:'0 4px 12px rgba(0,0,0,0.02)' }}>
-          <div style={{ fontWeight:'800', fontSize:'16px', color:'#0F172A', marginBottom:'16px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+      <div className="mt-xl lg:mt-10 flex flex-col gap-xl">
+        <div className="glass rounded-2xl border border-surface-container p-lg shadow-sm">
+          <div className="font-black text-sm text-on-surface mb-md flex items-center justify-between">
             AI Match Connections
-            <span style={{ fontSize:'12px', background:'#EFF6FF', color:'#0A66C2', padding:'4px 8px', borderRadius:'12px' }}>High Synergy</span>
+            <span className="text-[10px] bg-info/10 text-info-dark px-xs py-0.5 rounded-full font-bold uppercase tracking-wider border border-info/20">High Synergy</span>
           </div>
-          <div style={{ display:'flex', flexDirection:'column', gap:'20px' }}>
+          <div className="flex flex-col gap-lg">
             {[
               { n: 'Sarah Jenkins', r: 'Senior Recruiter', m: 'Hiring React Devs' },
               { n: 'Amit Patel', r: 'Lead Engineer', m: 'Alumni Network' },
               { n: 'Elena Rodriguez', r: 'Product Manager', m: 'Similar Skills' }
             ].map((c, i) => (
-              <div key={i} style={{ display:'flex', flexDirection:'column', gap:'12px', paddingBottom: i !== 2 ? '20px' : '0', borderBottom: i !== 2 ? '1px solid #F1F5F9' : 'none' }}>
-                <div style={{ display:'flex', gap:'12px' }}>
-                  <div style={{ width:'40px', height:'40px', borderRadius:'50%', background:'#64748B', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'700', flexShrink:0 }}>{c.n[0]}</div>
+              <div key={i} className={`flex flex-col gap-sm pb-lg ${i !== 2 ? 'border-b border-surface-container' : 'pb-0'}`}>
+                <div className="flex gap-md">
+                  <div className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-white font-black text-xs shrink-0 shadow-inner">{c.n[0]}</div>
                   <div>
-                    <div style={{ fontWeight:'700', color:'#0F172A', fontSize:'14px' }}>{c.n}</div>
-                    <div style={{ fontSize:'12px', color:'#64748B' }}>{c.r}</div>
-                    <div style={{ fontSize:'11px', color:'#059669', marginTop:'4px', fontWeight:'600' }}>✨ Match: {c.m}</div>
+                    <div className="font-bold text-on-surface text-xs">{c.n}</div>
+                    <div className="text-[10px] font-medium text-on-surface-variant">{c.r}</div>
+                    <div className="text-[10px] text-success-dark mt-0.5 font-bold flex items-center gap-1">✨ Match: {c.m}</div>
                   </div>
                 </div>
-                <div style={{ display:'flex', gap:'8px' }}>
-                  <button style={{ flex:1, border:'1px solid #0A66C2', background:'transparent', color:'#0A66C2', borderRadius:'20px', padding:'6px', fontWeight:'700', fontSize:'13px', cursor:'pointer', transition:'background 0.2s' }}>Connect</button>
-                  <button title="Let AI draft your first message!" style={{ flex:1, border:'none', background:'linear-gradient(135deg,#7C3AED,#3B82F6)', color:'#fff', borderRadius:'20px', padding:'6px', fontWeight:'700', fontSize:'13px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'4px' }}><span>🪄</span> Icebreaker</button>
+                <div className="flex gap-xs">
+                  <button className="flex-1 border border-info-dark text-info-dark rounded-full py-1 text-[10px] font-bold cursor-pointer hover:bg-info/10 transition-colors">Connect</button>
+                  <button title="Let AI draft your first message!" className="flex-1 border-none bg-gradient-to-br from-[#7C3AED] to-indigo-brand text-white rounded-full py-1 text-[10px] font-bold cursor-pointer flex items-center justify-center gap-1 shadow-sm hover:shadow-md transition-shadow"><span>🪄</span> Icebreaker</button>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div style={{ background:'#fff', borderRadius:'16px', border:'1px solid #E2E8F0', padding:'24px', boxShadow:'0 4px 12px rgba(0,0,0,0.02)' }}>
-          <div style={{ fontWeight:'800', fontSize:'16px', color:'#0F172A', marginBottom:'16px' }}>GenuAI Trending</div>
-          <div style={{ display:'flex', flexDirection:'column', gap:'16px' }}>
+        <div className="glass rounded-2xl border border-surface-container p-lg shadow-sm">
+          <div className="font-black text-sm text-on-surface mb-md">GenuAI Trending</div>
+          <div className="flex flex-col gap-md">
             {[
               { t: 'The rise of AI-driven technical interviews', p: '10.5k readers' },
               { t: 'Why GenuAI Automata is replacing traditional whiteboarding', p: '8.2k readers' },
               { t: 'Mastering the HR behavioral round with Voice AI', p: '5.1k readers' }
             ].map((n, i) => (
-              <div key={i}>
-                <div style={{ fontWeight:'700', color:'#334155', fontSize:'13px', marginBottom:'4px', cursor:'pointer' }}>• {n.t}</div>
-                <div style={{ fontSize:'11px', color:'#94A3B8', paddingLeft:'12px' }}>{n.p}</div>
+              <div key={i} className="group cursor-pointer">
+                <div className="font-bold text-on-surface-variant text-xs mb-0.5 group-hover:text-info-dark transition-colors flex items-start gap-1"><span className="text-info-dark mt-[2px]">•</span> <span>{n.t}</span></div>
+                <div className="text-[10px] font-medium text-on-surface-variant/70 pl-3">{n.p}</div>
               </div>
             ))}
           </div>
@@ -336,12 +336,12 @@ function NetworkView({ user, onBack }: { user: any, onBack: () => void }) {
 
 // The Hub (6 cards)
 const TOOLS = [
-  { id:'network', imgSrc:'/icons/cat_english.png', title:'Professional Network', desc:'Connect with professionals, share updates, and build your profile.', color:'#0A66C2', bg:'#EFF6FF', tags:['GenuAI Hub','Connections'], ready:true, filter:'All' },
-  { id:'jobs', imgSrc:'/icons/icon_globe.png', title:'Global Job Board', desc:'Search thousands of job listings across top platforms.', color:'#2563EB', bg:'#EFF6FF', tags:['Global Roles','Careers'], ready:true, filter:'All' },
-  { id:'events', imgSrc:'/icons/icon_hackathon.png', title:'Competitions & Events', desc:'Participate in hackathons and university case studies.', color:'#F59E0B', bg:'#FFFBEB', tags:['Unstop Platform','Hackathons'], ready:false, filter:'All' },
-  { id:'pm', imgSrc:'/icons/learning_brain.png', title:'PM Internship Allocation', desc:'AI-based matching scheme for Product Management internships.', color:'#8B5CF6', bg:'#F5F3FF', tags:['AI Matching','Product Management'], ready:false, filter:'All' },
-  { id:'news', imgSrc:'/icons/cat_logical.png', title:'Tech & Company News', desc:'Stay updated with the latest in tech, business, and startups.', color:'#10B981', bg:'#ECFDF5', tags:['Tech News','Company Updates'], ready:true, filter:'News' },
-  { id:'chat', imgSrc:'/icons/svar_mic.png', title:'Instant Connect', desc:'Real-time messenger to connect with recruiters and peers.', color:'#25D366', bg:'#ECFDF5', tags:['WhatsApp Style','Messaging'], ready:true, filter:'Chat' },
+  { id:'network', imgSrc:'/icons/cat_english.png', title:'Professional Network', desc:'Connect with professionals, share updates, and build your profile.', color:'info-dark', bg:'info/10', tags:['GenuAI Hub','Connections'], ready:true, filter:'All' },
+  { id:'jobs', imgSrc:'/icons/icon_globe.png', title:'Global Job Board', desc:'Search thousands of job listings across top platforms.', color:'indigo-brand', bg:'indigo-brand/10', tags:['Global Roles','Careers'], ready:true, filter:'All' },
+  { id:'events', imgSrc:'/icons/icon_hackathon.png', title:'Competitions & Events', desc:'Participate in hackathons and university case studies.', color:'warning-dark', bg:'warning/10', tags:['Unstop Platform','Hackathons'], ready:false, filter:'All' },
+  { id:'pm', imgSrc:'/icons/learning_brain.png', title:'PM Internship Allocation', desc:'AI-based matching scheme for Product Management internships.', color:'[#8B5CF6]', bg:'[#8B5CF6]/10', tags:['AI Matching','Product Management'], ready:false, filter:'All' },
+  { id:'news', imgSrc:'/icons/cat_logical.png', title:'Tech & Company News', desc:'Stay updated with the latest in tech, business, and startups.', color:'success-dark', bg:'success/10', tags:['Tech News','Company Updates'], ready:true, filter:'News' },
+  { id:'chat', imgSrc:'/icons/svar_mic.png', title:'Instant Connect', desc:'Real-time messenger to connect with recruiters and peers.', color:'[#25D366]', bg:'success/10', tags:['WhatsApp Style','Messaging'], ready:true, filter:'Chat' },
 ];
 
 export default function SearchDashboard({ user, onBack }: Props) {
@@ -358,26 +358,31 @@ export default function SearchDashboard({ user, onBack }: Props) {
   };
 
   return (
-    <div style={{ minHeight:'100vh', background:'#F8FAFC', fontFamily:"'Inter','Segoe UI',sans-serif" }}>
+    <div className="min-h-screen bg-background quantum-gradient relative overflow-hidden flex flex-col">
       {toast && (
-        <div style={{ position:'fixed', top:'20px', left:'50%', transform:'translateX(-50%)', background:'#1E293B', color:'#fff', padding:'12px 24px', borderRadius:'12px', fontSize:'14px', fontWeight:'600', zIndex:9999, boxShadow:'0 8px 24px rgba(0,0,0,0.3)' }}>
+        <div className="fixed top-xl left-1/2 -translate-x-1/2 bg-surface-container-highest text-white px-xl py-sm rounded-xl font-bold text-sm z-50 shadow-md animate-[slideDown_0.3s_ease]">
           {toast}
         </div>
       )}
 
-      <nav style={{ background:'#fff', borderBottom:'1px solid #E5E7EB', padding:'0 40px', height:'64px', display:'flex', alignItems:'center', justifyContent:'space-between', boxShadow:'0 1px 3px rgba(0,0,0,0.06)', position:'sticky', top:0, zIndex:10 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <img src="/logo.png" alt="GenuAI" style={{ width:'44px', height:'44px', objectFit:'contain', filter:'drop-shadow(0 2px 6px rgba(212,175,55,0.4))' }} />
+      {/* Header */}
+      <nav className="glass border-b border-surface-container px-lg md:px-xl h-16 flex items-center justify-between shadow-sm sticky top-0 z-40">
+        <div className="flex items-center gap-sm">
+          <img src="/logo.png" alt="GenuAI" className="w-10 h-10 object-contain drop-shadow-md" />
           <div>
-            <div style={{ fontWeight:'800', fontSize:'16px', color:'#0F172A' }}>GenuAI Technologies</div>
-            <div style={{ fontSize:'11px', color:'#64748B' }}>Search Path</div>
+            <div className="font-black text-sm text-on-surface">GenuAI Technologies</div>
+            <div className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Search Hub</div>
           </div>
         </div>
-        <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-          <button onClick={onBack} style={{ background:'none', border:'1px solid #E5E7EB', borderRadius:'8px', padding:'7px 16px', fontSize:'13px', color:'#64748B', cursor:'pointer', fontWeight:'600' }}>← Change Path</button>
-          <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
-            <div style={{ width:'34px', height:'34px', borderRadius:'50%', background:'linear-gradient(135deg,#F59E0B,#EF4444)', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'700', fontSize:'14px' }}>{name[0]?.toUpperCase()}</div>
-            <span style={{ fontSize:'14px', color:'#374151', fontWeight:'600' }}>{name}</span>
+        <div className="flex items-center gap-md">
+          <button onClick={onBack} className="bg-surface-bright border border-surface-container rounded-lg px-md py-xs text-xs font-bold text-on-surface-variant hover:text-on-surface hover:border-surface-container-high transition-colors">
+            ← Change Path
+          </button>
+          <div className="flex items-center gap-xs">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-warning to-error flex items-center justify-center text-white font-black text-xs shadow-sm">
+              {name[0]?.toUpperCase()}
+            </div>
+            <span className="text-sm font-bold text-on-surface hidden sm:block">{name}</span>
           </div>
         </div>
       </nav>
@@ -386,67 +391,66 @@ export default function SearchDashboard({ user, onBack }: Props) {
         openTool.id === 'network' ? (
           <NetworkView user={user} onBack={() => setOpenTool(null)} />
         ) : openTool.id === 'news' ? (
-          <div style={{ maxWidth:'800px', margin:'0 auto', padding:'40px 24px' }}>
-            <button onClick={() => setOpenTool(null)} style={{ background:"none", border:"none", color:"#64748B", fontSize:"14px", cursor:"pointer", marginBottom:"24px", fontWeight:"700" }}>← Back to Search Hub</button>
-            <div style={{ background:'linear-gradient(135deg,#10B981,#059669)', borderRadius:'24px', padding:'32px', color:'#fff', marginBottom:'32px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+          <div className="max-w-[800px] mx-auto p-lg md:p-xl w-full">
+            <button onClick={() => setOpenTool(null)} className="text-on-surface-variant font-bold text-sm mb-lg hover:text-on-surface flex items-center gap-xs transition-colors">← Back to Search Hub</button>
+            <div className="bg-gradient-to-br from-success to-success-dark rounded-3xl p-xl text-white mb-xl flex justify-between items-center shadow-lg shadow-success/20">
               <div>
-                <h1 style={{ fontSize:'28px', fontWeight:'900', margin:'0 0 8px' }}>Tech & Company News</h1>
-                <p style={{ fontSize:'14px', opacity:0.9, margin:0 }}>The latest updates relevant to your career.</p>
+                <h1 className="text-headline-sm font-headline-sm mb-xs">Tech & Company News</h1>
+                <p className="text-sm opacity-90 font-medium">The latest updates relevant to your career.</p>
               </div>
-              <div style={{ width: '64px', height: '64px', overflow: 'hidden', borderRadius: '12px', background: '#fff' }}>
-                <img src="/icons/cat_logical.png" alt="News" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center overflow-hidden border border-white/30 shrink-0">
+                <img src="/icons/cat_logical.png" alt="News" className="w-10 h-10 object-contain mix-blend-multiply" />
               </div>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div className="flex flex-col gap-md">
               {[
                 { tag: "AI Trends", title: "OpenAI Announces New Advanced Reasoning Models", src: "TechCrunch", time: "2 hours ago" },
                 { tag: "Hiring", title: "Top 10 Tech Companies Actively Hiring Remote Product Managers", src: "Forbes", time: "5 hours ago" },
                 { tag: "Startups", title: "GenuAI Technologies Secures Funding to Revolutionize AI Recruitment", src: "Tech Radar", time: "1 day ago" },
                 { tag: "Development", title: "React 19 Release: What Frontend Engineers Need to Know", src: "Dev.to", time: "2 days ago" },
               ].map((news, i) => (
-                <div key={i} style={{ padding: "20px", background: "#fff", border: "1px solid #E2E8F0", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "10px", transition: "transform 0.2s, box-shadow 0.2s", cursor: "pointer" }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.05)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
-                  <span style={{ fontSize: "12px", fontWeight: "700", color: "#10B981", background: "#10B98115", padding: "4px 10px", borderRadius: "6px", alignSelf: "flex-start" }}>{news.tag}</span>
-                  <h4 style={{ margin: 0, color: "#1E293B", fontSize: "18px" }}>{news.title}</h4>
-                  <div style={{ fontSize: "13px", color: "#94A3B8" }}>{news.src} • {news.time}</div>
+                <div key={i} className="glass rounded-2xl p-lg border border-surface-container flex flex-col gap-xs transition-all hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                  <span className="text-[10px] font-black text-success uppercase tracking-wider bg-success/10 px-sm py-0.5 rounded-full self-start border border-success/20">{news.tag}</span>
+                  <h4 className="text-title-md font-title-md text-on-surface">{news.title}</h4>
+                  <div className="text-xs font-medium text-on-surface-variant">{news.src} • {news.time}</div>
                 </div>
               ))}
             </div>
           </div>
         ) : openTool.id === 'chat' ? (
-          <div style={{ maxWidth:'1000px', margin:'0 auto', padding:'40px 24px', height:'85vh', display:'flex', flexDirection:'column' }}>
-            <button onClick={() => setOpenTool(null)} style={{ background:"none", border:"none", color:"#64748B", fontSize:"14px", cursor:"pointer", marginBottom:"24px", fontWeight:"700", alignSelf:'flex-start' }}>← Back to Search Hub</button>
-            <div style={{ display: "flex", flex:1, border: "1.5px solid #E2E8F0", borderRadius: "16px", overflow: "hidden", background:'#fff', boxShadow:'0 10px 30px rgba(0,0,0,0.05)' }}>
-              <div style={{ width: "280px", background: "#F8FAFC", borderRight: "1.5px solid #E2E8F0", display: "flex", flexDirection: "column" }}>
-                <div style={{ padding: "20px", borderBottom: "1.5px solid #E2E8F0", fontWeight: "800", color: "#1E293B", fontSize: "16px", background:'#fff' }}>Instant Connect</div>
-                <div style={{ padding: "16px", background: "#E2E8F055", display: "flex", alignItems: "center", gap: "12px", borderBottom: "1px solid #E2E8F0", cursor: "pointer" }}>
-                  <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "linear-gradient(135deg,#25D366,#128C7E)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: "800", fontSize: "14px" }}>HR</div>
-                  <div style={{ flex: 1, overflow: "hidden" }}>
-                    <div style={{ fontSize: "14px", fontWeight: "700", color: "#1E293B" }}>GenuAI Recruiting</div>
-                    <div style={{ fontSize: "12px", color: "#64748B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Are you available for an...</div>
+          <div className="max-w-[1000px] mx-auto p-lg md:p-xl h-[85vh] flex flex-col w-full">
+            <button onClick={() => setOpenTool(null)} className="text-on-surface-variant font-bold text-sm mb-lg hover:text-on-surface flex items-center gap-xs transition-colors self-start">← Back to Search Hub</button>
+            <div className="flex flex-1 glass rounded-3xl border border-surface-container overflow-hidden shadow-sm">
+              <div className="w-72 bg-surface-bright/50 border-r border-surface-container flex flex-col">
+                <div className="p-lg border-b border-surface-container font-black text-title-sm text-on-surface bg-surface-bright">Instant Connect</div>
+                <div className="p-md bg-surface-container/30 flex items-center gap-md border-b border-surface-container cursor-pointer hover:bg-surface-container/50 transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#25D366] to-[#128C7E] flex items-center justify-center text-white font-black text-xs shrink-0 shadow-sm">HR</div>
+                  <div className="flex-1 overflow-hidden">
+                    <div className="text-sm font-bold text-on-surface">GenuAI Recruiting</div>
+                    <div className="text-xs font-medium text-on-surface-variant truncate">Are you available for an...</div>
                   </div>
                 </div>
               </div>
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#F1F5F9" }}>
-                <div style={{ padding: "20px", background: "#fff", borderBottom: "1.5px solid #E2E8F0", display: "flex", alignItems: "center", gap: "12px" }}>
-                  <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "linear-gradient(135deg,#25D366,#128C7E)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: "800", fontSize: "14px" }}>HR</div>
+              <div className="flex-1 flex flex-col bg-background/50 relative">
+                <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, black 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+                <div className="p-lg bg-surface-bright/80 backdrop-blur-md border-b border-surface-container flex items-center gap-md relative z-10">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#25D366] to-[#128C7E] flex items-center justify-center text-white font-black text-xs shrink-0 shadow-sm">HR</div>
                   <div>
-                    <div style={{ fontWeight: "800", color: "#1E293B", fontSize: "16px" }}>GenuAI Recruiting</div>
-                    <div style={{ fontSize: "12px", color: "#25D366", fontWeight: "700" }}>Online</div>
+                    <div className="font-black text-title-sm text-on-surface">GenuAI Recruiting</div>
+                    <div className="text-xs font-bold text-[#25D366]">Online</div>
                   </div>
                 </div>
-                <div style={{ flex: 1, padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div style={{ alignSelf: "center", background: "#E2E8F0", color: "#64748B", padding: "6px 14px", borderRadius: "12px", fontSize: "11px", fontWeight: "700" }}>Today</div>
-                  <div style={{ alignSelf: "flex-start", background: "#fff", padding: "14px 18px", borderRadius: "16px 16px 16px 0", maxWidth: "70%", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E2E8F0" }}>
-                    <div style={{ fontSize: "15px", color: "#1E293B", lineHeight: "1.5" }}>Hi {name}! We reviewed your impressive assessment score and would love to schedule a technical interview. Are you available sometime tomorrow?</div>
-                    <div style={{ fontSize: "11px", color: "#94A3B8", marginTop: "8px", textAlign: "right" }}>10:42 AM</div>
+                <div className="flex-1 p-xl overflow-y-auto flex flex-col gap-md relative z-10">
+                  <div className="self-center bg-surface-container text-on-surface-variant px-sm py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Today</div>
+                  <div className="self-start glass px-md py-sm rounded-2xl rounded-tl-sm max-w-[70%] shadow-sm border border-surface-container">
+                    <div className="text-sm font-medium text-on-surface leading-relaxed">Hi {name}! We reviewed your impressive assessment score and would love to schedule a technical interview. Are you available sometime tomorrow?</div>
+                    <div className="text-[10px] font-bold text-on-surface-variant mt-xs text-right">10:42 AM</div>
                   </div>
                 </div>
-                <div style={{ padding: "20px", background: "#fff", borderTop: "1.5px solid #E2E8F0", display: "flex", gap: "16px", alignItems: "center" }}>
-                  <button style={{ background: "transparent", border: "none", fontSize: "24px", cursor: "pointer", opacity: 0.6 }}>📎</button>
-                  <input placeholder="Type your message..." style={{ flex: 1, padding: "14px 20px", border: "1.5px solid #E2E8F0", borderRadius: "24px", outline: "none", fontSize: "15px", background: "#F8FAFC" }} />
-                  <button style={{ background: "#25D366", color: "#fff", border: "none", borderRadius: "50%", width: "48px", height: "48px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 4px 12px rgba(37,211,102,0.3)" }}>
+                <div className="p-lg bg-surface-bright/80 backdrop-blur-md border-t border-surface-container flex gap-md items-center relative z-10">
+                  <button className="text-xl opacity-60 hover:opacity-100 transition-opacity">📎</button>
+                  <input placeholder="Type your message..." className="flex-1 px-lg py-sm bg-surface-container/50 border border-surface-container rounded-full outline-none text-sm font-medium focus:border-indigo-brand/50 focus:bg-white transition-all" />
+                  <button className="bg-[#25D366] hover:bg-[#1DA851] text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md transition-colors shrink-0">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                   </button>
                 </div>
@@ -457,28 +461,43 @@ export default function SearchDashboard({ user, onBack }: Props) {
           <JobBoard user={user} onBack={() => setOpenTool(null)} initialFilter={openTool.filter} />
         )
       ) : (
-        <div style={{ maxWidth:'1100px', margin:'0 auto', padding:'48px 24px' }}>
-          <div style={{ marginBottom:'40px' }}>
-            <h1 style={{ fontSize:'32px', fontWeight:'900', color:'#0F172A', margin:'0 0 8px', letterSpacing:'-0.6px' }}>Search Hub</h1>
-            <p style={{ color:'#64748B', fontSize:'15px', margin:0 }}>Explore jobs and internships tailored to your skills</p>
+        <div className="max-w-[1200px] mx-auto w-full p-lg md:p-xl flex-1 flex flex-col">
+          {/* Background decorations */}
+          <div className="absolute top-[10%] left-[-5%] w-[400px] h-[400px] bg-info/5 blur-[100px] rounded-full pointer-events-none" />
+          <div className="absolute bottom-[20%] right-[-5%] w-[500px] h-[500px] bg-success/5 blur-[120px] rounded-full pointer-events-none" />
+
+          <div className="text-center mb-xl relative z-10">
+            <h1 className="text-headline-md font-headline-md text-on-surface mb-xs drop-shadow-sm">Global <span className="text-info-dark">Search Hub</span></h1>
+            <p className="text-on-surface-variant font-medium text-body-lg">Explore jobs, connect with peers, and discover new opportunities.</p>
           </div>
 
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'20px' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg mb-xl relative z-10">
             {TOOLS.map(tool => {
               const isHover = active === tool.id;
               return (
                 <div key={tool.id} onMouseEnter={() => setActive(tool.id)} onMouseLeave={() => setActive(null)}
-                  style={{ background:'#fff', borderRadius:'20px', border: isHover ? '2px solid ' + tool.color : '2px solid #E5E7EB', padding:'28px', cursor:'pointer', transition:'all 0.2s ease', boxShadow: isHover ? '0 12px 40px ' + tool.color + '33' : '0 2px 8px rgba(0,0,0,0.04)', transform: isHover ? 'translateY(-3px)' : 'none', position:'relative' }}>
-                  {!tool.ready && <div style={{ position:'absolute', top:'14px', right:'14px', background:'#FEF3C7', color:'#92400E', fontSize:'10px', fontWeight:'800', padding:'3px 8px', borderRadius:'20px' }}>SOON</div>}
-                  <div style={{ width:'52px', height:'52px', borderRadius:'14px', background:tool.bg, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'16px', overflow: 'hidden' }}>
-                    <img src={tool.imgSrc} alt={tool.title} style={{ width: '100%', height: '100%', objectFit: 'cover', mixBlendMode: 'multiply' }} />
+                  className={`glass rounded-3xl p-xl flex flex-col relative transition-all duration-300 cursor-pointer border-2 ${isHover ? `border-${tool.color} shadow-[0_16px_40px_rgba(0,0,0,0.08)] scale-[1.02] bg-white` : 'border-surface-container hover:border-surface-container-high'}`}>
+                  
+                  {!tool.ready && (
+                    <div className="absolute top-md right-md bg-warning/20 text-warning-dark text-[10px] font-black px-xs py-0.5 rounded-full uppercase tracking-widest border border-warning/30">
+                      SOON
+                    </div>
+                  )}
+                  
+                  <div className={`w-16 h-16 rounded-2xl bg-${tool.bg} flex items-center justify-center mb-md overflow-hidden shrink-0`}>
+                    <img src={tool.imgSrc} alt={tool.title} className="w-10 h-10 object-contain mix-blend-multiply drop-shadow-sm" />
                   </div>
-                  <h3 style={{ fontSize:'16px', fontWeight:'800', color:'#0F172A', margin:'0 0 8px' }}>{tool.title}</h3>
-                  <p style={{ fontSize:'13px', color:'#64748B', lineHeight:'1.6', margin:'0 0 16px' }}>{tool.desc}</p>
-                  <div style={{ display:'flex', flexWrap:'wrap', gap:'6px', marginBottom:'20px' }}>
-                    {tool.tags.map((t,i) => <span key={i} style={{ background:tool.bg, color:tool.color, fontSize:'11px', fontWeight:'700', padding:'3px 10px', borderRadius:'20px' }}>{t}</span>)}
+                  
+                  <h3 className="text-title-md font-title-md text-on-surface mb-xs">{tool.title}</h3>
+                  <p className="text-on-surface-variant font-medium text-sm leading-relaxed mb-md flex-1">{tool.desc}</p>
+                  
+                  <div className="flex flex-wrap gap-xs mb-lg">
+                    {tool.tags.map((t,i) => (
+                      <span key={i} className={`bg-${tool.bg} text-${tool.color} text-xs font-bold px-sm py-1 rounded-full border border-${tool.color}/20`}>{t}</span>
+                    ))}
                   </div>
-                  <button onClick={() => handleOpen(tool)} style={{ width:'100%', padding:'10px', background: isHover ? tool.color : 'transparent', border:'1px solid ' + tool.color, borderRadius:'10px', color: isHover ? '#fff' : tool.color, fontWeight:'700', fontSize:'13px', cursor:'pointer', transition:'all 0.2s' }}>
+                  
+                  <button onClick={() => handleOpen(tool)} className={`w-full py-sm rounded-xl font-bold text-sm transition-all ${tool.ready ? (isHover ? `bg-${tool.color} text-white shadow-md` : `bg-transparent text-${tool.color} border border-${tool.color}`) : 'bg-surface-bright text-on-surface-variant border border-surface-container cursor-not-allowed'}`}>
                     {tool.ready ? (isHover ? 'Launch →' : 'Open Tool') : 'Coming Soon'}
                   </button>
                 </div>
@@ -487,50 +506,52 @@ export default function SearchDashboard({ user, onBack }: Props) {
           </div>
 
           {/* Search Hub Overview Banner */}
-          <div style={{ marginTop:'64px', background:'#fff', borderRadius:'24px', padding:'48px', display:'flex', gap:'48px', alignItems:'center', border:'1px solid #E2E8F0', boxShadow:'0 12px 30px rgba(0,0,0,0.02)', position:'relative', overflow:'hidden' }}>
-            <div style={{ position:"absolute", top:"-50px", right:"-50px", width:"300px", height:"300px", background:"radial-gradient(circle, rgba(14,165,233,0.06) 0%, rgba(255,255,255,0) 70%)" }}></div>
-            <div style={{ position:"absolute", bottom:"-50px", left:"-50px", width:"200px", height:"200px", background:"radial-gradient(circle, rgba(16,185,129,0.06) 0%, rgba(255,255,255,0) 70%)" }}></div>
+          <div className="glass rounded-3xl p-xl md:p-xxl border border-surface-container shadow-sm flex flex-col md:flex-row items-center gap-xl relative overflow-hidden z-10 mt-auto">
+            <div className="absolute -top-10 -right-10 w-64 h-64 bg-info/10 blur-[80px] rounded-full pointer-events-none" />
+            <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-success/10 blur-[80px] rounded-full pointer-events-none" />
             
-            <div style={{ flex:1, paddingRight:"40px", zIndex:1 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:"16px", marginBottom:"16px" }}>
-                <div style={{ width: '56px', height: '56px', overflow: 'hidden', borderRadius: '12px' }}>
-                   <img src="/icons/icon_globe.png" alt="Globe" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+            <div className="flex-1 relative z-10">
+              <div className="flex items-center gap-md mb-md">
+                <div className="w-14 h-14 bg-info/10 rounded-2xl flex items-center justify-center border border-info/20">
+                   <img src="/icons/icon_globe.png" alt="Globe" className="w-8 h-8 object-contain mix-blend-multiply" />
                 </div>
                 <div>
-                  <h1 style={{ fontSize:"36px", fontWeight:"900", color:"#0F172A", margin:"0 0 4px", letterSpacing:"-1px" }}>Global Search Hub</h1>
-                  <p style={{ color:"#64748B", fontSize:"16px", margin:0, fontWeight:"600" }}>Your AI-powered career launchpad</p>
+                  <h2 className="text-headline-sm font-headline-sm text-on-surface m-0 mb-1">Global Search Hub</h2>
+                  <p className="text-on-surface-variant text-sm font-bold uppercase tracking-wider">Your AI-powered career launchpad</p>
                 </div>
               </div>
               
-              <p style={{ color:"#475569", fontSize:"16px", lineHeight:"1.7", maxWidth:"700px", marginBottom:"32px" }}>
+              <p className="text-on-surface-variant font-medium text-sm leading-relaxed mb-lg max-w-3xl">
                 Welcome to the GenuAI Search Hub. This powerful ecosystem utilizes our proprietary matching algorithms to connect you with top-tier opportunities. Whether you're networking with industry professionals, exploring our curated Global Job Board, or staying updated on the latest AI trends, your next career move starts here.
               </p>
 
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:"16px", maxWidth:"800px" }}>
-                <div style={{ background:"#F8FAFC", padding:"16px", borderRadius:"12px", border:"1px dashed #CBD5E1" }}>
-                  <div style={{ color:"#334155", fontWeight:"800", fontSize:"14px", marginBottom:"4px", display: "flex", alignItems: "center", gap: "6px" }}>🎯 Precision Matching</div>
-                  <div style={{ color:"#64748B", fontSize:"12px", lineHeight:"1.5" }}>Our AI analyzes your skills and resume for the perfect fit.</div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-md max-w-4xl">
+                <div className="bg-surface-bright/80 backdrop-blur-sm p-md rounded-2xl border border-surface-container">
+                  <div className="text-on-surface font-black text-sm mb-1 flex items-center gap-xs"><span className="material-symbols-outlined text-[16px] text-info">ads_click</span> Precision Matching</div>
+                  <div className="text-on-surface-variant text-xs font-medium">Our AI analyzes your skills and resume for the perfect fit.</div>
                 </div>
-                <div style={{ background:"#F8FAFC", padding:"16px", borderRadius:"12px", border:"1px dashed #CBD5E1" }}>
-                  <div style={{ color:"#334155", fontWeight:"800", fontSize:"14px", marginBottom:"4px", display: "flex", alignItems: "center", gap: "6px" }}>🤝 GenuAI Network</div>
-                  <div style={{ color:"#64748B", fontSize:"12px", lineHeight:"1.5" }}>Connect seamlessly with peers and tech recruiters.</div>
+                <div className="bg-surface-bright/80 backdrop-blur-sm p-md rounded-2xl border border-surface-container">
+                  <div className="text-on-surface font-black text-sm mb-1 flex items-center gap-xs"><span className="material-symbols-outlined text-[16px] text-indigo-brand">group</span> GenuAI Network</div>
+                  <div className="text-on-surface-variant text-xs font-medium">Connect seamlessly with peers and tech recruiters.</div>
                 </div>
-                <div style={{ background:"#F8FAFC", padding:"16px", borderRadius:"12px", border:"1px dashed #CBD5E1" }}>
-                  <div style={{ color:"#334155", fontWeight:"800", fontSize:"14px", marginBottom:"4px", display: "flex", alignItems: "center", gap: "6px" }}>📈 Career Insights</div>
-                  <div style={{ color:"#64748B", fontSize:"12px", lineHeight:"1.5" }}>Stay informed with tailored technology and company news.</div>
+                <div className="bg-surface-bright/80 backdrop-blur-sm p-md rounded-2xl border border-surface-container">
+                  <div className="text-on-surface font-black text-sm mb-1 flex items-center gap-xs"><span className="material-symbols-outlined text-[16px] text-success">trending_up</span> Career Insights</div>
+                  <div className="text-on-surface-variant text-xs font-medium">Stay informed with tailored technology and company news.</div>
                 </div>
               </div>
             </div>
             
-            <div style={{ width:"280px", background:'#F8FAFC', borderRadius:'16px', border:'1px solid #E5E7EB', padding:'24px', display:'flex', flexDirection:"column", alignItems:'center', justifyContent:'center', zIndex:1, boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
-              <div style={{ fontWeight:'800', color:'#0F172A', fontSize:'16px', marginBottom:"20px", textAlign:"center" }}>Your Search Status</div>
-              <div style={{ display:'flex', width:"100%", justifyContent:"space-around" }}>
-                {[{label:'Active Apps',val:'3',color:'#0A66C2'},{label:'Matches',val:'12+',color:'#059669'}].map((s,i) => (
-                  <div key={i} style={{ textAlign:'center' }}>
-                    <div style={{ fontSize:'24px', fontWeight:'900', color:s.color }}>{s.val}</div>
-                    <div style={{ fontSize:'12px', color:'#94A3B8', fontWeight:'700', textTransform:"uppercase", marginTop:"4px" }}>{s.label}</div>
-                  </div>
-                ))}
+            <div className="w-full md:w-72 bg-surface-bright/90 backdrop-blur-md rounded-2xl border border-surface-container p-xl flex flex-col items-center justify-center relative z-10 shadow-sm shrink-0">
+              <div className="text-on-surface-variant font-bold text-xs uppercase tracking-widest mb-md">Your Search Status</div>
+              <div className="flex w-full justify-around">
+                <div className="text-center">
+                  <div className="text-4xl font-black text-info-dark drop-shadow-sm mb-1">3</div>
+                  <div className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Active Apps</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-black text-success drop-shadow-sm mb-1">12+</div>
+                  <div className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Matches</div>
+                </div>
               </div>
             </div>
           </div>

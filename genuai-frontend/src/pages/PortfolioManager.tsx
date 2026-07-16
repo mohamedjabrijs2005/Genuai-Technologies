@@ -10,110 +10,111 @@ export default function PortfolioManager({ user, onBack }: Props) {
   ]);
 
   return (
-    <div style={{ height:'100vh', background:'#F8FAFC', display:'flex', flexDirection:'column', fontFamily:"'Inter', sans-serif" }}>
+    <div className="h-screen bg-background quantum-gradient flex flex-col overflow-hidden">
       {/* Header */}
-      <div style={{ background:'#0F172A', color:'#fff', padding:'0 32px', height:"64px", display:'flex', justifyContent:'space-between', alignItems:'center', flexShrink:0 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-          <div style={{ fontWeight:"900", fontSize:"18px", display:"flex", alignItems:"center", gap:"12px" }}>
+      <div className="glass border-b border-surface-container px-lg md:px-xl h-16 flex items-center justify-between shrink-0 sticky top-0 z-40">
+        <div className="flex items-center gap-md">
+          <div className="font-black text-title-sm text-on-surface flex items-center gap-sm">
             <span>🎨</span> AI Portfolio Manager
           </div>
         </div>
-        <button onClick={onBack} style={{ background:'transparent', border:'1px solid #334155', color:'#94A3B8', padding:'6px 16px', borderRadius:'8px', cursor:'pointer', fontWeight:'600', fontSize:"13px" }}>
+        <button onClick={onBack} className="bg-surface-bright border border-surface-container text-on-surface-variant px-md py-xs rounded-lg font-bold text-xs hover:text-on-surface hover:border-surface-container-high transition-colors">
           Exit to Hub
         </button>
       </div>
 
-      <div style={{ flex:1, display:'flex', overflow:'hidden', maxWidth:'1200px', margin:'0 auto', width:'100%', gap:'32px', padding:'32px' }}>
+      <div className="flex-1 flex overflow-hidden max-w-[1200px] mx-auto w-full gap-xl p-lg md:p-xl relative z-10">
         
         {/* Left Sidebar */}
-        <div style={{ width:'280px', display:'flex', flexDirection:'column', gap:'8px' }}>
-           <button onClick={() => setActiveTab('integrations')} style={{ padding:'16px', background: activeTab === 'integrations' ? '#EFF6FF' : 'transparent', border:'none', color: activeTab === 'integrations' ? '#2563EB' : '#64748B', fontWeight:'700', fontSize:'14px', borderRadius:'12px', textAlign:'left', cursor:'pointer', display:'flex', alignItems:'center', gap:'12px' }}>
-             <span style={{ fontSize:'18px' }}>🔗</span> Sync & Integrations
+        <div className="w-[280px] flex flex-col gap-xs shrink-0">
+           <button onClick={() => setActiveTab('integrations')} className={`p-md rounded-xl font-bold text-sm text-left flex items-center gap-md transition-colors ${activeTab === 'integrations' ? 'bg-info/10 text-info-dark' : 'text-on-surface-variant hover:bg-surface-bright/50'}`}>
+             <span className="text-lg">🔗</span> Sync & Integrations
            </button>
-           <button onClick={() => setActiveTab('projects')} style={{ padding:'16px', background: activeTab === 'projects' ? '#EFF6FF' : 'transparent', border:'none', color: activeTab === 'projects' ? '#2563EB' : '#64748B', fontWeight:'700', fontSize:'14px', borderRadius:'12px', textAlign:'left', cursor:'pointer', display:'flex', alignItems:'center', gap:'12px' }}>
-             <span style={{ fontSize:'18px' }}>📁</span> My Projects
+           <button onClick={() => setActiveTab('projects')} className={`p-md rounded-xl font-bold text-sm text-left flex items-center gap-md transition-colors ${activeTab === 'projects' ? 'bg-info/10 text-info-dark' : 'text-on-surface-variant hover:bg-surface-bright/50'}`}>
+             <span className="text-lg">📁</span> My Projects
            </button>
-           <button onClick={() => setActiveTab('preview')} style={{ padding:'16px', background: activeTab === 'preview' ? '#EFF6FF' : 'transparent', border:'none', color: activeTab === 'preview' ? '#2563EB' : '#64748B', fontWeight:'700', fontSize:'14px', borderRadius:'12px', textAlign:'left', cursor:'pointer', display:'flex', alignItems:'center', gap:'12px' }}>
-             <span style={{ fontSize:'18px' }}>👁️</span> Live Preview
+           <button onClick={() => setActiveTab('preview')} className={`p-md rounded-xl font-bold text-sm text-left flex items-center gap-md transition-colors ${activeTab === 'preview' ? 'bg-info/10 text-info-dark' : 'text-on-surface-variant hover:bg-surface-bright/50'}`}>
+             <span className="text-lg">👁️</span> Live Preview
            </button>
            
-           <div style={{ marginTop:'auto', background:'linear-gradient(135deg,#7C3AED,#3B82F6)', borderRadius:'16px', padding:'24px', color:'#fff', boxShadow:'0 12px 24px rgba(124,58,237,0.2)' }}>
-             <div style={{ fontSize:'24px', marginBottom:'8px' }}>✨</div>
-             <div style={{ fontWeight:'800', fontSize:'15px', marginBottom:'4px' }}>Auto-Generate</div>
-             <p style={{ fontSize:'13px', margin:'0 0 16px', opacity:0.9 }}>Let GenuAI build a stunning portfolio site from your synced data.</p>
-             <button style={{ width:'100%', background:'#fff', color:'#7C3AED', border:'none', padding:'10px', borderRadius:'8px', fontWeight:'800', fontSize:'13px', cursor:'pointer' }}>Generate Site</button>
+           <div className="mt-auto bg-gradient-to-br from-[#7C3AED] to-indigo-brand rounded-3xl p-lg text-white shadow-lg shadow-indigo-brand/20 relative overflow-hidden">
+             <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+             <div className="text-2xl mb-xs relative z-10">✨</div>
+             <div className="font-black text-sm mb-1 relative z-10">Auto-Generate</div>
+             <p className="text-xs font-medium text-white/90 mb-md relative z-10">Let GenuAI build a stunning portfolio site from your synced data.</p>
+             <button className="w-full bg-white text-indigo-brand border-none p-sm rounded-xl font-black text-xs cursor-pointer shadow-sm hover:shadow-md transition-all relative z-10">Generate Site</button>
            </div>
         </div>
 
         {/* Main Content Area */}
-        <div style={{ flex:1, background:'#fff', borderRadius:'24px', border:'1px solid #E2E8F0', padding:'40px', overflowY:'auto', boxShadow:'0 12px 32px rgba(0,0,0,0.02)' }}>
+        <div className="flex-1 glass rounded-3xl border border-surface-container p-xl overflow-y-auto shadow-sm">
            
            {activeTab === 'integrations' && (
-             <div>
-               <h2 style={{ fontSize:'24px', fontWeight:'900', color:'#0F172A', margin:'0 0 8px' }}>Platform Integrations</h2>
-               <p style={{ fontSize:'14px', color:'#64748B', margin:'0 0 32px' }}>Connect your external accounts to automatically sync projects, commits, and problem-solving stats.</p>
+             <div className="animate-[fadeIn_0.3s_ease]">
+               <h2 className="text-headline-sm font-black text-on-surface mb-xs">Platform Integrations</h2>
+               <p className="text-sm font-medium text-on-surface-variant mb-xl">Connect your external accounts to automatically sync projects, commits, and problem-solving stats.</p>
                
-               <div style={{ display:'flex', flexDirection:'column', gap:'16px' }}>
+               <div className="flex flex-col gap-md">
                  {/* GitHub */}
-                 <div style={{ border:'1px solid #E2E8F0', borderRadius:'16px', padding:'24px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                   <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-                     <div style={{ width:'48px', height:'48px', background:'#F8FAFC', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'24px' }}>🐙</div>
+                 <div className="border border-surface-container rounded-2xl p-lg flex justify-between items-center bg-surface-bright/30 hover:bg-surface-bright/50 transition-colors">
+                   <div className="flex items-center gap-md">
+                     <div className="w-12 h-12 bg-surface-container rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm">🐙</div>
                      <div>
-                       <div style={{ fontWeight:'800', color:'#0F172A', fontSize:'15px' }}>GitHub</div>
-                       <div style={{ fontSize:'13px', color:'#64748B' }}>Sync repositories and commit graphs</div>
+                       <div className="font-black text-on-surface text-sm">GitHub</div>
+                       <div className="text-xs font-medium text-on-surface-variant">Sync repositories and commit graphs</div>
                      </div>
                    </div>
-                   <button style={{ background:'#EFF6FF', color:'#2563EB', border:'none', padding:'8px 20px', borderRadius:'20px', fontWeight:'700', fontSize:'13px', cursor:'pointer' }}>Connected</button>
+                   <button className="bg-info/10 text-info-dark border border-info/20 px-lg py-xs rounded-full font-bold text-xs cursor-default">Connected</button>
                  </div>
 
                  {/* LeetCode */}
-                 <div style={{ border:'1px solid #E2E8F0', borderRadius:'16px', padding:'24px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                   <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-                     <div style={{ width:'48px', height:'48px', background:'#FFFBEB', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'24px' }}>👨‍💻</div>
+                 <div className="border border-surface-container rounded-2xl p-lg flex justify-between items-center bg-surface-bright/30 hover:bg-surface-bright/50 transition-colors">
+                   <div className="flex items-center gap-md">
+                     <div className="w-12 h-12 bg-warning/10 rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm">👨‍💻</div>
                      <div>
-                       <div style={{ fontWeight:'800', color:'#0F172A', fontSize:'15px' }}>LeetCode</div>
-                       <div style={{ fontSize:'13px', color:'#64748B' }}>Showcase algorithmic problem-solving stats</div>
+                       <div className="font-black text-on-surface text-sm">LeetCode</div>
+                       <div className="text-xs font-medium text-on-surface-variant">Showcase algorithmic problem-solving stats</div>
                      </div>
                    </div>
-                   <button style={{ background:'transparent', border:'1px solid #E2E8F0', color:'#0F172A', padding:'8px 20px', borderRadius:'20px', fontWeight:'700', fontSize:'13px', cursor:'pointer' }}>Connect</button>
+                   <button className="bg-background border border-surface-container text-on-surface px-lg py-xs rounded-full font-bold text-xs cursor-pointer hover:border-surface-container-high transition-colors">Connect</button>
                  </div>
 
                  {/* Kaggle */}
-                 <div style={{ border:'1px solid #E2E8F0', borderRadius:'16px', padding:'24px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                   <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-                     <div style={{ width:'48px', height:'48px', background:'#F0FDF4', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'24px' }}>📊</div>
+                 <div className="border border-surface-container rounded-2xl p-lg flex justify-between items-center bg-surface-bright/30 hover:bg-surface-bright/50 transition-colors">
+                   <div className="flex items-center gap-md">
+                     <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm">📊</div>
                      <div>
-                       <div style={{ fontWeight:'800', color:'#0F172A', fontSize:'15px' }}>Kaggle</div>
-                       <div style={{ fontSize:'13px', color:'#64748B' }}>Sync datasets, models, and competition ranks</div>
+                       <div className="font-black text-on-surface text-sm">Kaggle</div>
+                       <div className="text-xs font-medium text-on-surface-variant">Sync datasets, models, and competition ranks</div>
                      </div>
                    </div>
-                   <button style={{ background:'transparent', border:'1px solid #E2E8F0', color:'#0F172A', padding:'8px 20px', borderRadius:'20px', fontWeight:'700', fontSize:'13px', cursor:'pointer' }}>Connect</button>
+                   <button className="bg-background border border-surface-container text-on-surface px-lg py-xs rounded-full font-bold text-xs cursor-pointer hover:border-surface-container-high transition-colors">Connect</button>
                  </div>
                </div>
              </div>
            )}
 
            {activeTab === 'projects' && (
-             <div>
-               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'32px' }}>
+             <div className="animate-[fadeIn_0.3s_ease]">
+               <div className="flex justify-between items-start md:items-center mb-xl flex-col md:flex-row gap-md">
                  <div>
-                   <h2 style={{ fontSize:'24px', fontWeight:'900', color:'#0F172A', margin:'0 0 8px' }}>My Projects</h2>
-                   <p style={{ fontSize:'14px', color:'#64748B', margin:0 }}>Manage the projects that will appear on your public portfolio.</p>
+                   <h2 className="text-headline-sm font-black text-on-surface mb-xs">My Projects</h2>
+                   <p className="text-sm font-medium text-on-surface-variant">Manage the projects that will appear on your public portfolio.</p>
                  </div>
-                 <button style={{ background:'#0F172A', color:'#fff', border:'none', padding:'10px 20px', borderRadius:'8px', fontWeight:'700', fontSize:'13px', cursor:'pointer' }}>+ Add Manual Project</button>
+                 <button className="bg-on-surface text-background border-none px-lg py-sm rounded-xl font-bold text-xs cursor-pointer hover:bg-on-surface/90 transition-colors shadow-sm shrink-0">+ Add Manual Project</button>
                </div>
 
-               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px' }}>
+               <div className="grid grid-cols-1 xl:grid-cols-2 gap-lg">
                  {projects.map(p => (
-                   <div key={p.id} style={{ border:'1px solid #E2E8F0', borderRadius:'16px', padding:'24px', display:'flex', flexDirection:'column' }}>
-                     <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'12px' }}>
-                       <div style={{ fontSize:'11px', fontWeight:'800', color:'#64748B', textTransform:'uppercase', letterSpacing:'1px', background:'#F1F5F9', padding:'4px 8px', borderRadius:'6px' }}>{p.source}</div>
-                       <button style={{ background:'none', border:'none', color:'#94A3B8', cursor:'pointer' }}>⚙️</button>
+                   <div key={p.id} className="border border-surface-container rounded-3xl p-lg flex flex-col bg-surface-bright/30 hover:shadow-md transition-shadow">
+                     <div className="flex justify-between mb-md">
+                       <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest bg-surface-container-high/20 px-xs py-0.5 rounded-md border border-surface-container">{p.source}</div>
+                       <button className="text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"><span className="material-symbols-outlined text-[18px]">settings</span></button>
                      </div>
-                     <h3 style={{ fontSize:'16px', fontWeight:'800', color:'#0F172A', margin:'0 0 8px' }}>{p.title}</h3>
-                     <p style={{ fontSize:'13px', color:'#64748B', margin:'0 0 16px', flex:1 }}>{p.desc}</p>
-                     <div style={{ display:'flex', gap:'8px', flexWrap:'wrap' }}>
-                       {p.tech.map((t, i) => <span key={i} style={{ fontSize:'11px', fontWeight:'700', color:'#2563EB', background:'#EFF6FF', padding:'4px 8px', borderRadius:'6px' }}>{t}</span>)}
+                     <h3 className="text-title-sm font-black text-on-surface mb-xs">{p.title}</h3>
+                     <p className="text-xs font-medium text-on-surface-variant mb-lg flex-1 leading-relaxed">{p.desc}</p>
+                     <div className="flex flex-wrap gap-xs">
+                       {p.tech.map((t, i) => <span key={i} className="text-[10px] font-bold text-info-dark bg-info/10 px-sm py-1 rounded-md border border-info/20">{t}</span>)}
                      </div>
                    </div>
                  ))}
@@ -122,23 +123,26 @@ export default function PortfolioManager({ user, onBack }: Props) {
            )}
 
            {activeTab === 'preview' && (
-             <div style={{ height:'100%', display:'flex', flexDirection:'column' }}>
-               <h2 style={{ fontSize:'24px', fontWeight:'900', color:'#0F172A', margin:'0 0 8px' }}>Live Portfolio Preview</h2>
-               <p style={{ fontSize:'14px', color:'#64748B', margin:'0 0 24px' }}>This is how recruiters will see your AI-generated portfolio.</p>
+             <div className="h-full flex flex-col animate-[fadeIn_0.3s_ease]">
+               <h2 className="text-headline-sm font-black text-on-surface mb-xs">Live Portfolio Preview</h2>
+               <p className="text-sm font-medium text-on-surface-variant mb-xl">This is how recruiters will see your AI-generated portfolio.</p>
                
-               <div style={{ flex:1, border:'4px solid #E2E8F0', borderRadius:'16px', overflow:'hidden', background:'#0F172A', color:'#fff', display:'flex', flexDirection:'column' }}>
-                 <div style={{ padding:'8px 16px', background:'#1E293B', display:'flex', gap:'8px' }}>
-                   <div style={{ width:'12px', height:'12px', borderRadius:'50%', background:'#EF4444' }}></div>
-                   <div style={{ width:'12px', height:'12px', borderRadius:'50%', background:'#F59E0B' }}></div>
-                   <div style={{ width:'12px', height:'12px', borderRadius:'50%', background:'#10B981' }}></div>
+               <div className="flex-1 border-4 border-surface-container rounded-3xl overflow-hidden bg-[#0F172A] text-white flex flex-col shadow-inner">
+                 <div className="px-lg py-sm bg-[#1E293B] flex gap-xs border-b border-white/5">
+                   <div className="w-3 h-3 rounded-full bg-error-crimson"></div>
+                   <div className="w-3 h-3 rounded-full bg-warning"></div>
+                   <div className="w-3 h-3 rounded-full bg-success"></div>
                  </div>
-                 <div style={{ flex:1, padding:'64px 40px', textAlign:'center', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center' }}>
-                   <div style={{ width:'100px', height:'100px', borderRadius:'50%', background:'linear-gradient(135deg,#2563EB,#7C3AED)', marginBottom:'24px' }}></div>
-                   <h1 style={{ fontSize:'36px', fontWeight:'900', margin:'0 0 16px' }}>Jane Doe</h1>
-                   <p style={{ fontSize:'18px', color:'#94A3B8', maxWidth:'400px', lineHeight:'1.6', margin:'0 0 32px' }}>Full Stack Engineer bridging the gap between design and scalable backend systems.</p>
-                   <div style={{ display:'flex', gap:'16px' }}>
-                     <button style={{ background:'#fff', color:'#0F172A', border:'none', padding:'12px 24px', borderRadius:'24px', fontWeight:'800', fontSize:'14px' }}>View Projects</button>
-                     <button style={{ background:'transparent', color:'#fff', border:'2px solid #334155', padding:'12px 24px', borderRadius:'24px', fontWeight:'800', fontSize:'14px' }}>Download Resume</button>
+                 <div className="flex-1 p-xl md:p-xxl text-center flex flex-col justify-center items-center relative overflow-hidden">
+                   <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-brand/20 rounded-full blur-[80px]" />
+                   <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#7C3AED]/20 rounded-full blur-[80px]" />
+                   
+                   <div className="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-brand to-[#7C3AED] mb-lg shadow-lg relative z-10 border-4 border-[#1E293B]"></div>
+                   <h1 className="text-display-sm font-display-sm mb-md relative z-10">Jane Doe</h1>
+                   <p className="text-title-sm font-medium text-white/70 max-w-md leading-relaxed mb-xl relative z-10">Full Stack Engineer bridging the gap between design and scalable backend systems.</p>
+                   <div className="flex flex-wrap justify-center gap-md relative z-10">
+                     <button className="bg-white text-[#0F172A] border-none px-xl py-sm rounded-full font-black text-sm shadow-md hover:shadow-lg hover:scale-105 transition-all">View Projects</button>
+                     <button className="bg-transparent text-white border border-white/30 px-xl py-sm rounded-full font-black text-sm hover:bg-white/10 transition-colors">Download Resume</button>
                    </div>
                  </div>
                </div>
