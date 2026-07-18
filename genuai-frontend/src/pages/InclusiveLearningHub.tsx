@@ -162,91 +162,117 @@ Format the output using simple Markdown (## headers, **bold**, and \`\`\` for co
   };
 
   return (
-    <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
+    <div className="min-h-screen bg-background quantum-gradient font-body-base text-on-background relative overflow-hidden flex flex-col">
+      {/* Decorative */}
+      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-indigo-brand/10 blur-[150px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-accent-gold/10 blur-[150px] rounded-full pointer-events-none" />
       
       {/* Header */}
-      <div style={{ background:"#fff", borderBottom:"1px solid #E2E8F0", padding:"16px 32px", display:"flex", alignItems:"center", justifyContent:"space-between", boxShadow:"0 1px 4px rgba(0,0,0,0.03)", position:"sticky", top:0, zIndex:10 }}>
-        <div style={{ display:"flex", alignItems:"center", gap:"16px" }}>
-          <div style={{ width:"48px", height:"48px", background:"#FFFBEB", borderRadius:"12px", border:"1px solid #FEF3C7", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
-            <img src="/icons/learning_brain.png" alt="Brain" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+      <div className="relative z-20 glass border-b border-surface-container/50 px-xl py-sm flex items-center justify-between shadow-sm sticky top-0">
+        <div className="flex items-center gap-md">
+          <div className="w-12 h-12 bg-indigo-brand/10 rounded-xl border border-indigo-brand/20 flex items-center justify-center overflow-hidden">
+            <img src="/icons/learning_brain.png" alt="Brain" className="w-full h-full object-cover mix-blend-multiply" />
           </div>
-          <div>
-            <div style={{ fontWeight:"900", fontSize:"18px", color:"#0F172A" }}>Inclusive Learning Hub</div>
-            <div style={{ fontSize:"13px", color:"#64748B", fontWeight:"500", marginTop:"2px" }}>Dynamic AI Education Engine</div>
+          <div className="hidden sm:block">
+            <div className="font-black text-lg text-on-surface">Inclusive Learning Hub</div>
+            <div className="text-xs text-on-surface-variant font-bold mt-0.5">Dynamic AI Education Engine</div>
           </div>
         </div>
         
-        <div style={{ display:"flex", alignItems:"center", gap:"24px", flex:1, maxWidth:"500px", margin:"0 32px" }}>
-          <div style={{ display:"flex", width:"100%", background:"#F8FAFC", borderRadius:"12px", border:"1px solid #E2E8F0", overflow:"hidden" }}>
+        <div className="flex items-center gap-md flex-1 max-w-[500px] mx-xl">
+          <div className="flex w-full bg-surface-bright/50 rounded-xl border border-surface-container overflow-hidden shadow-inner group focus-within:border-indigo-brand/50 focus-within:bg-surface-bright transition-colors">
+            <div className="pl-sm flex items-center justify-center text-on-surface-variant">
+              <span className="material-symbols-outlined text-[20px]">search</span>
+            </div>
             <input 
               type="text" 
               value={searchQuery} 
               onChange={e => setSearchQuery(e.target.value)} 
               onKeyDown={e => e.key === 'Enter' && generateSyllabus()}
-              placeholder="What do you want to learn? (e.g. React Hooks, System Design, DevOps)" 
-              style={{ flex:1, padding:"12px 16px", border:"none", background:"transparent", outline:"none", fontSize:"14px", color:"#0F172A" }}
+              placeholder="What do you want to learn? (e.g. React Hooks)" 
+              className="flex-1 py-sm px-sm border-none bg-transparent outline-none text-sm text-on-surface placeholder:text-on-surface-variant/50"
             />
-            <button onClick={() => generateSyllabus()} disabled={syllabusLoading || !searchQuery.trim()} style={{ background:"#0F172A", color:"#fff", border:"none", padding:"0 24px", fontWeight:"700", cursor:(syllabusLoading||!searchQuery.trim())?"not-allowed":"pointer" }}>
-              {syllabusLoading ? "Searching..." : "Learn"}
+            <button 
+              onClick={() => generateSyllabus()} 
+              disabled={syllabusLoading || !searchQuery.trim()} 
+              className="bg-indigo-brand text-white border-none px-md font-bold text-sm disabled:bg-surface-container disabled:text-on-surface-variant transition-colors hover:bg-indigo-brand/90"
+            >
+              {syllabusLoading ? <span className="material-symbols-outlined animate-spin text-[20px]">autorenew</span> : "Learn"}
             </button>
           </div>
         </div>
         
-        <div style={{ display:"flex", alignItems:"center", gap:"24px" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:"8px", background:"#F8FAFC", padding:"6px 12px", borderRadius:"12px", border:"1px solid #E2E8F0" }}>
-            <span style={{ fontSize:"16px" }}>🌐</span>
-            <select value={language.code} onChange={e => handleLanguageChange(e.target.value)} style={{ background:"transparent", border:"none", fontSize:"14px", fontWeight:"700", color:"#0F172A", cursor:"pointer", outline:"none" }}>
-              {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.label} - {l.native}</option>)}
+        <div className="flex items-center gap-md">
+          <div className="flex items-center gap-xs bg-surface-bright/50 px-sm py-1 rounded-xl border border-surface-container shadow-sm">
+            <span className="material-symbols-outlined text-indigo-brand text-[20px]">public</span>
+            <select 
+              value={language.code} 
+              onChange={e => handleLanguageChange(e.target.value)} 
+              className="bg-transparent border-none text-sm font-bold text-on-surface cursor-pointer outline-none w-full appearance-none pr-sm"
+            >
+              {LANGUAGES.map(l => <option key={l.code} value={l.code} className="text-on-surface bg-surface-bright">{l.label} - {l.native}</option>)}
             </select>
           </div>
-          <button onClick={() => { window.speechSynthesis.cancel(); onBack(); }} style={{ padding:"8px 16px", border:"1.5px solid #E2E8F0", borderRadius:"10px", background:"#fff", fontSize:"13px", color:"#475569", cursor:"pointer", fontWeight:"700" }}>
-            Exit Hub
+          <button 
+            onClick={() => { window.speechSynthesis.cancel(); onBack(); }} 
+            className="px-sm py-1.5 border border-surface-container-high rounded-xl bg-transparent text-xs text-on-surface-variant font-bold hover:bg-surface-container-high hover:text-on-surface transition-colors flex items-center gap-xs"
+          >
+            <span className="material-symbols-outlined text-[18px]">exit_to_app</span> Exit Hub
           </button>
         </div>
       </div>
 
-      <div style={{ flex:1, display:"flex", padding:"32px", gap:"32px", maxWidth:"1500px", margin:"0 auto", width:"100%" }}>
+      <div className="relative z-10 flex-1 flex flex-col lg:flex-row px-margin-mobile md:px-margin-desktop py-xl gap-xl max-w-screen-2xl mx-auto w-full">
         
         {/* Left Sidebar: Dynamic Syllabus */}
-        <div style={{ width:"340px", display:"flex", flexDirection:"column", gap:"24px", flexShrink:0 }}>
+        <div className="w-full lg:w-[360px] flex flex-col gap-lg flex-shrink-0">
           
-          <div style={{ background:"linear-gradient(135deg,#2563EB,#1E40AF)", borderRadius:"20px", padding:"24px", color:"#fff", boxShadow:"0 8px 24px rgba(37,99,235,0.2)" }}>
-            <div style={{ width:"48px", height:"48px", marginBottom:"12px", overflow:"hidden", borderRadius:"12px" }}>
-              <img src="/icons/ai_mock_interview.png" alt="AI" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+          <div className="bg-gradient-to-br from-indigo-brand to-indigo-800 rounded-xxxl p-lg text-white shadow-lg relative overflow-hidden group">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none group-hover:opacity-20 transition-opacity"></div>
+            <div className="w-12 h-12 mb-sm overflow-hidden rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-1">
+              <img src="/icons/ai_mock_interview.png" alt="AI" className="w-full h-full object-cover mix-blend-screen opacity-90" />
             </div>
-            <div style={{ fontWeight:"800", fontSize:"16px", marginBottom:"8px" }}>AI Dynamic Syllabus</div>
-            <div style={{ fontSize:"13px", lineHeight:"1.6", opacity:0.9 }}>
+            <div className="font-black text-lg mb-xs relative z-10">AI Dynamic Syllabus</div>
+            <div className="text-xs font-medium leading-relaxed opacity-90 relative z-10">
               Search for any skill. The AI generates a structured syllabus and explains concepts natively to reduce cognitive load.
             </div>
           </div>
 
           {syllabus.length > 0 ? (
-            <div style={{ background:"#fff", borderRadius:"20px", padding:"24px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
-              <h3 style={{ fontSize:"14px", fontWeight:"800", color:"#0F172A", margin:"0 0 16px", textTransform:"uppercase", letterSpacing:"0.5px" }}>{currentSkill} Syllabus</h3>
-              <div style={{ display:"flex", flexDirection:"column", gap:"12px" }}>
+            <div className="glass rounded-xxxl p-lg border border-surface-container shadow-sm flex-1 overflow-y-auto max-h-[calc(100vh-280px)] custom-scrollbar">
+              <h3 className="text-xs font-black text-on-surface-variant mb-md uppercase tracking-widest flex items-center gap-xs sticky top-0 bg-background/80 backdrop-blur-md py-1 z-10">
+                <span className="material-symbols-outlined text-[16px]">menu_book</span> {currentSkill} Syllabus
+              </h3>
+              <div className="flex flex-col gap-sm">
                 {syllabus.map((mod, index) => (
                   <button 
                     key={mod.id} 
                     onClick={() => fetchLesson(mod, language)}
-                    style={{ display:"flex", alignItems:"flex-start", gap:"12px", padding:"16px", background:activeModule?.id === mod.id ? "#EFF6FF" : "#F8FAFC", border:activeModule?.id === mod.id ? "1.5px solid #3B82F6" : "1px solid #E2E8F0", borderRadius:"14px", cursor:"pointer", textAlign:"left", transition:"all 0.2s", width:"100%" }}
+                    className={`flex items-start gap-md p-md rounded-xl cursor-pointer text-left transition-all duration-200 border-2 ${activeModule?.id === mod.id ? 'border-indigo-brand bg-indigo-brand/5 shadow-sm transform -translate-y-0.5' : 'border-transparent bg-surface-bright/50 hover:bg-surface-container/50'}`}
                   >
-                    <div style={{ fontSize:"16px", fontWeight:"900", color:activeModule?.id===mod.id?"#2563EB":"#94A3B8", background:"#fff", padding:"4px 10px", borderRadius:"8px", boxShadow:"0 2px 4px rgba(0,0,0,0.05)" }}>{index+1}</div>
+                    <div className={`text-sm font-black w-8 h-8 flex items-center justify-center shrink-0 rounded-lg shadow-sm border ${activeModule?.id === mod.id ? 'bg-indigo-brand text-white border-indigo-brand' : 'bg-white text-on-surface-variant border-surface-container'}`}>{index+1}</div>
                     <div>
-                      <div style={{ color:"#0F172A", fontWeight:"700", fontSize:"14px", lineHeight:"1.4", marginBottom:"4px" }}>{mod.title}</div>
-                      <div style={{ color:"#64748B", fontSize:"11px", lineHeight:"1.5" }}>{mod.description}</div>
+                      <div className={`font-bold text-sm leading-snug mb-0.5 ${activeModule?.id === mod.id ? 'text-indigo-brand' : 'text-on-surface'}`}>{mod.title}</div>
+                      <div className="text-xs font-medium text-on-surface-variant line-clamp-2 leading-relaxed">{mod.description}</div>
                     </div>
                   </button>
                 ))}
               </div>
             </div>
           ) : (
-            <div style={{ background:"#fff", borderRadius:"20px", padding:"24px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
-               <h3 style={{ fontSize:"14px", fontWeight:"800", color:"#0F172A", margin:"0 0 16px", textTransform:"uppercase", letterSpacing:"0.5px" }}>Popular Topics</h3>
-               <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
+            <div className="glass rounded-xxxl p-lg border border-surface-container shadow-sm flex-1 overflow-y-auto custom-scrollbar">
+               <h3 className="text-xs font-black text-on-surface-variant mb-md uppercase tracking-widest flex items-center gap-xs">
+                 <span className="material-symbols-outlined text-[16px]">local_fire_department</span> Popular Topics
+               </h3>
+               <div className="flex flex-col gap-xs">
                  {["System Design", "Dynamic Programming", "React Hooks", "Docker Basics", "Microservices", "Machine Learning", "GraphQL APIs", "Cybersecurity", "Blockchain Basics", "Kubernetes", "AWS Cloud Concepts"].map(t => (
-                    <button key={t} onClick={() => generateSyllabus(t)} style={{ padding:"12px 16px", background:"#F8FAFC", border:"1px solid #E2E8F0", borderRadius:"12px", textAlign:"left", cursor:"pointer", fontWeight:"600", color:"#334155", display:"flex", justifyContent:"space-between" }} onMouseEnter={e=>e.currentTarget.style.background="#F1F5F9"} onMouseLeave={e=>e.currentTarget.style.background="#F8FAFC"}>
+                    <button 
+                      key={t} 
+                      onClick={() => generateSyllabus(t)} 
+                      className="px-md py-sm bg-surface-bright/50 border border-transparent hover:border-surface-container rounded-xl text-left cursor-pointer font-bold text-sm text-on-surface hover:bg-surface-container/30 transition-all flex justify-between items-center group"
+                    >
                       <span>{t}</span>
-                      <span style={{ color:"#94A3B8" }}>→</span>
+                      <span className="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity text-[18px]">arrow_forward</span>
                     </button>
                  ))}
                </div>
@@ -255,127 +281,146 @@ Format the output using simple Markdown (## headers, **bold**, and \`\`\` for co
         </div>
 
         {/* Right Content Area: Multimodal Lesson */}
-        <div style={{ flex:1, display:"flex", flexDirection:"column", gap:"24px" }}>
+        <div className="flex-1 flex flex-col gap-lg overflow-hidden">
           {!activeModule ? (
-            <div style={{ flex:1, display:"flex", flexDirection:"column", gap:"24px" }}>
-              <div style={{ background:"#fff", borderRadius:"24px", padding:"48px", border:"1px solid #E2E8F0", boxShadow:"0 10px 25px rgba(0,0,0,0.02)", flex:1, display:"flex", flexDirection:"column" }}>
-                <div style={{ width:"64px", height:"64px", marginBottom:"20px", overflow:"hidden", borderRadius:"16px" }}>
-                  <img src="/icons/icon_globe.png" alt="Globe" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
-                </div>
-                <h2 style={{ fontSize:"32px", fontWeight:"900", color:"#0F172A", marginBottom:"16px", letterSpacing:"-0.5px" }}>Welcome to the Inclusive Learning Hub</h2>
-                <p style={{ color:"#475569", fontSize:"16px", lineHeight:"1.8", maxWidth:"750px", marginBottom:"40px" }}>
-                  This AI-powered education engine is designed to dramatically lower your cognitive load. By learning complex engineering concepts in your Native Language first, you can increase retention and grasp abstract logic significantly faster. Currently supporting {LANGUAGES.length} global languages!
-                </p>
-
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"24px", marginBottom:"48px" }}>
-                  <div style={{ background:"#EFF6FF", padding:"24px", borderRadius:"16px", border:"1px solid #BFDBFE" }}>
-                    <div style={{ width:"40px", height:"40px", marginBottom:"12px", overflow:"hidden", borderRadius:"10px" }}>
-                      <img src="/icons/svar_mic.png" alt="Mic" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
-                    </div>
-                    <div style={{ fontWeight:"800", fontSize:"16px", color:"#1E3A8A", marginBottom:"8px" }}>Native NLP</div>
-                    <div style={{ color:"#3B82F6", fontSize:"14px", lineHeight:"1.6" }}>Lessons are dynamically generated and translated into {LANGUAGES.length} languages on the fly.</div>
-                  </div>
-                  <div style={{ background:"#F0FDF4", padding:"24px", borderRadius:"16px", border:"1px solid #BBF7D0" }}>
-                    <div style={{ width:"40px", height:"40px", marginBottom:"12px", overflow:"hidden", borderRadius:"10px" }}>
-                      <img src="/icons/icon_tv.png" alt="TV" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
-                    </div>
-                    <div style={{ fontWeight:"800", fontSize:"16px", color:"#14532D", marginBottom:"8px" }}>Visual Searching</div>
-                    <div style={{ color:"#22C55E", fontSize:"14px", lineHeight:"1.6" }}>We automatically query YouTube for the best localized video tutorials based on your exact module.</div>
-                  </div>
-                  <div style={{ background:"#FEF2F2", padding:"24px", borderRadius:"16px", border:"1px solid #FECACA" }}>
-                    <div style={{ width:"40px", height:"40px", marginBottom:"12px", overflow:"hidden", borderRadius:"10px" }}>
-                      <img src="/icons/svar_mic.png" alt="Voice" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
-                    </div>
-                    <div style={{ fontWeight:"800", fontSize:"16px", color:"#7F1D1D", marginBottom:"8px" }}>Text-to-Speech</div>
-                    <div style={{ color:"#EF4444", fontSize:"14px", lineHeight:"1.6" }}>Listen to the AI tutor read the explanations aloud natively using browser synthesis technology.</div>
-                  </div>
-                </div>
-
-                {/* Popular Topics Grid to fill space */}
-                <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
-                  <h3 style={{ fontSize:"20px", fontWeight:"800", color:"#0F172A", marginBottom:"20px" }}>Featured Learning Tracks</h3>
-                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(220px, 1fr))", gap:"16px" }}>
-                    {[
-                      { icon: "⚛️", title: "React Fundamentals", desc: "Hooks, State, & Props" },
-                      { icon: "🐳", title: "Docker Mastery", desc: "Containers & Images" },
-                      { icon: "🌐", title: "System Design", desc: "Scale & Architecture" },
-                      { icon: "🔐", title: "Cybersecurity", desc: "Threats & Defenses" },
-                      { icon: "🐍", title: "Python Basics", desc: "Syntax & Structures" },
-                      { icon: "🧠", title: "Machine Learning", desc: "Models & Training" },
-                      { icon: "☁️", title: "AWS Cloud", desc: "EC2, S3, & VPCs" },
-                      { icon: "⚡", title: "GraphQL", desc: "Queries & Mutations" }
-                    ].map(track => (
-                      <button key={track.title} onClick={() => generateSyllabus(track.title)} style={{ background:"#F8FAFC", border:"1px solid #E2E8F0", padding:"20px", borderRadius:"16px", textAlign:"left", cursor:"pointer", transition:"all 0.2s" }} onMouseEnter={e=>{e.currentTarget.style.borderColor="#94A3B8"; e.currentTarget.style.background="#F1F5F9";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="#E2E8F0"; e.currentTarget.style.background="#F8FAFC";}}>
-                        <div style={{ fontSize:"28px", marginBottom:"12px" }}>{track.icon}</div>
-                        <div style={{ fontWeight:"800", color:"#0F172A", fontSize:"15px", marginBottom:"4px" }}>{track.title}</div>
-                        <div style={{ color:"#64748B", fontSize:"13px" }}>{track.desc}</div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
+            <div className="glass rounded-xxxl p-xl lg:p-xxl border border-surface-container shadow-lg flex-1 flex flex-col overflow-y-auto custom-scrollbar">
+              <div className="w-16 h-16 mb-lg overflow-hidden rounded-2xl bg-indigo-brand/10 p-2 border border-indigo-brand/20">
+                <img src="/icons/icon_globe.png" alt="Globe" className="w-full h-full object-cover mix-blend-multiply" />
               </div>
+              <h2 className="text-display-sm-mobile md:text-display-sm-desktop font-black text-on-surface mb-md tracking-tight">Welcome to the <br/><span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-brand to-purple-500">Inclusive Learning Hub</span></h2>
+              <p className="text-body-lg text-on-surface-variant/90 font-medium leading-relaxed max-w-3xl mb-xl">
+                This AI-powered education engine is designed to dramatically lower your cognitive load. By learning complex engineering concepts in your Native Language first, you can increase retention and grasp abstract logic significantly faster. Currently supporting {LANGUAGES.length} global languages!
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl">
+                <div className="bg-indigo-brand/5 p-md rounded-2xl border border-indigo-brand/20">
+                  <div className="w-10 h-10 mb-sm overflow-hidden rounded-xl bg-indigo-brand/10 p-1">
+                    <img src="/icons/svar_mic.png" alt="Mic" className="w-full h-full object-cover mix-blend-multiply" />
+                  </div>
+                  <div className="font-black text-body-base text-indigo-brand mb-xs">Native NLP</div>
+                  <div className="text-sm font-medium text-indigo-brand/80 leading-relaxed">Lessons are dynamically generated and translated into {LANGUAGES.length} languages on the fly.</div>
+                </div>
+                <div className="bg-success/5 p-md rounded-2xl border border-success/20">
+                  <div className="w-10 h-10 mb-sm overflow-hidden rounded-xl bg-success/10 p-1">
+                    <img src="/icons/icon_tv.png" alt="TV" className="w-full h-full object-cover mix-blend-multiply" />
+                  </div>
+                  <div className="font-black text-body-base text-success mb-xs">Visual Searching</div>
+                  <div className="text-sm font-medium text-success/80 leading-relaxed">We automatically query YouTube for the best localized video tutorials based on your exact module.</div>
+                </div>
+                <div className="bg-error/5 p-md rounded-2xl border border-error/20">
+                  <div className="w-10 h-10 mb-sm overflow-hidden rounded-xl bg-error/10 p-1 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-error text-2xl">record_voice_over</span>
+                  </div>
+                  <div className="font-black text-body-base text-error mb-xs">Text-to-Speech</div>
+                  <div className="text-sm font-medium text-error/80 leading-relaxed">Listen to the AI tutor read the explanations aloud natively using browser synthesis technology.</div>
+                </div>
+              </div>
+
+              {/* Popular Topics Grid to fill space */}
+              <div className="flex-1 flex flex-col">
+                <h3 className="text-title-lg font-black text-on-surface mb-md">Featured Learning Tracks</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-md">
+                  {[
+                    { icon: "science", title: "React Fundamentals", desc: "Hooks, State, & Props", color: "info" },
+                    { icon: "directions_boat", title: "Docker Mastery", desc: "Containers & Images", color: "indigo-brand" },
+                    { icon: "account_tree", title: "System Design", desc: "Scale & Architecture", color: "success" },
+                    { icon: "security", title: "Cybersecurity", desc: "Threats & Defenses", color: "error" },
+                    { icon: "code_blocks", title: "Python Basics", desc: "Syntax & Structures", color: "warning-dark" },
+                    { icon: "psychology", title: "Machine Learning", desc: "Models & Training", color: "purple-500" },
+                    { icon: "cloud", title: "AWS Cloud", desc: "EC2, S3, & VPCs", color: "accent-gold" },
+                    { icon: "bolt", title: "GraphQL", desc: "Queries & Mutations", color: "pink-500" }
+                  ].map(track => (
+                    <button 
+                      key={track.title} 
+                      onClick={() => generateSyllabus(track.title)} 
+                      className="bg-surface-bright/50 border border-surface-container p-md rounded-2xl text-left cursor-pointer hover:shadow-md hover:bg-surface-container/30 hover:-translate-y-1 transition-all duration-300 group"
+                    >
+                      <div className={`w-10 h-10 rounded-xl bg-${track.color}/10 text-${track.color} flex items-center justify-center mb-sm group-hover:scale-110 transition-transform`}>
+                         <span className="material-symbols-outlined text-2xl">{track.icon}</span>
+                      </div>
+                      <div className="font-bold text-on-surface text-sm mb-xs">{track.title}</div>
+                      <div className="text-on-surface-variant text-xs font-medium">{track.desc}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
             </div>
           ) : (
             <>
               {/* Visual Learning Row (YouTube/Search Integration) */}
-              <div style={{ background:"#fff", borderRadius:"24px", padding:"32px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)", display:"flex", alignItems:"center", justifyContent:"space-between", gap:"24px" }}>
-                <div>
-                  <div style={{ display:"flex", alignItems:"center", gap:"10px", marginBottom:"8px" }}>
-                    <div style={{ width:"32px", height:"32px", overflow:"hidden", borderRadius:"8px" }}>
-                      <img src="/icons/icon_tv.png" alt="TV" style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
-                    </div>
-                    <h2 style={{ fontSize:"18px", fontWeight:"800", color:"#0F172A", margin:0 }}>Visual Learning</h2>
+              <div className="glass rounded-2xl p-md border border-surface-container shadow-sm flex flex-col sm:flex-row items-center justify-between gap-md shrink-0">
+                <div className="flex items-center gap-md">
+                  <div className="w-12 h-12 overflow-hidden rounded-xl bg-success/10 p-1.5 shrink-0 border border-success/20">
+                    <img src="/icons/icon_tv.png" alt="TV" className="w-full h-full object-cover mix-blend-multiply" />
                   </div>
-                  <div style={{ color:"#64748B", fontSize:"14px", lineHeight:"1.6" }}>Find the best video tutorials for <strong>{activeModule.title}</strong> in {language.native}.</div>
+                  <div>
+                    <h2 className="text-title-md font-black text-on-surface mb-0.5">Visual Learning</h2>
+                    <div className="text-on-surface-variant text-xs font-medium leading-snug">Find the best video tutorials for <strong className="text-on-surface">{activeModule.title}</strong> in {language.native}.</div>
+                  </div>
                 </div>
-                <div style={{ display:"flex", gap:"12px" }}>
-                  <a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`${activeModule.title} in ${language.native}`)}`} target="_blank" rel="noreferrer" style={{ textDecoration:"none", padding:"14px 24px", background:"#FEF2F2", color:"#DC2626", border:"1px solid #FCA5A5", borderRadius:"12px", fontWeight:"800", fontSize:"14px", display:"flex", alignItems:"center", gap:"8px", transition:"transform 0.2s" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.05)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
-                    ▶ Search YouTube
+                <div className="flex gap-sm w-full sm:w-auto">
+                  <a 
+                    href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`${activeModule.title} in ${language.native}`)}`} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="flex-1 sm:flex-none text-decoration-none px-md py-sm bg-error/10 text-error border border-error/20 rounded-xl font-bold text-sm flex items-center justify-center gap-xs hover:bg-error/20 transition-colors whitespace-nowrap shadow-sm"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">play_circle</span> Search YouTube
                   </a>
-                  <a href={`https://www.google.com/search?q=${encodeURIComponent(`${activeModule.title} tutorial in ${language.native}`)}`} target="_blank" rel="noreferrer" style={{ textDecoration:"none", padding:"14px 24px", background:"#F8FAFC", color:"#475569", border:"1px solid #E2E8F0", borderRadius:"12px", fontWeight:"800", fontSize:"14px", display:"flex", alignItems:"center", gap:"8px", transition:"transform 0.2s" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.05)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
-                    🔍 Google Search
+                  <a 
+                    href={`https://www.google.com/search?q=${encodeURIComponent(`${activeModule.title} tutorial in ${language.native}`)}`} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="flex-1 sm:flex-none text-decoration-none px-md py-sm glass text-on-surface border border-surface-container rounded-xl font-bold text-sm flex items-center justify-center gap-xs hover:bg-surface-container/50 transition-colors whitespace-nowrap shadow-sm"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">search</span> Google Search
                   </a>
                 </div>
               </div>
 
               {/* Text/Voice Translation Area */}
-              <div style={{ background:"#fff", borderRadius:"24px", padding:"40px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)", flex:1, overflowY:"auto", display:"flex", flexDirection:"column" }}>
+              <div className="glass rounded-xxxl p-lg md:p-xl border border-surface-container shadow-lg flex-1 overflow-hidden flex flex-col">
                 
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"32px", paddingBottom:"24px", borderBottom:"1px solid #F1F5F9" }}>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-md pb-md border-b border-surface-container/50 shrink-0">
                   <div>
-                    <h2 style={{ fontSize:"24px", fontWeight:"900", color:"#0F172A", margin:"0 0 8px" }}>{activeModule.title}</h2>
-                    <div style={{ color:"#2563EB", fontSize:"14px", fontWeight:"700", display:"flex", alignItems:"center", gap:"6px" }}>
-                      <span className="pulse-dot" style={{ width:"8px", height:"8px", background:"#2563EB", borderRadius:"50%", display:"inline-block" }}></span>
+                    <h2 className="text-title-lg font-black text-on-surface mb-xs">{activeModule.title}</h2>
+                    <div className="text-indigo-brand text-xs font-bold flex items-center gap-xs bg-indigo-brand/10 px-sm py-0.5 rounded border border-indigo-brand/20 self-start">
+                      <span className="w-2 h-2 bg-indigo-brand rounded-full animate-[pulse_2s_infinite] shadow-[0_0_8px_rgba(37,99,235,0.8)]"></span>
                       AI Generated Content ({language.native})
                     </div>
                   </div>
-                  <button onClick={playVoice} disabled={lessonLoading || !content} style={{ padding:"12px 24px", background:isPlaying?"#FEF2F2":"#0F172A", color:isPlaying?"#DC2626":"#fff", border:isPlaying?"1px solid #FCA5A5":"none", borderRadius:"12px", fontWeight:"800", fontSize:"14px", cursor:(lessonLoading||!content)?"not-allowed":"pointer", display:"flex", alignItems:"center", gap:"8px", transition:"all 0.2s", boxShadow:isPlaying?"none":"0 4px 12px rgba(15,23,42,0.2)" }}>
-                    {isPlaying ? "⏹ Stop Voice Tutor" : "🗣️ Listen Aloud"}
+                  <button 
+                    onClick={playVoice} 
+                    disabled={lessonLoading || !content} 
+                    className={`px-md py-sm rounded-xl font-bold text-sm flex items-center gap-xs transition-all shadow-sm ${isPlaying ? 'bg-error/10 text-error border border-error/20' : 'bg-on-surface text-surface border border-transparent'} ${(lessonLoading||!content) ? 'opacity-50 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-md'}`}
+                  >
+                    <span className="material-symbols-outlined text-[20px]">{isPlaying ? 'stop_circle' : 'record_voice_over'}</span>
+                    {isPlaying ? "Stop Voice Tutor" : "Listen Aloud"}
                   </button>
                 </div>
 
                 {lessonLoading ? (
-                  <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", flex:1, padding:"40px" }}>
-                    <div style={{ width:"48px", height:"48px", border:"4px solid #E2E8F0", borderTop:"4px solid #2563EB", borderRadius:"50%", animation:"spin 1s linear infinite", marginBottom:"16px" }}></div>
-                    <div style={{ color:"#0F172A", fontWeight:"800", fontSize:"16px", marginBottom:"4px" }}>Generating Module...</div>
-                    <div style={{ color:"#64748B", fontSize:"14px" }}>NLP Engine translating concept to {language.native}</div>
+                  <div className="flex flex-col items-center justify-center flex-1 p-xl">
+                    <span className="material-symbols-outlined text-5xl text-indigo-brand animate-spin mb-md">autorenew</span>
+                    <div className="text-on-surface font-black text-title-md mb-xs">Generating Module...</div>
+                    <div className="text-on-surface-variant text-sm font-medium">NLP Engine translating concept to {language.native}</div>
                   </div>
                 ) : (
-                  <div className="markdown-body" style={{ color:"#334155", fontSize:"16px", lineHeight:"1.8" }}>
+                  <div className="flex-1 overflow-y-auto custom-scrollbar pr-sm text-body-lg text-on-surface-variant font-medium leading-relaxed">
                     {content ? content.split('\n').map((line, i) => {
-                      if (line.startsWith('### ')) return <h4 key={i} style={{ color:"#0F172A", marginTop:"24px", marginBottom:"12px", fontSize:"18px", fontWeight:"800" }}>{line.replace('### ','')}</h4>;
-                      if (line.startsWith('## ')) return <h3 key={i} style={{ color:"#0F172A", marginTop:"32px", marginBottom:"16px", fontSize:"22px", fontWeight:"900" }}>{line.replace('## ','')}</h3>;
-                      if (line.startsWith('# ')) return <h2 key={i} style={{ color:"#0F172A", marginTop:"32px", marginBottom:"20px", fontSize:"26px", fontWeight:"900" }}>{line.replace('# ','')}</h2>;
-                      if (line.startsWith('```')) return <div key={i} style={{ background:"#0F172A", color:"#E2E8F0", padding:"20px", borderRadius:"12px", fontFamily:"monospace", fontSize:"14px", overflowX:"auto", margin:"20px 0", boxShadow:"inset 0 2px 4px rgba(0,0,0,0.2)" }}>// Code block formatting active</div>; 
+                      if (line.startsWith('### ')) return <h4 key={i} className="text-on-surface mt-lg mb-sm text-title-md font-black">{line.replace('### ','')}</h4>;
+                      if (line.startsWith('## ')) return <h3 key={i} className="text-on-surface mt-xl mb-md text-title-lg font-black">{line.replace('## ','')}</h3>;
+                      if (line.startsWith('# ')) return <h2 key={i} className="text-on-surface mt-xl mb-md text-headline-sm font-black">{line.replace('# ','')}</h2>;
+                      if (line.startsWith('```')) return <div key={i} className="bg-[#0B1120] text-slate-300 p-md rounded-xl font-mono text-sm overflow-x-auto my-md shadow-inner border border-[#1E293B]">// Code block formatting active</div>; 
                       if (line.trim() === '') return <br key={i} />;
                       
                       const boldParts = line.split(/(\*\*.*?\*\*)/g);
                       return (
-                        <p key={i} style={{ marginBottom:"14px" }}>
+                        <p key={i} className="mb-sm">
                           {boldParts.map((part, j) => 
                             part.startsWith('**') && part.endsWith('**') ? 
-                            <strong key={j} style={{ color:"#0F172A", fontWeight:"700" }}>{part.slice(2,-2)}</strong> : 
+                            <strong key={j} className="text-on-surface font-bold">{part.slice(2,-2)}</strong> : 
                             part
                           )}
                         </p>
@@ -388,16 +433,6 @@ Format the output using simple Markdown (## headers, **bold**, and \`\`\` for co
           )}
         </div>
       </div>
-
-      <style>{`
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse {
-          0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
-          70% { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
-        }
-        .pulse-dot { animation: pulse 2s infinite; }
-      `}</style>
     </div>
   );
 }

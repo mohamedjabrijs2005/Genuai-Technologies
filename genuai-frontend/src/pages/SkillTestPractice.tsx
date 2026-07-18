@@ -6,12 +6,12 @@ interface Props { user: any; onBack: () => void; }
 const GROQ_KEY = import.meta.env.VITE_GROQ_KEY;
 
 const CATEGORIES = [
-  { id: 'logical', name: 'Logical Reasoning', imgSrc: '/icons/cat_logical.png', color: '#2563EB', bg: '#EFF6FF', desc: 'Syllogisms, blood relations, patterns' },
-  { id: 'quantitative', name: 'Quantitative Aptitude', imgSrc: '/icons/cat_quant.png', color: '#059669', bg: '#ECFDF5', desc: 'Permutations, probability, algebra' },
-  { id: 'english', name: 'English Comprehension', imgSrc: '/icons/cat_english.png', color: '#D97706', bg: '#FFFBEB', desc: 'Grammar, vocabulary, reading comp' },
-  { id: 'automata_fix', name: 'GenuAI Automata Fix', imgSrc: '/icons/cat_autofix.png', color: '#DC2626', bg: '#FEF2F2', desc: 'Debug logical and syntax errors in C/C++/Java' },
-  { id: 'automata', name: 'GenuAI Automata', imgSrc: '/icons/cat_automata.png', color: '#7C3AED', bg: '#F5F3FF', desc: 'Live competitive programming assessment' },
-  { id: 'core', name: 'Core Computer Science', imgSrc: '/icons/learning_brain.png', color: '#0891B2', bg: '#ECFEFF', desc: 'OS, DBMS, Computer Networks, OOPS' },
+  { id: 'logical', name: 'Logical Reasoning', imgSrc: '/icons/cat_logical.png', color: 'indigo-brand', bg: 'indigo-brand/10', desc: 'Syllogisms, blood relations, patterns' },
+  { id: 'quantitative', name: 'Quantitative Aptitude', imgSrc: '/icons/cat_quant.png', color: 'success', bg: 'success/10', desc: 'Permutations, probability, algebra' },
+  { id: 'english', name: 'English Comprehension', imgSrc: '/icons/cat_english.png', color: 'warning-dark', bg: 'warning/10', desc: 'Grammar, vocabulary, reading comp' },
+  { id: 'automata_fix', name: 'GenuAI Automata Fix', imgSrc: '/icons/cat_autofix.png', color: 'error', bg: 'error/10', desc: 'Debug logical and syntax errors in C/C++/Java' },
+  { id: 'automata', name: 'GenuAI Automata', imgSrc: '/icons/cat_automata.png', color: '[#7C3AED]', bg: '[#7C3AED]/10', desc: 'Live competitive programming assessment' },
+  { id: 'core', name: 'Core Computer Science', imgSrc: '/icons/learning_brain.png', color: 'info', bg: 'info/10', desc: 'OS, DBMS, Computer Networks, OOPS' },
 ];
 
 const SUB_TOPICS: Record<string, string[]> = {
@@ -210,49 +210,78 @@ Return ONLY JSON:
 
   // ── SETUP PHASE ──
   if (phase === "setup") return (
-    <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
-      <div style={{ background:"#fff", borderBottom:"1px solid #E2E8F0", padding:"16px 40px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#64748B", fontSize:"14px", cursor:"pointer", fontWeight:"700", padding:0 }}>← Back to Practice Hub</button>
-        <div style={{ fontWeight:"800", color:"#0F172A", fontSize:"18px" }}>GenuAI Skill Test</div>
-        <div style={{ width:"120px" }}></div>
+    <div className="min-h-screen bg-background quantum-gradient font-body-base text-on-background relative overflow-hidden flex flex-col">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent-gold/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-brand/10 blur-[120px] rounded-full pointer-events-none" />
+      
+      {/* Header */}
+      <div className="relative z-10 glass border-b border-surface-container/50 px-xl py-sm flex items-center justify-between shadow-sm">
+        <button onClick={onBack} className="flex items-center gap-xs text-on-surface-variant hover:text-on-surface transition-colors font-bold text-sm">
+          <span className="material-symbols-outlined text-xl">arrow_back</span>
+          Back to Practice Hub
+        </button>
+        <div className="font-black text-on-surface text-lg flex items-center gap-sm">
+          <span className="material-symbols-outlined text-accent-gold">school</span>
+          GenuAI Skill Test
+        </div>
+        <div className="w-32"></div>
       </div>
-      <div style={{ flex:1, display:"flex", maxWidth:"1100px", margin:"0 auto", width:"100%", padding:"60px 40px", alignItems:"center" }}>
-        <div style={{ flex:1, paddingRight:"60px", display:"flex", flexDirection:"column", justifyContent:"center" }}>
-          <div style={{ fontSize:"56px", marginBottom:"24px" }}>🎯</div>
-          <h1 style={{ fontSize:"40px", fontWeight:"900", color:"#0F172A", marginBottom:"24px", letterSpacing:"-1px", lineHeight:"1.1" }}>Master Your Next<br/>Assessment</h1>
-          <p style={{ color:"#475569", fontSize:"16px", lineHeight:"1.6", marginBottom:"40px", maxWidth:"500px" }}>
+
+      <div className="relative z-10 flex-1 flex flex-col lg:flex-row max-w-7xl mx-auto w-full px-margin-mobile md:px-margin-desktop py-xxl gap-xl">
+        {/* Left Content */}
+        <div className="flex-1 flex flex-col justify-center">
+          <div className="mb-lg animate-[float_4s_ease-in-out_infinite]">
+             <span className="material-symbols-outlined text-7xl text-indigo-brand drop-shadow-md">target</span>
+          </div>
+          <h1 className="text-display-lg-mobile md:text-display-lg-desktop font-black text-on-surface mb-md leading-tight tracking-tight">
+            Master Your Next<br/>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-brand via-purple-500 to-cyan-500 drop-shadow-sm">Assessment</span>
+          </h1>
+          <p className="text-body-lg text-on-surface-variant/90 font-medium mb-xl max-w-xl leading-relaxed">
             Experience a highly realistic, AI-driven GenuAI simulation. Features strict timers, adaptive difficulty (CAT methodology), and intelligent compiler evaluation for Automata.
           </p>
-          <div style={{ display:"flex", flexWrap:"wrap", gap:"12px" }}>
-             <div style={{ background:"#FEF2F2", color:"#DC2626", padding:"10px 16px", borderRadius:"10px", fontWeight:"700", fontSize:"13px" }}>✓ Strict Timers</div>
-             <div style={{ background:"#F0FDF4", color:"#16A34A", padding:"10px 16px", borderRadius:"10px", fontWeight:"700", fontSize:"13px" }}>✓ Adaptive AI (CAT)</div>
-             <div style={{ background:"#EFF6FF", color:"#2563EB", padding:"10px 16px", borderRadius:"10px", fontWeight:"700", fontSize:"13px" }}>✓ Live Code Compiler</div>
-             <div style={{ background:"#F3E8FF", color:"#9333EA", padding:"10px 16px", borderRadius:"10px", fontWeight:"700", fontSize:"13px" }}>✓ Real-time Scoring</div>
-             <div style={{ background:"#FEF3C7", color:"#D97706", padding:"10px 16px", borderRadius:"10px", fontWeight:"700", fontSize:"13px" }}>✓ GenuAI Curriculum</div>
+          <div className="flex flex-wrap gap-md">
+             <div className="glass px-md py-sm rounded-xl font-bold text-sm text-error flex items-center gap-xs shadow-sm border border-error/20">
+               <span className="material-symbols-outlined text-lg">timer</span> Strict Timers
+             </div>
+             <div className="glass px-md py-sm rounded-xl font-bold text-sm text-success flex items-center gap-xs shadow-sm border border-success/20">
+               <span className="material-symbols-outlined text-lg">trending_up</span> Adaptive AI (CAT)
+             </div>
+             <div className="glass px-md py-sm rounded-xl font-bold text-sm text-indigo-brand flex items-center gap-xs shadow-sm border border-indigo-brand/20">
+               <span className="material-symbols-outlined text-lg">terminal</span> Live Code Compiler
+             </div>
+             <div className="glass px-md py-sm rounded-xl font-bold text-sm text-[#9333EA] flex items-center gap-xs shadow-sm border border-[#9333EA]/20">
+               <span className="material-symbols-outlined text-lg">bolt</span> Real-time Scoring
+             </div>
           </div>
         </div>
         
-        <div style={{ flex:1, maxWidth:"500px" }}>
-          <div style={{ background:"#fff", borderRadius:"24px", padding:"40px", boxShadow:"0 20px 40px rgba(0,0,0,0.04)", border:"1px solid #E2E8F0" }}>
-            <h2 style={{ fontSize:"22px", fontWeight:"800", color:"#0F172A", marginBottom:"24px" }}>Select Module</h2>
-            
-            <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:"12px", marginBottom:"32px", maxHeight:"400px", overflowY:"auto", paddingRight:"8px" }}>
-              {CATEGORIES.map(c => (
-                <div key={c.id} onClick={() => setCategory(c.id)} style={{ display:"flex", alignItems:"center", gap:"16px", padding:"16px", border:`2px solid ${category===c.id?"#2563EB":"#F1F5F9"}`, borderRadius:"16px", cursor:"pointer", background:category===c.id?"#EFF6FF":"#fff", transition:"all 0.2s" }}>
-                  <div style={{ width:"48px", height:"48px", borderRadius:"12px", background:c.bg, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
-                    <img src={c.imgSrc} alt={c.name} style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
+        {/* Right Content - Config Card */}
+        <div className="flex-1 max-w-[500px] w-full mt-xl lg:mt-0">
+          <div className="glass p-xxl rounded-xxxl shadow-md border border-surface-container relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-brand/5 to-transparent pointer-events-none transition-opacity opacity-0 group-hover:opacity-100 duration-500"></div>
+            <div className="relative z-10">
+              <h2 className="text-title-lg font-black text-on-surface mb-lg">Select Module</h2>
+              
+              <div className="flex flex-col gap-sm mb-xl max-h-[400px] overflow-y-auto pr-sm custom-scrollbar">
+                {CATEGORIES.map(c => (
+                  <div key={c.id} onClick={() => setCategory(c.id)} className={`flex items-center gap-md p-md border-2 rounded-xl cursor-pointer transition-all duration-300 ${category === c.id ? 'border-indigo-brand bg-indigo-brand/5 shadow-sm transform -translate-y-1' : 'border-surface-container bg-surface-bright hover:border-surface-container-high hover:bg-surface-container/50'}`}>
+                    <div className={`w-12 h-12 rounded-xl bg-${c.bg} flex items-center justify-center overflow-hidden shrink-0`}>
+                      <img src={c.imgSrc} alt={c.name} className="w-8 h-8 object-cover mix-blend-multiply drop-shadow-sm" />
+                    </div>
+                    <div>
+                      <div className={`font-bold text-sm mb-1 ${category === c.id ? 'text-indigo-brand' : 'text-on-surface'}`}>{c.name}</div>
+                      <div className="text-xs font-medium text-on-surface-variant leading-snug">{c.desc}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div style={{ fontWeight:"800", fontSize:"15px", color:category===c.id?"#1E3A8A":"#0F172A", marginBottom:"4px" }}>{c.name}</div>
-                    <div style={{ fontSize:"12px", color:"#64748B", lineHeight:"1.4" }}>{c.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            <button onClick={startTest} style={{ width:"100%", padding:"16px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"14px", fontWeight:"800", fontSize:"15px", cursor:"pointer", boxShadow:"0 12px 24px rgba(15,23,42,0.15)", transition:"all 0.2s" }}>
-              Start Simulation →
-            </button>
+              <button onClick={startTest} className="w-full py-md rounded-xl font-black text-body-base flex items-center justify-center gap-sm bg-gradient-to-r from-indigo-brand to-[#764BA2] text-white hover:shadow-[0_8px_25px_rgba(102,126,234,0.4)] hover:-translate-y-0.5 transition-all duration-300">
+                Start Simulation <span className="material-symbols-outlined text-xl">arrow_forward</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -262,84 +291,101 @@ Return ONLY JSON:
   // ── RESULTS PHASE ──
   if (phase === "results") {
     const correctCount = history.filter(h => h.isCorrect).length;
-    const scoreColor = correctCount >= 16 ? "#10B981" : correctCount >= 8 ? "#F59E0B" : "#EF4444";
+    const scoreColor = correctCount >= 16 ? "text-success" : correctCount >= 8 ? "text-warning" : "text-error";
     return (
-      <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif" }}>
-        <div style={{ background:"#0F172A", color:"#fff", padding:"60px 40px", textAlign:"center" }}>
-          <div style={{ maxWidth:"1000px", margin:"0 auto" }}>
-            <div style={{ fontSize:"64px", marginBottom:"16px" }}>🏆</div>
-            <h1 style={{ fontSize:"40px", fontWeight:"900", margin:"0 0 12px" }}>Assessment Complete</h1>
-            <div style={{ fontSize:"20px", color:"#94A3B8", marginBottom:"32px" }}>{currentCatData.name} Module</div>
-            <div style={{ display:"inline-flex", alignItems:"center", gap:"16px", background:"#1E293B", padding:"12px 32px", borderRadius:"24px" }}>
-              <span style={{ fontSize:"48px", fontWeight:"900", color:scoreColor }}>{correctCount}/20</span>
-              <div style={{ textAlign:"left" }}>
-                <div style={{ color:"#F8FAFC", fontWeight:"800", fontSize:"16px" }}>Final Score</div>
-                <div style={{ color:scoreColor, fontWeight:"700", fontSize:"14px" }}>
-                  {correctCount >= 16 ? "Excellent Adaptive Performance!" : "Keep practicing to master harder difficulties."}
-                </div>
-              </div>
-            </div>
+      <div className="min-h-screen bg-background quantum-gradient font-body-base text-on-background relative overflow-hidden flex flex-col">
+        {/* Decorative */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-accent-gold/10 blur-[150px] rounded-full pointer-events-none" />
+        
+        <div className="relative z-10 glass border-b border-surface-container/50 pt-xxl pb-xl px-margin-mobile md:px-margin-desktop text-center">
+          <div className="max-w-4xl mx-auto">
+             <div className="text-6xl mb-md drop-shadow-sm animate-[bounce_2s_infinite]">🏆</div>
+             <h1 className="text-display-sm-mobile md:text-display-sm-desktop font-black text-on-surface mb-xs">Assessment Complete</h1>
+             <div className="text-title-md font-bold text-on-surface-variant/80 mb-lg flex items-center justify-center gap-sm">
+                <span className="material-symbols-outlined">class</span> {currentCatData.name} Module
+             </div>
+             
+             <div className="inline-flex items-center gap-md glass p-md rounded-xxl border border-surface-container shadow-md">
+               <span className={`text-5xl font-black ${scoreColor}`}>{correctCount}/20</span>
+               <div className="text-left border-l-2 border-surface-container pl-md">
+                 <div className="text-sm font-black text-on-surface uppercase tracking-widest">Final Score</div>
+                 <div className={`font-bold text-sm ${scoreColor}`}>
+                   {correctCount >= 16 ? "Excellent Adaptive Performance!" : "Keep practicing to master harder difficulties."}
+                 </div>
+               </div>
+             </div>
           </div>
         </div>
 
-        <div style={{ maxWidth:"1200px", margin:"0 auto", padding:"60px 20px" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"32px" }}>
-            <h2 style={{ fontSize:"24px", fontWeight:"900", color:"#0F172A", margin:0 }}>Adaptive Breakdown</h2>
-            <div style={{ display:"flex", gap:"12px" }}>
-              <button onClick={() => setPhase("setup")} style={{ padding:"12px 24px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"14px", cursor:"pointer" }}>🔄 Retake</button>
-              <button onClick={onBack} style={{ padding:"12px 24px", background:"#fff", color:"#475569", border:"1px solid #E2E8F0", borderRadius:"12px", fontWeight:"800", fontSize:"14px", cursor:"pointer" }}>Exit</button>
+        <div className="relative z-10 max-w-5xl mx-auto w-full px-margin-mobile md:px-margin-desktop py-xl flex-1 pb-xxxl">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-xl gap-md">
+            <h2 className="text-title-lg font-black text-on-surface flex items-center gap-sm">
+              <span className="material-symbols-outlined text-accent-gold text-3xl">analytics</span>
+              Adaptive Breakdown
+            </h2>
+            <div className="flex gap-sm">
+              <button onClick={() => setPhase("setup")} className="px-md py-sm bg-indigo-brand text-white rounded-xl font-bold text-sm hover:bg-indigo-brand/90 transition-colors shadow-sm flex items-center gap-xs">
+                <span className="material-symbols-outlined text-sm">refresh</span> Retake
+              </button>
+              <button onClick={onBack} className="px-md py-sm glass rounded-xl font-bold text-sm text-on-surface hover:bg-surface-container/50 transition-colors border border-surface-container flex items-center gap-xs">
+                <span className="material-symbols-outlined text-sm">exit_to_app</span> Exit
+              </button>
             </div>
           </div>
 
-          <div style={{ display:"grid", gap:"24px" }}>
+          <div className="flex flex-col gap-lg">
             {history.map((h, i) => (
-              <div key={i} style={{ background:"#fff", borderRadius:"20px", padding:"32px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"24px", paddingBottom:"16px", borderBottom:"1px solid #F1F5F9" }}>
-                  <div style={{ display:"flex", gap:"12px", alignItems:"center" }}>
-                    <span style={{ color:"#475569", fontWeight:"800", fontSize:"13px", textTransform:"uppercase", letterSpacing:"1px" }}>Question {i+1}</span>
-                    <span style={{ background:"#FFFBEB", color:"#D97706", fontWeight:"800", fontSize:"12px", padding:"4px 10px", borderRadius:"6px", border:"1px solid #FEF3C7" }}>{h.difficulty} Level</span>
+              <div key={i} className="glass rounded-xxl p-lg border border-surface-container shadow-sm group hover:shadow-md transition-shadow">
+                <div className="flex justify-between items-center mb-lg pb-md border-b border-surface-container/50">
+                  <div className="flex items-center gap-md">
+                    <span className="text-label-caps font-label-caps text-on-surface-variant tracking-widest uppercase text-xs">Question {i+1}</span>
+                    <span className="bg-warning/10 text-warning-dark font-bold text-xs px-sm py-1 rounded-md border border-warning/20 flex items-center gap-xs">
+                      <span className="material-symbols-outlined text-[14px]">speed</span> {h.difficulty} Level
+                    </span>
                   </div>
-                  <div style={{ fontWeight:"900", color:h.isCorrect?"#10B981":"#EF4444", fontSize:"16px", background:h.isCorrect?"#D1FAE5":"#FEE2E2", padding:"6px 16px", borderRadius:"8px" }}>
-                    {h.isCorrect ? "Correct" : "Incorrect"}
+                  <div className={`font-black text-sm px-md py-1.5 rounded-lg flex items-center gap-xs ${h.isCorrect ? 'bg-success/10 text-success' : 'bg-error/10 text-error'}`}>
+                    <span className="material-symbols-outlined text-[16px]">{h.isCorrect ? 'check_circle' : 'cancel'}</span> {h.isCorrect ? "Correct" : "Incorrect"}
                   </div>
                 </div>
 
                 {h.question.type === "mcq" ? (
                   <>
-                    <div style={{ fontWeight:"700", color:"#0F172A", marginBottom:"24px", fontSize:"18px", lineHeight:"1.6" }}>{h.question.question}</div>
+                    <div className="font-bold text-title-md text-on-surface mb-lg leading-snug">{h.question.question}</div>
                     
-                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"24px", marginBottom:"24px" }}>
-                      <div style={{ background:"#F8FAFC", padding:"20px", borderRadius:"12px", border:"1px solid #F1F5F9" }}>
-                        <div style={{ color:"#64748B", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", marginBottom:"8px" }}>Your Answer</div>
-                        <div style={{ color:h.isCorrect?"#10B981":"#EF4444", fontWeight:"700", fontSize:"15px" }}>{h.userAnswer}</div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-md mb-lg">
+                      <div className="bg-surface-bright/80 p-md rounded-xl border border-surface-container">
+                        <div className="text-xs font-black text-on-surface-variant uppercase tracking-widest mb-sm flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">person</span> Your Answer</div>
+                        <div className={`font-bold text-sm ${h.isCorrect ? "text-success" : "text-error"}`}>{h.userAnswer}</div>
                       </div>
                       {!h.isCorrect && (
-                        <div style={{ background:"#F0FDF4", padding:"20px", borderRadius:"12px", border:"1px solid #DCFCE7" }}>
-                          <div style={{ color:"#16A34A", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", marginBottom:"8px" }}>Correct Answer</div>
-                          <div style={{ color:"#15803D", fontWeight:"700", fontSize:"15px" }}>{h.question.options[h.question.correctIndex]}</div>
+                        <div className="bg-success/5 p-md rounded-xl border border-success/20">
+                          <div className="text-xs font-black text-success uppercase tracking-widest mb-sm flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">verified</span> Correct Answer</div>
+                          <div className="font-bold text-sm text-success/90">{h.question.options[h.question.correctIndex]}</div>
                         </div>
                       )}
                     </div>
                     
-                    <div style={{ background:"#EFF6FF", padding:"20px", borderRadius:"12px", border:"1px solid #BFDBFE" }}>
-                      <div style={{ color:"#1D4ED8", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", marginBottom:"8px" }}>Explanation</div>
-                      <div style={{ color:"#1E3A8A", fontSize:"15px", lineHeight:"1.6" }}>{h.question.explanation}</div>
+                    <div className="bg-indigo-brand/5 p-md rounded-xl border border-indigo-brand/20">
+                      <div className="text-xs font-black text-indigo-brand uppercase tracking-widest mb-sm flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">lightbulb</span> Explanation</div>
+                      <div className="font-medium text-sm text-indigo-brand/80 leading-relaxed">{h.question.explanation}</div>
                     </div>
                   </>
                 ) : (
                   <>
-                    <div style={{ fontWeight:"800", color:"#0F172A", marginBottom:"8px", fontSize:"20px" }}>{h.question.title}</div>
-                    <div style={{ color:"#475569", marginBottom:"24px", fontSize:"15px", lineHeight:"1.6" }}>{h.question.description}</div>
+                    <div className="font-black text-title-lg text-on-surface mb-xs flex items-center gap-sm"><span className="material-symbols-outlined text-indigo-brand">code</span> {h.question.title}</div>
+                    <div className="text-body-base font-medium text-on-surface-variant mb-lg leading-relaxed">{h.question.description}</div>
                     
-                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"24px", marginBottom:"20px" }}>
-                      <div style={{ background:"#0F172A", borderRadius:"12px", padding:"24px", overflowX:"auto" }}>
-                        <div style={{ color:"#94A3B8", fontSize:"11px", fontWeight:"800", textTransform:"uppercase", marginBottom:"12px", letterSpacing:"1px" }}>Your Submitted Code</div>
-                        <pre style={{ margin:0, color:"#F8FAFC", fontSize:"14px", fontFamily:"'Fira Code', monospace" }}>{h.userAnswer}</pre>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-md mb-md">
+                      <div className="bg-[#0B1120] rounded-xl p-md border border-surface-container overflow-x-auto shadow-inner">
+                        <div className="text-xs font-black text-on-surface-variant uppercase tracking-widest mb-md flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">terminal</span> Your Submitted Code</div>
+                        <pre className="m-0 text-white font-mono text-sm">{h.userAnswer}</pre>
                       </div>
                       
-                      <div style={{ background:h.isCorrect?"#F0FDF4":"#FEF2F2", padding:"24px", borderRadius:"12px", border:`1px solid ${h.isCorrect?"#DCFCE7":"#FECACA"}` }}>
-                        <div style={{ color:h.isCorrect?"#16A34A":"#DC2626", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", marginBottom:"12px" }}>Compiler AI Evaluation</div>
-                        <div style={{ color:h.isCorrect?"#15803D":"#991B1B", fontSize:"15px", lineHeight:"1.7", whiteSpace:"pre-wrap" }}>{h.evaluation?.feedback}</div>
+                      <div className={`p-md rounded-xl border ${h.isCorrect ? "bg-success/5 border-success/20" : "bg-error/5 border-error/20"}`}>
+                        <div className={`text-xs font-black uppercase tracking-widest mb-md flex items-center gap-xs ${h.isCorrect ? "text-success" : "text-error"}`}>
+                          <span className="material-symbols-outlined text-[16px]">psychology</span> Compiler AI Evaluation
+                        </div>
+                        <div className={`font-medium text-sm leading-relaxed whitespace-pre-wrap ${h.isCorrect ? "text-success/90" : "text-error/90"}`}>{h.evaluation?.feedback}</div>
                       </div>
                     </div>
                   </>
@@ -354,110 +400,118 @@ Return ONLY JSON:
 
   // ── TEST PHASE ──
   return (
-    <div style={{ height:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+    <div className="h-screen bg-background font-body-base text-on-background flex flex-col overflow-hidden relative">
+      {/* Decorative */}
+      <div className="absolute inset-0 quantum-gradient opacity-50 pointer-events-none" />
+      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-accent-gold/10 blur-[150px] rounded-full pointer-events-none" />
+      
       {/* HackerRank Style Header */}
-      <div style={{ background:"#0F172A", color:"#fff", padding:"0 32px", height:"64px", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
-        <div style={{ display:"flex", alignItems:"center", gap:"16px" }}>
-          <div style={{ fontWeight:"800", fontSize:"16px", letterSpacing:"0.5px", display:"flex", alignItems:"center", gap:"12px" }}>
-            <div style={{ width:"24px", height:"24px", borderRadius:"6px", background:currentCatData.bg, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
-               <img src={currentCatData.imgSrc} alt={currentCatData.name} style={{ width:"100%", height:"100%", objectFit:"cover", mixBlendMode:"multiply" }} />
-            </div> GenuAI Assessment Environment
+      <div className="relative z-10 glass border-b border-surface-container/50 px-xl h-16 flex items-center justify-between flex-shrink-0 shadow-sm">
+        <div className="flex items-center gap-md">
+          <div className="font-black text-lg text-on-surface flex items-center gap-xs tracking-tight">
+             <div className={`w-8 h-8 rounded-lg bg-${currentCatData.bg} flex items-center justify-center overflow-hidden shrink-0`}>
+                <img src={currentCatData.imgSrc} alt={currentCatData.name} className="w-full h-full object-cover mix-blend-multiply" />
+             </div> 
+             GenuAI Assessment
           </div>
-          <div style={{ background:"#1E293B", padding:"4px 12px", borderRadius:"6px", fontSize:"12px", fontWeight:"700", color:"#94A3B8" }}>{currentCatData.name}</div>
+          <div className="bg-surface-container-high/50 px-sm py-0.5 rounded-md text-xs font-bold text-on-surface-variant hidden sm:block">
+            {currentCatData.name}
+          </div>
         </div>
         
-        <div style={{ display:"flex", alignItems:"center", gap:"32px" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:"16px" }}>
-            <div style={{ fontSize:"13px", color:"#94A3B8", fontWeight:"700" }}>Question {currentQIndex+1}/20</div>
-            <div style={{ background:"#334155", color:"#F8FAFC", padding:"4px 10px", borderRadius:"6px", fontSize:"12px", fontWeight:"700" }}>{difficulty}</div>
+        <div className="flex items-center gap-xl">
+          <div className="flex items-center gap-md">
+            <div className="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Question {currentQIndex+1}/20</div>
+            <div className="bg-indigo-brand/10 text-indigo-brand px-sm py-0.5 rounded-md text-xs font-bold uppercase tracking-wider border border-indigo-brand/20 hidden sm:block">{difficulty}</div>
             
-            <div style={{ background:timeLeft < 120 ? "#7F1D1D" : "#1E293B", padding:"6px 16px", borderRadius:"8px", display:"flex", alignItems:"center", gap:"8px", transition:"all 0.3s" }}>
-              <span style={{ fontSize:"14px" }}>⌛</span>
-              <span style={{ fontWeight:"800", fontSize:"14px", color:timeLeft < 120 ? "#FCA5A5" : "#F8FAFC", fontVariantNumeric:"tabular-nums" }}>{formatTime(timeLeft)}</span>
+            <div className={`px-md py-1 rounded-lg flex items-center gap-xs transition-colors border ${timeLeft < 120 ? "bg-error/10 text-error border-error/20 animate-pulse" : "bg-surface-container/50 text-on-surface border-surface-container"}`}>
+              <span className="material-symbols-outlined text-sm">timer</span>
+              <span className="font-black text-sm font-mono tracking-wider">{formatTime(timeLeft)}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
+      <div className="relative z-10 flex-1 flex flex-col lg:flex-row overflow-hidden">
         {loading || !question ? (
-          <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center" }}>
-            <div style={{ background:"#fff", borderRadius:"24px", padding:"80px 40px", border:"1px solid #E2E8F0", textAlign:"center", boxShadow:"0 4px 12px rgba(0,0,0,0.02)", maxWidth:"500px", width:"100%" }}>
-              <div style={{ width:"48px", height:"48px", border:"4px solid #F1F5F9", borderTop:"4px solid #2563EB", borderRadius:"50%", animation:"spin 1s linear infinite", margin:"0 auto 24px" }}></div>
-              <h2 style={{ fontSize:"20px", fontWeight:"800", color:"#0F172A", marginBottom:"8px" }}>Generating {difficulty} Question...</h2>
-              <p style={{ color:"#64748B", fontSize:"14px" }}>The AI is analyzing your performance and scaling the difficulty.</p>
+          <div className="flex-1 flex items-center justify-center">
+            <div className="glass rounded-xxxl p-xxl border border-surface-container text-center shadow-lg max-w-md w-full mx-md animate-[fadeIn_0.5s_ease-out]">
+              <span className="material-symbols-outlined text-5xl text-indigo-brand animate-spin mb-md">autorenew</span>
+              <h2 className="text-title-lg font-black text-on-surface mb-xs">Generating {difficulty} Question...</h2>
+              <p className="text-body-base font-medium text-on-surface-variant">The AI is analyzing your performance and scaling the difficulty dynamically.</p>
             </div>
           </div>
         ) : (
           <>
             {/* Left Pane - Question Info */}
-            <div style={{ width:"45%", background:"#fff", borderRight:"1px solid #E2E8F0", padding:"48px", overflowY:"auto", display:"flex", flexDirection:"column" }}>
+            <div className="w-full lg:w-5/12 glass border-b lg:border-b-0 lg:border-r border-surface-container/50 p-xl lg:p-xxl flex flex-col overflow-y-auto">
               {question.type === "mcq" ? (
                 <>
-                  <div style={{ fontSize:"13px", fontWeight:"900", color:"#2563EB", textTransform:"uppercase", letterSpacing:"1px", background:"#EFF6FF", padding:"6px 12px", borderRadius:"8px", alignSelf:"flex-start", marginBottom:"24px" }}>Aptitude Question</div>
-                  <p style={{ fontSize:"24px", fontWeight:"800", color:"#0F172A", margin:0, lineHeight:"1.6" }}>{question.question}</p>
+                  <div className="text-xs font-black text-success uppercase tracking-widest bg-success/10 px-sm py-1 rounded-md border border-success/20 self-start mb-lg flex items-center gap-xs">
+                    <span className="material-symbols-outlined text-[16px]">quiz</span> Aptitude Question
+                  </div>
+                  <p className="text-title-lg md:text-headline-sm font-black text-on-surface leading-snug m-0">{question.question}</p>
                 </>
               ) : (
                 <>
-                  <div style={{ fontSize:"13px", fontWeight:"900", color:"#16A34A", textTransform:"uppercase", letterSpacing:"1px", background:"#F0FDF4", padding:"6px 12px", borderRadius:"8px", alignSelf:"flex-start", marginBottom:"24px" }}>Coding Challenge</div>
-                  <h2 style={{ fontSize:"28px", fontWeight:"800", color:"#0F172A", marginBottom:"16px" }}>{question.title}</h2>
-                  <p style={{ fontSize:"16px", color:"#475569", lineHeight:"1.7", margin:0 }}>{question.description}</p>
+                  <div className="text-xs font-black text-indigo-brand uppercase tracking-widest bg-indigo-brand/10 px-sm py-1 rounded-md border border-indigo-brand/20 self-start mb-lg flex items-center gap-xs">
+                    <span className="material-symbols-outlined text-[16px]">code_blocks</span> Coding Challenge
+                  </div>
+                  <h2 className="text-headline-sm font-black text-on-surface mb-md">{question.title}</h2>
+                  <p className="text-body-lg font-medium text-on-surface-variant leading-relaxed m-0">{question.description}</p>
                 </>
               )}
             </div>
 
             {/* Right Pane - Interactive Area */}
-            <div style={{ flex:1, background:"#F8FAFC", display:"flex", flexDirection:"column", overflow:"hidden" }}>
-              <div style={{ flex:1, padding:"48px", overflowY:"auto" }}>
+            <div className="flex-1 flex flex-col overflow-hidden bg-surface-bright/30">
+              <div className="flex-1 p-xl lg:p-xxl overflow-y-auto">
                 {question.type === "mcq" ? (
-                  <div style={{ display:"flex", flexDirection:"column", gap:"16px", maxWidth:"700px", margin:"0 auto" }}>
+                  <div className="flex flex-col gap-md max-w-2xl mx-auto">
                     {question.options.map((opt, i) => (
                       <div 
                         key={i} 
                         onClick={() => setSelectedOption(i)} 
-                        style={{ padding:"24px", border:`2px solid ${selectedOption===i?"#2563EB":"#E2E8F0"}`, borderRadius:"16px", cursor:"pointer", background:selectedOption===i?"#EFF6FF":"#fff", fontSize:"16px", fontWeight:"600", color:"#334155", display:"flex", alignItems:"center", gap:"20px", transition:"all 0.2s", boxShadow:selectedOption===i?"0 4px 12px rgba(37,99,235,0.1)":"0 2px 4px rgba(0,0,0,0.02)" }}
+                        className={`p-lg border-2 rounded-xl cursor-pointer font-bold text-body-lg flex items-center gap-md transition-all duration-200 ${selectedOption === i ? "border-indigo-brand bg-indigo-brand/5 text-indigo-brand shadow-md" : "border-surface-container bg-surface-bright text-on-surface hover:border-surface-container-high hover:bg-surface-container/50"}`}
                       >
-                        <div style={{ width:"24px", height:"24px", borderRadius:"50%", border:`2px solid ${selectedOption===i?"#2563EB":"#CBD5E1"}`, background:selectedOption===i?"#2563EB":"transparent", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                          {selectedOption===i && <div style={{ width:"10px", height:"10px", borderRadius:"50%", background:"#fff" }}/>}
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${selectedOption === i ? "border-indigo-brand bg-indigo-brand" : "border-surface-container-high bg-transparent"}`}>
+                          {selectedOption === i && <div className="w-2.5 h-2.5 rounded-full bg-white" />}
                         </div>
-                        <div style={{ lineHeight:"1.5" }}>{opt}</div>
+                        <div className="leading-snug">{opt}</div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div style={{ display:"flex", flexDirection:"column", height:"100%" }}>
-                    <div style={{ background:"#0F172A", borderRadius:"16px", display:"flex", flexDirection:"column", flex:1, overflow:"hidden", border:"1px solid #334155", boxShadow:"0 10px 25px rgba(0,0,0,0.1)" }}>
-                      <div style={{ padding:"12px 20px", borderBottom:"1px solid #1E293B", display:"flex", justifyContent:"space-between", alignItems:"center", background:"#0B1120" }}>
-                        <span style={{ color:"#94A3B8", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", letterSpacing:"1px" }}>GenuAI IDE</span>
-                        <span style={{ color:"#38BDF8", fontSize:"12px", fontWeight:"700", background:"#0C4A6E", padding:"4px 10px", borderRadius:"6px" }}>{question.language}</span>
-                      </div>
-                      <textarea 
-                        value={userCode} 
-                        onChange={e => setUserCode(e.target.value)} 
-                        spellCheck={false}
-                        style={{ flex:1, width:"100%", background:"transparent", color:"#F8FAFC", border:"none", padding:"24px", fontFamily:"'Fira Code', monospace", fontSize:"15px", lineHeight:"1.6", resize:"none", outline:"none" }} 
-                      />
+                  <div className="flex flex-col h-full rounded-xl overflow-hidden border border-surface-container shadow-lg">
+                    <div className="px-md py-sm bg-[#0B1120] border-b border-surface-container flex justify-between items-center">
+                      <span className="text-xs font-black text-on-surface-variant uppercase tracking-widest flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">terminal</span> GenuAI IDE</span>
+                      <span className="text-xs font-bold text-info bg-info/10 px-xs py-0.5 rounded-md border border-info/20">{question.language}</span>
                     </div>
+                    <textarea 
+                      value={userCode} 
+                      onChange={e => setUserCode(e.target.value)} 
+                      spellCheck={false}
+                      className="flex-1 w-full bg-[#0F172A] text-white font-mono text-sm p-lg resize-none outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-brand transition-shadow" 
+                    />
                   </div>
                 )}
               </div>
               
-              <div style={{ background:"#fff", padding:"24px 48px", borderTop:"1px solid #E2E8F0", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <div style={{ color:"#64748B", fontSize:"14px", fontWeight:"600", display:"flex", alignItems:"center", gap:"8px" }}>
-                  <span style={{ fontSize:"18px" }}>⚠️</span> You cannot return to this question after submitting.
+              <div className="glass px-xl py-md border-t border-surface-container/50 flex justify-between items-center z-10">
+                <div className="text-sm font-bold text-warning flex items-center gap-xs">
+                  <span className="material-symbols-outlined">warning</span> You cannot return to this question.
                 </div>
-                <button onClick={submitAnswer} style={{ padding:"16px 32px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"15px", cursor:"pointer", boxShadow:"0 4px 12px rgba(15,23,42,0.2)", transition:"transform 0.2s" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.02)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
-                  Submit & Next →
+                <button 
+                  onClick={submitAnswer} 
+                  className="px-xl py-sm bg-on-surface text-surface rounded-xl font-black text-sm hover:-translate-y-0.5 shadow-md hover:shadow-lg transition-all flex items-center gap-xs"
+                >
+                  Submit & Next <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                 </button>
               </div>
             </div>
           </>
         )}
       </div>
-
-      <style>{`
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-      `}</style>
     </div>
   );
 }

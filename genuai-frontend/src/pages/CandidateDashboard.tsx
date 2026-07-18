@@ -780,12 +780,12 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
               {!activeHubModule ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
                   {[
-                    { id: "Professional Network", icon: "🤝", color: "text-[#0A66C2] bg-[#0A66C2]/10 border-[#0A66C2]/30", shadow: "hover:shadow-[0_10px_30px_rgba(10,102,194,0.15)] hover:border-[#0A66C2]", desc: "Connect with professionals, share updates, and build your profile (LinkedIn Style)" },
-                    { id: "Global Job Board", icon: "🌍", color: "text-[#2563EB] bg-[#2563EB]/10 border-[#2563EB]/30", shadow: "hover:shadow-[0_10px_30px_rgba(37,99,235,0.15)] hover:border-[#2563EB]", desc: "Search thousands of job listings across top platforms (Indeed/NaukriGulf Style)" },
-                    { id: "Competitions & Events", icon: "🏆", color: "text-warning bg-warning/10 border-warning/30", shadow: "hover:shadow-[0_10px_30px_rgba(245,158,11,0.15)] hover:border-warning", desc: "Participate in hackathons and case studies (Unstop Style)" },
-                    { id: "PM Internship Allocation", icon: "🧠", color: "text-[#8B5CF6] bg-[#8B5CF6]/10 border-[#8B5CF6]/30", shadow: "hover:shadow-[0_10px_30px_rgba(139,92,246,0.15)] hover:border-[#8B5CF6]", desc: "AI-based matching scheme for Product Management roles" },
-                    { id: "Tech & Corporate News", icon: "📰", color: "text-success bg-success/10 border-success/30", shadow: "hover:shadow-[0_10px_30px_rgba(16,185,129,0.15)] hover:border-success", desc: "Stay updated with the latest in tech, business, and startups" },
-                    { id: "Instant Connect", icon: "💬", color: "text-[#25D366] bg-[#25D366]/10 border-[#25D366]/30", shadow: "hover:shadow-[0_10px_30px_rgba(37,211,102,0.15)] hover:border-[#25D366]", desc: "Real-time messenger to connect with recruiters and peers" },
+                    { id: "Professional Network", icon: <span className="material-symbols-outlined text-[32px]">handshake</span>, color: "text-[#0A66C2] bg-[#0A66C2]/10 border-[#0A66C2]/30", shadow: "hover:shadow-[0_10px_30px_rgba(10,102,194,0.15)] hover:border-[#0A66C2]", desc: "Connect with professionals, share updates, and build your profile (LinkedIn Style)" },
+                    { id: "Global Job Board", icon: <span className="material-symbols-outlined text-[32px]">public</span>, color: "text-[#2563EB] bg-[#2563EB]/10 border-[#2563EB]/30", shadow: "hover:shadow-[0_10px_30px_rgba(37,99,235,0.15)] hover:border-[#2563EB]", desc: "Search thousands of job listings across top platforms (Indeed/NaukriGulf Style)" },
+                    { id: "Competitions & Events", icon: <span className="material-symbols-outlined text-[32px]">emoji_events</span>, color: "text-warning bg-warning/10 border-warning/30", shadow: "hover:shadow-[0_10px_30px_rgba(245,158,11,0.15)] hover:border-warning", desc: "Participate in hackathons and case studies (Unstop Style)" },
+                    { id: "PM Internship Allocation", icon: <span className="material-symbols-outlined text-[32px]">psychology</span>, color: "text-[#8B5CF6] bg-[#8B5CF6]/10 border-[#8B5CF6]/30", shadow: "hover:shadow-[0_10px_30px_rgba(139,92,246,0.15)] hover:border-[#8B5CF6]", desc: "AI-based matching scheme for Product Management roles" },
+                    { id: "Tech & Corporate News", icon: <span className="material-symbols-outlined text-[32px]">newspaper</span>, color: "text-success bg-success/10 border-success/30", shadow: "hover:shadow-[0_10px_30px_rgba(16,185,129,0.15)] hover:border-success", desc: "Stay updated with the latest in tech, business, and startups" },
+                    { id: "Instant Connect", icon: <span className="material-symbols-outlined text-[32px]">chat</span>, color: "text-[#25D366] bg-[#25D366]/10 border-[#25D366]/30", shadow: "hover:shadow-[0_10px_30px_rgba(37,211,102,0.15)] hover:border-[#25D366]", desc: "Real-time messenger to connect with recruiters and peers" },
                   ].map(mod => (
                     <div key={mod.id} onClick={() => setActiveHubModule(mod.id)}
                       className={`bg-surface-bright border-2 border-surface-container rounded-xl p-lg cursor-pointer transition-all hover:-translate-y-1 flex flex-col gap-sm ${mod.shadow}`}>
@@ -840,7 +840,7 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
                       </div>
                     </div>
                     <div className="p-md bg-surface-bright border-t border-surface-container flex gap-sm items-center">
-                      <button className="bg-transparent border-none text-xl cursor-pointer opacity-60 hover:opacity-100 transition-opacity">📎</button>
+                      <button className="bg-transparent border-none text-xl cursor-pointer opacity-60 hover:opacity-100 transition-opacity flex items-center"><span className="material-symbols-outlined">attach_file</span></button>
                       <input placeholder="Type your message..." className="flex-1 px-md py-sm border border-surface-container rounded-full outline-none text-sm bg-background font-medium text-on-surface focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all" />
                       <button className="bg-[#25D366] text-white border-none rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-[0_4px_12px_rgba(37,211,102,0.3)] hover:scale-105 transition-transform">
                         <span className="material-symbols-outlined text-[20px]" style={{fontVariationSettings: "'FILL' 1"}}>send</span>
@@ -1551,8 +1551,21 @@ ${r.improvement_plan && r.improvement_plan.length > 0 ? `<div class="section"><d
           </div>
         </div>
       )}
+      
+      {/* Footer / Founder Info */}
+      <div className="max-w-[1400px] w-full mx-auto mt-xxxl p-lg flex flex-col md:flex-row items-center justify-between border-t border-surface-container/50 pt-xl animate-[fadeIn_0.5s_ease]">
+        <div className="flex items-center gap-md mb-md md:mb-0">
+          <img src="https://ui-avatars.com/api/?name=Mohamed+Jabri+J+S&background=1E293B&color=D4AF37&size=150" alt="Mohamed Jabri J S" className="w-12 h-12 rounded-full object-cover ring-2 ring-accent-gold/40 shadow-sm hover:scale-105 transition-transform" />
+          <div>
+            <div className="text-body-base font-black text-on-surface">Mohamed Jabri J S</div>
+            <div className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Founder & CEO, GenuAI Technologies</div>
+          </div>
+        </div>
+        <div className="text-xs font-bold text-on-surface-variant flex items-center gap-1">
+          <span className="material-symbols-outlined text-[14px]">copyright</span> {new Date().getFullYear()} GenuAI Technologies.
+        </div>
+      </div>
     </div>
-
     </div>
   );
 };

@@ -26,7 +26,9 @@ function JobBoard({ user, onBack, initialFilter = 'All' }: { user: any, onBack: 
 
   return (
     <div className="max-w-[1100px] mx-auto w-full p-lg md:p-xl">
-      <button onClick={onBack} className="text-on-surface-variant font-bold text-sm mb-lg hover:text-on-surface flex items-center gap-xs transition-colors">← Back to Search Hub</button>
+      <button onClick={onBack} className="text-on-surface-variant font-bold text-sm mb-lg hover:text-on-surface flex items-center gap-xs transition-colors">
+        <span className="material-symbols-outlined text-[18px]">arrow_back</span> Back to Search Hub
+      </button>
       <div className="bg-gradient-to-br from-warning to-error rounded-3xl p-xl text-white mb-xl flex justify-between items-center shadow-lg shadow-warning/20">
         <div>
           <h1 className="text-headline-sm font-headline-sm mb-xs">Find Your Next Opportunity</h1>
@@ -81,12 +83,12 @@ function JobBoard({ user, onBack, initialFilter = 'All' }: { user: any, onBack: 
             </div>
           </div>
           <div className="bg-info/10 rounded-2xl border border-info/20 p-lg mb-lg">
-            <div className="text-2xl mb-xs text-info">💡</div>
+            <div className="text-2xl mb-xs text-info flex items-center"><span className="material-symbols-outlined text-[24px]">lightbulb</span></div>
             <div className="font-black text-sm text-info-dark mb-xs">AI Match Score</div>
             <div className="text-xs font-medium text-info-dark/80 leading-relaxed">We analyze your resume and test scores to show you how well you match each role.</div>
           </div>
           <div className="bg-[#7C3AED]/10 rounded-2xl border border-[#7C3AED]/20 p-lg">
-            <div className="text-2xl mb-xs text-[#7C3AED]">🎯</div>
+            <div className="text-2xl mb-xs text-[#7C3AED] flex items-center"><span className="material-symbols-outlined text-[24px]">track_changes</span></div>
             <div className="font-black text-sm text-[#7C3AED] mb-xs">AI Skill Gap Analyzer</div>
             <div className="text-xs font-medium text-[#7C3AED]/80 leading-relaxed mb-md">See exactly which skills you need to learn to increase your match score for top roles.</div>
             <button className="w-full bg-[#7C3AED] text-white rounded-xl py-sm font-bold text-xs hover:bg-[#6D28D9] transition-all hover:shadow-md hover:-translate-y-0.5">Analyze My Gaps</button>
@@ -99,7 +101,7 @@ function JobBoard({ user, onBack, initialFilter = 'All' }: { user: any, onBack: 
           <div className="flex flex-col gap-lg">
             {filteredJobs.length === 0 ? (
               <div className="glass rounded-2xl p-xxl text-center border border-surface-container">
-                <div className="text-4xl mb-md">📭</div>
+                <div className="flex justify-center mb-md text-on-surface-variant"><span className="material-symbols-outlined text-[40px]">inbox</span></div>
                 <div className="font-bold text-title-sm text-on-surface">No jobs found</div>
                 <div className="text-sm font-medium text-on-surface-variant mt-xs">Try adjusting your filters</div>
               </div>
@@ -114,13 +116,13 @@ function JobBoard({ user, onBack, initialFilter = 'All' }: { user: any, onBack: 
                       <div>
                         <h3 className="text-title-sm font-title-sm text-on-surface mb-xs">{job.role}</h3>
                         <div className="text-xs font-medium text-on-surface-variant flex items-center gap-xs">
-                          <span className="font-bold text-on-surface">{job.company}</span><span>•</span><span>📍 {job.location}</span>
+                          <span className="font-bold text-on-surface">{job.company}</span><span>•</span><span className="flex items-center gap-0.5"><span className="material-symbols-outlined text-[14px]">location_on</span> {job.location}</span>
                         </div>
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-xs">
                       <div className="bg-success/10 text-success-dark px-sm py-1 rounded-full text-xs font-black flex items-center gap-xs">
-                        ✨ {job.matched}% Match
+                        <span className="material-symbols-outlined text-[16px]">stars</span> {job.matched}% Match
                       </div>
                       <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{job.posted}</div>
                     </div>
@@ -185,13 +187,13 @@ function NetworkView({ user, onBack }: { user: any, onBack: () => void }) {
            <div className="p-md border-b border-surface-container font-black text-sm text-on-surface">My GenuAI Dashboard</div>
            <div className="flex flex-col">
              <div className="px-md py-sm flex items-center gap-sm cursor-pointer text-on-surface-variant text-xs font-bold hover:bg-surface-bright/50 transition-colors">
-               <span className="text-lg">🔖</span> Saved Jobs (4)
+               <span className="material-symbols-outlined text-[18px]">bookmark</span> Saved Jobs (4)
              </div>
              <div className="px-md py-sm flex items-center gap-sm cursor-pointer text-on-surface-variant text-xs font-bold hover:bg-surface-bright/50 transition-colors">
-               <span className="text-lg">📝</span> Active Assessments
+               <span className="material-symbols-outlined text-[18px]">assignment</span> Active Assessments
              </div>
              <div className="px-md py-sm flex items-center gap-sm cursor-pointer text-on-surface-variant text-xs font-bold hover:bg-surface-bright/50 transition-colors">
-               <span className="text-lg">🏅</span> Skill Badges (3)
+               <span className="material-symbols-outlined text-[18px]">military_tech</span> Skill Badges (3)
              </div>
            </div>
         </div>
@@ -201,8 +203,8 @@ function NetworkView({ user, onBack }: { user: any, onBack: () => void }) {
            <div className="p-md border-b border-surface-container font-black text-sm text-on-surface">Communities & Tags</div>
            <div className="p-md flex flex-col gap-sm">
              <div className="text-info-dark text-xs font-bold cursor-pointer hover:underline">Groups</div>
-             <div className="flex items-center gap-xs text-on-surface-variant text-xs font-medium cursor-pointer hover:text-info-dark transition-colors"><span className="text-sm">👥</span> GenuAI Frontend Devs</div>
-             <div className="flex items-center gap-xs text-on-surface-variant text-xs font-medium cursor-pointer hover:text-info-dark transition-colors"><span className="text-sm">👥</span> AI Engineers Hub</div>
+             <div className="flex items-center gap-xs text-on-surface-variant text-xs font-medium cursor-pointer hover:text-info-dark transition-colors"><span className="material-symbols-outlined text-[16px]">group</span> GenuAI Frontend Devs</div>
+             <div className="flex items-center gap-xs text-on-surface-variant text-xs font-medium cursor-pointer hover:text-info-dark transition-colors"><span className="material-symbols-outlined text-[16px]">group</span> AI Engineers Hub</div>
              <div className="text-info-dark text-xs font-bold cursor-pointer mt-xs hover:underline">Followed Tags</div>
              <div className="flex flex-wrap gap-xs">
                <span className="text-[10px] font-bold text-on-surface-variant bg-surface-bright px-xs py-1 rounded-full border border-surface-container cursor-pointer hover:border-surface-container-high transition-colors">#ReactJS</span>
@@ -249,7 +251,7 @@ function NetworkView({ user, onBack }: { user: any, onBack: () => void }) {
             Based on our platform-wide data, candidates who complete at least 3 SVAR speaking simulations on the GenuAI platform increase their technical round pass rate by 42%. Have you tested your communication skills today?
           </p>
           <div className="bg-surface-bright/50 p-md rounded-xl border border-surface-container mb-md flex items-center gap-md">
-             <div className="text-3xl">🎙️</div>
+             <div className="text-on-surface-variant"><span className="material-symbols-outlined text-[28px]">mic</span></div>
              <div>
                <div className="font-black text-on-surface text-xs">SVAR Communication Simulator</div>
                <div className="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">GenuAI Practice Hub • 15 min module</div>
@@ -274,7 +276,7 @@ function NetworkView({ user, onBack }: { user: any, onBack: () => void }) {
             <button className="text-info-dark font-bold text-xs cursor-pointer hover:underline flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">add</span> Follow</button>
           </div>
           <p className="text-on-surface text-sm font-medium leading-relaxed mb-md">
-            Thrilled to announce that I just cleared the GenuAI Automata Pro coding assessment with a perfect score! The realistic environment in the Practice Hub completely eliminated my interview anxiety. Next stop: The HR round! 🚀💻
+            Thrilled to announce that I just cleared the GenuAI Automata Pro coding assessment with a perfect score! The realistic environment in the Practice Hub completely eliminated my interview anxiety. Next stop: The HR round! <span className="material-symbols-outlined text-[14px] align-middle ml-1">rocket_launch</span><span className="material-symbols-outlined text-[14px] align-middle">laptop_mac</span>
           </p>
           <div className="flex gap-xl border-t border-surface-container pt-md">
              <button className="text-on-surface-variant font-bold text-xs cursor-pointer flex items-center gap-xs hover:text-info-dark transition-colors"><span className="material-symbols-outlined text-[18px]">thumb_up</span> 342 Likes</button>
@@ -302,12 +304,12 @@ function NetworkView({ user, onBack }: { user: any, onBack: () => void }) {
                   <div>
                     <div className="font-bold text-on-surface text-xs">{c.n}</div>
                     <div className="text-[10px] font-medium text-on-surface-variant">{c.r}</div>
-                    <div className="text-[10px] text-success-dark mt-0.5 font-bold flex items-center gap-1">✨ Match: {c.m}</div>
+                    <div className="text-[10px] text-success-dark mt-0.5 font-bold flex items-center gap-1"><span className="material-symbols-outlined text-[12px]">stars</span> Match: {c.m}</div>
                   </div>
                 </div>
                 <div className="flex gap-xs">
                   <button className="flex-1 border border-info-dark text-info-dark rounded-full py-1 text-[10px] font-bold cursor-pointer hover:bg-info/10 transition-colors">Connect</button>
-                  <button title="Let AI draft your first message!" className="flex-1 border-none bg-gradient-to-br from-[#7C3AED] to-indigo-brand text-white rounded-full py-1 text-[10px] font-bold cursor-pointer flex items-center justify-center gap-1 shadow-sm hover:shadow-md transition-shadow"><span>🪄</span> Icebreaker</button>
+                  <button title="Let AI draft your first message!" className="flex-1 border-none bg-gradient-to-br from-[#7C3AED] to-indigo-brand text-white rounded-full py-1 text-[10px] font-bold cursor-pointer flex items-center justify-center gap-1 shadow-sm hover:shadow-md transition-shadow"><span className="material-symbols-outlined text-[12px]">auto_fix_high</span> Icebreaker</button>
                 </div>
               </div>
             ))}
@@ -354,7 +356,7 @@ export default function SearchDashboard({ user, onBack }: Props) {
 
   const handleOpen = (tool: typeof TOOLS[0]) => {
     if (tool.ready) setOpenTool(tool);
-    else showToast(`${tool.title} — Coming Soon! 🚧`);
+    else showToast(`${tool.title} — Coming Soon!`);
   };
 
   return (
@@ -448,7 +450,7 @@ export default function SearchDashboard({ user, onBack }: Props) {
                   </div>
                 </div>
                 <div className="p-lg bg-surface-bright/80 backdrop-blur-md border-t border-surface-container flex gap-md items-center relative z-10">
-                  <button className="text-xl opacity-60 hover:opacity-100 transition-opacity">📎</button>
+                  <button className="text-xl opacity-60 hover:opacity-100 transition-opacity flex items-center"><span className="material-symbols-outlined">attach_file</span></button>
                   <input placeholder="Type your message..." className="flex-1 px-lg py-sm bg-surface-container/50 border border-surface-container rounded-full outline-none text-sm font-medium focus:border-indigo-brand/50 focus:bg-white transition-all" />
                   <button className="bg-[#25D366] hover:bg-[#1DA851] text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md transition-colors shrink-0">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
@@ -497,8 +499,8 @@ export default function SearchDashboard({ user, onBack }: Props) {
                     ))}
                   </div>
                   
-                  <button onClick={() => handleOpen(tool)} className={`w-full py-sm rounded-xl font-bold text-sm transition-all ${tool.ready ? (isHover ? `bg-${tool.color} text-white shadow-md` : `bg-transparent text-${tool.color} border border-${tool.color}`) : 'bg-surface-bright text-on-surface-variant border border-surface-container cursor-not-allowed'}`}>
-                    {tool.ready ? (isHover ? 'Launch →' : 'Open Tool') : 'Coming Soon'}
+                  <button onClick={() => handleOpen(tool)} className={`w-full py-sm rounded-xl font-bold text-sm flex items-center justify-center gap-xs transition-all ${tool.ready ? (isHover ? `bg-${tool.color} text-white shadow-md` : `bg-transparent text-${tool.color} border border-${tool.color}`) : 'bg-surface-bright text-on-surface-variant border border-surface-container cursor-not-allowed'}`}>
+                    {tool.ready ? (isHover ? <>Launch <span className="material-symbols-outlined text-[16px]">rocket_launch</span></> : 'Open Tool') : 'Coming Soon'}
                   </button>
                 </div>
               );

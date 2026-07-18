@@ -50,174 +50,186 @@ export default function AdminDashboard({ user, onLogout }: Props) {
   const filtered = candidates.filter(c => c.name?.toLowerCase().includes(search.toLowerCase()) || c.email?.toLowerCase().includes(search.toLowerCase()));
   const flagged = candidates.filter(c => c.triangle_status === "FLAGGED");
 
-  const btn: any = { padding: "8px 16px", borderRadius: "8px", border: "none", cursor: "pointer", fontWeight: "700", fontSize: "12px" };
-  const inp: any = { padding: "12px 16px", background: "#F1F5F9", border: "1.5px solid #E2E8F0", borderRadius: "10px", color: "#1E293B", fontSize: "14px", width: "100%", boxSizing: "border-box" };
-
   return (
-    <div style={{ minHeight: "100vh", background: "#F8FAFC", color: "#1E293B", padding: "20px", fontFamily: "sans-serif" }}>
+    <div className="min-h-screen bg-background quantum-gradient relative font-sans flex flex-col">
+      <div className="max-w-[1400px] w-full mx-auto p-lg md:p-xl flex-1 flex flex-col">
       {/* Navigation Bar */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", background: "#fff", borderRadius: "16px", padding: "12px 20px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #E2E8F0" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <img src="/logo.png" alt="GenuAI" style={{ width: "44px", height: "44px", objectFit: "contain", filter: "drop-shadow(0 2px 8px rgba(102,126,234,0.4))" }} />
+      <nav className="glass border-b border-surface-container px-lg md:px-xl h-20 flex items-center justify-between shadow-sm sticky top-4 z-40 rounded-2xl mb-xl">
+        <div className="flex items-center gap-md">
+          <img src="/logo.png" alt="GenuAI" className="w-12 h-12 object-contain drop-shadow-md" />
           <div>
-            <div style={{ fontWeight: "900", fontSize: "18px", color: "#1E293B", lineHeight: "1.1", letterSpacing: "-0.5px" }}>Genu<span style={{ color: "#667EEA" }}>AI</span></div>
-            <div style={{ fontSize: "10px", color: "#94A3B8", fontWeight: "700", letterSpacing: "0.08em" }}>ADMINISTRATION & INTEGRITY</div>
+            <div className="font-black text-body-lg text-on-surface">Genu<span className="text-indigo-brand">AI</span></div>
+            <div className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">ADMINISTRATION & INTEGRITY</div>
           </div>
         </div>
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <span style={{ color: "#1E293B", fontWeight: "700", fontSize: "14px" }}>{userName}</span>
-          <div style={{ width: "1px", height: "24px", background: "#E2E8F0", margin: "0 2px" }} />
-          <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "linear-gradient(135deg,#667EEA,#764BA2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "900", color: "#fff", fontSize: "15px" }}>
+        <div className="flex gap-md items-center">
+          <span className="text-on-surface-variant text-sm font-bold">{userName}</span>
+          <div className="w-px h-6 bg-surface-container mx-0.5" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-brand to-[#764BA2] flex items-center justify-center font-black text-white text-sm overflow-hidden shadow-sm shrink-0">
             {userName.charAt(0)}
           </div>
-          <button onClick={onLogout} style={{ ...btn, background: "transparent", border: "1.5px solid #FF4444", color: "#FF4444" }}>Logout</button>
+          <button onClick={onLogout} className="px-sm py-1.5 bg-error/10 border border-error/20 text-error rounded-lg cursor-pointer text-xs font-bold transition-all hover:bg-error hover:text-white">Logout</button>
         </div>
-      </div>
+      </nav>
 
       {/* Stats Cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "24px" }}>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-md mb-xl animate-[fadeIn_0.4s_ease]">
         {[
-          ["Total Assessments", stats?.total || candidates.length, "#667EEA"],
-          ["Avg Platform Score", stats?.avgScore ? stats.avgScore + "%" : "0%", "#F59E0B"],
-          ["Verified Candidates", candidates.filter(c => c.triangle_status !== "FLAGGED").length, "#00B87C"],
-          ["Flagged for Cheating", flagged.length, "#FF4444"]
+          ["Total Assessments", stats?.total || candidates.length, "text-indigo-brand"],
+          ["Avg Platform Score", stats?.avgScore ? stats.avgScore + "%" : "0%", "text-warning"],
+          ["Verified Candidates", candidates.filter(c => c.triangle_status !== "FLAGGED").length, "text-success"],
+          ["Flagged for Cheating", flagged.length, "text-error"]
         ].map(([l, v, c]: any) => (
-          <div key={l} style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", display: "flex", flexDirection: "column", justifyContent: "center", boxShadow: "0 4px 15px rgba(0,0,0,0.03)", transition: "transform 0.2s" }} onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"} onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
-            <div style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "8px" }}>{l}</div>
-            <div style={{ fontSize: "36px", fontWeight: "900", color: c, lineHeight: "1" }}>{v}</div>
+          <div key={l} className="glass p-lg rounded-2xl flex flex-col justify-center shadow-sm border border-surface-container hover:-translate-y-1 transition-transform">
+            <div className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-xs">{l}</div>
+            <div className={`text-4xl font-black ${c} leading-none drop-shadow-sm`}>{v}</div>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div style={{ display: "flex", gap: "8px", marginBottom: "24px", background: "#fff", padding: "8px", borderRadius: "16px", border: "1.5px solid #E2E8F0", boxShadow: "0 2px 12px rgba(0,0,0,0.02)" }}>
+      <div className="glass p-xs rounded-xl flex flex-wrap gap-xs mb-xl border border-surface-container shadow-sm animate-[fadeIn_0.4s_ease]">
         {["platform health", "flagged violations", "all candidates", "system audit"].map(t => (
-          <button key={t} onClick={() => setTab(t)} style={{ padding: "10px 20px", background: tab === t ? "linear-gradient(135deg,#667EEA,#764BA2)" : "transparent", color: tab === t ? "#fff" : "#64748B", border: "none", borderRadius: "10px", textTransform: "capitalize", fontWeight: "800", fontSize: "13px", cursor: "pointer", boxShadow: tab === t ? "0 4px 12px rgba(102,126,234,0.3)" : "none", transition: "all 0.2s" }}>{t}</button>
+          <button key={t} onClick={() => setTab(t)} className={`px-lg py-sm rounded-lg capitalize font-bold text-sm cursor-pointer transition-all ${tab === t ? "bg-gradient-to-r from-indigo-brand to-[#764BA2] text-white shadow-sm" : "bg-transparent text-on-surface-variant hover:text-on-surface"}`}>{t}</button>
         ))}
-        <button onClick={loadData} style={{ padding: "10px 16px", background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: "10px", color: "#64748B", marginLeft: "auto", fontWeight: "700", fontSize: "13px", cursor: "pointer" }}>↻ Refresh Data</button>
+        <button onClick={loadData} className="px-lg py-sm bg-surface-container/50 border-none rounded-lg text-on-surface-variant ml-auto font-bold text-sm cursor-pointer transition-colors hover:bg-surface-container flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">refresh</span> Refresh Data</button>
       </div>
 
       {loading ? (
-        <div style={{ textAlign: "center", padding: "60px", color: "#64748B" }}>Loading Platform Data...</div>
+        <div className="text-center p-xxxl text-on-surface-variant text-body-base bg-surface-bright/50 rounded-2xl border border-surface-container font-medium animate-pulse">Loading Platform Data...</div>
       ) : (
-        <>
+        <div className="animate-[fadeIn_0.4s_ease]">
           {tab === "platform health" && (
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "20px" }}>
-              <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-                <h3 style={{ color: "#1E293B", marginTop: 0, fontSize: "18px", marginBottom: "20px" }}>📈 Role-wise Analytics</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-lg">
+              <div className="glass p-xl rounded-2xl shadow-sm border border-surface-container">
+                <h3 className="text-title-md font-black text-on-surface m-0 mb-lg flex items-center gap-xs"><span className="material-symbols-outlined text-[24px] text-info-dark">trending_up</span> Role-wise Analytics</h3>
                 {roleAnalytics.length === 0 ? (
-                  <div style={{ color: "#94A3B8", fontSize: "14px" }}>No role data available yet.</div>
+                  <div className="text-on-surface-variant text-sm font-medium">No role data available yet.</div>
                 ) : (
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr style={{ background: "#F8FAFC", color: "#64748B", fontSize: "12px", textAlign: "left" }}>
-                        <th style={{ padding: "12px" }}>Job Role</th>
-                        <th style={{ padding: "12px" }}>Total Applicants</th>
-                        <th style={{ padding: "12px" }}>Avg Score</th>
-                        <th style={{ padding: "12px" }}>Hire Rate</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {roleAnalytics.map((r, i) => (
-                        <tr key={i} style={{ borderBottom: "1px solid #F1F5F9" }}>
-                          <td style={{ padding: "12px", fontWeight: "700", color: "#1E293B" }}>{r.role}</td>
-                          <td style={{ padding: "12px", color: "#64748B" }}>{r.total}</td>
-                          <td style={{ padding: "12px", color: "#00B87C", fontWeight: "800" }}>{r.avg_score}%</td>
-                          <td style={{ padding: "12px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                              <div style={{ flex: 1, background: "#E2E8F0", height: "6px", borderRadius: "3px" }}>
-                                <div style={{ width: (r.hired / r.total * 100) + "%", background: "#667EEA", height: "6px", borderRadius: "3px" }} />
-                              </div>
-                              <span style={{ fontSize: "12px", color: "#64748B", fontWeight: "700" }}>{Math.round(r.hired / r.total * 100)}%</span>
-                            </div>
-                          </td>
+                  <div className="rounded-xl overflow-x-auto border border-surface-container bg-surface-bright/50">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="bg-surface-container/50 text-on-surface-variant text-xs text-left uppercase tracking-wider font-bold">
+                          <th className="p-md">Job Role</th>
+                          <th className="p-md">Total Applicants</th>
+                          <th className="p-md">Avg Score</th>
+                          <th className="p-md">Hire Rate</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {roleAnalytics.map((r, i) => (
+                          <tr key={i} className="border-b border-surface-container hover:bg-surface-container/20 transition-colors">
+                            <td className="p-md font-bold text-on-surface">{r.role}</td>
+                            <td className="p-md text-on-surface-variant font-medium">{r.total}</td>
+                            <td className="p-md font-black text-success">{r.avg_score}%</td>
+                            <td className="p-md">
+                              <div className="flex items-center gap-sm">
+                                <div className="flex-1 bg-surface-container h-2 rounded-full overflow-hidden">
+                                  <div className="bg-indigo-brand h-full rounded-full" style={{ width: (r.hired / r.total * 100) + "%" }} />
+                                </div>
+                                <span className="text-xs text-on-surface-variant font-bold">{Math.round(r.hired / r.total * 100)}%</span>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
 
-              <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-                <h3 style={{ color: "#1E293B", marginTop: 0, fontSize: "18px", marginBottom: "20px" }}>🛡️ Trust Triangle Status</h3>
-                <div style={{ textAlign: "center", padding: "30px 0" }}>
-                  <div style={{ fontSize: "64px", fontWeight: "900", color: flagged.length > 0 ? "#FF4444" : "#00B87C", lineHeight: "1" }}>
+              <div className="glass p-xl rounded-2xl shadow-sm border border-surface-container h-max">
+                <h3 className="text-title-md font-black text-on-surface m-0 mb-lg flex items-center gap-xs"><span className="material-symbols-outlined text-[24px] text-indigo-brand">shield</span> Trust Triangle Status</h3>
+                <div className="text-center py-xl">
+                  <div className={`text-7xl font-black drop-shadow-sm leading-none ${flagged.length > 0 ? "text-error" : "text-success"}`}>
                     {candidates.length > 0 ? Math.round(((candidates.length - flagged.length) / candidates.length) * 100) : 100}%
                   </div>
-                  <div style={{ color: "#94A3B8", fontSize: "14px", fontWeight: "700", textTransform: "uppercase", marginTop: "8px" }}>Overall Platform Integrity</div>
+                  <div className="text-xs text-on-surface-variant font-bold uppercase tracking-wider mt-sm">Overall Platform Integrity</div>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "16px", background: "#F8FAFC", borderRadius: "12px" }}>
-                  <span style={{ color: "#64748B", fontWeight: "600", fontSize: "14px" }}>Verified Accounts</span>
-                  <span style={{ color: "#00B87C", fontWeight: "800", fontSize: "14px" }}>{candidates.length - flagged.length}</span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "16px", background: "#FEF2F2", borderRadius: "12px", marginTop: "8px" }}>
-                  <span style={{ color: "#DC2626", fontWeight: "600", fontSize: "14px" }}>Flagged Accounts</span>
-                  <span style={{ color: "#DC2626", fontWeight: "800", fontSize: "14px" }}>{flagged.length}</span>
+                <div className="flex flex-col gap-sm">
+                  <div className="flex justify-between items-center p-md bg-success/10 rounded-xl border border-success/20">
+                    <span className="text-success-dark font-bold text-sm">Verified Accounts</span>
+                    <span className="text-success-dark font-black text-sm">{candidates.length - flagged.length}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-md bg-error/10 rounded-xl border border-error/20">
+                    <span className="text-error font-bold text-sm">Flagged Accounts</span>
+                    <span className="text-error font-black text-sm">{flagged.length}</span>
+                  </div>
                 </div>
               </div>
             </div>
           )}
 
           {tab === "flagged violations" && (
-            <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                <h3 style={{ color: "#1E293B", margin: 0, fontSize: "18px" }}>🚩 Trust Triangle Violations ({flagged.length})</h3>
+            <div className="glass p-xl rounded-2xl shadow-sm border border-surface-container">
+              <div className="flex justify-between items-center mb-lg">
+                <h3 className="text-title-md font-black text-on-surface m-0 flex items-center gap-xs"><span className="material-symbols-outlined text-[24px] text-error">flag</span> Trust Triangle Violations ({flagged.length})</h3>
               </div>
               {flagged.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "40px", color: "#00B87C", fontWeight: "600", background: "#F0FDF4", borderRadius: "16px", border: "1.5px dashed #00B87C" }}>
+                <div className="text-center p-xxxl bg-success/10 border border-success/30 border-dashed rounded-2xl text-success-dark font-bold text-body-base shadow-sm">
                   All clean! No active violations detected on the platform.
                 </div>
               ) : (
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr style={{ background: "#FEF2F2", color: "#DC2626", fontSize: "12px", textAlign: "left" }}>
-                      <th style={{ padding: "12px" }}>Candidate</th>
-                      <th style={{ padding: "12px" }}>ATS / Test / Int</th>
-                      <th style={{ padding: "12px" }}>Consistency Score</th>
-                      <th style={{ padding: "12px" }}>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {flagged.map((c, i) => (
-                      <tr key={i} style={{ borderBottom: "1px solid #F1F5F9" }}>
-                        <td style={{ padding: "12px", fontWeight: "700", color: "#1E293B" }}>{c.name}<br/><span style={{ fontSize: "12px", color: "#64748B", fontWeight: "400" }}>{c.email}</span></td>
-                        <td style={{ padding: "12px", color: "#64748B", fontSize: "13px", fontWeight: "600" }}>{c.ats_score}% / {c.test_score}% / {c.interview_score}%</td>
-                        <td style={{ padding: "12px", color: "#FF4444", fontWeight: "800" }}>{c.consistency_score}%</td>
-                        <td style={{ padding: "12px" }}>
-                          <button style={{ padding: "6px 12px", background: "#F1F5F9", border: "1px solid #E2E8F0", borderRadius: "6px", fontSize: "11px", fontWeight: "700", color: "#1E293B", cursor: "pointer" }}>Investigate</button>
-                        </td>
+                <div className="rounded-xl overflow-x-auto border border-error/20 bg-error/5">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-error/10 text-error-dark text-xs text-left uppercase tracking-wider font-bold">
+                        <th className="p-md">Candidate</th>
+                        <th className="p-md">ATS / Test / Int</th>
+                        <th className="p-md">Consistency Score</th>
+                        <th className="p-md">Action</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {flagged.map((c, i) => (
+                        <tr key={i} className="border-b border-error/10 hover:bg-error/10 transition-colors">
+                          <td className="p-md">
+                            <div className="font-bold text-on-surface text-sm">{c.name}</div>
+                            <div className="text-xs text-on-surface-variant font-medium mt-0.5">{c.email}</div>
+                          </td>
+                          <td className="p-md text-on-surface-variant text-sm font-bold">{c.ats_score}% / {c.test_score}% / {c.interview_score}%</td>
+                          <td className="p-md font-black text-error text-body-base">{c.consistency_score}%</td>
+                          <td className="p-md">
+                            <button className="px-md py-sm bg-surface-bright border border-surface-container rounded-lg text-xs cursor-pointer font-bold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors shadow-sm flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">visibility</span> Investigate</button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
           )}
 
           {tab === "all candidates" && (
-            <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-              <div style={{ display: "flex", gap: "16px", marginBottom: "20px" }}>
-                <input placeholder="Search candidates..." value={search} onChange={e => setSearch(e.target.value)} style={inp} />
+            <div className="glass p-xl rounded-2xl shadow-sm border border-surface-container">
+              <div className="flex gap-md mb-lg">
+                <div className="relative flex-1">
+                  <span className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+                  <input placeholder="Search candidates..." value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-xl pr-md py-md bg-surface-bright border border-surface-container rounded-xl text-body-base font-medium text-on-surface focus:outline-none focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-all shadow-sm" />
+                </div>
               </div>
-              <div style={{ overflowX: "auto", borderRadius: "12px", border: "1.5px solid #E2E8F0" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <div className="rounded-xl overflow-x-auto border border-surface-container bg-surface-bright/50">
+                <table className="w-full border-collapse">
                   <thead>
-                    <tr style={{ background: "#F8FAFC", borderBottom: "2px solid #E2E8F0", textAlign: "left", color: "#64748B", fontSize: "12px", textTransform: "uppercase" }}>
-                      <th style={{ padding: "14px" }}>Name</th>
-                      <th style={{ padding: "14px" }}>Email</th>
-                      <th style={{ padding: "14px" }}>Overall</th>
-                      <th style={{ padding: "14px" }}>Verdict</th>
-                      <th style={{ padding: "14px" }}>Security</th>
+                    <tr className="bg-surface-container/50 text-on-surface-variant text-xs text-left uppercase tracking-wider font-bold">
+                      <th className="p-md">Name</th>
+                      <th className="p-md">Email</th>
+                      <th className="p-md">Overall</th>
+                      <th className="p-md">Verdict</th>
+                      <th className="p-md text-center">Security</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filtered.map(c => (
-                      <tr key={c.id} style={{ borderBottom: "1px solid #F1F5F9" }}>
-                        <td style={{ padding: "14px", fontWeight: "800", color: "#1E293B" }}>{c.name}</td>
-                        <td style={{ padding: "14px", color: "#64748B", fontSize: "13px" }}>{c.email}</td>
-                        <td style={{ padding: "14px", color: "#00B87C", fontWeight: "900", fontSize: "15px" }}>{c.overall_score}%</td>
-                        <td style={{ padding: "14px" }}><span style={{ padding: "4px 8px", background: "#F1F5F9", borderRadius: "6px", fontSize: "11px", fontWeight: "700", color: "#64748B" }}>{c.verdict || "PENDING"}</span></td>
-                        <td style={{ padding: "14px" }}>{c.triangle_status === "FLAGGED" ? "🚩" : "✅"}</td>
+                      <tr key={c.id} className="border-b border-surface-container hover:bg-surface-container/20 transition-colors">
+                        <td className="p-md font-bold text-on-surface text-sm">{c.name}</td>
+                        <td className="p-md text-on-surface-variant font-medium text-sm">{c.email}</td>
+                        <td className="p-md font-black text-success text-body-base">{c.overall_score}%</td>
+                        <td className="p-md"><span className="px-sm py-1 bg-surface-container rounded-md text-[10px] font-black text-on-surface-variant uppercase tracking-wider">{c.verdict || "PENDING"}</span></td>
+                        <td className="p-md text-center">
+                          {c.triangle_status === "FLAGGED" ? <span className="material-symbols-outlined text-error text-[20px]" style={{fontVariationSettings: "'FILL' 1"}}>warning</span> : <span className="material-symbols-outlined text-success text-[20px]" style={{fontVariationSettings: "'FILL' 1"}}>verified_user</span>}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -227,21 +239,35 @@ export default function AdminDashboard({ user, onLogout }: Props) {
           )}
 
           {tab === "system audit" && (
-            <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-              <h3 style={{ color: "#1E293B", margin: "0 0 16px", fontSize: "18px" }}>📜 Live System Audit Log</h3>
-              {alerts.length === 0 && <div style={{ color: "#94A3B8", fontSize: "14px", padding: "20px", textAlign: "center", background: "#F8FAFC", borderRadius: "12px" }}>Waiting for system events...</div>}
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div className="glass p-xl rounded-2xl shadow-sm border border-surface-container">
+              <h3 className="text-title-md font-black text-on-surface m-0 mb-lg flex items-center gap-xs"><span className="material-symbols-outlined text-[24px] text-indigo-brand">history</span> Live System Audit Log</h3>
+              {alerts.length === 0 && <div className="text-center p-xxxl text-on-surface-variant text-body-base bg-surface-bright/50 rounded-2xl border border-surface-container font-medium">Waiting for system events...</div>}
+              <div className="flex flex-col gap-sm">
                 {alerts.map(a => (
-                  <div key={a.id} style={{ padding: "16px", background: "#F8FAFC", borderLeft: "4px solid #667EEA", borderRadius: "8px", display: "flex", gap: "16px", alignItems: "center" }}>
-                    <div style={{ color: "#94A3B8", fontSize: "12px", minWidth: "80px", fontWeight: "600" }}>{a.time}</div>
-                    <div style={{ color: "#1E293B", fontSize: "14px", fontWeight: "600" }}>{a.message}</div>
+                  <div key={a.id} className="p-md bg-surface-bright/80 border-l-4 border-indigo-brand rounded-r-xl border-t border-b border-r border-surface-container shadow-sm flex items-center gap-md">
+                    <div className="text-xs text-on-surface-variant font-bold min-w-[80px]">{a.time}</div>
+                    <div className="text-sm font-bold text-on-surface flex-1">{a.message}</div>
                   </div>
                 ))}
               </div>
             </div>
           )}
-        </>
+        </div>
       )}
+      {/* Footer / Founder Info */}
+      <div className="mt-xxxl pt-xl border-t border-surface-container/50 flex flex-col md:flex-row items-center justify-between animate-[fadeIn_0.5s_ease]">
+        <div className="flex items-center gap-md mb-md md:mb-0">
+          <img src="https://ui-avatars.com/api/?name=Mohamed+Jabri+J+S&background=1E293B&color=667EEA&size=150" alt="Mohamed Jabri J S" className="w-12 h-12 rounded-full object-cover ring-2 ring-indigo-brand/40 shadow-sm hover:scale-105 transition-transform" />
+          <div>
+            <div className="text-body-base font-black text-on-surface">Mohamed Jabri J S</div>
+            <div className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Founder & CEO, GenuAI Technologies</div>
+          </div>
+        </div>
+        <div className="text-xs font-bold text-on-surface-variant flex items-center gap-1">
+          <span className="material-symbols-outlined text-[14px]">copyright</span> {new Date().getFullYear()} GenuAI Technologies.
+        </div>
+      </div>
+      </div>
     </div>
   );
 }

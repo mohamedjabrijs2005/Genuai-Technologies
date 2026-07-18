@@ -27,10 +27,10 @@ export default function PracticeDashboard({ user, onBack }: Props) {
 
   const handleOpen = (tool: typeof TOOLS[0]) => {
     if (tool.ready) setOpenTool(tool.id);
-    else showToast(`${tool.title} — Coming Soon! 🚧`);
+    else showToast(`${tool.title} - Coming Soon!`);
   };
 
-  // ── Route to tool ──
+  // --- Route to tool ---
   if (openTool === 'mock') return <AIMockInterview user={user} onBack={() => setOpenTool(null)} />;
   if (openTool === 'skills') return <SkillTestPractice user={user} onBack={() => setOpenTool(null)} />;
   if (openTool === 'projects') return <ProjectBuildingPractice user={user} onBack={() => setOpenTool(null)} />;
@@ -57,8 +57,8 @@ export default function PracticeDashboard({ user, onBack }: Props) {
           </div>
         </div>
         <div className="flex items-center gap-md">
-          <button onClick={onBack} className="bg-surface-bright border border-surface-container rounded-lg px-md py-xs text-xs font-bold text-on-surface-variant hover:text-on-surface hover:border-surface-container-high transition-colors">
-            ← Change Path
+          <button onClick={onBack} className="bg-surface-bright border border-surface-container rounded-lg px-md py-xs text-xs font-bold text-on-surface-variant hover:text-on-surface hover:border-surface-container-high transition-colors flex items-center gap-xs">
+            <span className="material-symbols-outlined text-sm">arrow_back</span> Change Path
           </button>
           <div className="flex items-center gap-xs">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-brand to-[#7C3AED] flex items-center justify-center text-white font-black text-xs shadow-sm">
@@ -107,8 +107,8 @@ export default function PracticeDashboard({ user, onBack }: Props) {
                   ))}
                 </div>
                 
-                <button onClick={() => handleOpen(tool)} className={`w-full py-sm rounded-xl font-bold text-sm transition-all ${tool.ready ? (isHover ? `bg-${tool.color} text-white shadow-md` : 'bg-surface-container/50 text-on-surface') : 'bg-surface-bright text-on-surface-variant border border-surface-container cursor-not-allowed'}`}>
-                  {tool.ready ? (isHover ? 'Launch Module →' : 'Open Module') : 'Coming Soon'}
+                <button onClick={() => handleOpen(tool)} className={`w-full py-sm rounded-xl font-bold text-sm flex items-center justify-center gap-xs transition-all ${tool.ready ? (isHover ? `bg-${tool.color} text-white shadow-md` : `bg-transparent text-${tool.color} border border-${tool.color}`) : 'bg-surface-bright text-on-surface-variant border border-surface-container cursor-not-allowed'}`}>
+                  {tool.ready ? (isHover ? <>Launch <span className="material-symbols-outlined text-[16px]">rocket_launch</span></> : 'Open Tool') : 'Coming Soon'}
                 </button>
               </div>
             );

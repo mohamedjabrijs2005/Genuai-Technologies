@@ -5,7 +5,6 @@ interface Props { user: any; onBack: () => void; }
 export default function GroupDiscussionPractice({ user, onBack }: Props) {
   const name = user?.user?.name || user?.name || 'Candidate';
   const [matchState, setMatchState] = useState<'lobby' | 'live' | 'feedback'>('lobby');
-  const [message, setMessage] = useState('');
 
   // Simulate matchmaking delay
   useEffect(() => {
@@ -19,27 +18,30 @@ export default function GroupDiscussionPractice({ user, onBack }: Props) {
 
   if (matchState === 'lobby') {
     return (
-      <div style={{ height:'100vh', background:'#F8FAFC', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"'Inter', sans-serif" }}>
-         <div style={{ background:'#fff', padding:'48px', borderRadius:'24px', boxShadow:'0 12px 32px rgba(0,0,0,0.05)', textAlign:'center', maxWidth:'400px', width:'100%' }}>
-            <div style={{ width:'80px', height:'80px', borderRadius:'50%', background:'linear-gradient(135deg,#2563EB,#7C3AED)', margin:'0 auto 24px', display:'flex', alignItems:'center', justifyContent:'center', animation:'pulse 2s infinite' }}>
-              <span style={{ fontSize:'32px', color:'#fff' }}>👥</span>
+      <div className="h-screen bg-background quantum-gradient font-body-base flex flex-col items-center justify-center relative overflow-hidden">
+         {/* Decorative */}
+         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-brand/10 blur-[150px] rounded-full pointer-events-none animate-pulse"></div>
+         
+         <div className="relative z-10 glass p-xxl rounded-xxxl shadow-lg border border-surface-container text-center max-w-md w-full mx-md animate-[fadeIn_0.5s_ease-out]">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-brand to-[#7C3AED] mx-auto mb-lg flex items-center justify-center shadow-lg shadow-indigo-brand/30 animate-[pulse_2s_infinite]">
+              <span className="material-symbols-outlined text-4xl text-white">groups</span>
             </div>
-            <h2 style={{ fontSize:'24px', fontWeight:'900', color:'#0F172A', margin:'0 0 12px' }}>Finding Peers...</h2>
-            <p style={{ fontSize:'14px', color:'#64748B', lineHeight:'1.6', margin:'0 0 32px' }}>We are matching you with 3 other candidates of similar GenuAI readiness score for your Group Discussion.</p>
+            <h2 className="text-title-lg font-black text-on-surface mb-sm">Finding Peers...</h2>
+            <p className="text-sm font-medium text-on-surface-variant leading-relaxed mb-xl">We are matching you with 3 other candidates of similar GenuAI readiness score for your Group Discussion.</p>
             
-            <div style={{ display:'flex', flexDirection:'column', gap:'12px', marginBottom:'32px' }}>
-              <div style={{ background:'#F1F5F9', padding:'12px', borderRadius:'12px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                <span style={{ fontSize:'13px', color:'#475569', fontWeight:'600' }}>Topic</span>
-                <span style={{ fontSize:'13px', color:'#0F172A', fontWeight:'700' }}>Impact of GenAI</span>
+            <div className="flex flex-col gap-sm mb-xl text-left">
+              <div className="bg-surface-bright/50 p-sm rounded-xl border border-surface-container flex justify-between items-center">
+                <span className="text-xs font-black text-on-surface-variant uppercase tracking-widest flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">forum</span> Topic</span>
+                <span className="text-sm font-bold text-on-surface">Impact of GenAI</span>
               </div>
-              <div style={{ background:'#F1F5F9', padding:'12px', borderRadius:'12px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                <span style={{ fontSize:'13px', color:'#475569', fontWeight:'600' }}>Peers Found</span>
-                <span style={{ fontSize:'13px', color:'#2563EB', fontWeight:'700' }}>2 / 4</span>
+              <div className="bg-surface-bright/50 p-sm rounded-xl border border-surface-container flex justify-between items-center">
+                <span className="text-xs font-black text-on-surface-variant uppercase tracking-widest flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">group_add</span> Peers Found</span>
+                <span className="text-sm font-black text-indigo-brand">2 / 4</span>
               </div>
             </div>
 
-            <button onClick={onBack} style={{ background:'transparent', border:'1px solid #E2E8F0', color:'#64748B', padding:'12px 24px', borderRadius:'12px', cursor:'pointer', fontWeight:'700', fontSize:"14px", width:'100%' }}>
-              Cancel Matchmaking
+            <button onClick={onBack} className="w-full py-md glass border border-surface-container text-on-surface font-bold text-sm rounded-xl hover:bg-surface-container/50 transition-colors flex items-center justify-center gap-xs">
+              <span className="material-symbols-outlined text-[18px]">cancel</span> Cancel Matchmaking
             </button>
          </div>
       </div>
@@ -47,124 +49,139 @@ export default function GroupDiscussionPractice({ user, onBack }: Props) {
   }
 
   return (
-    <div style={{ height:'100vh', background:'#1E293B', display:'flex', flexDirection:'column', fontFamily:"'Inter', sans-serif" }}>
+    <div className="h-screen bg-[#0B1120] font-body-base text-white flex flex-col overflow-hidden relative">
       {/* Header */}
-      <div style={{ background:'#0F172A', color:'#fff', padding:'0 32px', height:"72px", display:'flex', justifyContent:'space-between', alignItems:'center', flexShrink:0, borderBottom:'1px solid #334155' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-          <div style={{ fontWeight:"900", fontSize:"18px", display:"flex", alignItems:"center", gap:"12px" }}>
-            <span style={{ background:'#EF4444', width:'10px', height:'10px', borderRadius:'50%' }}></span> 
+      <div className="relative z-10 bg-[#0F172A] border-b border-[#1E293B] px-xl h-20 flex items-center justify-between flex-shrink-0 shadow-md">
+        <div className="flex items-center gap-md">
+          <div className="font-black text-lg text-white flex items-center gap-sm tracking-tight">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-error"></span>
+            </span>
             Live Discussion Room
           </div>
-          <div style={{ background:"#334155", padding:"6px 16px", borderRadius:"8px", fontSize:"13px", fontWeight:"700", color:"#E2E8F0" }}>
+          <div className="bg-[#1E293B] px-md py-1 rounded-lg text-xs font-bold text-slate-300 hidden md:block">
             Topic: Impact of Generative AI on Jobs
           </div>
         </div>
-        <div style={{ display:'flex', gap:'24px', alignItems:'center' }}>
-          <div style={{ fontSize:'20px', fontWeight:'800', color:'#F59E0B', fontVariantNumeric:'tabular-nums' }}>
+        <div className="flex gap-xl items-center">
+          <div className="text-xl font-black text-warning font-mono tracking-wider">
             14:32
           </div>
-          <button onClick={onBack} style={{ background:'#EF4444', border:'none', color:'#fff', padding:'8px 20px', borderRadius:'8px', cursor:'pointer', fontWeight:'700', fontSize:"13px" }}>
-            Leave Room
+          <button onClick={onBack} className="px-lg py-sm bg-error/10 text-error border border-error/20 rounded-xl font-bold text-sm hover:bg-error/20 transition-colors flex items-center gap-xs">
+            <span className="material-symbols-outlined text-[18px]">call_end</span> Leave Room
           </button>
         </div>
       </div>
 
-      <div style={{ flex:1, display:'flex', overflow:'hidden' }}>
+      <div className="flex-1 flex overflow-hidden">
         
         {/* Center: Video Grid */}
-        <div style={{ flex:1, padding:'24px', display:'flex', flexDirection:'column', gap:'24px' }}>
-           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:'24px', flex:1 }}>
+        <div className="flex-1 p-lg md:p-xl flex flex-col gap-lg bg-[#050814]">
+           <div className="grid grid-cols-1 sm:grid-cols-2 grid-rows-2 gap-lg flex-1">
               
               {/* Participant 1 (You) */}
-              <div style={{ background:'#0F172A', borderRadius:'16px', overflow:'hidden', position:'relative', border:'2px solid #38BDF8', boxShadow:'0 0 20px rgba(56,189,248,0.2)' }}>
-                <img src="/icons/cat_english.png" alt="You" style={{ width:'100%', height:'100%', objectFit:'cover', opacity:0.8 }} />
-                <div style={{ position:'absolute', bottom:'16px', left:'16px', background:'rgba(15,23,42,0.8)', backdropFilter:'blur(4px)', padding:'6px 16px', borderRadius:'24px', color:'#fff', fontSize:'13px', fontWeight:'700', display:'flex', alignItems:'center', gap:'8px' }}>
-                  <span style={{ color:'#38BDF8' }}>🎙️</span> {name} (You)
+              <div className="bg-[#0F172A] rounded-2xl overflow-hidden relative border-2 border-info shadow-[0_0_30px_rgba(56,189,248,0.15)] group">
+                <img src="/icons/cat_english.png" alt="You" className="w-full h-full object-cover opacity-80 mix-blend-screen" />
+                <div className="absolute bottom-md left-md bg-black/60 backdrop-blur-md px-md py-1.5 rounded-full text-white text-xs font-bold flex items-center gap-xs border border-white/10">
+                  <span className="material-symbols-outlined text-info text-[16px]">mic</span> {name} (You)
                 </div>
               </div>
 
               {/* Participant 2 */}
-              <div style={{ background:'#0F172A', borderRadius:'16px', overflow:'hidden', position:'relative', border:'1px solid #334155' }}>
-                <img src="/icons/cat_logical.png" alt="Priya" style={{ width:'100%', height:'100%', objectFit:'cover', opacity:0.5 }} />
-                <div style={{ position:'absolute', bottom:'16px', left:'16px', background:'rgba(15,23,42,0.8)', backdropFilter:'blur(4px)', padding:'6px 16px', borderRadius:'24px', color:'#fff', fontSize:'13px', fontWeight:'700', display:'flex', alignItems:'center', gap:'8px' }}>
-                  <span style={{ color:'#EF4444' }}>🔇</span> Priya (Backend Dev)
+              <div className="bg-[#0F172A] rounded-2xl overflow-hidden relative border border-[#1E293B] group">
+                <img src="/icons/cat_logical.png" alt="Priya" className="w-full h-full object-cover opacity-40 mix-blend-screen" />
+                <div className="absolute bottom-md left-md bg-black/60 backdrop-blur-md px-md py-1.5 rounded-full text-white text-xs font-bold flex items-center gap-xs border border-white/10">
+                  <span className="material-symbols-outlined text-error text-[16px]">mic_off</span> Priya (Backend Dev)
                 </div>
               </div>
 
               {/* Participant 3 */}
-              <div style={{ background:'#0F172A', borderRadius:'16px', overflow:'hidden', position:'relative', border:'1px solid #334155' }}>
-                <img src="/icons/learning_brain.png" alt="Rahul" style={{ width:'100%', height:'100%', objectFit:'cover', opacity:0.5 }} />
-                <div style={{ position:'absolute', bottom:'16px', left:'16px', background:'rgba(15,23,42,0.8)', backdropFilter:'blur(4px)', padding:'6px 16px', borderRadius:'24px', color:'#fff', fontSize:'13px', fontWeight:'700', display:'flex', alignItems:'center', gap:'8px' }}>
-                  <span style={{ color:'#EF4444' }}>🔇</span> Rahul (Frontend Dev)
+              <div className="bg-[#0F172A] rounded-2xl overflow-hidden relative border border-[#1E293B] group">
+                <img src="/icons/learning_brain.png" alt="Rahul" className="w-full h-full object-cover opacity-40 mix-blend-screen" />
+                <div className="absolute bottom-md left-md bg-black/60 backdrop-blur-md px-md py-1.5 rounded-full text-white text-xs font-bold flex items-center gap-xs border border-white/10">
+                  <span className="material-symbols-outlined text-error text-[16px]">mic_off</span> Rahul (Frontend Dev)
                 </div>
               </div>
 
               {/* Participant 4 */}
-              <div style={{ background:'#0F172A', borderRadius:'16px', overflow:'hidden', position:'relative', border:'1px solid #334155' }}>
-                <img src="/icons/cat_automata.png" alt="Ananya" style={{ width:'100%', height:'100%', objectFit:'cover', opacity:0.5 }} />
-                <div style={{ position:'absolute', bottom:'16px', left:'16px', background:'rgba(15,23,42,0.8)', backdropFilter:'blur(4px)', padding:'6px 16px', borderRadius:'24px', color:'#fff', fontSize:'13px', fontWeight:'700', display:'flex', alignItems:'center', gap:'8px' }}>
-                  <span style={{ color:'#EF4444' }}>🔇</span> Ananya (Data Science)
+              <div className="bg-[#0F172A] rounded-2xl overflow-hidden relative border border-[#1E293B] group">
+                <img src="/icons/cat_automata.png" alt="Ananya" className="w-full h-full object-cover opacity-40 mix-blend-screen" />
+                <div className="absolute bottom-md left-md bg-black/60 backdrop-blur-md px-md py-1.5 rounded-full text-white text-xs font-bold flex items-center gap-xs border border-white/10">
+                  <span className="material-symbols-outlined text-error text-[16px]">mic_off</span> Ananya (Data Science)
                 </div>
               </div>
 
            </div>
            
            {/* Controls */}
-           <div style={{ display:'flex', justifyContent:'center', gap:'16px' }}>
-             <button style={{ width:'56px', height:'56px', borderRadius:'50%', background:'#334155', border:'none', color:'#fff', fontSize:'20px', cursor:'pointer' }}>🎤</button>
-             <button style={{ width:'56px', height:'56px', borderRadius:'50%', background:'#334155', border:'none', color:'#fff', fontSize:'20px', cursor:'pointer' }}>📹</button>
-             <button style={{ width:'56px', height:'56px', borderRadius:'50%', background:'#334155', border:'none', color:'#fff', fontSize:'20px', cursor:'pointer' }}>😊</button>
+           <div className="flex justify-center gap-md py-sm">
+             <button className="w-14 h-14 rounded-full bg-[#1E293B] hover:bg-[#334155] border border-[#334155] text-white flex items-center justify-center transition-colors shadow-lg">
+                <span className="material-symbols-outlined text-2xl">mic</span>
+             </button>
+             <button className="w-14 h-14 rounded-full bg-[#1E293B] hover:bg-[#334155] border border-[#334155] text-white flex items-center justify-center transition-colors shadow-lg">
+                <span className="material-symbols-outlined text-2xl">videocam</span>
+             </button>
+             <button className="w-14 h-14 rounded-full bg-[#1E293B] hover:bg-[#334155] border border-[#334155] text-white flex items-center justify-center transition-colors shadow-lg">
+                <span className="material-symbols-outlined text-2xl">sentiment_satisfied</span>
+             </button>
+             <button className="w-14 h-14 rounded-full bg-error/20 hover:bg-error/30 border border-error/30 text-error flex items-center justify-center transition-colors shadow-lg ml-md hidden sm:flex">
+                <span className="material-symbols-outlined text-2xl">call_end</span>
+             </button>
            </div>
         </div>
 
         {/* Right Side: AI Analytics */}
-        <div style={{ width:'320px', background:'#0F172A', borderLeft:'1px solid #334155', display:'flex', flexDirection:'column' }}>
-          <div style={{ padding:'20px', borderBottom:'1px solid #334155' }}>
-            <div style={{ fontSize:'14px', fontWeight:'800', color:'#F8FAFC', display:'flex', alignItems:'center', gap:'8px' }}>
-              <span>🤖</span> AI Session Analytics
-            </div>
+        <div className="w-[320px] bg-[#0F172A] border-l border-[#1E293B] flex flex-col hidden lg:flex">
+          <div className="p-lg border-b border-[#1E293B] flex items-center gap-sm">
+             <div className="w-8 h-8 rounded-lg bg-indigo-brand/20 text-indigo-brand flex items-center justify-center">
+                <span className="material-symbols-outlined text-[18px]">psychology</span>
+             </div>
+             <span className="text-sm font-black text-slate-200">AI Session Analytics</span>
           </div>
           
-          <div style={{ flex:1, padding:'24px', display:'flex', flexDirection:'column', gap:'32px', overflowY:'auto' }}>
+          <div className="flex-1 p-lg flex flex-col gap-xl overflow-y-auto custom-scrollbar">
             
             {/* Share of Voice */}
             <div>
-              <div style={{ fontSize:'13px', color:'#94A3B8', fontWeight:'700', marginBottom:'16px', textTransform:'uppercase', letterSpacing:'1px' }}>Share of Voice</div>
-              <div style={{ display:'flex', flexDirection:'column', gap:'16px' }}>
+              <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-md flex items-center gap-xs">
+                 <span className="material-symbols-outlined text-[16px]">pie_chart</span> Share of Voice
+              </div>
+              <div className="flex flex-col gap-md">
                 <div>
-                  <div style={{ display:'flex', justifyContent:'space-between', fontSize:'12px', color:'#E2E8F0', marginBottom:'6px', fontWeight:'600' }}>
+                  <div className="flex justify-between text-xs text-slate-300 font-bold mb-1.5">
                     <span>You</span>
-                    <span>42%</span>
+                    <span className="text-info">42%</span>
                   </div>
-                  <div style={{ height:'6px', background:'#334155', borderRadius:'4px', overflow:'hidden' }}>
-                    <div style={{ height:'100%', background:'#38BDF8', width:'42%' }}></div>
+                  <div className="h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
+                    <div className="h-full bg-info w-[42%] rounded-full shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
                   </div>
                 </div>
                 <div>
-                  <div style={{ display:'flex', justifyContent:'space-between', fontSize:'12px', color:'#E2E8F0', marginBottom:'6px', fontWeight:'600' }}>
+                  <div className="flex justify-between text-xs text-slate-300 font-bold mb-1.5">
                     <span>Rahul</span>
-                    <span>28%</span>
+                    <span className="text-warning">28%</span>
                   </div>
-                  <div style={{ height:'6px', background:'#334155', borderRadius:'4px', overflow:'hidden' }}>
-                    <div style={{ height:'100%', background:'#F59E0B', width:'28%' }}></div>
+                  <div className="h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
+                    <div className="h-full bg-warning w-[28%] rounded-full"></div>
                   </div>
                 </div>
                 <div>
-                  <div style={{ display:'flex', justifyContent:'space-between', fontSize:'12px', color:'#E2E8F0', marginBottom:'6px', fontWeight:'600' }}>
+                  <div className="flex justify-between text-xs text-slate-300 font-bold mb-1.5">
                     <span>Priya</span>
-                    <span>18%</span>
+                    <span className="text-success">18%</span>
                   </div>
-                  <div style={{ height:'6px', background:'#334155', borderRadius:'4px', overflow:'hidden' }}>
-                    <div style={{ height:'100%', background:'#10B981', width:'18%' }}></div>
+                  <div className="h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
+                    <div className="h-full bg-success w-[18%] rounded-full"></div>
                   </div>
                 </div>
                 <div>
-                  <div style={{ display:'flex', justifyContent:'space-between', fontSize:'12px', color:'#E2E8F0', marginBottom:'6px', fontWeight:'600' }}>
+                  <div className="flex justify-between text-xs text-slate-300 font-bold mb-1.5">
                     <span>Ananya</span>
-                    <span>12%</span>
+                    <span className="text-indigo-brand">12%</span>
                   </div>
-                  <div style={{ height:'6px', background:'#334155', borderRadius:'4px', overflow:'hidden' }}>
-                    <div style={{ height:'100%', background:'#8B5CF6', width:'12%' }}></div>
+                  <div className="h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
+                    <div className="h-full bg-indigo-brand w-[12%] rounded-full"></div>
                   </div>
                 </div>
               </div>
@@ -172,19 +189,21 @@ export default function GroupDiscussionPractice({ user, onBack }: Props) {
 
             {/* Live Metrics */}
             <div>
-              <div style={{ fontSize:'13px', color:'#94A3B8', fontWeight:'700', marginBottom:'16px', textTransform:'uppercase', letterSpacing:'1px' }}>Behavioral Tracker</div>
-              <div style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
-                <div style={{ background:'#1E293B', padding:'12px 16px', borderRadius:'12px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                  <span style={{ fontSize:'13px', color:'#E2E8F0' }}>Interruptions Made</span>
-                  <span style={{ fontSize:'14px', fontWeight:'800', color:'#F59E0B' }}>1</span>
+              <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-md flex items-center gap-xs">
+                 <span className="material-symbols-outlined text-[16px]">analytics</span> Behavioral Tracker
+              </div>
+              <div className="flex flex-col gap-sm">
+                <div className="bg-[#1E293B]/50 p-sm rounded-xl border border-[#334155] flex justify-between items-center">
+                  <span className="text-xs font-medium text-slate-300">Interruptions Made</span>
+                  <span className="text-sm font-black text-warning">1</span>
                 </div>
-                <div style={{ background:'#1E293B', padding:'12px 16px', borderRadius:'12px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                  <span style={{ fontSize:'13px', color:'#E2E8F0' }}>Constructive Hooks</span>
-                  <span style={{ fontSize:'14px', fontWeight:'800', color:'#10B981' }}>3</span>
+                <div className="bg-[#1E293B]/50 p-sm rounded-xl border border-[#334155] flex justify-between items-center">
+                  <span className="text-xs font-medium text-slate-300">Constructive Hooks</span>
+                  <span className="text-sm font-black text-success">3</span>
                 </div>
-                <div style={{ background:'#1E293B', padding:'12px 16px', borderRadius:'12px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                  <span style={{ fontSize:'13px', color:'#E2E8F0' }}>Current Sentiment</span>
-                  <span style={{ fontSize:'14px', fontWeight:'800', color:'#38BDF8' }}>Collaborative</span>
+                <div className="bg-[#1E293B]/50 p-sm rounded-xl border border-[#334155] flex justify-between items-center">
+                  <span className="text-xs font-medium text-slate-300">Current Sentiment</span>
+                  <span className="text-sm font-black text-info bg-info/10 px-xs py-0.5 rounded border border-info/20">Collaborative</span>
                 </div>
               </div>
             </div>
