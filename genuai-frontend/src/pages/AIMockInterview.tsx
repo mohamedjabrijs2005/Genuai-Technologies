@@ -158,59 +158,94 @@ export default function AIMockInterview({ user, onBack }: Props) {
   };
 
   const avgScore = history.length ? Math.round(history.reduce((s, h) => s + (h.fb?.score || 0), 0) / history.length) : 0;
-  const scoreColor = avgScore >= 80 ? "#10B981" : avgScore >= 60 ? "#F59E0B" : "#EF4444";
   
-  const inp: any = { width:"100%", padding:"12px 14px", border:"1.5px solid #E2E8F0", borderRadius:"10px", fontSize:"14px", color:"#1E293B", background:"#F8FAFC", boxSizing:"border-box", outline:"none", transition:"border 0.2s" };
-
   // ── SETUP ──
   if (phase === "setup") return (
-    <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
-      <div style={{ background:"#fff", borderBottom:"1px solid #E2E8F0", padding:"16px 40px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#64748B", fontSize:"14px", cursor:"pointer", fontWeight:"700", padding:0 }}>← Back to Practice Hub</button>
-        <div style={{ fontWeight:"800", color:"#0F172A", fontSize:"18px" }}>AI Mock Interview</div>
-        <div style={{ width:"120px" }}></div>
+    <div className="min-h-screen bg-background quantum-gradient font-body-base text-on-background relative overflow-hidden flex flex-col">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent-gold/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-brand/10 blur-[120px] rounded-full pointer-events-none" />
+      
+      {/* Header */}
+      <div className="relative z-10 glass border-b border-surface-container/50 px-xl py-sm flex items-center justify-between">
+        <button onClick={onBack} className="flex items-center gap-xs text-on-surface-variant hover:text-on-surface transition-colors font-bold text-sm">
+          <span className="material-symbols-outlined text-xl">arrow_back</span>
+          Back to Practice Hub
+        </button>
+        <div className="font-black text-on-surface text-lg flex items-center gap-sm">
+          <span className="material-symbols-outlined text-accent-gold">smart_toy</span>
+          AI Mock Interview
+        </div>
+        <div className="w-32"></div>
       </div>
-      <div style={{ flex:1, display:"flex", maxWidth:"1400px", margin:"0 auto", width:"100%", padding:"60px 40px" }}>
-        <div style={{ flex:1, paddingRight:"80px", display:"flex", flexDirection:"column", justifyContent:"center" }}>
-          <div style={{ fontSize:"64px", marginBottom:"24px" }}>🤖</div>
-          <h1 style={{ fontSize:"48px", fontWeight:"900", color:"#0F172A", marginBottom:"24px", letterSpacing:"-1px", lineHeight:"1.1" }}>Master Your Next<br/>Technical Interview</h1>
-          <p style={{ color:"#475569", fontSize:"18px", lineHeight:"1.6", marginBottom:"40px", maxWidth:"500px" }}>
+
+      <div className="relative z-10 flex-1 flex flex-col lg:flex-row max-w-7xl mx-auto w-full px-margin-mobile md:px-margin-desktop py-xxl gap-xl">
+        
+        {/* Left Content */}
+        <div className="flex-1 flex flex-col justify-center">
+          <div className="text-7xl mb-lg animate-[float_4s_ease-in-out_infinite]">🤖</div>
+          <h1 className="text-display-lg-mobile md:text-display-lg-desktop font-black text-on-surface mb-md leading-tight tracking-tight">
+            Master Your Next<br/>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-brand via-purple-500 to-cyan-500 drop-shadow-sm">Technical Interview</span>
+          </h1>
+          <p className="text-body-lg text-on-surface-variant/90 font-medium mb-xl max-w-xl leading-relaxed">
             Experience a hyper-realistic, AI-driven interview environment. Utilize live voice transcription and receive instantaneous, actionable feedback on every response.
           </p>
-          <div style={{ display:"flex", gap:"16px" }}>
-             <div style={{ background:"#EFF6FF", color:"#2563EB", padding:"12px 24px", borderRadius:"12px", fontWeight:"700", fontSize:"14px" }}>✓ Live Speech-to-Text</div>
-             <div style={{ background:"#F0FDF4", color:"#16A34A", padding:"12px 24px", borderRadius:"12px", fontWeight:"700", fontSize:"14px" }}>✓ Instant AI Grading</div>
+          <div className="flex flex-wrap gap-md">
+             <div className="glass px-md py-sm rounded-xl font-bold text-sm text-indigo-brand flex items-center gap-xs shadow-sm border border-indigo-brand/20">
+               <span className="material-symbols-outlined text-lg">mic</span> Live Speech-to-Text
+             </div>
+             <div className="glass px-md py-sm rounded-xl font-bold text-sm text-success flex items-center gap-xs shadow-sm border border-success/20">
+               <span className="material-symbols-outlined text-lg">bolt</span> Instant AI Grading
+             </div>
           </div>
         </div>
         
-        <div style={{ flex:1, maxWidth:"600px" }}>
-          <div style={{ background:"#fff", borderRadius:"24px", padding:"48px", boxShadow:"0 20px 40px rgba(0,0,0,0.04)", border:"1px solid #E2E8F0" }}>
-            <h2 style={{ fontSize:"24px", fontWeight:"800", color:"#0F172A", marginBottom:"32px" }}>Configure Session</h2>
-            
-            <label style={{ color:"#64748B", fontSize:"12px", fontWeight:"800", display:"block", marginBottom:"8px", textTransform:"uppercase" }}>Your Target Role</label>
-            <select value={role} onChange={e => setRole(e.target.value)} style={{ ...inp, marginBottom:"28px", cursor:"pointer", background:"#F8FAFC", padding:"16px", borderRadius:"14px" }}>
-              {ROLES.map(r => <option key={r}>{r}</option>)}
-            </select>
-
-            <label style={{ color:"#64748B", fontSize:"12px", fontWeight:"800", display:"block", marginBottom:"12px", textTransform:"uppercase" }}>Interview Type</label>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"12px", marginBottom:"36px" }}>
-              {TYPES.map(t => (
-                <div key={t.key} onClick={() => setType(t.key)} style={{ padding:"20px 12px", border:`2px solid ${type===t.key?"#2563EB":"#F1F5F9"}`, borderRadius:"16px", cursor:"pointer", textAlign:"center", background:type===t.key?"#EFF6FF":"#fff", transition:"all 0.2s" }}>
-                  <div style={{ fontSize:"28px", marginBottom:"12px" }}>{t.emoji}</div>
-                  <div style={{ fontWeight:"800", fontSize:"13px", color:type===t.key?"#2563EB":"#334155" }}>{t.label}</div>
+        {/* Right Content - Config Card */}
+        <div className="flex-1 max-w-[500px] w-full mt-xl lg:mt-0">
+          <div className="glass p-xxl rounded-xxxl shadow-md border border-surface-container relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-brand/5 to-transparent pointer-events-none transition-opacity opacity-0 group-hover:opacity-100 duration-500"></div>
+            <div className="relative z-10">
+              <h2 className="text-title-lg font-black text-on-surface mb-lg">Configure Session</h2>
+              
+              <div className="mb-lg">
+                <label className="text-label-caps font-label-caps text-on-surface-variant block mb-xs tracking-widest uppercase">Your Target Role</label>
+                <div className="relative">
+                  <select value={role} onChange={e => setRole(e.target.value)} className="w-full appearance-none bg-surface-bright border border-surface-container rounded-xl px-md py-sm text-on-surface font-semibold focus:outline-none focus:border-indigo-brand focus:ring-1 focus:ring-indigo-brand transition-colors cursor-pointer">
+                    {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                  <span className="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
                 </div>
-              ))}
+              </div>
+
+              <div className="mb-xl">
+                <label className="text-label-caps font-label-caps text-on-surface-variant block mb-sm tracking-widest uppercase">Interview Type</label>
+                <div className="grid grid-cols-3 gap-sm">
+                  {TYPES.map(t => (
+                    <div key={t.key} onClick={() => setType(t.key)} className={`p-sm rounded-xl border-2 cursor-pointer text-center transition-all duration-300 ${type === t.key ? "border-indigo-brand bg-indigo-brand/5 shadow-sm transform -translate-y-1" : "border-surface-container bg-surface-bright hover:border-surface-container-high hover:bg-surface-container/50"}`}>
+                      <div className="text-3xl mb-xs drop-shadow-sm">{t.emoji}</div>
+                      <div className={`font-bold text-xs ${type === t.key ? "text-indigo-brand" : "text-on-surface-variant"}`}>{t.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-xl">
+                <div className="flex justify-between items-center mb-sm">
+                  <label className="text-label-caps font-label-caps text-on-surface-variant tracking-widest uppercase">Number of Questions</label>
+                  <span className="text-indigo-brand font-black text-lg bg-indigo-brand/10 px-xs py-0.5 rounded-md">{questionCount}</span>
+                </div>
+                <input type="range" min={3} max={10} value={questionCount} onChange={e => setQuestionCount(Number(e.target.value))} className="w-full h-2 bg-surface-container rounded-full appearance-none cursor-pointer accent-indigo-brand" />
+              </div>
+
+              <button onClick={startInterview} disabled={loading} className={`w-full py-md rounded-xl font-black text-body-base flex items-center justify-center gap-sm transition-all duration-300 ${loading ? "bg-surface-container text-on-surface-variant cursor-not-allowed" : "bg-gradient-to-r from-indigo-brand to-[#764BA2] text-white hover:shadow-[0_8px_25px_rgba(102,126,234,0.4)] hover:-translate-y-0.5"}`}>
+                {loading ? (
+                  <><span className="material-symbols-outlined animate-spin text-xl">autorenew</span> Preparing AI...</>
+                ) : (
+                  <>Start {questionCount}-Question Interview <span className="material-symbols-outlined text-xl">arrow_forward</span></>
+                )}
+              </button>
             </div>
-
-            <label style={{ color:"#64748B", fontSize:"12px", fontWeight:"800", display:"flex", justifyContent:"space-between", marginBottom:"16px", textTransform:"uppercase" }}>
-              <span>Number of Questions</span>
-              <span style={{ color:"#2563EB", fontWeight:"900", fontSize:"16px" }}>{questionCount}</span>
-            </label>
-            <input type="range" min={3} max={10} value={questionCount} onChange={e => setQuestionCount(Number(e.target.value))} style={{ width:"100%", marginBottom:"40px", accentColor:"#2563EB", cursor:"pointer" }} />
-
-            <button onClick={startInterview} disabled={loading} style={{ width:"100%", padding:"20px", background:loading?"#E2E8F0":"#0F172A", color:loading?"#94A3B8":"#fff", border:"none", borderRadius:"16px", fontWeight:"800", fontSize:"16px", cursor:loading?"not-allowed":"pointer", boxShadow:loading?"none":"0 12px 24px rgba(15,23,42,0.15)", transition:"all 0.2s" }}>
-              {loading ? "Preparing AI Interviewer..." : `Start ${questionCount}-Question Interview →`}
-            </button>
           </div>
         </div>
       </div>
@@ -219,17 +254,24 @@ export default function AIMockInterview({ user, onBack }: Props) {
 
   // ── RESULTS ──
   if (phase === "results") return (
-    <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif" }}>
-      <div style={{ background:"#0F172A", color:"#fff", padding:"60px 40px", textAlign:"center" }}>
-        <div style={{ maxWidth:"1000px", margin:"0 auto" }}>
-          <div style={{ fontSize:"64px", marginBottom:"16px" }}>🏆</div>
-          <h1 style={{ fontSize:"40px", fontWeight:"900", margin:"0 0 12px" }}>Interview Complete</h1>
-          <div style={{ fontSize:"20px", color:"#94A3B8", marginBottom:"32px" }}>{role} · {type} Round</div>
-          <div style={{ display:"inline-flex", alignItems:"center", gap:"16px", background:"#1E293B", padding:"12px 32px", borderRadius:"24px" }}>
-            <span style={{ fontSize:"48px", fontWeight:"900", color:scoreColor }}>{avgScore}%</span>
-            <div style={{ textAlign:"left" }}>
-              <div style={{ color:"#F8FAFC", fontWeight:"800", fontSize:"16px" }}>Overall Score</div>
-              <div style={{ color:scoreColor, fontWeight:"700", fontSize:"14px" }}>
+    <div className="min-h-screen bg-background quantum-gradient font-body-base text-on-background relative overflow-hidden flex flex-col">
+      {/* Decorative */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-accent-gold/10 blur-[150px] rounded-full pointer-events-none" />
+      
+      {/* Results Hero */}
+      <div className="relative z-10 glass border-b border-surface-container/50 pt-xxl pb-xl px-margin-mobile md:px-margin-desktop text-center">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-6xl mb-md drop-shadow-sm animate-[bounce_2s_infinite]">🏆</div>
+          <h1 className="text-display-sm-mobile md:text-display-sm-desktop font-black text-on-surface mb-xs">Interview Complete</h1>
+          <div className="text-title-md font-bold text-on-surface-variant/80 mb-lg flex items-center justify-center gap-sm">
+             <span className="material-symbols-outlined">work</span> {role} <span className="text-surface-container-high">•</span> {type} Round
+          </div>
+          
+          <div className="inline-flex items-center gap-md glass p-md rounded-xxl border border-surface-container shadow-md">
+            <span className={`text-5xl font-black ${avgScore >= 80 ? "text-success" : avgScore >= 60 ? "text-warning" : "text-error"}`}>{avgScore}%</span>
+            <div className="text-left border-l-2 border-surface-container pl-md">
+              <div className="text-sm font-black text-on-surface uppercase tracking-widest">Overall Score</div>
+              <div className={`font-bold text-sm ${avgScore >= 80 ? "text-success" : avgScore >= 60 ? "text-warning" : "text-error"}`}>
                 {avgScore >= 80 ? "Excellent Performance!" : avgScore >= 60 ? "Good — Keep Practising" : "Needs Improvement"}
               </div>
             </div>
@@ -237,50 +279,68 @@ export default function AIMockInterview({ user, onBack }: Props) {
         </div>
       </div>
 
-      <div style={{ maxWidth:"1200px", margin:"0 auto", padding:"60px 20px" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"32px" }}>
-          <h2 style={{ fontSize:"24px", fontWeight:"900", color:"#0F172A", margin:0 }}>Detailed Feedback ({history.length} Questions)</h2>
-          <div style={{ display:"flex", gap:"12px" }}>
-            <button onClick={() => { setPhase("setup"); setHistory([]); setQIndex(0); }} style={{ padding:"12px 24px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"14px", cursor:"pointer" }}>🔄 New Interview</button>
-            <button onClick={onBack} style={{ padding:"12px 24px", background:"#fff", color:"#475569", border:"1px solid #E2E8F0", borderRadius:"12px", fontWeight:"800", fontSize:"14px", cursor:"pointer" }}>Exit</button>
+      <div className="relative z-10 max-w-5xl mx-auto w-full px-margin-mobile md:px-margin-desktop py-xl flex-1 pb-xxxl">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-xl gap-md">
+          <h2 className="text-title-lg font-black text-on-surface flex items-center gap-sm">
+            <span className="material-symbols-outlined text-accent-gold text-3xl">insights</span>
+            Detailed Feedback ({history.length} Questions)
+          </h2>
+          <div className="flex gap-sm">
+            <button onClick={() => { setPhase("setup"); setHistory([]); setQIndex(0); }} className="px-md py-sm bg-indigo-brand text-white rounded-xl font-bold text-sm hover:bg-indigo-brand/90 transition-colors shadow-sm flex items-center gap-xs">
+              <span className="material-symbols-outlined text-sm">refresh</span> New Interview
+            </button>
+            <button onClick={onBack} className="px-md py-sm glass rounded-xl font-bold text-sm text-on-surface hover:bg-surface-container/50 transition-colors border border-surface-container flex items-center gap-xs">
+               Exit
+            </button>
           </div>
         </div>
 
-        <div style={{ display:"grid", gap:"24px" }}>
+        <div className="flex flex-col gap-lg">
           {history.map((h, i) => {
-            const qColor = h.fb?.score >= 80 ? "#10B981" : h.fb?.score >= 60 ? "#F59E0B" : "#EF4444";
+            const isGood = h.fb?.score >= 80;
+            const isOk = h.fb?.score >= 60;
+            const qColor = isGood ? "text-success" : isOk ? "text-warning" : "text-error";
+            const qBg = isGood ? "bg-success/10" : isOk ? "bg-warning/10" : "bg-error/10";
+            
             return (
-              <div key={i} style={{ background:"#fff", borderRadius:"20px", padding:"32px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)" }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"20px" }}>
-                  <div style={{ flex:1, paddingRight:"32px" }}>
-                    <div style={{ color:"#64748B", fontWeight:"800", fontSize:"13px", textTransform:"uppercase", letterSpacing:"1px", marginBottom:"8px" }}>Question {i+1}</div>
-                    <div style={{ fontWeight:"800", color:"#0F172A", fontSize:"18px", lineHeight:"1.6" }}>{h.q}</div>
+              <div key={i} className="glass rounded-xxl p-lg border border-surface-container shadow-sm group hover:shadow-md transition-shadow">
+                <div className="flex justify-between items-start mb-md gap-lg">
+                  <div className="flex-1">
+                    <div className="text-label-caps font-label-caps text-on-surface-variant tracking-widest uppercase mb-xs text-xs flex items-center gap-xs">
+                      Question {i+1}
+                    </div>
+                    <div className="text-title-md font-bold text-on-surface leading-snug">{h.q}</div>
                   </div>
-                  <div style={{ textAlign:"right" }}>
-                    <div style={{ fontWeight:"900", color:qColor, fontSize:"28px", lineHeight:1 }}>{h.fb?.score || 0}%</div>
-                    <div style={{ fontWeight:"700", color:qColor, fontSize:"12px", marginTop:"4px" }}>{h.fb?.rating}</div>
+                  <div className="text-right flex-shrink-0 flex flex-col items-end">
+                    <div className={`text-4xl font-black ${qColor} leading-none mb-1`}>{h.fb?.score || 0}%</div>
+                    <div className={`font-bold text-xs uppercase tracking-wider px-2 py-0.5 rounded-md ${qBg} ${qColor}`}>{h.fb?.rating}</div>
                   </div>
                 </div>
                 
-                <div style={{ background:"#F8FAFC", padding:"20px", borderRadius:"12px", marginBottom:"24px", border:"1px solid #F1F5F9", fontStyle:"italic", color:"#334155", fontSize:"15px", lineHeight:"1.7" }}>
-                  "{h.a}"
+                <div className="bg-surface-bright/80 p-md rounded-xl mb-lg border border-surface-container/50 font-medium text-on-surface-variant italic relative">
+                  <span className="material-symbols-outlined absolute top-md left-md text-surface-container-high text-3xl -z-10 opacity-30">format_quote</span>
+                  <p className="relative z-10 pl-sm">"{h.a}"</p>
                 </div>
 
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"24px", marginBottom:"24px" }}>
-                  <div style={{ background:"#F0FDF4", borderRadius:"16px", padding:"20px", border:"1px solid #DCFCE7" }}>
-                    <div style={{ fontSize:"14px", fontWeight:"800", color:"#16A34A", marginBottom:"12px" }}>✅ Strengths</div>
-                    {(h.fb?.strengths||[]).map((s:string,idx:number) => <div key={idx} style={{ fontSize:"14px", color:"#15803D", marginBottom:"8px", lineHeight:"1.5" }}>• {s}</div>)}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-md mb-md">
+                  <div className="bg-success/5 rounded-xl p-md border border-success/20">
+                    <div className="text-sm font-black text-success mb-sm flex items-center gap-xs uppercase tracking-wider"><span className="text-lg">✅</span> Strengths</div>
+                    <ul className="space-y-sm">
+                      {(h.fb?.strengths||[]).map((s:string,idx:number) => <li key={idx} className="text-sm font-medium text-success/80 flex items-start gap-xs"><span className="text-success mt-0.5 text-xs">•</span> <span>{s}</span></li>)}
+                    </ul>
                   </div>
-                  <div style={{ background:"#FFF7ED", borderRadius:"16px", padding:"20px", border:"1px solid #FFEDD5" }}>
-                    <div style={{ fontSize:"14px", fontWeight:"800", color:"#F59E0B", marginBottom:"12px" }}>📈 Areas to Improve</div>
-                    {(h.fb?.improvements||[]).map((s:string,idx:number) => <div key={idx} style={{ fontSize:"14px", color:"#B45309", marginBottom:"8px", lineHeight:"1.5" }}>• {s}</div>)}
+                  <div className="bg-warning/5 rounded-xl p-md border border-warning/20">
+                    <div className="text-sm font-black text-warning mb-sm flex items-center gap-xs uppercase tracking-wider"><span className="text-lg">📈</span> Areas to Improve</div>
+                    <ul className="space-y-sm">
+                      {(h.fb?.improvements||[]).map((s:string,idx:number) => <li key={idx} className="text-sm font-medium text-warning/80 flex items-start gap-xs"><span className="text-warning mt-0.5 text-xs">•</span> <span>{s}</span></li>)}
+                    </ul>
                   </div>
                 </div>
 
                 {h.fb?.ideal_answer && (
-                  <div style={{ background:"#EFF6FF", borderRadius:"16px", padding:"20px", border:"1px solid #DBEAFE" }}>
-                    <div style={{ fontSize:"14px", fontWeight:"800", color:"#2563EB", marginBottom:"8px" }}>💡 Ideal Answer Example</div>
-                    <div style={{ color:"#1E40AF", fontSize:"15px", lineHeight:"1.6" }}>{h.fb.ideal_answer}</div>
+                  <div className="bg-indigo-brand/5 rounded-xl p-md border border-indigo-brand/20">
+                    <div className="text-sm font-black text-indigo-brand mb-xs flex items-center gap-xs uppercase tracking-wider"><span className="text-lg">💡</span> Ideal Answer Example</div>
+                    <div className="text-body-base font-medium text-indigo-brand/80">{h.fb.ideal_answer}</div>
                   </div>
                 )}
               </div>
@@ -294,108 +354,155 @@ export default function AIMockInterview({ user, onBack }: Props) {
   // ── INTERVIEW ──
   const progress = ((qIndex) / questionCount) * 100;
   return (
-    <div style={{ height:"100vh", background:"#F8FAFC", fontFamily:"'Inter','Segoe UI',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
-      {/* HackerRank Style Header */}
-      <div style={{ background:"#0F172A", color:"#fff", padding:"0 32px", height:"64px", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
-        <div style={{ display:"flex", alignItems:"center", gap:"16px" }}>
-          <div style={{ fontWeight:"800", fontSize:"16px", letterSpacing:"0.5px" }}>GenuAI Interview Environment</div>
-          <div style={{ background:"#1E293B", padding:"4px 12px", borderRadius:"6px", fontSize:"12px", fontWeight:"700", color:"#94A3B8" }}>{role} ({type})</div>
+    <div className="h-screen bg-background font-body-base text-on-background flex flex-col overflow-hidden relative">
+      {/* Decorative Background */}
+      <div className="absolute inset-0 quantum-gradient opacity-50 pointer-events-none" />
+      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-accent-gold/10 blur-[150px] rounded-full pointer-events-none" />
+      
+      {/* Header */}
+      <div className="relative z-10 glass border-b border-surface-container/50 px-xl h-16 flex items-center justify-between flex-shrink-0 shadow-sm">
+        <div className="flex items-center gap-md">
+          <div className="font-black text-lg text-on-surface flex items-center gap-xs tracking-tight">
+             <span className="material-symbols-outlined text-accent-gold">smart_toy</span> GenuAI Interview
+          </div>
+          <div className="bg-surface-container-high/50 px-sm py-0.5 rounded-md text-xs font-bold text-on-surface-variant flex items-center gap-xs">
+            <span className="w-2 h-2 rounded-full bg-indigo-brand animate-pulse"></span>
+            {role} ({type})
+          </div>
         </div>
-        <div style={{ display:"flex", alignItems:"center", gap:"32px" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
-            <div style={{ fontSize:"13px", color:"#94A3B8", fontWeight:"700" }}>Question {qIndex+1} of {questionCount}</div>
-            <div style={{ width:"160px", height:"6px", background:"#334155", borderRadius:"3px", overflow:"hidden" }}>
-              <div style={{ width:`${progress}%`, height:"100%", background:"#3B82F6", borderRadius:"3px", transition:"width 0.4s ease" }} />
+        <div className="flex items-center gap-xl">
+          <div className="flex items-center gap-sm">
+            <div className="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Question {qIndex+1} of {questionCount}</div>
+            <div className="w-40 h-2 bg-surface-container rounded-full overflow-hidden shadow-inner">
+              <div className="h-full bg-gradient-to-r from-indigo-brand to-cyan-500 rounded-full transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
             </div>
           </div>
-          <button onClick={onBack} style={{ padding:"8px 16px", border:"1px solid #334155", borderRadius:"8px", background:"transparent", fontSize:"13px", color:"#CBD5E1", cursor:"pointer", fontWeight:"600", transition:"all 0.2s" }} onMouseEnter={e=>{e.currentTarget.style.background="#1E293B";e.currentTarget.style.color="#fff"}} onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="#CBD5E1"}}>
-            End Session
+          <button onClick={onBack} className="px-sm py-1 border border-surface-container-high text-on-surface-variant rounded-lg text-xs font-bold hover:bg-surface-container-high hover:text-on-surface transition-colors flex items-center gap-xs">
+            <span className="material-symbols-outlined text-sm">close</span> End Session
           </button>
         </div>
       </div>
 
-      <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
+      <div className="relative z-10 flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Left Pane - Question */}
-        <div style={{ width:"45%", background:"#fff", borderRight:"1px solid #E2E8F0", padding:"48px", overflowY:"auto", display:"flex", flexDirection:"column" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"32px" }}>
-            <div style={{ fontSize:"13px", fontWeight:"900", color:"#2563EB", textTransform:"uppercase", letterSpacing:"1px", background:"#EFF6FF", padding:"6px 12px", borderRadius:"8px" }}>{type} Round</div>
-            <button onClick={readQuestionAloud} disabled={isPlaying} style={{ background:"#F8FAFC", border:"1px solid #E2E8F0", color:"#0F172A", padding:"8px 16px", borderRadius:"12px", cursor:isPlaying?"not-allowed":"pointer", fontWeight:"700", fontSize:"13px", display:"flex", alignItems:"center", gap:"8px", transition:"background 0.2s" }} onMouseEnter={e=>e.currentTarget.style.background="#F1F5F9"} onMouseLeave={e=>e.currentTarget.style.background="#F8FAFC"}>
-              {isPlaying ? "🔊 Speaking..." : "▶ Read Question"}
+        <div className="w-full lg:w-5/12 glass border-b lg:border-b-0 lg:border-r border-surface-container/50 p-xl lg:p-xxl flex flex-col overflow-y-auto">
+          <div className="flex justify-between items-start mb-lg">
+            <div className="text-xs font-black text-indigo-brand uppercase tracking-widest bg-indigo-brand/10 px-sm py-1 rounded-md border border-indigo-brand/20">
+              {type} Round
+            </div>
+            <button onClick={readQuestionAloud} disabled={isPlaying} className={`glass px-sm py-1 rounded-lg border border-surface-container text-xs font-bold flex items-center gap-xs transition-colors ${isPlaying ? 'text-indigo-brand bg-indigo-brand/5' : 'text-on-surface hover:bg-surface-container/50'}`}>
+              <span className={`material-symbols-outlined text-sm ${isPlaying ? 'animate-pulse' : ''}`}>{isPlaying ? 'volume_up' : 'play_arrow'}</span>
+              {isPlaying ? "Speaking..." : "Read Aloud"}
             </button>
           </div>
-          <p style={{ fontSize:"26px", fontWeight:"800", color:"#0F172A", margin:0, lineHeight:"1.6" }}>{currentQ}</p>
+          <div className="flex-1 flex flex-col justify-center pb-xl">
+             <span className="material-symbols-outlined text-4xl text-surface-container-high mb-sm">help</span>
+             <p className="text-display-sm-mobile md:text-title-lg font-black text-on-surface leading-snug">{currentQ}</p>
+          </div>
         </div>
 
         {/* Right Pane - Answer / Feedback */}
-        <div style={{ flex:1, background:"#F8FAFC", padding:"48px", overflowY:"auto" }}>
+        <div className="flex-1 p-xl lg:p-xxl overflow-y-auto bg-surface-bright/30">
           {!feedback ? (
-            <div style={{ background:"#fff", borderRadius:"16px", border:"1px solid #E2E8F0", boxShadow:"0 4px 12px rgba(0,0,0,0.02)", display:"flex", flexDirection:"column", minHeight:"400px", height:"100%" }}>
-              <div style={{ padding:"20px 24px", borderBottom:"1px solid #E2E8F0", background:"#F1F5F9", borderRadius:"16px 16px 0 0", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <div style={{ fontWeight:"800", color:"#334155", fontSize:"13px", textTransform:"uppercase", letterSpacing:"0.5px" }}>Response Editor</div>
-                {isRecording && <span style={{ color:"#DC2626", fontSize:"12px", fontWeight:"800", display:"flex", alignItems:"center", gap:"6px" }}><div style={{ width:"8px", height:"8px", background:"#DC2626", borderRadius:"50%" }} className="pulse-dot"></div> Live Transcription Active</span>}
+            <div className="glass rounded-xxl border border-surface-container shadow-lg flex flex-col h-full min-h-[500px]">
+              <div className="px-lg py-md border-b border-surface-container/50 bg-surface-bright/50 rounded-t-xxl flex justify-between items-center">
+                <div className="font-bold text-xs text-on-surface-variant uppercase tracking-widest flex items-center gap-xs">
+                  <span className="material-symbols-outlined text-sm">edit_document</span> Response Editor
+                </div>
+                {isRecording && (
+                  <div className="text-error text-xs font-bold flex items-center gap-xs bg-error/10 px-sm py-0.5 rounded-full border border-error/20">
+                    <div className="w-2 h-2 bg-error rounded-full animate-ping"></div> Live Transcription
+                  </div>
+                )}
               </div>
-              <textarea value={answer} onChange={e => setAnswer(e.target.value)} placeholder="Type your answer, or click 'Live Voice Answer' to speak it..." style={{ flex:1, border:"none", padding:"32px", fontSize:"16px", lineHeight:"1.8", color:"#0F172A", outline:"none", resize:"none", fontFamily:"'Inter', sans-serif" }} />
-              <div style={{ padding:"24px", borderTop:"1px solid #E2E8F0", background:"#F8FAFC", borderRadius:"0 0 16px 16px", display:"flex", gap:"16px" }}>
-                <button onClick={isRecording ? stopVoice : startVoice} style={{ padding:"16px 24px", background:isRecording?"#FEF2F2":"#fff", border:`2px solid ${isRecording?"#FCA5A5":"#E2E8F0"}`, borderRadius:"12px", color:isRecording?"#DC2626":"#475569", fontWeight:"800", fontSize:"15px", cursor:"pointer", display:"flex", alignItems:"center", gap:"8px", transition:"all 0.2s" }}>
-                  {isRecording ? "⏹ Stop Listening" : "🎙️ Live Voice Answer"}
+              
+              <textarea 
+                value={answer} 
+                onChange={e => setAnswer(e.target.value)} 
+                placeholder="Type your answer here, or click 'Live Voice Answer' to speak it..." 
+                className="flex-1 bg-transparent border-none p-lg text-body-lg font-medium text-on-surface outline-none resize-none placeholder:text-on-surface-variant/40"
+              />
+              
+              <div className="p-md border-t border-surface-container/50 bg-surface-bright/50 rounded-b-xxl flex flex-col sm:flex-row gap-sm">
+                <button 
+                  onClick={isRecording ? stopVoice : startVoice} 
+                  className={`px-lg py-md rounded-xl font-black text-sm flex items-center justify-center gap-sm transition-all border-2 ${isRecording ? "bg-error/10 border-error/30 text-error hover:bg-error/20" : "glass border-surface-container text-on-surface hover:bg-surface-container/50"}`}
+                >
+                  <span className={`material-symbols-outlined ${isRecording ? 'animate-pulse' : ''}`}>{isRecording ? "stop_circle" : "mic"}</span>
+                  {isRecording ? "Stop Listening" : "Live Voice Answer"}
                 </button>
-                <button onClick={submitAnswer} disabled={!answer.trim() || loading} style={{ flex:1, padding:"16px", background:answer.trim()&&!loading?"#0F172A":"#E2E8F0", color:answer.trim()&&!loading?"#fff":"#94A3B8", border:"none", borderRadius:"12px", fontWeight:"800", fontSize:"15px", cursor:answer.trim()&&!loading?"pointer":"not-allowed", transition:"all 0.2s", boxShadow:answer.trim()&&!loading?"0 4px 12px rgba(15,23,42,0.2)":"none" }}>
-                  {loading ? "Evaluating Answer..." : "Submit Answer →"}
+                <button 
+                  onClick={submitAnswer} 
+                  disabled={!answer.trim() || loading} 
+                  className={`flex-1 px-lg py-md rounded-xl font-black text-sm flex items-center justify-center gap-sm transition-all ${(!answer.trim() || loading) ? "bg-surface-container text-on-surface-variant cursor-not-allowed" : "bg-on-surface text-surface hover:-translate-y-0.5 shadow-md hover:shadow-lg"}`}
+                >
+                  {loading ? (
+                    <><span className="material-symbols-outlined animate-spin">autorenew</span> Evaluating...</>
+                  ) : (
+                    <>Submit Answer <span className="material-symbols-outlined">send</span></>
+                  )}
                 </button>
               </div>
             </div>
           ) : (
-            <div style={{ background:"#fff", borderRadius:"16px", border:"1px solid #E2E8F0", boxShadow:"0 10px 30px rgba(0,0,0,0.05)", padding:"40px", animation:"slideUp 0.3s ease-out" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"32px", paddingBottom:"24px", borderBottom:"1px solid #E2E8F0" }}>
+            <div className="glass rounded-xxl border border-surface-container shadow-lg p-xl lg:p-xxl animate-[fadeIn_0.3s_ease-out]">
+              <div className="flex justify-between items-start mb-lg pb-md border-b border-surface-container/50">
                 <div>
-                  <div style={{ fontWeight:"900", fontSize:"28px", color:"#0F172A", marginBottom:"8px" }}>AI Evaluation</div>
-                  <div style={{ color:"#64748B", fontSize:"15px", lineHeight:"1.6" }}>Instant feedback on your response.</div>
+                  <h3 className="text-title-lg font-black text-on-surface mb-xs flex items-center gap-sm">
+                    <span className="material-symbols-outlined text-accent-gold text-3xl">psychology</span>
+                    AI Evaluation
+                  </h3>
+                  <p className="text-body-base text-on-surface-variant font-medium">Instant feedback on your response.</p>
                 </div>
-                <div style={{ textAlign:"right" }}>
-                  <div style={{ fontSize:"56px", fontWeight:"900", color:scoreColor, lineHeight:"1" }}>{feedback.score}%</div>
-                  <div style={{ color:scoreColor, fontWeight:"800", fontSize:"15px", marginTop:"8px" }}>{feedback.rating}</div>
+                <div className="text-right">
+                  <div className={`text-5xl font-black leading-none tracking-tighter ${feedback.score >= 80 ? "text-success" : feedback.score >= 60 ? "text-warning" : "text-error"}`}>
+                    {feedback.score}%
+                  </div>
+                  <div className={`text-xs font-black uppercase tracking-widest mt-sm ${feedback.score >= 80 ? "text-success" : feedback.score >= 60 ? "text-warning" : "text-error"}`}>
+                    {feedback.rating}
+                  </div>
                 </div>
               </div>
               
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"24px", marginBottom:"32px" }}>
-                <div style={{ background:"#F0FDF4", borderRadius:"16px", padding:"24px", border:"1px solid #DCFCE7" }}>
-                  <div style={{ fontSize:"15px", fontWeight:"800", color:"#16A34A", marginBottom:"16px", display:"flex", alignItems:"center", gap:"8px" }}><span style={{fontSize:"18px"}}>✅</span> What you did well</div>
-                  {(feedback.strengths||[]).map((s:string,i:number) => <div key={i} style={{ fontSize:"14px", color:"#15803D", marginBottom:"12px", lineHeight:"1.6" }}>• {s}</div>)}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-md mb-lg">
+                <div className="bg-success/5 rounded-xl p-md border border-success/20">
+                  <div className="text-sm font-black text-success mb-sm flex items-center gap-xs uppercase tracking-wider"><span className="text-lg">✅</span> What you did well</div>
+                  <ul className="space-y-sm">
+                    {(feedback.strengths||[]).map((s:string,i:number) => <li key={i} className="text-sm font-medium text-success/90 flex items-start gap-xs"><span className="text-success mt-0.5 text-xs">•</span> <span>{s}</span></li>)}
+                  </ul>
                 </div>
-                <div style={{ background:"#FFF7ED", borderRadius:"16px", padding:"24px", border:"1px solid #FFEDD5" }}>
-                  <div style={{ fontSize:"15px", fontWeight:"800", color:"#F59E0B", marginBottom:"16px", display:"flex", alignItems:"center", gap:"8px" }}><span style={{fontSize:"18px"}}>📈</span> What to improve</div>
-                  {(feedback.improvements||[]).map((s:string,i:number) => <div key={i} style={{ fontSize:"14px", color:"#B45309", marginBottom:"12px", lineHeight:"1.6" }}>• {s}</div>)}
+                <div className="bg-warning/5 rounded-xl p-md border border-warning/20">
+                  <div className="text-sm font-black text-warning mb-sm flex items-center gap-xs uppercase tracking-wider"><span className="text-lg">📈</span> What to improve</div>
+                  <ul className="space-y-sm">
+                    {(feedback.improvements||[]).map((s:string,i:number) => <li key={i} className="text-sm font-medium text-warning/90 flex items-start gap-xs"><span className="text-warning mt-0.5 text-xs">•</span> <span>{s}</span></li>)}
+                  </ul>
                 </div>
               </div>
               
               {feedback.ideal_answer && (
-                <div style={{ background:"#EFF6FF", borderRadius:"16px", padding:"24px", marginBottom:"32px", border:"1px solid #DBEAFE" }}>
-                  <div style={{ fontSize:"15px", fontWeight:"800", color:"#2563EB", marginBottom:"12px", display:"flex", alignItems:"center", gap:"8px" }}><span style={{fontSize:"18px"}}>💡</span> Ideal Answer Example</div>
-                  <div style={{ fontSize:"15px", color:"#1E40AF", lineHeight:"1.7" }}>{feedback.ideal_answer}</div>
+                <div className="bg-indigo-brand/5 rounded-xl p-md mb-xl border border-indigo-brand/20">
+                  <div className="text-sm font-black text-indigo-brand mb-xs flex items-center gap-xs uppercase tracking-wider"><span className="text-lg">💡</span> Ideal Answer Example</div>
+                  <div className="text-body-base font-medium text-indigo-brand/90 leading-relaxed">{feedback.ideal_answer}</div>
                 </div>
               )}
               
-              <button onClick={nextQuestion} disabled={loading} style={{ width:"100%", padding:"20px", background:"#0F172A", color:"#fff", border:"none", borderRadius:"14px", fontWeight:"800", fontSize:"16px", cursor:loading?"not-allowed":"pointer", boxShadow:loading?"none":"0 8px 24px rgba(15,23,42,0.2)", transition:"all 0.2s" }} onMouseEnter={e=>!loading&&(e.currentTarget.style.transform="scale(1.01)")} onMouseLeave={e=>!loading&&(e.currentTarget.style.transform="scale(1)")}>
-                {loading ? "Preparing next question..." : qIndex + 1 >= questionCount ? "Finish Interview & See Results →" : `Next Question (${qIndex+2}/${questionCount}) →`}
+              <button 
+                onClick={nextQuestion} 
+                disabled={loading} 
+                className={`w-full py-md rounded-xl font-black text-body-base flex items-center justify-center gap-sm transition-all duration-300 ${loading ? "bg-surface-container text-on-surface-variant cursor-not-allowed" : "bg-on-surface text-surface hover:-translate-y-0.5 shadow-md hover:shadow-lg"}`}
+              >
+                {loading ? (
+                  <><span className="material-symbols-outlined animate-spin text-xl">autorenew</span> Preparing next question...</>
+                ) : qIndex + 1 >= questionCount ? (
+                  <>Finish Interview & See Results <span className="material-symbols-outlined">flag</span></>
+                ) : (
+                  <>Next Question ({qIndex+2}/{questionCount}) <span className="material-symbols-outlined">arrow_forward</span></>
+                )}
               </button>
             </div>
           )}
         </div>
       </div>
-
-      <style>{`
-        @keyframes pulse {
-          0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
-          70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
-          100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
-        }
-        .pulse-dot { animation: pulse 2s infinite; }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        textarea:focus, select:focus, input:focus { border-color: #2563EB !important; background: #fff !important; }
-      `}</style>
     </div>
   );
 }
