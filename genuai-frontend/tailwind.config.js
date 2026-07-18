@@ -18,6 +18,8 @@ export default {
         
         "accent-gold": "#D4AF37",
         "indigo-brand": "#667EEA",
+        "indigo-brand-dark": "#4C51BF",
+        "on-tertiary": "#FFFFFF",
         
         "primary": "#3B82F6",
         "primary-container": "#EFF6FF",
