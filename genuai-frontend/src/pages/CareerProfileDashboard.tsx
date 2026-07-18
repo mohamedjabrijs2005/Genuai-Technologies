@@ -7,10 +7,10 @@ import PortfolioManager from './PortfolioManager';
 interface Props { user: any; onBack: () => void; }
 
 const TOOLS = [
-  { id:'resume', imgSrc:'/icons/resume_gen.png', title:'AI Resume Builder', desc:'Build a professional ATS-optimized resume using AI. Tailored to your target role.', color:'info-dark', bg:'info/10', tags:['ATS Optimized','PDF Export'], ready:true },
-  { id:'cover', imgSrc:'/icons/cover_letter.png', title:'Cover Letter Generator', desc:'Generate compelling, personalized cover letters for any job posting instantly.', color:'success-dark', bg:'success/10', tags:['Personalized','Instant'], ready:true },
-  { id:'ats', imgSrc:'/icons/learning_brain.png', title:'ATS Scanner', desc:'Paste your existing resume and a job description to get a comprehensive compatibility report.', color:'[#7C3AED]', bg:'[#7C3AED]/10', tags:['Resume Scoring','Keyword Match'], ready:true },
-  { id:'portfolio', imgSrc:'/icons/cat_logical.png', title:'Portfolio Manager', desc:'Connect your GitHub and LeetCode to auto-generate a stunning developer portfolio.', color:'warning-dark', bg:'warning/10', tags:['GitHub Sync','Projects'], ready:true },
+  { id:'resume', imgSrc:'/icons/resume_gen.png', title:'AI Resume Builder', desc:'Build a professional ATS-optimized resume using AI. Tailored to your target role.', classes: { hoverBorder: 'hover:border-info-dark', bgLight: 'bg-info/10', borderLight: 'border-info-dark/20' }, tags:['ATS Optimized','PDF Export'], ready:true },
+  { id:'cover', imgSrc:'/icons/cover_letter.png', title:'Cover Letter Generator', desc:'Generate compelling, personalized cover letters for any job posting instantly.', classes: { hoverBorder: 'hover:border-success-dark', bgLight: 'bg-success/10', borderLight: 'border-success-dark/20' }, tags:['Personalized','Instant'], ready:true },
+  { id:'ats', imgSrc:'/icons/learning_brain.png', title:'ATS Scanner', desc:'Paste your existing resume and a job description to get a comprehensive compatibility report.', classes: { hoverBorder: 'hover:border-[#7C3AED]', bgLight: 'bg-[#7C3AED]/10', borderLight: 'border-[#7C3AED]/20' }, tags:['Resume Scoring','Keyword Match'], ready:true },
+  { id:'portfolio', imgSrc:'/icons/cat_logical.png', title:'Portfolio Manager', desc:'Connect your GitHub and LeetCode to auto-generate a stunning developer portfolio.', classes: { hoverBorder: 'hover:border-warning-dark', bgLight: 'bg-warning/10', borderLight: 'border-warning-dark/20' }, tags:['GitHub Sync','Projects'], ready:true },
 ];
 
 export default function CareerProfileDashboard({ user, onBack }: Props) {
@@ -63,9 +63,9 @@ export default function CareerProfileDashboard({ user, onBack }: Props) {
             <div
               key={tool.id}
               onClick={() => tool.ready ? setOpenTool(tool.id) : null}
-              className={`glass rounded-3xl p-lg flex flex-col relative transition-all duration-300 border-2 border-surface-container ${tool.ready ? `cursor-pointer hover:border-${tool.color} hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 hover:bg-white` : 'opacity-60 cursor-not-allowed'}`}
+              className={`glass rounded-3xl p-lg flex flex-col relative transition-all duration-300 border-2 border-surface-container ${tool.ready ? `cursor-pointer ${tool.classes.hoverBorder} hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 hover:bg-white` : 'opacity-60 cursor-not-allowed'}`}
             >
-              <div className={`w-14 h-14 rounded-2xl bg-${tool.bg} flex items-center justify-center mb-md overflow-hidden shrink-0 border border-${tool.color}/20`}>
+              <div className={`w-14 h-14 rounded-2xl ${tool.classes.bgLight} flex items-center justify-center mb-md overflow-hidden shrink-0 border ${tool.classes.borderLight}`}>
                 <img src={tool.imgSrc} alt={tool.title} className="w-8 h-8 object-contain mix-blend-multiply drop-shadow-sm" />
               </div>
               <div className="font-black text-title-sm text-on-surface mb-xs">{tool.title}</div>

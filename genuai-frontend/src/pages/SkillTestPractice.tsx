@@ -6,12 +6,12 @@ interface Props { user: any; onBack: () => void; }
 const GROQ_KEY = import.meta.env.VITE_GROQ_KEY;
 
 const CATEGORIES = [
-  { id: 'logical', name: 'Logical Reasoning', imgSrc: '/icons/cat_logical.png', color: 'indigo-brand', bg: 'indigo-brand/10', desc: 'Syllogisms, blood relations, patterns' },
-  { id: 'quantitative', name: 'Quantitative Aptitude', imgSrc: '/icons/cat_quant.png', color: 'success', bg: 'success/10', desc: 'Permutations, probability, algebra' },
-  { id: 'english', name: 'English Comprehension', imgSrc: '/icons/cat_english.png', color: 'warning-dark', bg: 'warning/10', desc: 'Grammar, vocabulary, reading comp' },
-  { id: 'automata_fix', name: 'GenuAI Automata Fix', imgSrc: '/icons/cat_autofix.png', color: 'error', bg: 'error/10', desc: 'Debug logical and syntax errors in C/C++/Java' },
-  { id: 'automata', name: 'GenuAI Automata', imgSrc: '/icons/cat_automata.png', color: '[#7C3AED]', bg: '[#7C3AED]/10', desc: 'Live competitive programming assessment' },
-  { id: 'core', name: 'Core Computer Science', imgSrc: '/icons/learning_brain.png', color: 'info', bg: 'info/10', desc: 'OS, DBMS, Computer Networks, OOPS' },
+  { id: 'logical', name: 'Logical Reasoning', imgSrc: '/icons/cat_logical.png', classes: { bgLight: 'bg-indigo-brand/10' }, desc: 'Syllogisms, blood relations, patterns' },
+  { id: 'quantitative', name: 'Quantitative Aptitude', imgSrc: '/icons/cat_quant.png', classes: { bgLight: 'bg-success/10' }, desc: 'Permutations, probability, algebra' },
+  { id: 'english', name: 'English Comprehension', imgSrc: '/icons/cat_english.png', classes: { bgLight: 'bg-warning/10' }, desc: 'Grammar, vocabulary, reading comp' },
+  { id: 'automata_fix', name: 'GenuAI Automata Fix', imgSrc: '/icons/cat_autofix.png', classes: { bgLight: 'bg-error/10' }, desc: 'Debug logical and syntax errors in C/C++/Java' },
+  { id: 'automata', name: 'GenuAI Automata', imgSrc: '/icons/cat_automata.png', classes: { bgLight: 'bg-[#7C3AED]/10' }, desc: 'Live competitive programming assessment' },
+  { id: 'core', name: 'Core Computer Science', imgSrc: '/icons/learning_brain.png', classes: { bgLight: 'bg-info/10' }, desc: 'OS, DBMS, Computer Networks, OOPS' },
 ];
 
 const SUB_TOPICS: Record<string, string[]> = {
@@ -267,7 +267,7 @@ Return ONLY JSON:
               <div className="flex flex-col gap-sm mb-xl max-h-[400px] overflow-y-auto pr-sm custom-scrollbar">
                 {CATEGORIES.map(c => (
                   <div key={c.id} onClick={() => setCategory(c.id)} className={`flex items-center gap-md p-md border-2 rounded-xl cursor-pointer transition-all duration-300 ${category === c.id ? 'border-indigo-brand bg-indigo-brand/5 shadow-sm transform -translate-y-1' : 'border-surface-container bg-surface-bright hover:border-surface-container-high hover:bg-surface-container/50'}`}>
-                    <div className={`w-12 h-12 rounded-xl bg-${c.bg} flex items-center justify-center overflow-hidden shrink-0`}>
+                    <div className={`w-12 h-12 rounded-xl ${c.classes.bgLight} flex items-center justify-center overflow-hidden shrink-0`}>
                       <img src={c.imgSrc} alt={c.name} className="w-8 h-8 object-cover mix-blend-multiply drop-shadow-sm" />
                     </div>
                     <div>
@@ -409,7 +409,7 @@ Return ONLY JSON:
       <div className="relative z-10 glass border-b border-surface-container/50 px-xl h-16 flex items-center justify-between flex-shrink-0 shadow-sm">
         <div className="flex items-center gap-md">
           <div className="font-black text-lg text-on-surface flex items-center gap-xs tracking-tight">
-             <div className={`w-8 h-8 rounded-lg bg-${currentCatData.bg} flex items-center justify-center overflow-hidden shrink-0`}>
+             <div className={`w-8 h-8 rounded-lg ${currentCatData.classes.bgLight} flex items-center justify-center overflow-hidden shrink-0`}>
                 <img src={currentCatData.imgSrc} alt={currentCatData.name} className="w-full h-full object-cover mix-blend-multiply" />
              </div> 
              GenuAI Assessment

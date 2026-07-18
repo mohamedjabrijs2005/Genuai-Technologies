@@ -98,7 +98,13 @@ export default function CompanyDashboard({ user, onLogout }: Props) {
   });
 
   const getRankColor = (i: number) => i === 0 ? "text-warning" : i === 1 ? "text-surface-variant" : i === 2 ? "text-[#CD7F32]" : "text-on-surface-variant";
-  const vc = (v: string) => v === "HIRE" ? "success" : v === "WAITLIST" ? "indigo-brand" : v === "REVIEW" ? "warning" : v === "REJECT" ? "error" : "on-surface-variant";
+  const getVerdictClasses = (v: string) => {
+    if (v === "HIRE") return "bg-success/10 text-success border-success/20";
+    if (v === "WAITLIST") return "bg-indigo-brand/10 text-indigo-brand border-indigo-brand/20";
+    if (v === "REVIEW") return "bg-warning/10 text-warning border-warning/20";
+    if (v === "REJECT") return "bg-error/10 text-error border-error/20";
+    return "bg-surface-container/50 text-on-surface-variant border-surface-container-high";
+  };
 
   // Skeleton Loader Component
   const Skeleton = () => (
@@ -226,7 +232,7 @@ export default function CompanyDashboard({ user, onLogout }: Props) {
                   <div className="flex flex-col gap-sm shrink-0 w-32">
                     <button onClick={() => { setSelectedCandidate(c); setEvidenceTab("overview"); }} className="py-sm bg-indigo-brand/10 text-indigo-brand border border-indigo-brand/20 rounded-lg font-bold cursor-pointer text-xs hover:bg-indigo-brand/20 transition-colors flex items-center justify-center gap-1"><span className="material-symbols-outlined text-[16px]">visibility</span> Review</button>
                     {c.verdict ? (
-                      <div className={`py-sm bg-${vc(c.verdict)}/10 text-${vc(c.verdict)} border border-${vc(c.verdict)}/20 rounded-lg font-black text-xs text-center uppercase tracking-wider`}>{c.verdict}</div>
+                      <div className={`py-sm rounded-lg font-black text-xs text-center uppercase tracking-wider border ${getVerdictClasses(c.verdict)}`}>{c.verdict}</div>
                     ) : (
                       <div className="flex gap-xs">
                         <button onClick={() => handleHireInitiate(c)} className="flex-1 py-sm bg-success text-white border-none rounded-lg font-black cursor-pointer text-[10px] shadow-sm hover:opacity-90">Hire</button>
@@ -268,7 +274,7 @@ export default function CompanyDashboard({ user, onLogout }: Props) {
                         </td>
                         <td className="p-md font-black text-on-surface text-body-lg">{c.overall_score}%</td>
                         <td className="p-md">
-                          <span className={`px-sm py-1 rounded-md bg-${vc(c.verdict)}/10 text-${vc(c.verdict)} border border-${vc(c.verdict)}/20 text-[10px] font-black uppercase tracking-wider w-max block text-center`}>{c.verdict || "AI REVIEWED"}</span>
+                          <span className={`px-sm py-1 rounded-md text-[10px] font-black uppercase tracking-wider w-max block text-center border ${getVerdictClasses(c.verdict || "")}`}>{c.verdict || "AI REVIEWED"}</span>
                         </td>
                         <td className="p-md">
                            <button onClick={() => { setSelectedCandidate(c); setEvidenceTab("overview"); }} className="px-md py-sm bg-surface-bright border border-surface-container rounded-lg text-xs cursor-pointer font-bold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors shadow-sm">View Details</button>

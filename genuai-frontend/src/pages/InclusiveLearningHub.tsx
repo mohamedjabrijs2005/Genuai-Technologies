@@ -321,21 +321,21 @@ Format the output using simple Markdown (## headers, **bold**, and \`\`\` for co
                 <h3 className="text-title-lg font-black text-on-surface mb-md">Featured Learning Tracks</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-md">
                   {[
-                    { icon: "science", title: "React Fundamentals", desc: "Hooks, State, & Props", color: "info" },
-                    { icon: "directions_boat", title: "Docker Mastery", desc: "Containers & Images", color: "indigo-brand" },
-                    { icon: "account_tree", title: "System Design", desc: "Scale & Architecture", color: "success" },
-                    { icon: "security", title: "Cybersecurity", desc: "Threats & Defenses", color: "error" },
-                    { icon: "code_blocks", title: "Python Basics", desc: "Syntax & Structures", color: "warning-dark" },
-                    { icon: "psychology", title: "Machine Learning", desc: "Models & Training", color: "purple-500" },
-                    { icon: "cloud", title: "AWS Cloud", desc: "EC2, S3, & VPCs", color: "accent-gold" },
-                    { icon: "bolt", title: "GraphQL", desc: "Queries & Mutations", color: "pink-500" }
+                    { icon: "science", title: "React Fundamentals", desc: "Hooks, State, & Props", classes: { bgLight: "bg-info/10", text: "text-info" } },
+                    { icon: "directions_boat", title: "Docker Mastery", desc: "Containers & Images", classes: { bgLight: "bg-indigo-brand/10", text: "text-indigo-brand" } },
+                    { icon: "account_tree", title: "System Design", desc: "Scale & Architecture", classes: { bgLight: "bg-success/10", text: "text-success" } },
+                    { icon: "security", title: "Cybersecurity", desc: "Threats & Defenses", classes: { bgLight: "bg-error/10", text: "text-error" } },
+                    { icon: "code_blocks", title: "Python Basics", desc: "Syntax & Structures", classes: { bgLight: "bg-warning-dark/10", text: "text-warning-dark" } },
+                    { icon: "psychology", title: "Machine Learning", desc: "Models & Training", classes: { bgLight: "bg-purple-500/10", text: "text-purple-500" } },
+                    { icon: "cloud", title: "AWS Cloud", desc: "EC2, S3, & VPCs", classes: { bgLight: "bg-accent-gold/10", text: "text-accent-gold" } },
+                    { icon: "bolt", title: "GraphQL", desc: "Queries & Mutations", classes: { bgLight: "bg-pink-500/10", text: "text-pink-500" } }
                   ].map(track => (
                     <button 
                       key={track.title} 
                       onClick={() => generateSyllabus(track.title)} 
                       className="bg-surface-bright/50 border border-surface-container p-md rounded-2xl text-left cursor-pointer hover:shadow-md hover:bg-surface-container/30 hover:-translate-y-1 transition-all duration-300 group"
                     >
-                      <div className={`w-10 h-10 rounded-xl bg-${track.color}/10 text-${track.color} flex items-center justify-center mb-sm group-hover:scale-110 transition-transform`}>
+                      <div className={`w-10 h-10 rounded-xl ${track.classes.bgLight} ${track.classes.text} flex items-center justify-center mb-sm group-hover:scale-110 transition-transform`}>
                          <span className="material-symbols-outlined text-2xl">{track.icon}</span>
                       </div>
                       <div className="font-bold text-on-surface text-sm mb-xs">{track.title}</div>

@@ -9,12 +9,12 @@ import SkillTestPractice from './SkillTestPractice';
 interface Props { user: any; onBack: () => void; }
 
 const TOOLS = [
-  { id:'mock',     imgSrc:'/icons/ai_mock_interview.png', title:'AI Mock Interview',      desc:'Practice with an AI interviewer tailored to your role. Get instant feedback on answers, tone, and clarity.',    color:'indigo-brand', bg:'indigo-brand/10', tags:['HR Round','Technical','Behavioral'], ready:true },
-  { id:'skills',   imgSrc:'/icons/skill_test.png', title:'Skill Test Practice',    desc:'Attempt GenuAI-style coding, aptitude, English, and automata questions with detailed explanations.',              color:'[#7C3AED]', bg:'[#7C3AED]/10', tags:['Coding','Aptitude','English','Automata'], ready:true },
-  { id:'projects', imgSrc:'/icons/cat_logical.png', title:'Project Building Practice', desc:'Practice building full-stack projects with AI-guided requirements and automated code reviews.', color:'info', bg:'info/10', tags:['Full Stack','Code Review'], ready:true },
-  { id:'group_discussion', imgSrc:'/icons/cat_automata.png', title:'Group Discussion', desc:'Simulate multiplayer group discussions with AI participants to test leadership and debate skills.', color:'success', bg:'success/10', tags:['Leadership','Communication'], ready:true },
-  { id:'svar',     imgSrc:'/icons/svar_mic.png', title:'SVAR Speaking Practice', desc:'Improve your verbal communication, fluency, and listening comprehension with scored exercises.',                  color:'error', bg:'error/10', tags:['Speaking','Listening','Fluency'], ready:true },
-  { id:'learning', imgSrc:'/icons/learning_brain.png', title:'Inclusive Learning Hub', desc:'Access curated courses, video tutorials, DSA sheets, coding challenges, and interview prep guides.',             color:'warning-dark', bg:'warning/10', tags:['DSA','System Design','Interview Prep','Video'], ready:true },
+  { id:'mock', imgSrc:'/icons/ai_mock_interview.png', title:'AI Mock Interview', desc:'Practice with an AI interviewer tailored to your role. Get instant feedback on answers, tone, and clarity.', classes: { hoverBorder: 'hover:border-indigo-brand', bgLight: 'bg-indigo-brand/10', borderLight: 'border-indigo-brand/20', text: 'text-indigo-brand', bg: 'bg-indigo-brand', border: 'border-indigo-brand' }, tags:['HR Round','Technical','Behavioral'], ready:true },
+  { id:'skills', imgSrc:'/icons/skill_test.png', title:'Skill Test Practice', desc:'Attempt GenuAI-style coding, aptitude, English, and automata questions with detailed explanations.', classes: { hoverBorder: 'hover:border-[#7C3AED]', bgLight: 'bg-[#7C3AED]/10', borderLight: 'border-[#7C3AED]/20', text: 'text-[#7C3AED]', bg: 'bg-[#7C3AED]', border: 'border-[#7C3AED]' }, tags:['Coding','Aptitude','English','Automata'], ready:true },
+  { id:'projects', imgSrc:'/icons/cat_logical.png', title:'Project Building Practice', desc:'Practice building full-stack projects with AI-guided requirements and automated code reviews.', classes: { hoverBorder: 'hover:border-info', bgLight: 'bg-info/10', borderLight: 'border-info/20', text: 'text-info', bg: 'bg-info', border: 'border-info' }, tags:['Full Stack','Code Review'], ready:true },
+  { id:'group_discussion', imgSrc:'/icons/cat_automata.png', title:'Group Discussion', desc:'Simulate multiplayer group discussions with AI participants to test leadership and debate skills.', classes: { hoverBorder: 'hover:border-success', bgLight: 'bg-success/10', borderLight: 'border-success/20', text: 'text-success', bg: 'bg-success', border: 'border-success' }, tags:['Leadership','Communication'], ready:true },
+  { id:'svar', imgSrc:'/icons/svar_mic.png', title:'SVAR Speaking Practice', desc:'Improve your verbal communication, fluency, and listening comprehension with scored exercises.', classes: { hoverBorder: 'hover:border-error', bgLight: 'bg-error/10', borderLight: 'border-error/20', text: 'text-error', bg: 'bg-error', border: 'border-error' }, tags:['Speaking','Listening','Fluency'], ready:true },
+  { id:'learning', imgSrc:'/icons/learning_brain.png', title:'Inclusive Learning Hub', desc:'Access curated courses, video tutorials, DSA sheets, coding challenges, and interview prep guides.', classes: { hoverBorder: 'hover:border-warning-dark', bgLight: 'bg-warning/10', borderLight: 'border-warning-dark/20', text: 'text-warning-dark', bg: 'bg-warning-dark', border: 'border-warning-dark' }, tags:['DSA','System Design','Interview Prep','Video'], ready:true },
 ];
 
 export default function PracticeDashboard({ user, onBack }: Props) {
@@ -86,7 +86,7 @@ export default function PracticeDashboard({ user, onBack }: Props) {
             const isHover = active === tool.id;
             return (
               <div key={tool.id} onMouseEnter={() => setActive(tool.id)} onMouseLeave={() => setActive(null)}
-                className={`glass rounded-3xl p-xl flex flex-col relative transition-all duration-300 cursor-pointer border-2 ${isHover ? `border-${tool.color} shadow-[0_16px_40px_rgba(0,0,0,0.08)] scale-[1.02] bg-white` : 'border-surface-container hover:border-surface-container-high'}`}>
+                className={`glass rounded-3xl p-xl flex flex-col relative transition-all duration-300 cursor-pointer border-2 ${isHover ? `${tool.classes.border} shadow-[0_16px_40px_rgba(0,0,0,0.08)] scale-[1.02] bg-white` : 'border-surface-container hover:border-surface-container-high'}`}>
                 
                 {!tool.ready && (
                   <div className="absolute top-md right-md bg-warning/20 text-warning-dark text-[10px] font-black px-xs py-0.5 rounded-full uppercase tracking-widest border border-warning/30">
@@ -94,7 +94,7 @@ export default function PracticeDashboard({ user, onBack }: Props) {
                   </div>
                 )}
                 
-                <div className={`w-16 h-16 rounded-2xl bg-${tool.bg} flex items-center justify-center mb-md overflow-hidden shrink-0`}>
+                <div className={`w-16 h-16 rounded-2xl ${tool.classes.bgLight} flex items-center justify-center mb-md overflow-hidden shrink-0`}>
                   <img src={tool.imgSrc} alt={tool.title} className="w-10 h-10 object-contain mix-blend-multiply drop-shadow-sm" />
                 </div>
                 
@@ -103,11 +103,11 @@ export default function PracticeDashboard({ user, onBack }: Props) {
                 
                 <div className="flex flex-wrap gap-xs mb-lg">
                   {tool.tags.map((t,i) => (
-                    <span key={i} className={`bg-${tool.bg} text-${tool.color} text-xs font-bold px-sm py-1 rounded-full border border-${tool.color}/20`}>{t}</span>
+                    <span key={i} className={`${tool.classes.bgLight} ${tool.classes.text} text-xs font-bold px-sm py-1 rounded-full border ${tool.classes.borderLight}`}>{t}</span>
                   ))}
                 </div>
                 
-                <button onClick={() => handleOpen(tool)} className={`w-full py-sm rounded-xl font-bold text-sm flex items-center justify-center gap-xs transition-all ${tool.ready ? (isHover ? `bg-${tool.color} text-white shadow-md` : `bg-transparent text-${tool.color} border border-${tool.color}`) : 'bg-surface-bright text-on-surface-variant border border-surface-container cursor-not-allowed'}`}>
+                <button onClick={() => handleOpen(tool)} className={`w-full py-sm rounded-xl font-bold text-sm flex items-center justify-center gap-xs transition-all ${tool.ready ? (isHover ? `${tool.classes.bg} text-white shadow-md` : `bg-transparent ${tool.classes.text} border ${tool.classes.border}`) : 'bg-surface-bright text-on-surface-variant border border-surface-container cursor-not-allowed'}`}>
                   {tool.ready ? (isHover ? <>Launch <span className="material-symbols-outlined text-[16px]">rocket_launch</span></> : 'Open Tool') : 'Coming Soon'}
                 </button>
               </div>
