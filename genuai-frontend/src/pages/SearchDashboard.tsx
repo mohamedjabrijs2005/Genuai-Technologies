@@ -338,12 +338,12 @@ function NetworkView({ user, onBack }: { user: any, onBack: () => void }) {
 
 // The Hub (6 cards)
 const TOOLS = [
-  { id:'network', imgSrc:'/icons/cat_english.png', title:'Professional Network', desc:'Connect with professionals, share updates, and build your profile.', color:'info-dark', bg:'info/10', tags:['GenuAI Hub','Connections'], ready:true, filter:'All' },
-  { id:'jobs', imgSrc:'/icons/icon_globe.png', title:'Global Job Board', desc:'Search thousands of job listings across top platforms.', color:'indigo-brand', bg:'indigo-brand/10', tags:['Global Roles','Careers'], ready:true, filter:'All' },
-  { id:'events', imgSrc:'/icons/icon_hackathon.png', title:'Competitions & Events', desc:'Participate in hackathons and university case studies.', color:'warning-dark', bg:'warning/10', tags:['Unstop Platform','Hackathons'], ready:false, filter:'All' },
-  { id:'pm', imgSrc:'/icons/learning_brain.png', title:'PM Internship Allocation', desc:'AI-based matching scheme for Product Management internships.', color:'[#8B5CF6]', bg:'[#8B5CF6]/10', tags:['AI Matching','Product Management'], ready:false, filter:'All' },
-  { id:'news', imgSrc:'/icons/cat_logical.png', title:'Tech & Company News', desc:'Stay updated with the latest in tech, business, and startups.', color:'success-dark', bg:'success/10', tags:['Tech News','Company Updates'], ready:true, filter:'News' },
-  { id:'chat', imgSrc:'/icons/svar_mic.png', title:'Instant Connect', desc:'Real-time messenger to connect with recruiters and peers.', color:'[#25D366]', bg:'success/10', tags:['WhatsApp Style','Messaging'], ready:true, filter:'Chat' },
+  { id:'network', imgSrc:'/icons/cat_english.png', title:'Professional Network', desc:'Connect with professionals, share updates, and build your profile.', classes: { bgLight: 'bg-info/10', text: 'text-info-dark', borderLight: 'border-info-dark/20', border: 'border-info-dark', bg: 'bg-info-dark' }, tags:['GenuAI Hub','Connections'], ready:true, filter:'All' },
+  { id:'jobs', imgSrc:'/icons/icon_globe.png', title:'Global Job Board', desc:'Search thousands of job listings across top platforms.', classes: { bgLight: 'bg-indigo-brand/10', text: 'text-indigo-brand', borderLight: 'border-indigo-brand/20', border: 'border-indigo-brand', bg: 'bg-indigo-brand' }, tags:['Global Roles','Careers'], ready:true, filter:'All' },
+  { id:'events', imgSrc:'/icons/icon_hackathon.png', title:'Competitions & Events', desc:'Participate in hackathons and university case studies.', classes: { bgLight: 'bg-warning/10', text: 'text-warning-dark', borderLight: 'border-warning-dark/20', border: 'border-warning-dark', bg: 'bg-warning-dark' }, tags:['Unstop Platform','Hackathons'], ready:false, filter:'All' },
+  { id:'pm', imgSrc:'/icons/learning_brain.png', title:'PM Internship Allocation', desc:'AI-based matching scheme for Product Management internships.', classes: { bgLight: 'bg-[#8B5CF6]/10', text: 'text-[#8B5CF6]', borderLight: 'border-[#8B5CF6]/20', border: 'border-[#8B5CF6]', bg: 'bg-[#8B5CF6]' }, tags:['AI Matching','Product Management'], ready:false, filter:'All' },
+  { id:'news', imgSrc:'/icons/cat_logical.png', title:'Tech & Company News', desc:'Stay updated with the latest in tech, business, and startups.', classes: { bgLight: 'bg-success/10', text: 'text-success-dark', borderLight: 'border-success-dark/20', border: 'border-success-dark', bg: 'bg-success-dark' }, tags:['Tech News','Company Updates'], ready:true, filter:'News' },
+  { id:'chat', imgSrc:'/icons/svar_mic.png', title:'Instant Connect', desc:'Real-time messenger to connect with recruiters and peers.', classes: { bgLight: 'bg-success/10', text: 'text-[#25D366]', borderLight: 'border-[#25D366]/20', border: 'border-[#25D366]', bg: 'bg-[#25D366]' }, tags:['WhatsApp Style','Messaging'], ready:true, filter:'Chat' },
 ];
 
 export default function SearchDashboard({ user, onBack }: Props) {
@@ -478,7 +478,7 @@ export default function SearchDashboard({ user, onBack }: Props) {
               const isHover = active === tool.id;
               return (
                 <div key={tool.id} onMouseEnter={() => setActive(tool.id)} onMouseLeave={() => setActive(null)}
-                  className={`glass rounded-3xl p-xl flex flex-col relative transition-all duration-300 cursor-pointer border-2 ${isHover ? `border-${tool.color} shadow-[0_16px_40px_rgba(0,0,0,0.08)] scale-[1.02] bg-white` : 'border-surface-container hover:border-surface-container-high'}`}>
+                  className={`glass rounded-3xl p-xl flex flex-col relative transition-all duration-300 cursor-pointer border-2 ${isHover ? `${tool.classes.border} shadow-[0_16px_40px_rgba(0,0,0,0.08)] scale-[1.02] bg-white` : 'border-surface-container hover:border-surface-container-high'}`}>
                   
                   {!tool.ready && (
                     <div className="absolute top-md right-md bg-warning/20 text-warning-dark text-[10px] font-black px-xs py-0.5 rounded-full uppercase tracking-widest border border-warning/30">
@@ -486,7 +486,7 @@ export default function SearchDashboard({ user, onBack }: Props) {
                     </div>
                   )}
                   
-                  <div className={`w-16 h-16 rounded-2xl bg-${tool.bg} flex items-center justify-center mb-md overflow-hidden shrink-0`}>
+                  <div className={`w-16 h-16 rounded-2xl ${tool.classes.bgLight} flex items-center justify-center mb-md overflow-hidden shrink-0`}>
                     <img src={tool.imgSrc} alt={tool.title} className="w-10 h-10 object-contain mix-blend-multiply drop-shadow-sm" />
                   </div>
                   
@@ -495,11 +495,11 @@ export default function SearchDashboard({ user, onBack }: Props) {
                   
                   <div className="flex flex-wrap gap-xs mb-lg">
                     {tool.tags.map((t,i) => (
-                      <span key={i} className={`bg-${tool.bg} text-${tool.color} text-xs font-bold px-sm py-1 rounded-full border border-${tool.color}/20`}>{t}</span>
+                      <span key={i} className={`${tool.classes.bgLight} ${tool.classes.text} text-xs font-bold px-sm py-1 rounded-full border ${tool.classes.borderLight}`}>{t}</span>
                     ))}
                   </div>
                   
-                  <button onClick={() => handleOpen(tool)} className={`w-full py-sm rounded-xl font-bold text-sm flex items-center justify-center gap-xs transition-all ${tool.ready ? (isHover ? `bg-${tool.color} text-white shadow-md` : `bg-transparent text-${tool.color} border border-${tool.color}`) : 'bg-surface-bright text-on-surface-variant border border-surface-container cursor-not-allowed'}`}>
+                  <button onClick={() => handleOpen(tool)} className={`w-full py-sm rounded-xl font-bold text-sm flex items-center justify-center gap-xs transition-all ${tool.ready ? (isHover ? `${tool.classes.bg} text-white shadow-md` : `bg-transparent ${tool.classes.text} border ${tool.classes.border}`) : 'bg-surface-bright text-on-surface-variant border border-surface-container cursor-not-allowed'}`}>
                     {tool.ready ? (isHover ? <>Launch <span className="material-symbols-outlined text-[16px]">rocket_launch</span></> : 'Open Tool') : 'Coming Soon'}
                   </button>
                 </div>
