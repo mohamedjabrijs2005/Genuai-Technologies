@@ -26,6 +26,15 @@ export default {
         "success-emerald": "#10B981",
         "warning-amber": "#F59E0B",
         "error-crimson": "#EF4444",
+        
+        "info": "#3B82F6",
+        "info-dark": "#2563EB",
+        "success": "#10B981",
+        "success-dark": "#059669",
+        "warning": "#F59E0B",
+        "warning-dark": "#D97706",
+        "error": "#EF4444",
+        "error-dark": "#DC2626",
       },
       borderRadius: {
         "xxl": "1.5rem",
