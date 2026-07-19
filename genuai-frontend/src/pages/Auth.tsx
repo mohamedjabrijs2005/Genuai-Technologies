@@ -171,10 +171,10 @@ export default function Auth({ onLogin }: Props) {
   const lbl: any = { color: "#64748B", fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "8px" };
 
   const STATS = [
-    { val: "AI", label: "Powered Evaluation" },
-    { val: "6D", label: "Assessment Dimensions" },
-    { val: "Real", label: "Time Scoring" },
-    { val: "Zero", label: "Human Bias" },
+    { val: "Quantum", label: "AI Evaluation", icon: "psychology", color: "text-indigo-brand", bg: "bg-indigo-brand/10", border: "border-indigo-brand/20", desc: "Adaptive neural models" },
+    { val: "6D", label: "Assessment Vector", icon: "view_in_ar", color: "text-accent-gold", bg: "bg-accent-gold/10", border: "border-accent-gold/20", desc: "Comprehensive profiling" },
+    { val: "Real-Time", label: "Dynamic Scoring", icon: "bolt", color: "text-success-emerald", bg: "bg-success-emerald/10", border: "border-success-emerald/20", desc: "Instant live feedback" },
+    { val: "Zero", label: "Human Bias", icon: "balance", color: "text-[#EC4899]", bg: "bg-[#EC4899]/10", border: "border-[#EC4899]/20", desc: "100% objective filtering" },
   ];
 
   const TESTIMONIALS: { quote: any; name: string; role: string; initial: string; photo?: string }[] = [
@@ -229,12 +229,23 @@ export default function Auth({ onLogin }: Props) {
             Evaluating candidates across <span className="text-accent-gold font-bold">6 dimensions</span> using quantum-inspired AI.
           </p>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-sm mb-xl">
+          {/* Stats Grid - Uniquely Refined Exposure */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-md mb-xl">
             {STATS.map((s, i) => (
-              <div key={i} className="glass p-md rounded-xl hover:pill-active transition-all group cursor-default">
-                <span className="text-accent-gold font-headline-md block mb-1 group-hover:scale-105 transition-transform origin-left">{s.val}</span>
-                <p className="text-label-caps font-label-caps text-on-surface-variant/60 uppercase tracking-widest">{s.label}</p>
+              <div key={i} className={`glass p-md rounded-2xl hover:-translate-y-1 transition-all duration-300 group cursor-default border border-surface-container hover:shadow-lg hover:border-surface-container-high relative overflow-hidden`}>
+                <div className={`absolute -right-4 -top-4 w-20 h-20 rounded-full ${s.bg} blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+                <div className="relative z-10 flex items-start gap-sm">
+                  <div className={`w-10 h-10 rounded-xl ${s.bg} ${s.color} border ${s.border} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                    <span className="material-symbols-outlined text-[20px]">{s.icon}</span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1 mb-0.5">
+                      <span className={`font-black text-sm ${s.color}`}>{s.val}</span>
+                      <span className="text-on-surface font-bold text-sm">{s.label}</span>
+                    </div>
+                    <p className="text-[11px] font-medium text-on-surface-variant/80 leading-snug">{s.desc}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
