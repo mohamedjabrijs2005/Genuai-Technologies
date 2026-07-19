@@ -234,16 +234,15 @@ export default function Auth({ onLogin }: Props) {
             {STATS.map((s, i) => (
               <div key={i} className={`glass p-md rounded-2xl hover:-translate-y-1 transition-all duration-300 group cursor-default border border-surface-container hover:shadow-lg hover:border-surface-container-high relative overflow-hidden`}>
                 <div className={`absolute -right-4 -top-4 w-20 h-20 rounded-full ${s.bg} blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
-                <div className="relative z-10 flex items-start gap-sm">
-                  <div className={`w-10 h-10 rounded-xl ${s.bg} ${s.color} border ${s.border} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
-                    <span className="material-symbols-outlined text-[20px]">{s.icon}</span>
+                <div className="relative z-10 flex items-start gap-md">
+                  <div className={`w-12 h-12 rounded-xl ${s.bg} ${s.color} border ${s.border} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                    <span className="material-symbols-outlined text-[24px]">{s.icon}</span>
                   </div>
-                  <div>
-                    <div className="flex items-center gap-1 mb-0.5">
-                      <span className={`font-black text-sm ${s.color}`}>{s.val}</span>
-                      <span className="text-on-surface font-bold text-sm">{s.label}</span>
-                    </div>
-                    <p className="text-[11px] font-medium text-on-surface-variant/80 leading-snug">{s.desc}</p>
+                  <div className="pt-0.5">
+                    <h3 className="font-black text-[15px] text-on-surface leading-snug mb-1">
+                      <span className={`${s.color}`}>{s.val}</span> {s.label}
+                    </h3>
+                    <p className="text-[12px] font-medium text-on-surface-variant/80 leading-relaxed pr-2">{s.desc}</p>
                   </div>
                 </div>
               </div>
