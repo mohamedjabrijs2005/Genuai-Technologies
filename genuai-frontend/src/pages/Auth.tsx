@@ -193,7 +193,8 @@ export default function Auth({ onLogin }: Props) {
   ];
 
   return (
-    <div className="min-h-screen flex font-body-base bg-background quantum-gradient text-on-background relative overflow-hidden">
+    <div className="w-full bg-background font-body-base overflow-x-hidden text-on-background">
+      <div className="min-h-screen flex relative quantum-gradient text-on-background overflow-hidden">
       {/* Decorative Background Elements */}
       <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-accent-gold/10 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-brand/10 blur-[100px] rounded-full pointer-events-none" />
@@ -273,14 +274,7 @@ export default function Auth({ onLogin }: Props) {
             </div>
           </div>
 
-          {/* Founder Profile */}
-          <div className="mt-xl flex items-center gap-sm">
-            <img src="https://ui-avatars.com/api/?name=Mohamed+Jabri+J+S&background=1E293B&color=D4AF37&size=150" alt="Mohamed Jabri J S" className="w-12 h-12 rounded-full object-cover ring-2 ring-accent-gold/40 shadow-lg" />
-            <div>
-              <div className="text-sm font-bold text-on-surface">Mohamed Jabri J S</div>
-              <div className="text-[11px] text-on-surface-variant/80 font-semibold uppercase tracking-widest">Founder & CEO, GenuAI Technologies</div>
-            </div>
-          </div>
+          {/* Founder Profile Moved to Landing Section */}
         </div>
       </div>
 
@@ -290,7 +284,7 @@ export default function Auth({ onLogin }: Props) {
           
           <div className="mb-lg">
             <h2 className="text-4xl md:text-5xl font-black text-on-surface mb-md tracking-tight drop-shadow-sm">
-              {isForgotPassword ? "Reset Password" : isLogin ? "Welcome back! 👋" : "Create account"}
+              {isForgotPassword ? "Reset Password" : isLogin ? "Welcome back!" : "Create account"}
             </h2>
             <p className="text-xl text-on-surface-variant/90 font-medium leading-relaxed">
               {isForgotPassword ? "Follow the steps below to reset your password" : isLogin ? (
@@ -485,6 +479,139 @@ export default function Auth({ onLogin }: Props) {
           </div>
         </div>
       </div>
+    </div>
+
+      {/* ── LANDING PAGE SECTIONS ── */}
+      
+      {/* FOUNDER SECTION */}
+      <section className="w-full py-32 px-margin-mobile md:px-margin-desktop bg-surface relative z-10">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-xl items-center">
+          <div className="flex-1 space-y-md">
+            <h2 className="text-4xl md:text-5xl font-black text-on-surface">Built by Founders,<br/><span className="text-accent-gold">For the Future of Work.</span></h2>
+            <div className="w-16 h-1 bg-accent-gold rounded-full"></div>
+            <p className="text-xl text-on-surface-variant leading-relaxed">
+              "We built GenuAI Technologies because the traditional hiring process is fundamentally broken. Relying solely on resumes and biased human screening leaves incredible talent undiscovered and companies struggling to build top-tier teams."
+            </p>
+            <p className="text-lg text-on-surface-variant/80 leading-relaxed">
+              Our quantum-inspired AI platform evaluates candidates across 6 core dimensions, providing 100% objective, real-time feedback. This ensures that every hire is based on true merit and potential, bridging the gap between exceptional developers and world-class opportunities.
+            </p>
+            <div className="pt-sm">
+              <h4 className="text-lg font-bold text-on-surface">Mohamed Jabri J S</h4>
+              <p className="text-sm font-bold text-accent-gold uppercase tracking-widest">Founder & CEO, GenuAI Technologies</p>
+            </div>
+          </div>
+          <div className="w-full md:w-[450px] aspect-square relative group">
+            <div className="absolute inset-0 bg-accent-gold/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+            <img src="/founder.png" onError={(e) => { e.currentTarget.src = 'https://ui-avatars.com/api/?name=Mohamed+Jabri+J+S&background=1E293B&color=D4AF37&size=450'; }} alt="Mohamed Jabri J S" className="w-full h-full object-cover rounded-3xl shadow-2xl relative z-10 ring-1 ring-surface-container-high transition-transform duration-500 group-hover:scale-[1.02]" />
+          </div>
+        </div>
+      </section>
+
+      {/* VIDEO SECTION */}
+      <section className="w-full py-32 px-margin-mobile md:px-margin-desktop bg-background quantum-gradient relative z-10">
+        <div className="max-w-5xl mx-auto text-center mb-xl">
+          <h2 className="text-3xl md:text-4xl font-black text-on-surface mb-sm">See GenuAI in Action</h2>
+          <p className="text-lg text-on-surface-variant">Watch how our 6D AI evaluation transforms the recruitment lifecycle.</p>
+        </div>
+        <div className="max-w-5xl mx-auto relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-brand to-accent-gold rounded-[2rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+          <div className="relative glass p-2 rounded-[2rem] overflow-hidden shadow-2xl ring-1 ring-white/10">
+            <div className="w-full aspect-video rounded-3xl overflow-hidden bg-surface-bright flex items-center justify-center">
+              <iframe className="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&controls=1&rel=0" title="GenuAI Overview" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* OVERVIEW SECTION */}
+      <section className="w-full py-32 px-margin-mobile md:px-margin-desktop bg-[#F8FAFC] text-[#0F172A] relative z-10 overflow-hidden">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-2xl">
+          <div className="flex-1 space-y-md z-10">
+            <div className="inline-flex items-center px-4 py-2 bg-[#0F172A] rounded-full">
+               <span className="text-xs font-black text-white uppercase tracking-widest">GENUAI COMMUNITY</span>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-medium tracking-tight text-[#0F172A] leading-tight" style={{fontFamily: "'Outfit', sans-serif"}}>
+              Prepare and apply<br/>for your dream job
+            </h2>
+            <p className="text-xl text-[#475569] leading-relaxed max-w-xl">
+              Over 26 million developers have joined the GenuAI community to certify their skills, practice interviewing, and discover relevant jobs. An AI Mock Interviewer can help you prepare, while our QuickApply agent puts your job search on autopilot.
+            </p>
+          </div>
+          <div className="w-full lg:w-[600px] relative z-10">
+            <div className="absolute -inset-4 bg-[#E2E8F0] blur-xl rounded-[2rem]"></div>
+            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop" alt="IDE Editor" className="relative w-full rounded-[1.5rem] shadow-2xl border border-white/20 object-cover aspect-[4/3]" />
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER SECTION */}
+      <footer className="w-full bg-[#0B0F19] pt-24 pb-8 px-margin-mobile md:px-margin-desktop text-white border-t border-white/5">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-xl mb-24">
+          <div className="space-y-6">
+            <h4 className="text-sm font-bold text-white mb-6">Products</h4>
+            <ul className="space-y-4">
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Screen</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Interview</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Engage</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">SkillUp</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Certified assessments</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Plagiarism detection</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Real-world questions</a></li>
+            </ul>
+          </div>
+          <div className="space-y-6">
+            <h4 className="text-sm font-bold text-white mb-6">Solutions</h4>
+            <ul className="space-y-4">
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Set up your skills strategy</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Showcase your tech brand</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Optimize your hiring process</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Mobilize your internal talent</a></li>
+            </ul>
+          </div>
+          <div className="space-y-6">
+            <h4 className="text-sm font-bold text-white mb-6">Resources</h4>
+            <ul className="space-y-4">
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Blog</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Customer stories</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Roles directory</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Partners</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Integrations</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">What's new</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Writing</a></li>
+            </ul>
+          </div>
+          <div className="space-y-6">
+            <h4 className="text-sm font-bold text-white mb-6">About us</h4>
+            <ul className="space-y-4">
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Careers</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Status</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Trust</a></li>
+            </ul>
+          </div>
+          <div className="space-y-6">
+            <h4 className="text-sm font-bold text-white mb-6">Get started</h4>
+            <ul className="space-y-4">
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Pricing</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Free Trial</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Request a demo</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">Product support</a></li>
+              <li><a href="#" className="text-[#94A3B8] hover:text-white transition-colors">For developers</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-md pt-8 border-t border-white/10">
+          <div className="flex items-center gap-sm">
+            <img src="/logo.png" alt="GenuAI Logo" className="w-8 h-8 object-contain" />
+            <span className="text-[#94A3B8] text-sm">&copy; GenuAI Technologies 2026 All Rights Reserved.</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-md text-[#94A3B8] text-sm">
+            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-white transition-colors">Candidate AI Notice</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
