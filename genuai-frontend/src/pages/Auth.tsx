@@ -500,9 +500,9 @@ export default function Auth({ onLogin }: Props) {
               <p className="text-sm font-bold text-accent-gold uppercase tracking-widest">Founder & CEO, GenuAI Technologies</p>
             </div>
           </div>
-          <div className="w-full md:w-[450px] aspect-square relative group">
+          <div className="w-full md:w-[400px] aspect-[4/5] relative group mx-auto lg:mx-0">
             <div className="absolute inset-0 bg-accent-gold/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-            <img src="/founder_real.jpg" onError={(e) => { e.currentTarget.src = 'https://ui-avatars.com/api/?name=Mohamed+Jabri+J+S&background=1E293B&color=D4AF37&size=450'; }} alt="Mohamed Jabri J S" className="w-full h-full object-cover rounded-3xl shadow-2xl relative z-10 ring-1 ring-surface-container-high transition-transform duration-500 group-hover:scale-[1.02]" />
+            <img src="/founder_real.jpg" onError={(e) => { e.currentTarget.src = 'https://ui-avatars.com/api/?name=Mohamed+Jabri+J+S&background=1E293B&color=D4AF37&size=450'; }} alt="Mohamed Jabri J S" className="w-full h-full object-cover object-top rounded-3xl shadow-2xl relative z-10 ring-1 ring-surface-container-high transition-transform duration-500 group-hover:scale-[1.02]" />
           </div>
         </div>
       </section>
