@@ -170,14 +170,14 @@ function NetworkView({ user, onBack }: { user: any, onBack: () => void }) {
             </div>
             <h2 className="text-title-sm font-black text-on-surface mb-xs">{name}</h2>
             <div className="text-xs font-medium text-on-surface-variant mb-md">AI-Assessed Tech Professional</div>
-            <div className="bg-info/10 text-info-dark px-sm py-1.5 rounded-lg text-xs font-bold mb-md">GenuAI Readiness Score: 92/100</div>
+            <div className="bg-info/10 text-info-dark px-sm py-1.5 rounded-lg text-xs font-bold mb-md">GenuAI Verified Profile</div>
             <div className="flex justify-between items-center text-xs text-on-surface-variant border-t border-surface-container pt-sm pb-sm cursor-pointer hover:bg-surface-bright/50 transition-colors">
               <span className="font-medium">Profile Viewers</span>
-              <span className="text-info-dark font-black">34</span>
+                <span className="text-info-dark font-black">—</span>
             </div>
             <div className="flex justify-between items-center text-xs text-on-surface-variant cursor-pointer hover:bg-surface-bright/50 transition-colors pb-xs">
               <span className="font-medium">Network Connections</span>
-              <span className="text-info-dark font-black">142</span>
+                <span className="text-info-dark font-black">—</span>
             </div>
           </div>
         </div>
@@ -469,8 +469,8 @@ export default function SearchDashboard({ user, onBack }: Props) {
           <div className="absolute bottom-[20%] right-[-5%] w-[500px] h-[500px] bg-success/5 blur-[120px] rounded-full pointer-events-none" />
 
           <div className="text-center mb-xl relative z-10">
-            <h1 className="text-headline-md font-headline-md text-on-surface mb-xs drop-shadow-sm">Global <span className="text-info-dark">Search Hub</span></h1>
-            <p className="text-on-surface-variant font-medium text-body-lg">Explore jobs, connect with peers, and discover new opportunities.</p>
+            <h1 className="text-[2.8rem] md:text-[3.5rem] font-black text-on-surface mb-3 drop-shadow-sm leading-tight tracking-tight">Global <span className="text-info-dark">Search Hub</span></h1>
+            <p className="text-on-surface-variant font-medium text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">Explore jobs, connect with peers, and discover new opportunities.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg mb-xl relative z-10">
@@ -543,16 +543,29 @@ export default function SearchDashboard({ user, onBack }: Props) {
               </div>
             </div>
             
-            <div className="w-full md:w-72 bg-surface-bright/90 backdrop-blur-md rounded-2xl border border-surface-container p-xl flex flex-col items-center justify-center relative z-10 shadow-sm shrink-0">
-              <div className="text-on-surface-variant font-bold text-xs uppercase tracking-widest mb-md">Your Search Status</div>
-              <div className="flex w-full justify-around">
-                <div className="text-center">
-                  <div className="text-4xl font-black text-info-dark drop-shadow-sm mb-1">3</div>
-                  <div className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Active Apps</div>
+            <div className="w-full md:w-80 bg-surface-bright/90 backdrop-blur-md rounded-2xl border border-surface-container p-xl flex flex-col relative z-10 shadow-sm shrink-0 gap-md">
+              <div className="text-on-surface-variant font-bold text-[11px] uppercase tracking-[0.18em] mb-xs text-center">Hub Overview</div>
+              <div className="flex flex-col gap-sm">
+                <div className="flex items-center justify-between bg-info/8 border border-info/15 rounded-xl px-md py-sm">
+                  <div className="flex items-center gap-xs">
+                    <span className="material-symbols-outlined text-info-dark text-[18px]">grid_view</span>
+                    <span className="text-sm font-bold text-on-surface">Search Modules</span>
+                  </div>
+                  <span className="text-xl font-black text-info-dark">{TOOLS.length}</span>
                 </div>
-                <div className="text-center">
-                  <div className="text-4xl font-black text-success drop-shadow-sm mb-1">12+</div>
-                  <div className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Matches</div>
+                <div className="flex items-center justify-between bg-success/8 border border-success/15 rounded-xl px-md py-sm">
+                  <div className="flex items-center gap-xs">
+                    <span className="material-symbols-outlined text-success text-[18px]">check_circle</span>
+                    <span className="text-sm font-bold text-on-surface">Available Now</span>
+                  </div>
+                  <span className="text-xl font-black text-success">{TOOLS.filter(t => t.ready).length}/{TOOLS.length}</span>
+                </div>
+                <div className="flex items-center justify-between bg-indigo-brand/8 border border-indigo-brand/15 rounded-xl px-md py-sm">
+                  <div className="flex items-center gap-xs">
+                    <span className="material-symbols-outlined text-indigo-brand text-[18px]">auto_awesome</span>
+                    <span className="text-sm font-bold text-on-surface">AI-Powered</span>
+                  </div>
+                  <span className="text-sm font-black text-indigo-brand">100%</span>
                 </div>
               </div>
             </div>
