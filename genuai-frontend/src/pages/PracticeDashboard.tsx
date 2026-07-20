@@ -76,8 +76,12 @@ export default function PracticeDashboard({ user, onBack }: Props) {
         <div className="absolute bottom-[20%] right-[-5%] w-[500px] h-[500px] bg-warning/5 blur-[120px] rounded-full pointer-events-none" />
 
         <div className="text-center mb-xl relative z-10">
-          <h1 className="text-headline-md font-headline-md text-on-surface mb-xs drop-shadow-sm">Prepare to <span className="text-indigo-brand">Succeed</span></h1>
-          <p className="text-on-surface-variant font-medium text-body-lg">Master every stage of the hiring process with AI-driven practice environments.</p>
+          <h1 className="text-[2.8rem] md:text-[3.5rem] font-black text-on-surface mb-3 drop-shadow-sm leading-tight tracking-tight">
+            Prepare to <span className="text-indigo-brand">Succeed</span>
+          </h1>
+          <p className="text-on-surface-variant font-medium text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            Master every stage of the hiring process with AI-driven practice environments.
+          </p>
         </div>
 
         {/* Modules Grid */}
@@ -151,16 +155,29 @@ export default function PracticeDashboard({ user, onBack }: Props) {
             </div>
           </div>
           
-          <div className="w-full md:w-72 bg-surface-bright/90 backdrop-blur-md rounded-2xl border border-surface-container p-xl flex flex-col items-center justify-center relative z-10 shadow-sm shrink-0">
-            <div className="text-on-surface-variant font-bold text-xs uppercase tracking-widest mb-md">Your Learning Progress</div>
-            <div className="flex w-full justify-around">
-              <div className="text-center">
-                <div className="text-4xl font-black text-indigo-brand drop-shadow-sm mb-1">6/6</div>
-                <div className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Modules</div>
+          <div className="w-full md:w-80 bg-surface-bright/90 backdrop-blur-md rounded-2xl border border-surface-container p-xl flex flex-col relative z-10 shadow-sm shrink-0 gap-md">
+            <div className="text-on-surface-variant font-bold text-[11px] uppercase tracking-[0.18em] mb-xs text-center">Your Practice Scope</div>
+            <div className="flex flex-col gap-sm">
+              <div className="flex items-center justify-between bg-indigo-brand/8 border border-indigo-brand/15 rounded-xl px-md py-sm">
+                <div className="flex items-center gap-xs">
+                  <span className="material-symbols-outlined text-indigo-brand text-[18px]">grid_view</span>
+                  <span className="text-sm font-bold text-on-surface">Practice Modules</span>
+                </div>
+                <span className="text-xl font-black text-indigo-brand">{TOOLS.length}</span>
               </div>
-              <div className="text-center">
-                <div className="text-4xl font-black text-success drop-shadow-sm mb-1">98%</div>
-                <div className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">AI Ready</div>
+              <div className="flex items-center justify-between bg-success/8 border border-success/15 rounded-xl px-md py-sm">
+                <div className="flex items-center gap-xs">
+                  <span className="material-symbols-outlined text-success text-[18px]">check_circle</span>
+                  <span className="text-sm font-bold text-on-surface">All Available</span>
+                </div>
+                <span className="text-xl font-black text-success">{TOOLS.filter(t => t.ready).length}/{TOOLS.length}</span>
+              </div>
+              <div className="flex items-center justify-between bg-warning/8 border border-warning/15 rounded-xl px-md py-sm">
+                <div className="flex items-center gap-xs">
+                  <span className="material-symbols-outlined text-warning-dark text-[18px]">model_training</span>
+                  <span className="text-sm font-bold text-on-surface">AI-Powered</span>
+                </div>
+                <span className="text-sm font-black text-warning-dark">100%</span>
               </div>
             </div>
           </div>
