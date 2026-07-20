@@ -241,7 +241,7 @@ export default function Auth({ onLogin }: Props) {
 
       {/* LEFT - Brand Hero Panel */}
       <div className="hidden lg:flex flex-1 flex-col justify-center px-margin-desktop py-xl relative z-10 border-r border-surface-container/50">
-        <div className="max-w-xl mx-auto w-full">
+        <div className="max-w-2xl mx-auto w-full">
           {/* Logo & Badge */}
           <div className="flex flex-col items-start mb-lg">
             <div className="relative group inline-block mb-md">
@@ -266,7 +266,7 @@ export default function Auth({ onLogin }: Props) {
             <span className="text-accent-gold">Get Hired Faster.</span>
           </h1>
           
-          <p className="text-body-lg font-body-lg text-on-surface-variant/80 mb-xl leading-relaxed max-w-md">
+          <p className="text-body-lg font-body-lg text-on-surface-variant/80 mb-xl leading-relaxed max-w-xl">
             Evaluating candidates across <span className="text-accent-gold font-bold">6 dimensions</span> using quantum-inspired AI.
           </p>
 
