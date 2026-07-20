@@ -184,7 +184,7 @@ export default function PathSelection({ user, onSelect, onLogout }: Props) {
 
         {/* Footer note */}
         <p className="text-center text-[11px] font-bold text-on-surface-variant/60 uppercase tracking-widest mt-xl">
-          © 2025 GenuAI Technologies · AI-Powered Recruitment Intelligence
+          © 2026 GenuAI Technologies · All Rights Reserved
         </p>
       </div>
     </div>

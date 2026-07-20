@@ -127,7 +127,7 @@ export default function CompanyOverview({ user, onStartTest }: Props) {
             </span>
           </button>
           <div className="text-[11px] font-bold text-on-surface-variant/60 uppercase tracking-widest mt-lg">
-            © 2025 GenuAI Technologies · All rights reserved
+            © 2026 GenuAI Technologies · All Rights Reserved
           </div>
         </div>
       </div>
