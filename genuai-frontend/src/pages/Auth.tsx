@@ -240,7 +240,7 @@ export default function Auth({ onLogin }: Props) {
       </div>
 
       {/* LEFT - Brand Hero Panel */}
-      <div className="hidden lg:flex flex-1 flex-col justify-center px-margin-desktop py-xl relative z-10 border-r border-surface-container/50">
+      <div className="hidden lg:flex lg:w-[60%] flex-col justify-center px-margin-desktop py-xl relative z-10 border-r border-surface-container/50">
         <div className="max-w-2xl mx-auto w-full">
           {/* Logo & Badge */}
           <div className="flex flex-col items-start mb-lg">
@@ -319,7 +319,7 @@ export default function Auth({ onLogin }: Props) {
       </div>
 
       {/* RIGHT - Form Panel */}
-      <div className="flex-1 flex items-center justify-center p-margin-mobile md:p-margin-desktop relative z-10">
+      <div className="w-full lg:w-[40%] flex items-center justify-center p-margin-mobile md:p-margin-desktop relative z-10">
         <div className="w-full max-w-[440px] glass p-lg rounded-xxl relative">
           
           <div className="mb-lg">
