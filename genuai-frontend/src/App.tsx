@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 
 // ── Pages ──────────────────────────────────────────────────────────────────
 import Auth               from "./pages/Auth";
@@ -6,7 +7,7 @@ import PathSelection      from "./pages/PathSelection";
 import CompanyOverview    from "./pages/CompanyOverview";
 import PracticeDashboard  from "./pages/PracticeDashboard";
 import CandidatePipeline  from "./pages/CandidatePipeline";
-import SearchDashboard      from "./pages/SearchDashboard";
+import SearchDashboard    from "./pages/SearchDashboard";
 import CareerProfileDashboard from "./pages/CareerProfileDashboard";
 import AdminDashboard     from "./pages/AdminDashboard";
 import CompanyDashboard   from "./pages/CompanyDashboard";
@@ -15,277 +16,255 @@ import InterviewRoom      from "./pages/InterviewRoom";
 import EnvironmentVerifier from "./components/EnvironmentVerifier";
 import AMCATTest          from "./pages/AMCATTest";
 
-// ── Page type ──────────────────────────────────────────────────────────────
-type Page =
-  | "auth"           // login / register  (not logged in)
-  | "path-select"    // Practice vs Test
-  | "practice"       // Practice hub
-  | "search"         // Search jobs hub
-  | "career-profile" // Career profile hub
-  | "company-overview" // Rules / about page before test
-  | "pipeline"       // 6-module assessment
-  | "amcat"          // AMCAT test (launched from pipeline)
-  | "env-verify"     // Environment check before interview
-  | "interview"      // AI Interview room
-  | "admin"          // Admin dashboard
-  | "company";       // Company / HR dashboard
+// ── Auth guard ─────────────────────────────────────────────────────────────
+function RequireAuth({ user, children, role }: { user: any; children: React.ReactElement; role?: string | string[] }) {
+  const location = useLocation();
+  if (!user) return <Navigate to="/auth" state={{ from: location }} replace />;
+  const userRole = user?.user?.role || user?.role;
+  if (role) {
+    const allowed = Array.isArray(role) ? role : [role];
+    if (!allowed.includes(userRole)) return <Navigate to="/" replace />;
+  }
+  return children;
+}
 
+// ── Main App ────────────────────────────────────────────────────────────────
 export default function App() {
-  // ── Mobile camera detection ────────────────────────────────────────────
-  const isMobile   = new URLSearchParams(window.location.search).get("mobile") === "1";
-  const mobileRoom = new URLSearchParams(window.location.search).get("room") || "";
+  const navigate  = useNavigate();
+  const location  = useLocation();
 
-  // ── State ──────────────────────────────────────────────────────────────
+  const isMobile   = new URLSearchParams(location.search).get("mobile") === "1";
+  const mobileRoom = new URLSearchParams(location.search).get("room") || "";
+
   const [user,              setUser]             = useState<any>(null);
-  const [page,              setPage]             = useState<Page>("auth");
   const [roomId,            setRoomId]           = useState("");
   const [envRoomId,         setEnvRoomId]        = useState("");
   const [autoStart,         setAutoStart]        = useState(false);
   const [amcatRole,         setAmcatRole]        = useState("Software Engineer");
   const [amcatAssessmentId, setAmcatAssessmentId] = useState<number | undefined>();
+  const [sessionRestored,   setSessionRestored]  = useState(false);
 
   // ── Restore session on mount ───────────────────────────────────────────
   useEffect(() => {
-    if (isMobile) return;
+    if (isMobile) { setSessionRestored(true); return; }
 
     // Handle QR room link (?room=xxx)
-    const params      = new URLSearchParams(window.location.search);
+    const params      = new URLSearchParams(location.search);
     const pendingRoom = params.get("room");
     if (pendingRoom) {
       sessionStorage.setItem("pending_room", pendingRoom);
-      window.history.replaceState({}, "", "/");
+      navigate("/", { replace: true });
     }
 
-    // Restore saved user
     const saved = localStorage.getItem("genuai_user");
     if (saved) {
       try {
         const ud = JSON.parse(saved);
         setUser(ud);
-        routeAfterLogin(ud, true); // restore into correct page
+        // Only navigate if currently on /auth or /
+        if (location.pathname === "/auth" || location.pathname === "/") {
+          routeAfterLogin(ud, navigate, true);
+        }
       } catch {
         localStorage.removeItem("genuai_user");
       }
     }
+    setSessionRestored(true);
   }, []);
 
   // ── Helper: decide where to go after login ─────────────────────────────
-  const routeAfterLogin = (ud: any, isRestore = false) => {
+  const routeAfterLogin = (ud: any, nav: typeof navigate, isRestore = false) => {
     const role    = ud?.user?.role || ud?.role;
     const pending = sessionStorage.getItem("pending_room");
 
-    // If there's a pending interview room link
     if (pending) {
       sessionStorage.removeItem("pending_room");
       if (role === "company" || role === "admin") {
         setRoomId(pending);
-        setPage("interview");
+        nav("/interview");
       } else {
         setEnvRoomId(pending);
-        setPage("env-verify");
+        nav("/env-verify");
       }
       return;
     }
 
-    // Route by role
-    if (role === "admin") { setPage("admin"); return; }
-    if (role === "company") { setPage("company"); return; }
-
-    // Candidate: if restoring session skip CAPTCHA, go straight to path-select
-    if (isRestore) { setPage("path-select"); return; }
-
-    // Fresh login: go straight to path-select
-    setPage("path-select");
+    if (role === "admin")   { nav("/admin");   return; }
+    if (role === "company") { nav("/company"); return; }
+    nav("/dashboard");
   };
 
   // ── Auth handlers ──────────────────────────────────────────────────────
   const handleLogin = (ud: any) => {
     setUser(ud);
     localStorage.setItem("genuai_user", JSON.stringify(ud));
-    routeAfterLogin(ud, false);
+    routeAfterLogin(ud, navigate, false);
   };
 
   const handleLogout = () => {
     localStorage.removeItem("genuai_user");
     sessionStorage.removeItem("env_risk");
     setUser(null);
-    setPage("auth");
     setRoomId("");
     setEnvRoomId("");
     setAutoStart(false);
+    navigate("/auth", { replace: true });
   };
 
-  // ── Navigate to interview (generates room id if none given) ────────────
   const goToInterview = (rid?: string) => {
     const role         = user?.user?.role || user?.role;
     const resolvedRoom = rid || `room-${user?.user?.id || user?.id || "candidate"}-${Date.now()}`;
-
     if (role === "company" || role === "admin") {
       setRoomId(resolvedRoom);
-      setPage("interview");
+      navigate("/interview");
     } else {
       setEnvRoomId(resolvedRoom);
-      setPage("env-verify");
+      navigate("/env-verify");
     }
   };
 
-  // ── Navigate to AMCAT (launched from pipeline) ─────────────────────────
   const goToAMCAT = (role: string, assessmentId?: number) => {
     setAmcatRole(role);
     setAmcatAssessmentId(assessmentId);
-    setPage("amcat");
+    navigate("/amcat");
   };
 
-  // ══════════════════════════════════════════════════════════════════════
-  //  RENDER TREE
-  // ══════════════════════════════════════════════════════════════════════
-
-  const pathname = window.location.pathname;
-  if (pathname === "/test-admin") {
-    return <AdminDashboard user={{ user: { name: "Test Admin", role: "admin", id: 1 }, token: "test_token" }} onLogout={() => window.location.href="/"} />;
-  }
-  if (pathname === "/test-company") {
-    // Note: CompanyDashboard no longer takes onInterview in the updated version
-    return <CompanyDashboard user={{ user: { name: "Test Company", role: "company", id: 9 }, token: "test_token" }} onLogout={() => window.location.href="/"} />;
-  }
-  if (pathname === "/test-candidate") {
-    return <CandidatePipeline user={{ user: { name: "Test Candidate", role: "candidate", id: 101, email: "candidate@test.com" }, token: "test_token" }} onLogout={() => window.location.href="/"} onInterview={() => {}} />;
+  // Don't render until session is restored (avoids flash of login page)
+  if (!sessionRestored) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <img src="/logo.png" alt="GenuAI" className="w-16 h-16 object-contain animate-pulse" />
+          <p className="text-on-surface-variant text-sm font-medium">Loading GenuAI...</p>
+        </div>
+      </div>
+    );
   }
 
-  // 1. Mobile secondary camera
+  // ── Mobile secondary camera ────────────────────────────────────────────
   if (isMobile && mobileRoom) {
     return <MobileCam roomId={mobileRoom} />;
   }
 
-  // 2. Not logged in → Login / Register
-  if (!user || page === "auth") {
-    return <Auth onLogin={handleLogin} />;
-  }
-
-  // 3. Admin dashboard
-  if (page === "admin") {
-    return <AdminDashboard user={user} onLogout={handleLogout} />;
-  }
-
-  // 4. Company / HR dashboard
-  if (page === "company") {
-    return (
-      <CompanyDashboard
-        user={user}
-        onLogout={handleLogout}
-      />
-    );
-  }
-
-  // 5. AMCAT test (launched mid-pipeline)
-  if (page === "amcat") {
-    return (
-      <AMCATTest
-        user={user?.user || user}
-        role={amcatRole}
-        assessmentId={amcatAssessmentId}
-        onComplete={(scores: any) => {
-          sessionStorage.setItem("amcat_scores", JSON.stringify(scores));
-          setPage("pipeline");
-        }}
-        onTerminate={() => setPage("pipeline")}
-      />
-    );
-  }
-
-  // 6. Environment verifier (before interview)
-  if (page === "env-verify") {
-    return (
-      <EnvironmentVerifier
-        roomId={envRoomId}
-        user={user}
-        onVerificationComplete={(risk) => {
-          setRoomId(envRoomId);
-          setAutoStart(risk === "LOW");
-          sessionStorage.setItem("env_risk", risk);
-          setPage("interview");
-        }}
-      />
-    );
-  }
-
-  // 7. AI Interview room
-  if (page === "interview") {
-    return (
-      <InterviewRoom
-        user={user}
-        onLogout={handleLogout}
-        onBack={() => setPage("pipeline")}
-        roomId={roomId}
-        autoStart={autoStart}
-      />
-    );
-  }
-
-  // ── Candidate flow ─────────────────────────────────────────────────────
-
-  // 9. Path selection — Practice or Official Test
-  if (page === "path-select") {
-    return (
-      <PathSelection
-        user={user}
-        onLogout={handleLogout}
-        onSelect={(path) => {
-          if (path === "practice") setPage("practice");
-          else if (path === "search") setPage("search");
-          else if (path === "career-profile") setPage("career-profile");
-          else setPage("company-overview");
-        }}
-      />
-    );
-  }
-
-  // 10. Practice hub
-  if (page === "practice") {
-    return (
-      <PracticeDashboard
-        user={user}
-        onBack={() => setPage("path-select")}
-      />
-    );
-  }
-
-  // 10.5 Search hub
-  if (page === "search") {
-    return (
-      <SearchDashboard
-        user={user}
-        onBack={() => setPage("path-select")}
-      />
-    );
-  }
-
-  // 10.6 Career Profile hub
-  if (page === "career-profile") {
-    return (
-      <CareerProfileDashboard
-        user={user}
-        onBack={() => setPage("path-select")}
-      />
-    );
-  }
-
-  // 11. Company overview / assessment rules
-  if (page === "company-overview") {
-    return (
-      <CompanyOverview
-        user={user}
-        onStartTest={() => setPage("pipeline")}
-      />
-    );
-  }
-
-  // 12. Full 6-module pipeline (default candidate page)
   return (
-    <CandidatePipeline
-      user={user}
-      onLogout={handleLogout}
-      onInterview={goToInterview}
-    />
+    <Routes>
+      {/* Public */}
+      <Route path="/auth"          element={user ? <Navigate to="/dashboard" replace /> : <Auth onLogin={handleLogin} />} />
+      <Route path="/"              element={user ? <Navigate to="/dashboard" replace /> : <Navigate to="/auth" replace />} />
+
+      {/* Candidate dashboard hub */}
+      <Route path="/dashboard"     element={
+        <RequireAuth user={user} role={["candidate"]}>
+          <PathSelection user={user} onLogout={handleLogout} onSelect={(path) => {
+            if (path === "practice")      navigate("/practice");
+            else if (path === "search")   navigate("/search");
+            else if (path === "career-profile") navigate("/career-profile");
+            else navigate("/company-overview");
+          }} />
+        </RequireAuth>
+      } />
+
+      {/* Practice hub */}
+      <Route path="/practice"      element={
+        <RequireAuth user={user} role={["candidate"]}>
+          <PracticeDashboard user={user} onBack={() => navigate("/dashboard")} />
+        </RequireAuth>
+      } />
+
+      {/* Search hub */}
+      <Route path="/search"        element={
+        <RequireAuth user={user} role={["candidate"]}>
+          <SearchDashboard user={user} onBack={() => navigate("/dashboard")} />
+        </RequireAuth>
+      } />
+
+      {/* Career Profile hub */}
+      <Route path="/career-profile" element={
+        <RequireAuth user={user} role={["candidate"]}>
+          <CareerProfileDashboard user={user} onBack={() => navigate("/dashboard")} />
+        </RequireAuth>
+      } />
+
+      {/* Company Overview */}
+      <Route path="/company-overview" element={
+        <RequireAuth user={user} role={["candidate"]}>
+          <CompanyOverview user={user} onStartTest={() => navigate("/pipeline")} />
+        </RequireAuth>
+      } />
+
+      {/* 6-Module pipeline */}
+      <Route path="/pipeline"      element={
+        <RequireAuth user={user} role={["candidate"]}>
+          <CandidatePipeline user={user} onLogout={handleLogout} onInterview={goToInterview} />
+        </RequireAuth>
+      } />
+
+      {/* AMCAT test */}
+      <Route path="/amcat"         element={
+        <RequireAuth user={user} role={["candidate"]}>
+          <AMCATTest
+            user={user?.user || user}
+            role={amcatRole}
+            assessmentId={amcatAssessmentId}
+            onComplete={(scores: any) => {
+              sessionStorage.setItem("amcat_scores", JSON.stringify(scores));
+              navigate("/pipeline");
+            }}
+            onTerminate={() => navigate("/pipeline")}
+          />
+        </RequireAuth>
+      } />
+
+      {/* Environment verifier */}
+      <Route path="/env-verify"    element={
+        <RequireAuth user={user}>
+          <EnvironmentVerifier
+            roomId={envRoomId}
+            user={user}
+            onVerificationComplete={(risk) => {
+              setRoomId(envRoomId);
+              setAutoStart(risk === "LOW");
+              sessionStorage.setItem("env_risk", risk);
+              navigate("/interview");
+            }}
+          />
+        </RequireAuth>
+      } />
+
+      {/* Interview room */}
+      <Route path="/interview"     element={
+        <RequireAuth user={user}>
+          <InterviewRoom
+            user={user}
+            onLogout={handleLogout}
+            onBack={() => navigate("/pipeline")}
+            roomId={roomId}
+            autoStart={autoStart}
+          />
+        </RequireAuth>
+      } />
+
+      {/* Admin dashboard */}
+      <Route path="/admin"         element={
+        <RequireAuth user={user} role={["admin"]}>
+          <AdminDashboard user={user} onLogout={handleLogout} />
+        </RequireAuth>
+      } />
+
+      {/* Company/HR dashboard */}
+      <Route path="/company"       element={
+        <RequireAuth user={user} role={["company", "admin"]}>
+          <CompanyDashboard user={user} onLogout={handleLogout} />
+        </RequireAuth>
+      } />
+
+      {/* Test routes (dev only) */}
+      <Route path="/test-admin"    element={<AdminDashboard user={{ user: { name: "Test Admin", role: "admin", id: 1 }, token: "test_token" }} onLogout={() => navigate("/auth")} />} />
+      <Route path="/test-company"  element={<CompanyDashboard user={{ user: { name: "Test Company", role: "company", id: 9 }, token: "test_token" }} onLogout={() => navigate("/auth")} />} />
+      <Route path="/test-candidate" element={<CandidatePipeline user={{ user: { name: "Test Candidate", role: "candidate", id: 101, email: "candidate@test.com" }, token: "test_token" }} onLogout={() => navigate("/auth")} onInterview={() => {}} />} />
+
+      {/* 404 fallback */}
+      <Route path="*" element={<Navigate to={user ? "/dashboard" : "/auth"} replace />} />
+    </Routes>
   );
 }
