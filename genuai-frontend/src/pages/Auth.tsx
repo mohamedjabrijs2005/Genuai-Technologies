@@ -517,7 +517,7 @@ export default function Auth({ onLogin }: Props) {
           <div className="absolute -inset-1 bg-gradient-to-r from-indigo-brand to-accent-gold rounded-[2rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
           <div className="relative glass p-2 rounded-[2rem] overflow-hidden shadow-2xl ring-1 ring-white/10">
             <div className="w-full aspect-video rounded-3xl overflow-hidden bg-surface-bright flex items-center justify-center">
-              <iframe className="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&controls=1&rel=0" title="GenuAI Overview" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+              <iframe className="w-full h-full" src="https://www.youtube.com/embed/hBfLOl41IwI?autoplay=0&controls=1&rel=0" title="GenuAI Overview" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
             </div>
           </div>
         </div>
@@ -525,21 +525,21 @@ export default function Auth({ onLogin }: Props) {
 
       {/* OVERVIEW SECTION */}
       <section className="w-full py-32 px-margin-mobile md:px-margin-desktop bg-[#F8FAFC] text-[#0F172A] relative z-10 overflow-hidden">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-2xl">
-          <div className="flex-1 space-y-md z-10">
-            <div className="inline-flex items-center px-4 py-2 bg-[#0F172A] rounded-full">
-               <span className="text-xs font-black text-white uppercase tracking-widest">GENUAI COMMUNITY</span>
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-[60px] lg:gap-[80px]">
+          <div className="flex-1 space-y-6 z-10 lg:pr-8">
+            <div className="inline-flex items-center px-4 py-2 bg-[#0F172A] rounded-full mb-2">
+               <span className="text-[11px] font-black text-white uppercase tracking-widest">GENUAI COMMUNITY</span>
             </div>
-            <h2 className="text-5xl md:text-6xl font-medium tracking-tight text-[#0F172A] leading-tight" style={{fontFamily: "'Outfit', sans-serif"}}>
+            <h2 className="text-4xl md:text-5xl lg:text-[56px] font-medium tracking-tight text-[#0F172A] leading-[1.1]" style={{fontFamily: "'Outfit', sans-serif"}}>
               Prepare and apply<br/>for your dream job
             </h2>
-            <p className="text-xl text-[#475569] leading-relaxed max-w-xl">
+            <p className="text-xl text-[#475569] leading-relaxed max-w-lg mt-6">
               Over 26 million developers have joined the GenuAI community to certify their skills, practice interviewing, and discover relevant jobs. An AI Mock Interviewer can help you prepare, while our QuickApply agent puts your job search on autopilot.
             </p>
           </div>
-          <div className="w-full lg:w-[600px] relative z-10">
+          <div className="flex-1 w-full relative z-10">
             <div className="absolute -inset-4 bg-[#E2E8F0] blur-xl rounded-[2rem]"></div>
-            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop" alt="IDE Editor" className="relative w-full rounded-[1.5rem] shadow-2xl border border-white/20 object-cover aspect-[4/3]" />
+            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop" alt="IDE Editor" className="relative w-full rounded-[1.5rem] shadow-2xl border border-white/20 object-cover aspect-[16/10]" />
           </div>
         </div>
       </section>
