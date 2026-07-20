@@ -194,10 +194,50 @@ export default function Auth({ onLogin }: Props) {
 
   return (
     <div className="w-full bg-background font-body-base overflow-x-hidden text-on-background">
-      <div className="min-h-screen flex relative quantum-gradient text-on-background overflow-hidden">
+      <div className="min-h-screen flex flex-col lg:flex-row relative quantum-gradient text-on-background overflow-hidden">
       {/* Decorative Background Elements */}
       <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-accent-gold/10 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-brand/10 blur-[100px] rounded-full pointer-events-none" />
+
+      {/* MOBILE BRAND HEADER — visible only on small screens */}
+      <div className="lg:hidden flex flex-col items-center text-center pt-10 pb-6 px-margin-mobile relative z-10">
+        <div className="relative group inline-block mb-4">
+          <div className="absolute -inset-4 bg-accent-gold/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <img src="/logo.png" alt="GenuAI Shield" className="relative w-20 h-20 object-contain gold-glow-subtle" />
+        </div>
+        <h2 className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#667EEA] via-[#764BA2] to-[#0891B2] tracking-tighter mb-2" style={{ fontFamily: "'Outfit', 'Inter', sans-serif" }}>
+          GenuAI Technologies
+        </h2>
+        <div className="inline-flex items-center px-3 py-1.5 glass rounded-lg shadow-sm bg-surface-bright/50 mb-4">
+          <span className="text-[10px] font-black text-[#F59E0B] uppercase tracking-[0.2em]" style={{ fontFamily: "'Inter', sans-serif" }}>
+            AI-Powered Recruitment Intelligence Platform
+          </span>
+        </div>
+        <h1 className="text-3xl font-black text-on-surface mb-2 leading-tight">
+          Hire Smarter.<br/>
+          <span className="text-accent-gold">Get Hired Faster.</span>
+        </h1>
+        <p className="text-sm text-on-surface-variant/80 leading-relaxed max-w-xs">
+          Evaluating candidates across <span className="text-accent-gold font-bold">6 dimensions</span> using quantum-inspired AI.
+        </p>
+        {/* Mini stats on mobile */}
+        <div className="grid grid-cols-2 gap-3 mt-6 w-full max-w-xs">
+          {[
+            { val: "Quantum", label: "AI Evaluation", icon: "psychology", color: "text-indigo-brand" },
+            { val: "6D", label: "Assessment", icon: "view_in_ar", color: "text-accent-gold" },
+            { val: "Real-Time", label: "Scoring", icon: "bolt", color: "text-success-emerald" },
+            { val: "Zero", label: "Human Bias", icon: "balance", color: "text-[#EC4899]" },
+          ].map((s, i) => (
+            <div key={i} className="glass px-3 py-3 rounded-xl flex items-center gap-2 border border-surface-container">
+              <span className={`material-symbols-outlined text-[18px] ${s.color} shrink-0`}>{s.icon}</span>
+              <div>
+                <div className={`font-black text-[11px] ${s.color}`}>{s.val}</div>
+                <div className="text-[10px] text-on-surface-variant font-medium">{s.label}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* LEFT - Brand Hero Panel */}
       <div className="hidden lg:flex flex-1 flex-col justify-center px-margin-desktop py-xl relative z-10 border-r border-surface-container/50">
