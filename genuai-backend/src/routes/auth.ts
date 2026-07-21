@@ -193,7 +193,7 @@ router.post('/send-otp', async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpStore[email] = { otp, expires: Date.now() + 10 * 60 * 1000, data: { name, email, password, role, phone, college } };
 
-    await sendEmail({
+    sendEmail({
       to: email,
       subject: 'GenuAI Technologies — Email Verification OTP',
       html: `
@@ -214,7 +214,7 @@ router.post('/send-otp', async (req, res) => {
           </div>
         </div>
       `,
-    });
+    }).catch(err => console.error('Failed to send OTP email asynchronously:', err));
 
     res.json({ message: 'OTP sent to your email' });
   } catch (err: any) {
@@ -287,7 +287,7 @@ router.post('/forgot-password-otp', async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpStore[email] = { otp, expires: Date.now() + 10 * 60 * 1000, data: { email } };
 
-    await sendEmail({
+    sendEmail({
       to: email,
       subject: 'GenuAI Technologies — Password Reset OTP',
       html: `
