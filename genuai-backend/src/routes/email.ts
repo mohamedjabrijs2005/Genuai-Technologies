@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { sendEmail } from '../utils/mailer';
+import { getBaseTemplate, getVerdictTemplate } from '../utils/emailTemplates';
 dotenv.config();
 
 const router = express.Router();
@@ -49,21 +50,20 @@ router.post('/send', async (req, res) => {
       ? `<div style="padding:0 32px;margin-bottom:16px;"><h3 style="color:#1E293B;font-size:14px;font-weight:700;margin:0 0 10px;">📈 Improvement Plan</h3><div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:12px;padding:14px 16px;">${improvementPlan.map((s: string) => `<p style="color:#92400E;font-size:13px;margin:0 0 4px;">→ ${s}</p>`).join('')}</div></div>`
       : '';
 
-    const html = `<!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#F8FAFC;font-family:Arial,sans-serif;">
-<div style="max-width:600px;margin:40px auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.1);">
+    const header = `
   <div style="background:linear-gradient(135deg,#667EEA 0%,#764BA2 100%);padding:40px 32px;text-align:center;">
     <div style="width:70px;height:70px;background:rgba(255,255,255,0.2);border-radius:18px;margin:0 auto 16px;text-align:center;line-height:70px;font-size:36px;font-weight:900;color:#fff;">G</div>
     <h1 style="color:#fff;margin:0;font-size:26px;font-weight:800;">GenuAI Technologies</h1>
     <p style="color:rgba(255,255,255,0.8);margin:6px 0 0;font-size:14px;">AI-Powered Recruitment Intelligence</p>
   </div>
-  <div style="padding:32px 32px 0;">
+    `;
+
+    const body = `
+  <div>
     <h2 style="color:#1E293B;font-size:20px;margin:0 0 8px;">Hello, <strong>${candidateName}</strong>! 👋</h2>
     <p style="color:#64748B;font-size:14px;margin:0 0 24px;line-height:1.6;">Your GenuAI assessment has been completed. Here are your results:</p>
   </div>
-  <div style="padding:0 32px;">
+  <div>
     <div style="background:linear-gradient(135deg,#F8FAFC,#EEF2FF);border:2px solid #E2E8F0;border-radius:16px;padding:28px;text-align:center;margin-bottom:20px;">
       <div style="font-size:64px;font-weight:900;color:#667EEA;line-height:1;margin-bottom:8px;">${overallScore}%</div>
       <div style="display:inline-block;background:${vbg};border:2px solid ${vc};border-radius:10px;padding:6px 20px;margin-bottom:12px;">
@@ -75,7 +75,7 @@ router.post('/send', async (req, res) => {
       </div>
     </div>
   </div>
-  <div style="padding:0 32px;margin-bottom:20px;">
+  <div style="margin-bottom:20px;">
     <h3 style="color:#1E293B;font-size:14px;font-weight:700;margin:0 0 12px;">📊 Score Breakdown</h3>
     <table style="width:100%;border-collapse:collapse;">
       <tr style="background:#F8FAFC;">
@@ -94,7 +94,7 @@ router.post('/send', async (req, res) => {
     ${klevelHtml}
     ${triangleHtml}
   </div>
-  <div style="padding:0 32px;margin-bottom:20px;">
+  <div style="margin-bottom:20px;">
     <div style="display:table;width:100%;">
       <div style="display:table-cell;width:50%;padding-right:6px;">
         <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:16px;text-align:center;">
@@ -110,7 +110,7 @@ router.post('/send', async (req, res) => {
       </div>
     </div>
   </div>
-  <div style="padding:0 32px;margin-bottom:24px;">
+  <div style="margin-bottom:24px;">
     <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
       <span style="font-size:12px;color:#64748B;font-weight:600;">Overall Performance</span>
       <span style="font-size:12px;color:#667EEA;font-weight:700;">${overallScore}%</span>
@@ -119,24 +119,20 @@ router.post('/send', async (req, res) => {
       <div style="width:${overallScore}%;background:linear-gradient(90deg,#667EEA,#764BA2);height:10px;border-radius:10px;"></div>
     </div>
   </div>
-  <div style="padding:0 32px;margin-bottom:24px;">
+  <div style="margin-bottom:24px;">
     <div style="background:${vbg};border-left:4px solid ${vc};border-radius:8px;padding:16px 20px;">
       <p style="color:#1E293B;font-size:14px;margin:0;line-height:1.6;">${msgText}</p>
     </div>
   </div>
   ${strengthsHtml}
   ${planHtml}
-  <div style="padding:0 32px;margin-bottom:28px;">
+  <div style="margin-bottom:28px;">
     <h3 style="color:#1E293B;font-size:14px;font-weight:700;margin:0 0 12px;">💡 Next Steps</h3>
     <div style="background:#F8FAFC;border-radius:12px;padding:16px;">${nextSteps}</div>
   </div>
-  <div style="background:#F8FAFC;padding:24px 32px;text-align:center;border-top:1px solid #E2E8F0;">
-    <p style="color:#94A3B8;font-size:12px;margin:0 0 4px;font-style:italic;">Filtering fake candidates. Finding real talent.</p>
-    <p style="color:#CBD5E1;font-size:11px;margin:0;">© 2026 GenuAI Technologies. All Rights Reserved.</p>
-  </div>
-</div>
-</body>
-</html>`;
+    `;
+
+    const html = getBaseTemplate(header, body);
 
     await sendEmail({
       to: candidateEmail || process.env.RECRUITER_EMAIL!,
@@ -161,42 +157,7 @@ router.post('/verdict', async (req, res) => {
       ? `Congratulations! You have been selected - ${companyName}`
       : `Application Update - ${companyName}`;
 
-    const htmlBody = isHired
-      ? `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#F8FAFC;font-family:Arial,sans-serif;">
-<div style="max-width:600px;margin:40px auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.1);">
-<div style="background:linear-gradient(135deg,#00B87C,#00D4AA);padding:40px 32px;text-align:center;">
-<div style="font-size:48px;margin-bottom:12px;">🎉</div>
-<h1 style="color:#fff;margin:0;font-size:26px;font-weight:800;">Congratulations!</h1>
-<p style="color:rgba(255,255,255,0.9);margin:8px 0 0;font-size:15px;">You have been selected!</p>
-</div>
-<div style="padding:32px;">
-<p style="color:#1E293B;font-size:16px;">Dear <strong>${candidateName}</strong>,</p>
-<p style="color:#64748B;font-size:14px;line-height:1.6;">We are thrilled to inform you that you have been <strong style="color:#00B87C;">selected</strong> for the position of <strong>${jobTitle}</strong> at <strong>${companyName}</strong>.</p>
-<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:20px;margin:20px 0;">
-<p style="color:#64748B;font-size:13px;margin:0 0 6px;">✅ Our HR team will contact you within 2-3 business days</p>
-<p style="color:#64748B;font-size:13px;margin:0 0 6px;">✅ Keep your phone and email accessible</p>
-<p style="color:#64748B;font-size:13px;margin:0;">✅ Prepare your original documents for verification</p>
-</div></div>
-<div style="background:#F8FAFC;padding:20px 32px;text-align:center;border-top:1px solid #E2E8F0;">
-<p style="color:#94A3B8;font-size:12px;margin:0;font-style:italic;">GenuAI Technologies — Filtering fake candidates. Finding real talent.</p>
-</div></div></body></html>`
-      : `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#F8FAFC;font-family:Arial,sans-serif;">
-<div style="max-width:600px;margin:40px auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.1);">
-<div style="background:linear-gradient(135deg,#667EEA,#764BA2);padding:40px 32px;text-align:center;">
-<div style="font-size:48px;margin-bottom:12px;">📋</div>
-<h1 style="color:#fff;margin:0;font-size:26px;font-weight:800;">Application Update</h1>
-</div>
-<div style="padding:32px;">
-<p style="color:#1E293B;font-size:16px;">Dear <strong>${candidateName}</strong>,</p>
-<p style="color:#64748B;font-size:14px;line-height:1.6;">Thank you for applying for <strong>${jobTitle}</strong> at <strong>${companyName}</strong>. After careful consideration, we will not be moving forward at this time.</p>
-<div style="background:#EEF2FF;border:1px solid #C7D2FE;border-radius:12px;padding:20px;margin:20px 0;">
-<p style="color:#64748B;font-size:13px;margin:0 0 6px;">📚 Review your skill gaps from your GenuAI report</p>
-<p style="color:#64748B;font-size:13px;margin:0 0 6px;">🎯 Practice with our AI Mock Interview Coach</p>
-<p style="color:#64748B;font-size:13px;margin:0;">🚀 Apply again after improving your skills</p>
-</div></div>
-<div style="background:#F8FAFC;padding:20px 32px;text-align:center;border-top:1px solid #E2E8F0;">
-<p style="color:#94A3B8;font-size:12px;margin:0;font-style:italic;">GenuAI Technologies — Filtering fake candidates. Finding real talent.</p>
-</div></div></body></html>`;
+    const htmlBody = getVerdictTemplate(candidateName, companyName, jobTitle, isHired);
 
     await sendEmail({
       to: process.env.RECRUITER_EMAIL!,

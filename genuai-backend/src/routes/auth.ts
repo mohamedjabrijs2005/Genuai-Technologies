@@ -7,6 +7,7 @@ import { Strategy as GitHubStrategy } from 'passport-github2';
 import { Strategy as LinkedInStrategy } from 'passport-linkedin-oauth2';
 import pool from '../db';
 import { sendEmail } from '../utils/mailer';
+import { getOtpTemplate } from '../utils/emailTemplates';
 
 const router = express.Router();
 const otpStore: Record<string, { otp: string; expires: number; data: any }> = {};
@@ -196,24 +197,7 @@ router.post('/send-otp', async (req, res) => {
     sendEmail({
       to: email,
       subject: 'GenuAI Technologies — Email Verification OTP',
-      html: `
-        <div style="font-family:'Segoe UI',sans-serif;max-width:550px;margin:0 auto;background:#ffffff;color:#1E293B;padding:40px;border-radius:16px;border:1px solid #E2E8F0;box-shadow:0 10px 25px rgba(0,0,0,0.05)">
-          <div style="text-align:center;margin-bottom:32px;">
-            <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:12px;background:#EFF6FF;color:#2563EB;font-size:24px;margin-bottom:16px;">✉️</div>
-            <h2 style="color:#0F172A;margin:0;font-size:24px;font-weight:800;">Verify Your Email</h2>
-          </div>
-          <p style="font-size:16px;line-height:1.6;margin-top:0;">Hello <strong>${name}</strong>,</p>
-          <p style="font-size:16px;line-height:1.6;color:#475569;">Welcome to GenuAI! To complete your registration and securely verify your email address, please use the 6-digit code below:</p>
-          <div style="background:#F8FAFC;border:2px dashed #CBD5E1;border-radius:12px;padding:24px;text-align:center;margin:32px 0">
-            <span style="font-size:42px;font-weight:900;color:#2563EB;letter-spacing:12px;font-family:monospace;">${otp}</span>
-          </div>
-          <p style="font-size:14px;color:#64748B;line-height:1.6;">This secure code will expire in exactly <strong>10 minutes</strong>. If you did not sign up for a GenuAI account, please ignore this email.</p>
-          <div style="border-top:1px solid #E2E8F0;padding-top:24px;margin-top:32px;text-align:center;">
-            <h3 style="color:#2563EB;margin:0 0 8px;font-size:16px;font-weight:800;">Genu<span style="color:#7C3AED">AI</span> Technologies</h3>
-            <p style="color:#94A3B8;font-size:12px;margin:0;">Next-Generation Recruitment Intelligence</p>
-          </div>
-        </div>
-      `,
+      html: getOtpTemplate(name, otp, 'register'),
     }).catch(err => console.error('Failed to send OTP email asynchronously:', err));
 
     res.json({ message: 'OTP sent to your email' });
@@ -290,24 +274,7 @@ router.post('/forgot-password-otp', async (req, res) => {
     sendEmail({
       to: email,
       subject: 'GenuAI Technologies — Password Reset OTP',
-      html: `
-        <div style="font-family:'Segoe UI',sans-serif;max-width:550px;margin:0 auto;background:#ffffff;color:#1E293B;padding:40px;border-radius:16px;border:1px solid #E2E8F0;box-shadow:0 10px 25px rgba(0,0,0,0.05)">
-          <div style="text-align:center;margin-bottom:32px;">
-            <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:12px;background:#EFF6FF;color:#2563EB;font-size:24px;margin-bottom:16px;">🔐</div>
-            <h2 style="color:#0F172A;margin:0;font-size:24px;font-weight:800;">Password Reset Request</h2>
-          </div>
-          <p style="font-size:16px;line-height:1.6;margin-top:0;">Hello <strong>${user.name}</strong>,</p>
-          <p style="font-size:16px;line-height:1.6;color:#475569;">We received a request to reset your password for your GenuAI account. To securely complete this process, please use the 6-digit verification code below:</p>
-          <div style="background:#F8FAFC;border:2px dashed #CBD5E1;border-radius:12px;padding:24px;text-align:center;margin:32px 0">
-            <span style="font-size:42px;font-weight:900;color:#2563EB;letter-spacing:12px;font-family:monospace;">${otp}</span>
-          </div>
-          <p style="font-size:14px;color:#64748B;line-height:1.6;">This secure code will expire in exactly <strong>10 minutes</strong>. If you did not initiate this password reset, please ignore this email or contact support if you have concerns.</p>
-          <div style="border-top:1px solid #E2E8F0;padding-top:24px;margin-top:32px;text-align:center;">
-            <h3 style="color:#2563EB;margin:0 0 8px;font-size:16px;font-weight:800;">Genu<span style="color:#7C3AED">AI</span> Technologies</h3>
-            <p style="color:#94A3B8;font-size:12px;margin:0;">Next-Generation Recruitment Intelligence</p>
-          </div>
-        </div>
-      `,
+      html: getOtpTemplate(user.name, otp, 'reset'),
     }).catch(err => console.error('Failed to send Password Reset OTP asynchronously:', err));
 
     res.json({ message: 'Password reset OTP sent to your email' });

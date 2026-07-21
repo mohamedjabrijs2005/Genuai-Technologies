@@ -2,6 +2,8 @@ import express from 'express';
 import pool from '../db';
 import { sendEmail } from '../utils/mailer';
 
+import { getBaseTemplate } from '../utils/emailTemplates';
+
 const router = express.Router();
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://genuai-technologies.vercel.app';
@@ -16,45 +18,62 @@ function generateRoomId(): string {
 }
 
 function buildEmailHtml(candidateName: string, job_title: string, companyName: string, interviewDate: string, room_id: string, roomLink: string, notes: string): string {
-  const notesSection = notes ? `<div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:12px;padding:16px 20px;margin-bottom:24px;"><p style="color:#92400e;font-weight:700;font-size:13px;margin:0 0 6px;">Notes from Company:</p><p style="color:#78350f;font-size:13px;margin:0;line-height:1.6;">${notes}</p></div>` : '';
-  return `<!DOCTYPE html>
-<html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;background:#F0F4FF;font-family:Arial,sans-serif;">
-<div style="max-width:600px;margin:32px auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(31,97,220,0.12);">
-<div style="background:linear-gradient(135deg,#1a56db,#3b82f6,#06b6d4);padding:40px 32px;text-align:center;">
-<div style="font-size:36px;margin-bottom:14px;">&#128197;</div>
-<h1 style="color:#fff;margin:0 0 6px;font-size:26px;font-weight:800;">Interview Confirmed!</h1>
-<p style="color:rgba(255,255,255,0.85);margin:0;font-size:14px;">Your GenuAI interview has been scheduled</p>
-</div>
-<div style="padding:36px 32px;">
-<p style="color:#1e293b;font-size:16px;margin:0 0 6px;font-weight:600;">Hello, ${candidateName}</p>
-<p style="color:#64748b;font-size:14px;margin:0 0 28px;line-height:1.7;">Your interview for <strong style="color:#1a56db;">${job_title}</strong> at <strong style="color:#1a56db;">${companyName}</strong> has been confirmed.</p>
-<table style="width:100%;border-collapse:collapse;margin-bottom:28px;">
-<tr><td style="padding:14px 18px;background:#eff6ff;border:1px solid #dbeafe;font-weight:700;color:#1e40af;font-size:13px;width:35%;">Date and Time</td><td style="padding:14px 18px;background:#eff6ff;border:1px solid #dbeafe;color:#1e293b;font-size:14px;font-weight:600;">${interviewDate}</td></tr>
-<tr><td style="padding:14px 18px;border:1px solid #dbeafe;font-weight:700;color:#1e40af;font-size:13px;">Position</td><td style="padding:14px 18px;border:1px solid #dbeafe;color:#1e293b;font-size:14px;">${job_title}</td></tr>
-<tr><td style="padding:14px 18px;border:1px solid #dbeafe;font-weight:700;color:#1e40af;font-size:13px;">Company</td><td style="padding:14px 18px;border:1px solid #dbeafe;color:#1e293b;font-size:14px;">${companyName}</td></tr>
-<tr><td style="padding:14px 18px;border:1px solid #dbeafe;font-weight:700;color:#1e40af;font-size:13px;">Room ID</td><td style="padding:14px 18px;border:1px solid #dbeafe;color:#1a56db;font-size:16px;font-weight:800;letter-spacing:2px;">${room_id}</td></tr>
-</table>
-<div style="text-align:center;margin-bottom:28px;"><a href="${roomLink}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#1a56db,#3b82f6);color:#fff;text-decoration:none;border-radius:12px;font-weight:800;font-size:15px;">&#128187; Join Interview Room</a></div>
-<div style="background:#f8faff;border:1.5px solid #dbeafe;border-radius:12px;padding:20px 24px;margin-bottom:24px;">
-<p style="color:#1e40af;font-weight:700;font-size:14px;margin:0 0 10px;">Important Instructions:</p>
-<ul style="color:#475569;font-size:13px;margin:0;padding-left:18px;line-height:2;">
-<li>Join 5 minutes before the scheduled time</li>
-<li>Use GenuAI Interview Room only - no external video apps</li>
-<li>Ensure camera and microphone are working</li>
-<li>Anti-cheat monitoring will be active throughout</li>
-<li>Keep your face visible at all times</li>
-</ul>
-</div>
-${notesSection}
-</div>
-<div style="background:#f8faff;border-top:1px solid #dbeafe;padding:24px 32px;text-align:center;">
-<p style="font-weight:800;font-size:16px;color:#1a56db;margin:0 0 4px;">GenuAI Technologies</p>
-<p style="color:#64748b;font-size:12px;margin:0 0 4px;">AI-Powered Recruitment Intelligence Platform</p>
-<p style="color:#94a3b8;font-size:11px;margin:0;">Filtering fake candidates. Finding real talent.</p>
-</div>
-</div>
-</body></html>`;
+  const notesSection = notes ? `<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:16px 20px;margin-bottom:24px;"><p style="color:#92400E;font-weight:700;font-size:14px;margin:0 0 8px;">Notes from Company:</p><p style="color:#78350F;font-size:14px;margin:0;line-height:1.6;">${notes}</p></div>` : '';
+  
+  const header = `
+    <div style="background: linear-gradient(135deg, #1A56DB 0%, #3B82F6 100%); padding: 40px 20px; text-align: center;">
+      <div style="display: inline-block; font-size: 40px; margin-bottom: 12px;">📅</div>
+      <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">Interview Confirmed!</h1>
+      <p style="margin: 8px 0 0 0; color: rgba(255,255,255,0.9); font-size: 16px; font-weight: 500;">Your GenuAI interview has been scheduled</p>
+    </div>
+  `;
+
+  const body = `
+    <p style="margin: 0 0 16px 0; font-size: 16px; color: #1E293B; font-weight: 600;">Hello ${candidateName},</p>
+    <p style="margin: 0 0 24px 0; font-size: 15px; color: #475569; line-height: 1.6;">Your interview for <strong style="color:#1A56DB;">${job_title}</strong> at <strong style="color:#1A56DB;">${companyName}</strong> has been confirmed.</p>
+    
+    <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <td style="padding: 14px 20px; background: #EEF2FF; border-bottom: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; font-weight: 700; color: #3730A3; font-size: 14px; width: 35%;">Date & Time</td>
+          <td style="padding: 14px 20px; background: #EEF2FF; border-bottom: 1px solid #E2E8F0; color: #1E293B; font-size: 14px; font-weight: 600;">${interviewDate}</td>
+        </tr>
+        <tr>
+          <td style="padding: 14px 20px; border-bottom: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; font-weight: 700; color: #475569; font-size: 14px;">Position</td>
+          <td style="padding: 14px 20px; border-bottom: 1px solid #E2E8F0; color: #1E293B; font-size: 14px;">${job_title}</td>
+        </tr>
+        <tr>
+          <td style="padding: 14px 20px; border-bottom: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; font-weight: 700; color: #475569; font-size: 14px;">Company</td>
+          <td style="padding: 14px 20px; border-bottom: 1px solid #E2E8F0; color: #1E293B; font-size: 14px;">${companyName}</td>
+        </tr>
+        <tr>
+          <td style="padding: 14px 20px; border-right: 1px solid #E2E8F0; font-weight: 700; color: #475569; font-size: 14px;">Room ID</td>
+          <td style="padding: 14px 20px; color: #2563EB; font-size: 16px; font-weight: 800; letter-spacing: 1px;">${room_id}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 32px;">
+      <a href="${roomLink}" style="display: inline-block; background-color: #2563EB; color: #ffffff; font-weight: 600; font-size: 16px; text-decoration: none; padding: 14px 32px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);">
+        💻 Join Interview Room
+      </a>
+    </div>
+
+    <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+      <h4 style="margin: 0 0 12px 0; color: #1E293B; font-size: 14px;">📝 Important Instructions:</h4>
+      <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 14px; line-height: 1.6;">
+        <li style="margin-bottom: 6px;">Join 5 minutes before the scheduled time</li>
+        <li style="margin-bottom: 6px;">Use GenuAI Interview Room only - no external video apps</li>
+        <li style="margin-bottom: 6px;">Ensure your camera and microphone are working</li>
+        <li style="margin-bottom: 6px;">Anti-cheat monitoring will be active throughout</li>
+        <li>Keep your face visible at all times</li>
+      </ul>
+    </div>
+    
+    ${notesSection}
+  `;
+
+  return getBaseTemplate(header, body);
 }
 
 router.post('/schedule', async (req, res) => {

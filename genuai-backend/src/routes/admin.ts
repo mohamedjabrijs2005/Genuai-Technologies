@@ -1,6 +1,7 @@
 import express from 'express';
 import pool from '../db';
 import { sendEmail } from '../utils/mailer';
+import { getAdminForwardTemplate } from '../utils/emailTemplates';
 const router = express.Router();
 
 // Get all candidates ranked by score
@@ -70,7 +71,7 @@ router.put('/verdict/:id', async (req, res) => {
           await sendEmail({
             to: assessment.email,
             subject: 'Update on your GenuAI Application',
-            html: `Hi ${assessment.candidate_name},<br><br>Unfortunately, you were not selected by ${company_name || 'the previous company'}. However, your profile has been automatically forwarded to your next choice, ${nextCompanyName}.<br><br>Best of luck!<br>The GenuAI Team`,
+            html: getAdminForwardTemplate(assessment.candidate_name, company_name || 'the previous company', nextCompanyName),
           });
         } catch (emailErr) {
           console.error("Failed to send waterfall email:", emailErr);
