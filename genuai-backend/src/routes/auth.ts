@@ -6,11 +6,9 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import { Strategy as LinkedInStrategy } from 'passport-linkedin-oauth2';
 import pool from '../db';
-import sgMail from '@sendgrid/mail';
+import { sendEmail } from '../utils/mailer';
 
 const router = express.Router();
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
-const FROM_EMAIL = `"GenuAI Technologies" <${process.env.SENDGRID_SENDER_EMAIL}>`;
 const otpStore: Record<string, { otp: string; expires: number; data: any }> = {};
 const FRONTEND_URL_PROD = 'https://genuai-technologies.vercel.app';
 const BACKEND_URL_PROD = 'https://genuai-technologies.onrender.com';
@@ -195,8 +193,7 @@ router.post('/send-otp', async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpStore[email] = { otp, expires: Date.now() + 10 * 60 * 1000, data: { name, email, password, role, phone, college } };
 
-    await sgMail.send({
-      from: FROM_EMAIL,
+    await sendEmail({
       to: email,
       subject: 'GenuAI Technologies — Email Verification OTP',
       html: `
@@ -290,8 +287,7 @@ router.post('/forgot-password-otp', async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpStore[email] = { otp, expires: Date.now() + 10 * 60 * 1000, data: { email } };
 
-    await sgMail.send({
-      from: FROM_EMAIL,
+    await sendEmail({
       to: email,
       subject: 'GenuAI Technologies — Password Reset OTP',
       html: `

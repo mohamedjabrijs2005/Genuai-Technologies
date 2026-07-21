@@ -1,11 +1,9 @@
 import express from 'express';
-import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
+import { sendEmail } from '../utils/mailer';
 dotenv.config();
 
 const router = express.Router();
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
-const FROM_EMAIL = `"GenuAI Technologies" <${process.env.SENDGRID_SENDER_EMAIL}>`;
 
 router.post('/send', async (req, res) => {
   try {
@@ -140,8 +138,7 @@ router.post('/send', async (req, res) => {
 </body>
 </html>`;
 
-    await sgMail.send({
-      from: FROM_EMAIL,
+    await sendEmail({
       to: candidateEmail || process.env.RECRUITER_EMAIL!,
       subject: `Your GenuAI Assessment Result - ${verdict}`,
       html,
@@ -201,8 +198,7 @@ router.post('/verdict', async (req, res) => {
 <p style="color:#94A3B8;font-size:12px;margin:0;font-style:italic;">GenuAI Technologies — Filtering fake candidates. Finding real talent.</p>
 </div></div></body></html>`;
 
-    await sgMail.send({
-      from: FROM_EMAIL,
+    await sendEmail({
       to: process.env.RECRUITER_EMAIL!,
       subject,
       html: htmlBody,

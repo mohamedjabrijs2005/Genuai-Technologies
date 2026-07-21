@@ -1,5 +1,6 @@
 import express from 'express';
 import pool from '../db';
+import { sendEmail } from '../utils/mailer';
 const router = express.Router();
 
 // Get all candidates ranked by score
@@ -65,16 +66,11 @@ router.put('/verdict/:id', async (req, res) => {
         const nextCompRes = await pool.query('SELECT name FROM users WHERE id = $1', [nextCompanyId]);
         const nextCompanyName = nextCompRes.rows[0]?.name || "another company";
 
-        // Import sendgrid
-        const sgMail = require('@sendgrid/mail');
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
-        
         try {
-          await sgMail.send({
+          await sendEmail({
             to: assessment.email,
-            from: process.env.SENDGRID_SENDER_EMAIL!,
             subject: 'Update on your GenuAI Application',
-            text: `Hi ${assessment.candidate_name},\n\nUnfortunately, you were not selected by ${company_name || 'the previous company'}. However, your profile has been automatically forwarded to your next choice, ${nextCompanyName}.\n\nBest of luck!\nThe GenuAI Team`,
+            html: `Hi ${assessment.candidate_name},<br><br>Unfortunately, you were not selected by ${company_name || 'the previous company'}. However, your profile has been automatically forwarded to your next choice, ${nextCompanyName}.<br><br>Best of luck!<br>The GenuAI Team`,
           });
         } catch (emailErr) {
           console.error("Failed to send waterfall email:", emailErr);
