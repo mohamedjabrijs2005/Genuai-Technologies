@@ -308,7 +308,7 @@ router.post('/forgot-password-otp', async (req, res) => {
           </div>
         </div>
       `,
-    });
+    }).catch(err => console.error('Failed to send Password Reset OTP asynchronously:', err));
 
     res.json({ message: 'Password reset OTP sent to your email' });
   } catch (err: any) {
