@@ -1,5 +1,10 @@
 import nodemailer from 'nodemailer';
 import { google } from 'googleapis';
+import dns from 'dns';
+
+// Force Node.js to resolve IPv4 addresses first.
+// This fixes the ENETUNREACH error on environments (like Render) that have IPv6 enabled but no outbound IPv6 route.
+dns.setDefaultResultOrder('ipv4first');
 
 let cachedTransporter: nodemailer.Transporter | null = null;
 
