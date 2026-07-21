@@ -1,10 +1,9 @@
 import nodemailer from 'nodemailer';
 import { google } from 'googleapis';
 import dns from 'dns';
+import { promisify } from 'util';
 
-// Force Node.js to resolve IPv4 addresses first.
-// This fixes the ENETUNREACH error on environments (like Render) that have IPv6 enabled but no outbound IPv6 route.
-dns.setDefaultResultOrder('ipv4first');
+const lookup = promisify(dns.lookup);
 
 let cachedTransporter: nodemailer.Transporter | null = null;
 
@@ -15,6 +14,9 @@ let cachedTransporter: nodemailer.Transporter | null = null;
  */
 const createTransporter = async () => {
   if (cachedTransporter) return cachedTransporter;
+
+  // Manually resolve the IPv4 address to avoid ENETUNREACH on IPv6-only networks
+  const { address } = await lookup('smtp.gmail.com', { family: 4 });
 
   if (process.env.GMAIL_CLIENT_ID && process.env.GMAIL_REFRESH_TOKEN) {
     // OAuth2 Authentication (Recommended)
@@ -40,9 +42,12 @@ const createTransporter = async () => {
     });
 
     cachedTransporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: address,
       port: 465,
       secure: true,
+      tls: {
+        servername: 'smtp.gmail.com' // Required for SSL verification when connecting via IP
+      },
       auth: {
         type: "OAuth2",
         user: process.env.GMAIL_USER,
@@ -51,19 +56,22 @@ const createTransporter = async () => {
         clientSecret: process.env.GMAIL_CLIENT_SECRET,
         refreshToken: process.env.GMAIL_REFRESH_TOKEN
       }
-    } as nodemailer.TransportOptions);
+    } as any);
     return cachedTransporter;
   } else {
     // Basic Authentication (App Password)
     cachedTransporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: address,
       port: 465,
       secure: true,
+      tls: {
+        servername: 'smtp.gmail.com' // Required for SSL verification when connecting via IP
+      },
       auth: {
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_APP_PASSWORD
       }
-    });
+    } as any);
     return cachedTransporter;
   }
 };
