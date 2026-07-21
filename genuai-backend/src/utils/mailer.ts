@@ -1,12 +1,16 @@
 import nodemailer from 'nodemailer';
 import { google } from 'googleapis';
 
+let cachedTransporter: nodemailer.Transporter | null = null;
+
 /**
- * Creates a Nodemailer transporter.
+ * Creates or retrieves a cached Nodemailer transporter.
  * If OAuth2 credentials (GMAIL_CLIENT_ID) are provided, it uses OAuth2.
  * Otherwise, it falls back to basic authentication using GMAIL_APP_PASSWORD.
  */
 const createTransporter = async () => {
+  if (cachedTransporter) return cachedTransporter;
+
   if (process.env.GMAIL_CLIENT_ID && process.env.GMAIL_REFRESH_TOKEN) {
     // OAuth2 Authentication (Recommended)
     const OAuth2 = google.auth.OAuth2;
@@ -30,7 +34,7 @@ const createTransporter = async () => {
       });
     });
 
-    return nodemailer.createTransport({
+    cachedTransporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
       secure: true,
@@ -43,9 +47,10 @@ const createTransporter = async () => {
         refreshToken: process.env.GMAIL_REFRESH_TOKEN
       }
     } as nodemailer.TransportOptions);
+    return cachedTransporter;
   } else {
     // Basic Authentication (App Password)
-    return nodemailer.createTransport({
+    cachedTransporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
       secure: true,
@@ -54,6 +59,7 @@ const createTransporter = async () => {
         pass: process.env.GMAIL_APP_PASSWORD
       }
     });
+    return cachedTransporter;
   }
 };
 
